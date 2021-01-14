@@ -1,0 +1,61 @@
+plugins {
+    // Apply the java plugin to add support for Java
+    id 'java'
+
+    // Apply the application plugin to add support for building a CLI application.
+    id 'application'
+
+    // A Gradle plugin for collapsing all dependencies and project code into a single Jar file.
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+}
+
+version '0.1.0'
+
+repositories {
+    // Use jcenter for resolving dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    jcenter()
+}
+
+dependencies {
+    implementation 'org.postgresql:postgresql:42.2.16'
+    implementation 'io.dropwizard:dropwizard-core:2.0.13'
+    implementation 'io.dropwizard:dropwizard-jdbi3:2.0.13'
+    implementation 'io.dropwizard:dropwizard-migrations:2.0.13'
+    implementation 'io.dropwizard:dropwizard-auth:2.0.13'
+    implementation 'io.dropwizard:dropwizard-assets:2.0.13'
+    implementation 'io.dropwizard:dropwizard-views-freemarker:2.0.13'
+    implementation 'org.tuckey:urlrewritefilter:4.0.3'
+    implementation 'de.mkammerer:argon2-jvm:2.7'
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.11.878'
+    implementation 'com.amazonaws:aws-java-sdk-ses:1.11.878'
+    implementation 'com.stripe:stripe-java:20.33.0'
+
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.13'
+}
+
+shadowJar {
+    archiveName = 'calendarium.jar'
+}
+
+application {
+    // Define the main class for the application.
+    mainClassName = 'io.codebards.calendarium.App'
+}
+
+run {
+    args 'server', 'config.yml'
+}
+
+task dbStatus(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "db", "status", "config.yml"
+}
+
+task dbMigrate(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "db", "migrate", "config.yml"
+}

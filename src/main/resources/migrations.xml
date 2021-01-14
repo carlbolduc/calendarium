@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <property name="now" value="now()" dbms="postgresql"/>
+
+    <changeSet id="1" author="carl">
+        <createTable tableName="user_account">
+            <column name="user_account_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="email" type="clob">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="clob"/>
+            <column name="password_digest" type="clob"/>
+            <column name="password_reset_digest" type="clob"/>
+            <column name="password_reset_requested_at" type="timestamptz"/>
+            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
+            <column name="created_by" type="bigint"/>
+            <column name="updated_at" type="timestamptz"/>
+            <column name="updated_by" type="bigint"/>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="2" author="carl">
+        <createTable tableName="user_account_token">
+            <column name="user_account_token_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="selector" type="clob">
+                <constraints nullable="false"/>
+            </column>
+            <column name="validator" type="clob">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_account_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
+            <column name="created_by" type="bigint"/>
+            <column name="updated_at" type="timestamptz"/>
+            <column name="updated_by" type="bigint"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="user_account_id"
+                                 baseTableName="user_account_token"
+                                 constraintName="fk__user_account_token__user_account"
+                                 referencedColumnNames="user_account_id"
+                                 referencedTableName="user_account"/>
+    </changeSet>
+
+    <changeSet id="3" author="mag">
+        <!-- Create the language table and insert English and Français -->
+        <createTable tableName="language">
+            <column name="language_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="locale_id" type="clob"/>
+            <column name="name" type="clob"/>
+        </createTable>
+        <sql>
+            INSERT INTO language (locale_id, name) VALUES ('en-ca', 'English'),('fr-ca', 'Français')
+        </sql>
+        <!-- Create the localisation table with two columns at first, for English and Français -->
+        <createTable tableName="localisation">
+            <column name="localisation_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="en-ca" type="clob"/>
+            <column name="fr-ca" type="clob"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="mag">
+        <!-- Create triggers functions to manage audit fields -->
+        <sql>
+            CREATE OR REPLACE FUNCTION set_created_audit() RETURNS TRIGGER
+                LANGUAGE plpgsql
+            AS
+            '
+            BEGIN
+                IF NEW.created_by IS null THEN
+                    NEW.created_by := 0;
+                END IF;
+                IF NEW.created_at IS null THEN
+                    NEW.created_at := now();
+                END IF;
+
+                RETURN NEW;
+            END
+            '
+        </sql>
+        <sql>
+            CREATE OR REPLACE FUNCTION set_updated_audit() RETURNS TRIGGER
+                LANGUAGE plpgsql
+            AS
+            '
+            BEGIN
+                IF NEW.updated_by IS null THEN
+                    NEW.updated_by := 0;
+                END IF;
+                IF NEW.updated_at IS null THEN
+                    NEW.updated_at := now();
+                END IF;
+
+                RETURN NEW;
+            END
+            '
+        </sql>
+        <!-- Add triggers to User Account -->
+        <sql>
+            DROP TRIGGER IF EXISTS row_created ON user_account;
+            CREATE TRIGGER row_created
+                BEFORE INSERT ON user_account
+                FOR EACH ROW
+                EXECUTE PROCEDURE set_created_audit();
+        </sql>
+        <sql>
+            DROP TRIGGER IF EXISTS row_updated ON user_account;
+            CREATE TRIGGER row_updated
+                BEFORE UPDATE ON user_account
+                FOR EACH ROW
+                EXECUTE PROCEDURE set_updated_audit();
+        </sql>
+        <!-- Add triggers to User Account Token -->
+        <sql>
+            DROP TRIGGER IF EXISTS row_created ON user_account_token;
+            CREATE TRIGGER row_created
+                BEFORE INSERT ON user_account_token
+                FOR EACH ROW
+                EXECUTE PROCEDURE set_created_audit();
+        </sql>
+        <sql>
+            DROP TRIGGER IF EXISTS row_updated ON user_account_token;
+            CREATE TRIGGER row_updated
+                BEFORE UPDATE ON user_account_token
+                FOR EACH ROW
+                EXECUTE PROCEDURE set_updated_audit();
+        </sql>
+        <!-- Drop and recreate the language table and insert English and Français -->
+        <dropTable tableName="language"/>
+        <createTable tableName="language">
+            <column name="language_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="locale_id" type="clob"/>
+            <column name="name" type="clob"/>
+            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
+            <column name="created_by" type="bigint"/>
+            <column name="updated_at" type="timestamptz"/>
+            <column name="updated_by" type="bigint"/>
+        </createTable>
+        <sql>
+            DROP TRIGGER IF EXISTS row_created ON language;
+            CREATE TRIGGER row_created
+                BEFORE INSERT ON language
+                FOR EACH ROW
+                EXECUTE PROCEDURE set_created_audit();
+        </sql>
+        <sql>
+            DROP TRIGGER IF EXISTS row_updated ON language;
+            CREATE TRIGGER row_updated
+                BEFORE UPDATE ON language
+                FOR EACH ROW
+                EXECUTE PROCEDURE set_updated_audit();
+        </sql>
+        <sql>
+            INSERT INTO language (locale_id, name) VALUES ('en-ca', 'English'),('fr-ca', 'Français')
+        </sql>
+        <!-- Drop and recreate the localisation table with two columns at first, for English and Français -->
+        <dropTable tableName="localisation"/>
+        <createTable tableName="localisation">
+            <column name="localisation_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="en-ca" type="clob"/>
+            <column name="fr-ca" type="clob"/>
+            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
+            <column name="created_by" type="bigint"/>
+            <column name="updated_at" type="timestamptz"/>
+            <column name="updated_by" type="bigint"/>
+        </createTable>
+        <sql>
+            DROP TRIGGER IF EXISTS row_created ON localisation;
+            CREATE TRIGGER row_created
+                BEFORE INSERT ON localisation
+                FOR EACH ROW
+                EXECUTE PROCEDURE set_created_audit();
+        </sql>
+        <sql>
+            DROP TRIGGER IF EXISTS row_updated ON localisation;
+            CREATE TRIGGER row_updated
+                BEFORE UPDATE ON localisation
+                FOR EACH ROW
+                EXECUTE PROCEDURE set_updated_audit();
+        </sql>
+    </changeSet>
+</databaseChangeLog>
