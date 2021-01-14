@@ -8,15 +8,43 @@
 
     <property name="now" value="now()" dbms="postgresql"/>
 
-    <changeSet id="1" author="carl">
-        <createTable tableName="user_account">
-            <column name="user_account_id" type="bigint" autoIncrement="true">
+    <changeSet id="1" author="mag">
+        <!-- Create table language -->
+        <createTable tableName="language">
+            <column name="language_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="locale_id" type="clob"/>
+            <column name="name" type="clob"/>
+            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
+            <column name="created_by" type="bigint"/>
+            <column name="updated_at" type="timestamptz"/>
+            <column name="updated_by" type="bigint"/>
+        </createTable>
+
+        <!-- Create table localisation with two columns for en-ca and fr-ca (more columns can be added later) -->
+        <createTable tableName="localisation">
+            <column name="localisation_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="en_ca" type="clob"/>
+            <column name="fr_ca" type="clob"/>
+            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
+            <column name="created_by" type="bigint"/>
+            <column name="updated_at" type="timestamptz"/>
+            <column name="updated_by" type="bigint"/>
+        </createTable>
+
+        <!-- Create table account -->
+        <createTable tableName="account">
+            <column name="account_id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="email" type="clob">
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="name" type="clob"/>
+            <column name="language_id" type="bigint"/>
             <column name="password_digest" type="clob"/>
             <column name="password_reset_digest" type="clob"/>
             <column name="password_reset_requested_at" type="timestamptz"/>
@@ -25,11 +53,15 @@
             <column name="updated_at" type="timestamptz"/>
             <column name="updated_by" type="bigint"/>
         </createTable>
-    </changeSet>
-    
-    <changeSet id="2" author="carl">
-        <createTable tableName="user_account_token">
-            <column name="user_account_token_id" type="bigint" autoIncrement="true">
+        <addForeignKeyConstraint baseColumnNames="language_id"
+                                 baseTableName="account"
+                                 constraintName="fk__account__language"
+                                 referencedColumnNames="language_id"
+                                 referencedTableName="language"/>
+
+        <!-- Create table account_token -->
+        <createTable tableName="account_token">
+            <column name="account_token_id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="selector" type="clob">
@@ -38,7 +70,7 @@
             <column name="validator" type="clob">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_account_id" type="int">
+            <column name="account_id" type="int">
                 <constraints nullable="false"/>
             </column>
             <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
@@ -46,36 +78,159 @@
             <column name="updated_at" type="timestamptz"/>
             <column name="updated_by" type="bigint"/>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="user_account_id"
-                                 baseTableName="user_account_token"
-                                 constraintName="fk__user_account_token__user_account"
-                                 referencedColumnNames="user_account_id"
-                                 referencedTableName="user_account"/>
-    </changeSet>
+        <addForeignKeyConstraint baseColumnNames="account_id"
+                                 baseTableName="account_token"
+                                 constraintName="fk__account_token__account"
+                                 referencedColumnNames="account_id"
+                                 referencedTableName="account"/>
 
-    <changeSet id="3" author="mag">
-        <!-- Create the language table and insert English and Français -->
-        <createTable tableName="language">
-            <column name="language_id" type="bigint" autoIncrement="true">
+        <!-- Create table subscription -->
+        <createTable tableName="subscription">
+            <column name="subscription_id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="locale_id" type="clob"/>
+            <column name="account_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_at" type="timestamptz"/>
+            <column name="end_at" type="timestamptz"/>
+            <column name="status" type="clob"/>
+            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
+            <column name="created_by" type="bigint"/>
+            <column name="updated_at" type="timestamptz"/>
+            <column name="updated_by" type="bigint"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="account_id"
+                                 baseTableName="subscription"
+                                 constraintName="fk__subscription__account"
+                                 referencedColumnNames="account_id"
+                                 referencedTableName="account"/>
+
+        <!-- Create table calendar -->
+        <createTable tableName="calendar">
+            <column name="calendar_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="enable_fr" type="boolean"/>
+            <column name="enable_en" type="boolean"/>
+            <column name="name_fr" type="clob"/>
+            <column name="name_en" type="clob"/>
+            <column name="description_fr" type="clob"/>
+            <column name="description_en" type="clob"/>
+            <column name="link_name_fr" type="clob"/>
+            <column name="link_name_en" type="clob"/>
+            <column name="primary_color" type="clob"/>
+            <column name="secondary_color" type="clob"/>
+            <column name="start_week_on" type="clob"/>
+            <column name="event_approval_required" type="boolean"/>
+            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
+            <column name="created_by" type="bigint"/>
+            <column name="updated_at" type="timestamptz"/>
+            <column name="updated_by" type="bigint"/>
+        </createTable>
+
+        <!-- Create table calendar_access -->
+        <createTable tableName="calendar_access">
+            <column name="calendar_access_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="account_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="calendar_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="clob"/>
+            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
+            <column name="created_by" type="bigint"/>
+            <column name="updated_at" type="timestamptz"/>
+            <column name="updated_by" type="bigint"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="account_id"
+                                 baseTableName="calendar_access"
+                                 constraintName="fk__calendar_access__account"
+                                 referencedColumnNames="account_id"
+                                 referencedTableName="account"/>
+        <addForeignKeyConstraint baseColumnNames="calendar_id"
+                                 baseTableName="calendar_access"
+                                 constraintName="fk__calendar_access__calendar"
+                                 referencedColumnNames="calendar_id"
+                                 referencedTableName="calendar"/>
+
+        <!-- Create table event -->
+        <createTable tableName="event">
+            <column name="event_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="account_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="calendar_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="clob"/>
+            <column name="name_fr" type="clob"/>
+            <column name="name_en" type="clob"/>
+            <column name="description_fr" type="clob"/>
+            <column name="description_en" type="clob"/>
+            <column name="start_at" type="timestamptz"/>
+            <column name="end_at" type="timestamptz"/>
+            <column name="all_day" type="boolean"/>
+            <column name="hyperlink_fr" type="clob"/>
+            <column name="hyperlink_en" type="clob"/>
+            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
+            <column name="created_by" type="bigint"/>
+            <column name="updated_at" type="timestamptz"/>
+            <column name="updated_by" type="bigint"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="account_id"
+                                 baseTableName="event"
+                                 constraintName="fk__event__account"
+                                 referencedColumnNames="account_id"
+                                 referencedTableName="account"/>
+        <addForeignKeyConstraint baseColumnNames="calendar_id"
+                                 baseTableName="event"
+                                 constraintName="fk__event__calendar"
+                                 referencedColumnNames="calendar_id"
+                                 referencedTableName="calendar"/>
+
+        <!-- Create table email_template -->
+        <createTable tableName="email_template">
+            <column name="email_template_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
             <column name="name" type="clob"/>
+            <column name="title_fr" type="clob"/>
+            <column name="title_en" type="clob"/>
+            <column name="body_fr" type="clob"/>
+            <column name="body_en" type="clob"/>
+            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
+            <column name="created_by" type="bigint"/>
+            <column name="updated_at" type="timestamptz"/>
+            <column name="updated_by" type="bigint"/>
         </createTable>
-        <sql>
-            INSERT INTO language (locale_id, name) VALUES ('en-ca', 'English'),('fr-ca', 'Français')
-        </sql>
-        <!-- Create the localisation table with two columns at first, for English and Français -->
-        <createTable tableName="localisation">
-            <column name="localisation_id" type="bigint" autoIncrement="true">
+
+        <!-- Create table activity -->
+        <createTable tableName="activity">
+            <column name="activity_id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="en-ca" type="clob"/>
-            <column name="fr-ca" type="clob"/>
+            <column name="account_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="clob"/>
+            <column name="description" type="clob"/>
+            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
+            <column name="created_by" type="bigint"/>
+            <column name="updated_at" type="timestamptz"/>
+            <column name="updated_by" type="bigint"/>
         </createTable>
-    </changeSet>
+        <addForeignKeyConstraint baseColumnNames="account_id"
+                                 baseTableName="activity"
+                                 constraintName="fk__activity__account"
+                                 referencedColumnNames="account_id"
+                                 referencedTableName="account"/>
 
-    <changeSet id="4" author="mag">
         <!-- Create triggers functions to manage audit fields -->
         <sql>
             CREATE OR REPLACE FUNCTION set_created_audit() RETURNS TRIGGER
@@ -111,92 +266,111 @@
             END
             '
         </sql>
-        <!-- Add triggers to User Account -->
+
+        <!-- Add audit triggers to language -->
         <sql>
-            DROP TRIGGER IF EXISTS row_created ON user_account;
-            CREATE TRIGGER row_created
-                BEFORE INSERT ON user_account
-                FOR EACH ROW
-                EXECUTE PROCEDURE set_created_audit();
+          DROP TRIGGER IF EXISTS row_created ON language;
+          CREATE TRIGGER row_created BEFORE INSERT ON language FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
+      </sql>
+      <sql>
+          DROP TRIGGER IF EXISTS row_updated ON language;
+          CREATE TRIGGER row_updated BEFORE UPDATE ON language FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
+      </sql>
+      
+      <!-- Add audit triggers to localisation -->
+      <sql>
+          DROP TRIGGER IF EXISTS row_created ON localisation;
+          CREATE TRIGGER row_created BEFORE INSERT ON localisation FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
+      </sql>
+      <sql>
+          DROP TRIGGER IF EXISTS row_updated ON localisation;
+          CREATE TRIGGER row_updated BEFORE UPDATE ON localisation FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
+      </sql>
+
+        <!-- Add audit triggers to account -->
+        <sql>
+            DROP TRIGGER IF EXISTS row_created ON account;
+            CREATE TRIGGER row_created BEFORE INSERT ON account FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
         </sql>
         <sql>
-            DROP TRIGGER IF EXISTS row_updated ON user_account;
-            CREATE TRIGGER row_updated
-                BEFORE UPDATE ON user_account
-                FOR EACH ROW
-                EXECUTE PROCEDURE set_updated_audit();
+            DROP TRIGGER IF EXISTS row_updated ON account;
+            CREATE TRIGGER row_updated BEFORE UPDATE ON account FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
         </sql>
-        <!-- Add triggers to User Account Token -->
+
+        <!-- Add audit triggers to account_token -->
         <sql>
-            DROP TRIGGER IF EXISTS row_created ON user_account_token;
-            CREATE TRIGGER row_created
-                BEFORE INSERT ON user_account_token
-                FOR EACH ROW
-                EXECUTE PROCEDURE set_created_audit();
+            DROP TRIGGER IF EXISTS row_created ON account_token;
+            CREATE TRIGGER row_created BEFORE INSERT ON account_token FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
         </sql>
         <sql>
-            DROP TRIGGER IF EXISTS row_updated ON user_account_token;
-            CREATE TRIGGER row_updated
-                BEFORE UPDATE ON user_account_token
-                FOR EACH ROW
-                EXECUTE PROCEDURE set_updated_audit();
+            DROP TRIGGER IF EXISTS row_updated ON account_token;
+            CREATE TRIGGER row_updated BEFORE UPDATE ON account_token FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
         </sql>
-        <!-- Drop and recreate the language table and insert English and Français -->
-        <dropTable tableName="language"/>
-        <createTable tableName="language">
-            <column name="language_id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="locale_id" type="clob"/>
-            <column name="name" type="clob"/>
-            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
-            <column name="created_by" type="bigint"/>
-            <column name="updated_at" type="timestamptz"/>
-            <column name="updated_by" type="bigint"/>
-        </createTable>
+
+        <!-- Add audit triggers to subscription -->
         <sql>
-            DROP TRIGGER IF EXISTS row_created ON language;
-            CREATE TRIGGER row_created
-                BEFORE INSERT ON language
-                FOR EACH ROW
-                EXECUTE PROCEDURE set_created_audit();
+            DROP TRIGGER IF EXISTS row_created ON subscription;
+            CREATE TRIGGER row_created BEFORE INSERT ON subscription FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
         </sql>
         <sql>
-            DROP TRIGGER IF EXISTS row_updated ON language;
-            CREATE TRIGGER row_updated
-                BEFORE UPDATE ON language
-                FOR EACH ROW
-                EXECUTE PROCEDURE set_updated_audit();
+            DROP TRIGGER IF EXISTS row_updated ON subscription;
+            CREATE TRIGGER row_updated BEFORE UPDATE ON subscription FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
+        </sql>
+
+        <!-- Add audit triggers to calendar -->
+        <sql>
+            DROP TRIGGER IF EXISTS row_created ON calendar;
+            CREATE TRIGGER row_created BEFORE INSERT ON calendar FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
         </sql>
         <sql>
-            INSERT INTO language (locale_id, name) VALUES ('en-ca', 'English'),('fr-ca', 'Français')
+            DROP TRIGGER IF EXISTS row_updated ON calendar;
+            CREATE TRIGGER row_updated BEFORE UPDATE ON calendar FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
         </sql>
-        <!-- Drop and recreate the localisation table with two columns at first, for English and Français -->
-        <dropTable tableName="localisation"/>
-        <createTable tableName="localisation">
-            <column name="localisation_id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="en-ca" type="clob"/>
-            <column name="fr-ca" type="clob"/>
-            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
-            <column name="created_by" type="bigint"/>
-            <column name="updated_at" type="timestamptz"/>
-            <column name="updated_by" type="bigint"/>
-        </createTable>
+
+        <!-- Add audit triggers to calendar_access -->
         <sql>
-            DROP TRIGGER IF EXISTS row_created ON localisation;
-            CREATE TRIGGER row_created
-                BEFORE INSERT ON localisation
-                FOR EACH ROW
-                EXECUTE PROCEDURE set_created_audit();
+            DROP TRIGGER IF EXISTS row_created ON calendar_access;
+            CREATE TRIGGER row_created BEFORE INSERT ON calendar_access FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
         </sql>
         <sql>
-            DROP TRIGGER IF EXISTS row_updated ON localisation;
-            CREATE TRIGGER row_updated
-                BEFORE UPDATE ON localisation
-                FOR EACH ROW
-                EXECUTE PROCEDURE set_updated_audit();
+            DROP TRIGGER IF EXISTS row_updated ON calendar_access;
+            CREATE TRIGGER row_updated BEFORE UPDATE ON calendar_access FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
         </sql>
+
+        <!-- Add audit triggers to event -->
+        <sql>
+            DROP TRIGGER IF EXISTS row_created ON event;
+            CREATE TRIGGER row_created BEFORE INSERT ON event FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
+        </sql>
+        <sql>
+            DROP TRIGGER IF EXISTS row_updated ON event;
+            CREATE TRIGGER row_updated BEFORE UPDATE ON event FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
+        </sql>
+
+        <!-- Add audit triggers to email_template -->
+        <sql>
+            DROP TRIGGER IF EXISTS row_created ON email_template;
+            CREATE TRIGGER row_created BEFORE INSERT ON email_template FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
+        </sql>
+        <sql>
+            DROP TRIGGER IF EXISTS row_updated ON email_template;
+            CREATE TRIGGER row_updated BEFORE UPDATE ON email_template FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
+        </sql>
+
+        <!-- Add audit triggers to activity -->
+        <sql>
+            DROP TRIGGER IF EXISTS row_created ON activity;
+            CREATE TRIGGER row_created BEFORE INSERT ON activity FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
+        </sql>
+        <sql>
+            DROP TRIGGER IF EXISTS row_updated ON activity;
+            CREATE TRIGGER row_updated BEFORE UPDATE ON activity FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
+        </sql>
+
+        <!-- Insert English and Français to language -->
+        <sql>
+          INSERT INTO language (locale_id, name) VALUES ('en_ca', 'English'),('fr_ca', 'Français')
+      </sql>
     </changeSet>
+
 </databaseChangeLog>
