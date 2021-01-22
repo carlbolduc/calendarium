@@ -5,7 +5,6 @@
 build
 
 .idea
-.vscode
 bin
 .settings
 .classpath
