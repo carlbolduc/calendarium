@@ -5,7 +5,7 @@ import io.dropwizard.auth.Authorizer;
 
 import java.util.Objects;
 
-public class NewHomeAuthorizer implements Authorizer<UserAccount> {
+public class CalendariumAuthorizer implements Authorizer<UserAccount> {
     @Override
     public boolean authorize(UserAccount userAccount, String role) {
         if (Objects.nonNull(userAccount)) {

@@ -5,7 +5,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
-import io.codebards.calendarium.auth.NewHomeAuthorizer;
+import io.codebards.calendarium.auth.CalendariumAuthorizer;
 import io.codebards.calendarium.auth.TokenAuthenticator;
 import io.codebards.calendarium.core.EmailManager;
 import io.codebards.calendarium.core.StripeService;
@@ -88,7 +88,7 @@ public class App extends Application<Config> {
 
         environment.jersey().register(new AuthDynamicFeature(new OAuthCredentialAuthFilter.Builder<UserAccount>()
                 .setAuthenticator(new TokenAuthenticator(dao))
-                .setAuthorizer(new NewHomeAuthorizer())
+                .setAuthorizer(new CalendariumAuthorizer())
                 .setPrefix("Bearer")
                 .buildAuthFilter()));
         environment.jersey().register(RolesAllowedDynamicFeature.class);

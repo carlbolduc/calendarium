@@ -17,13 +17,13 @@ public class EmailManager {
 
         // The HTML body for the email.
         final String htmlBody = "<h1>Hi, " + name + "</h1>"
-                + "<p>Click <a href=\"https://newhome.poutine.company/reset-password?digest="
+                + "<p>Click <a href=\"https://calendarium.ca/reset-password?digest="
                 + passwordResetDigest
                 + "\">here</a> to reset your password</p>.";
 
         // The email body for recipients with non-HTML email clients.
         final String textBody = "Hi, " + name + "\n"
-                + "Reach https://newhome.poutine.company/reset-password?digest="
+                + "Reach https://calendarium.ca/reset-password?digest="
                 + passwordResetDigest
                 + " to reset your password.";
 
