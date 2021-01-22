@@ -44,37 +44,37 @@ export default function SignUp(props) {
     <Redirect to={{pathname: "/"}}/>
   ) : (
     <div className="p-5">
-      <h1>Create an account</h1>
+      <h1>{props.translate("Create an account")}</h1>
       <form onSubmit={handleSubmit} id="form-sign-up">
         <Input
-          label="Name"
+          label={props.translate("Name")}
           type="text"
           id="input-name"
           required={true}
-          placeholder="Enter your first name and last name."
+          placeholder={props.translate("Enter your first name and last name.")}
           value={name}
           handleChange={(e) => setName(e.target.value)}
         />
         <Input
-          label="Email"
+          label={props.translate("Email")}
           type="email"
           id="input-email"
           required={true}
-          placeholder="Enter your email address."
+          placeholder={props.translate("Enter your email address.")}
           value={email}
           handleChange={(e) => setEmail(e.target.value)}
         />
         <Input
-          label="Password"
+          label={props.translate("Password")}
           type="password"
           id="input-password"
           required={true}
-          placeholder="Choose a password."
+          placeholder={props.translate("Choose a password.")}
           value={password}
           handleChange={(e) => setPassword(e.target.value)}
         />
-        <p className="small">Already have an account? Sign in <Link to="/sign-in">here</Link>.</p>
-        <Button label="Sign Up" type="submit" working={requesting} id="button-sign-up"/>
+        <p className="small">{props.translate("Already have an account? Sign in")} <Link to="/sign-in">{props.translate("here")}</Link>.</p>
+        <Button label={props.translate("Sign Up")} type="submit" working={requesting} id="button-sign-up"/>
       </form>
     </div>
   );

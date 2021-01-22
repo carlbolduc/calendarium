@@ -56,4 +56,11 @@ public interface Dao {
     @SqlQuery("SELECT en_ca, fr_ca FROM localisation")
     @RegisterBeanMapper(Localisation.class)
     List<Localisation> findAllLocalisations();
+
+    @SqlQuery("SELECT * FROM localisation WHERE en_ca = :enCa")
+    @RegisterBeanMapper(Localisation.class)
+    Optional<Localisation> findLocalisationByEnCa(@Bind("enCa") String enCa);
+
+    @SqlUpdate("INSERT INTO localisation (en_ca) VALUES (:enCa)")
+    void insertLocalisation(@Bind("enCa") String enCa);
 }

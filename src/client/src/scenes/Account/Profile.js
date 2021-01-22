@@ -56,52 +56,51 @@ export default function Profile(props) {
   }
 
   const memberSince = props.account ?(
-    <p className="small">Member since {formatDateInternationalWithTime(props.account.createdAt)}</p>
+    <p className="small">{props.translate("Member since")} {formatDateInternationalWithTime(props.account.createdAt)}</p>
   ) : null;
-
 
   return props.authenticated ? (
     <div className="p-5">
-      <h1>Profile</h1>
+      <h1>{props.translate("Profile")}</h1>
       <form onSubmit={handleSubmit} id="form-sign-up">
         <Input
-          label="Name"
+          label={props.translate("Name")}
           type="text"
           id="input-name"
           required={true}
-          placeholder="Enter your first name and last name."
+          placeholder={props.translate("Enter your first name and last name.")}
           value={name}
           handleChange={(e) => setName(e.target.value)}
         />
         <Input
-          label="Email"
+          label={props.translate("Email")}
           type="email"
           id="input-email"
           required={true}
-          placeholder="Enter your email address."
+          placeholder={props.translate("Enter your email address.")}
           value={email}
           handleChange={(e) => setEmail(e.target.value)}
         />
         <Input
-          label="Current Password"
+          label={props.translate("Current Password")}
           type="password"
           id="input-current-password"
           required={true}
-          placeholder="Enter your current password."
+          placeholder={props.translate("Enter your current password.")}
           value={currentPassword}
           handleChange={(e) => setCurrentPassword(e.target.value)}
         />
         <Input
-          label="New Password"
+          label={props.translate("New Password")}
           type="password"
           id="input-new-password"
           required={true}
-          placeholder="Choose a new password."
+          placeholder={props.translate("Choose a new password.")}
           value={newPassword}
           handleChange={(e) => setNewPassword(e.target.value)}
         />
         {memberSince}
-        <Button label="Save" type="submit" working={requesting} id="button-save" />
+        <Button label={props.translate("Save")} type="submit" working={requesting} id="button-save" />
       </form>
     </div>
   ) : (

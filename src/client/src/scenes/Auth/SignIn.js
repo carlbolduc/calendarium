@@ -49,26 +49,27 @@ export default function SignIn(props) {
       <form onSubmit={handleSubmit} id="form-sign-in">
         {warning}
         <Input
-          label="Email"
+          label={props.translate("Email")}
           type="email"
           id="input-email"
           required={true}
-          placeholder="Enter your email address."
+          placeholder={props.translate("Enter your email address.")}
           value={email}
           handleChange={(e) => setEmail(e.target.value)}
         />
         <Input
-          label="Password"
+          label={props.translate("Password")}
           type="password"
           id="input-password"
           required={true}
-          placeholder="Enter your password."
+          placeholder={props.translate("Enter your password.")}
           value={password}
           handleChange={(e) => setPassword(e.target.value)}
         />
-        <p className="small">Need an account? Sign up <Link to="/sign-up">here</Link>. | Forgot your password? Request a
-          reset <Link to="/forgot-password">here</Link>.</p>
-        <Button label="Sign In" type="submit" id="button-sign-in"/>
+        <p className="small">
+          {props.translate("Need an account? Sign up")} <Link to="/sign-up">{props.translate("here")}</Link>. |&nbsp;
+          {props.translate("Forgot your password? Request a reset")} <Link to="/forgot-password">{props.translate("here")}</Link>.</p>
+        <Button label={props.translate("Sign In")} type="submit" id="button-sign-in"/>
       </form>
     </div>
   );

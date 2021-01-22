@@ -2,7 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/js/bootstrap.bundle.js';
 
 export default function Language() {
-  // TODO: get selected language from app state (or user preferences)
+  // TODO: get selected language from app state (or account preferences)
   const selectedLanguage = 'English';
 
   // TODO: get available languages from the table language

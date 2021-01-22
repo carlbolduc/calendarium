@@ -36,27 +36,27 @@ export default function ForgotPassword(props) {
 
   const warning = unknownEmail ? (
     <div className="alert alert-warning">
-      Sorry, we didn’t recognize your email address. Want to try again?
+      {props.translate("Sorry, we didn’t recognize your email address. Want to try again?")}
     </div>
   ) : null;
 
   const main = resetRequested ? (
-      <p>You will receive password reset instructions by email shortly.</p>
+      <p>{props.translate("You will receive password reset instructions by email shortly.")}</p>
     ) : (
       <>
-        <h1>Forgot your password?</h1>
+        <h1>{props.translate("Forgot your password?")}</h1>
         <form onSubmit={handleSubmit} id="form-forgot-password">
           {warning}
           <Input
-            label="Enter your email address below and we’ll send you password reset instructions."
+            label={props.translate("Enter your email address below and we’ll send you password reset instructions.")}
             type="email"
             id="input-email"
             required={true}
-            placeholder="Enter your email address."
+            placeholder={props.translate("Enter your email address.")}
             value={email}
             handleChange={(e) => setEmail(e.target.value)}
           />
-          <Button label="Email me reset instructions" type="submit" working={requesting} id="button-forgot-password" />
+          <Button label={props.translate("Email me reset instructions")} type="submit" working={requesting} id="button-forgot-password" />
         </form>
       </>
     )

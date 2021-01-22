@@ -9,7 +9,7 @@ export function useLoc(account) {
       headers: {
         'Content-Type': 'application/json'
       },
-      url: `${process.env.REACT_APP_API}/loc`, //TODO: query the api to get en_ca (the default UI language) + the user language if different than en_ca
+      url: `${process.env.REACT_APP_API}/loc`,
     }).then(res => {
       setLoc(res.data);
     })
@@ -18,13 +18,19 @@ export function useLoc(account) {
   function translate(label) {
     let locTranslated = "";
     // if loc is ready and the label to translate is not empty, translate it
-    if (loc.length !== 0 && ![null, undefined, 0, ""].includes(label)) {
+    if (loc !== undefined && ![null, undefined, 0, ""].includes(label)) {
       // if user language is en_ca, return the label as is
       if (account.languageId === 1) {
         locTranslated = label;
-        // TODO: only when in DEV, if label doesn't exist in loc, insert it
+
+        // TODO: do this only when in DEV if label doesn't exist in loc, insert it
+        const locToTranslate = loc.find(l => l.enCa === label);
+        if (locToTranslate === undefined) {
+          axios.post(`${process.env.REACT_APP_API}/loc`, label); //TODO: bug - this sometimes records the label twice, even though the api checks if it's already there
+        }
+
       }
-      // if user language is not en_ca,try to translate it
+      // if user language is not en_ca, try to translate it
       else {
         // search label in loc
         const locToTranslate = loc.find(l => l.enCa === label);
