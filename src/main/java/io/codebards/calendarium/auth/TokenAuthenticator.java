@@ -1,6 +1,6 @@
 package io.codebards.calendarium.auth;
 
-import io.codebards.calendarium.core.UserAccount;
+import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.core.Utils;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Authenticator;
@@ -8,7 +8,7 @@ import io.dropwizard.auth.Authenticator;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
-public class TokenAuthenticator implements Authenticator<String, UserAccount> {
+public class TokenAuthenticator implements Authenticator<String, Account> {
     private final Dao dao;
 
     public TokenAuthenticator(Dao dao) {
@@ -16,15 +16,15 @@ public class TokenAuthenticator implements Authenticator<String, UserAccount> {
     }
 
     @Override
-    public Optional<UserAccount> authenticate(String token) {
+    public Optional<Account> authenticate(String token) {
         if (token.length() > 17) {
             String selector = token.substring(0, 16);
             String verifier = token.substring(16);
-            Optional<UserAccount> oUserAccount = dao.findUserAccount(selector);
-            if (oUserAccount.isPresent()) {
+            Optional<Account> oAccount = dao.findAccount(selector);
+            if (oAccount.isPresent()) {
                 try {
-                    if (Utils.getHash(verifier).equals(oUserAccount.get().getTokenValidator())) {
-                        return oUserAccount;
+                    if (Utils.getHash(verifier).equals(oAccount.get().getTokenValidator())) {
+                        return oAccount;
                     }
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();

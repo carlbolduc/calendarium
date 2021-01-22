@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
 import { useLoc } from '../../services/Loc';
 import Header from '../../components/Header/Header';
@@ -13,8 +13,8 @@ import Profile from '../Account/Profile';
 
 export default function App() {
   const [authenticated, setAuthenticated] = useState(localStorage.getItem('token') !== null);
-  const [userAccount, setUserAccount] = useState(false);
-  const { getLocData, translate } = useLoc();
+  const [account, setAccount] = useState({languageId: 1});
+  const { getLocData, translate } = useLoc(account);
   // const api = Api(signOut);
 
   useEffect(() => {
@@ -42,9 +42,9 @@ export default function App() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        url: `${process.env.REACT_APP_API}/user-accounts`,
+        url: `${process.env.REACT_APP_API}/accounts`,
       }).then(res => {
-        setUserAccount(res.data);
+        setAccount(res.data);
       })
     }
   }
@@ -54,6 +54,7 @@ export default function App() {
       <Router>
         <Header
           authenticated={authenticated}
+          translate={translate}
           signOut={signOut}
         />
         <Switch>
@@ -61,28 +62,34 @@ export default function App() {
             <SignIn
               signIn={signIn}
               authenticated={authenticated}
+              translate={translate}
             />
           </Route>
           <Route path="/sign-up">
             <SignUp
               signIn={signIn}
               authenticated={authenticated}
+              translate={translate}
             />
           </Route>
           <Route path="/forgot-password">
             <ForgotPassword
               authenticated={authenticated}
+              translate={translate}
             />
           </Route>
           <Route path="/profile">
             <Profile
-              userAccount={userAccount}
-              setUserAccount={setUserAccount}
+              account={account}
+              setAccount={setAccount}
               authenticated={authenticated}
+              translate={translate}
             />
           </Route>
           <Route path="/">
-            <Home/>
+            <Home
+              translate={translate}
+            />
           </Route>
         </Switch>
       </Router>

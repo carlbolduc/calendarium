@@ -9,13 +9,13 @@ import io.codebards.calendarium.auth.CalendariumAuthorizer;
 import io.codebards.calendarium.auth.TokenAuthenticator;
 import io.codebards.calendarium.core.EmailManager;
 import io.codebards.calendarium.core.StripeService;
-import io.codebards.calendarium.core.UserAccount;
+import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.db.Dao;
 import io.codebards.calendarium.resources.AuthResource;
 import io.codebards.calendarium.resources.BotResource;
 import io.codebards.calendarium.resources.LocalisationsResource;
 import io.codebards.calendarium.resources.OpsResource;
-import io.codebards.calendarium.resources.UserAccountsResource;
+import io.codebards.calendarium.resources.AccountsResource;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import io.dropwizard.Application;
@@ -79,25 +79,25 @@ public class App extends Application<Config> {
         final OpsResource opsResource = new OpsResource(dao);
         final BotResource botResource = new BotResource(dao);
         final AuthResource authResource = new AuthResource(dao, argon2, emailManager);
-        final UserAccountsResource userAccountsResource = new UserAccountsResource(dao, argon2, stripeService);
+        final AccountsResource accountsResource = new AccountsResource(dao, argon2, stripeService);
         final LocalisationsResource localisationsResource = new LocalisationsResource(dao);
 
         if (config.getThirdPartyFactory().getEnv().equals("development")) {
             setupCors(environment);
         }
 
-        environment.jersey().register(new AuthDynamicFeature(new OAuthCredentialAuthFilter.Builder<UserAccount>()
+        environment.jersey().register(new AuthDynamicFeature(new OAuthCredentialAuthFilter.Builder<Account>()
                 .setAuthenticator(new TokenAuthenticator(dao))
                 .setAuthorizer(new CalendariumAuthorizer())
                 .setPrefix("Bearer")
                 .buildAuthFilter()));
         environment.jersey().register(RolesAllowedDynamicFeature.class);
         //If you want to use @Auth to inject a custom Principal type into your resource
-        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(UserAccount.class));
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(Account.class));
         environment.jersey().register(opsResource);
         environment.jersey().register(botResource);
         environment.jersey().register(authResource);
-        environment.jersey().register(userAccountsResource);
+        environment.jersey().register(accountsResource);
         environment.jersey().register(localisationsResource);
     }
 

@@ -2,9 +2,9 @@ package io.codebards.calendarium.resources;
 
 import io.codebards.calendarium.api.SignUp;
 import io.codebards.calendarium.api.PasswordReset;
-import io.codebards.calendarium.api.UserAccountToken;
+import io.codebards.calendarium.api.AccountToken;
 import io.codebards.calendarium.core.EmailManager;
-import io.codebards.calendarium.core.UserAccount;
+import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.core.Utils;
 import io.codebards.calendarium.db.Dao;
 import de.mkammerer.argon2.Argon2;
@@ -37,16 +37,16 @@ public class AuthResource {
     @Path("/sign-up")
     public Response signUp(SignUp signUp) {
         Response response;
-        Optional<UserAccount> oUserAccount = dao.findUserAccountByEmail(signUp.getEmail());
-        if (oUserAccount.isPresent()) {
+        Optional<Account> oAccount = dao.findAccountByEmail(signUp.getEmail());
+        if (oAccount.isPresent()) {
             response = Response.status(Response.Status.CONFLICT).build();
         } else {
             String passwordDigest = argon2.hash(2, 65536, 1, signUp.getPassword().toCharArray());
-            long userAccountId = dao.insertUserAccount(signUp.getEmail(), signUp.getName(), passwordDigest);
-            String token = createToken(userAccountId);
+            long accountId = dao.insertAccount(signUp.getEmail(), signUp.getName(), signUp.getLanguageId(), passwordDigest);
+            String token = createToken(accountId);
             if (token != null) {
-                UserAccountToken userAccountToken = new UserAccountToken(userAccountId, token);
-                response = Response.status(Response.Status.CREATED).entity(userAccountToken).build();
+                AccountToken accountToken = new AccountToken(accountId, token);
+                response = Response.status(Response.Status.CREATED).entity(accountToken).build();
             } else {
                 response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
@@ -63,13 +63,13 @@ public class AuthResource {
             String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
             final String[] loginDetails = credentials.split(":", 2);
             final char[] password = loginDetails[1].toCharArray();
-            Optional<UserAccount> oUserAccount = dao.findUserAccountByEmail(loginDetails[0]);
-            if (oUserAccount.isPresent()) {
-                if (oUserAccount.get().getEmail().equalsIgnoreCase(loginDetails[0]) && argon2.verify(oUserAccount.get().getPasswordDigest(), password)) {
-                    String token = createToken(oUserAccount.get().getUserAccountId());
+            Optional<Account> oAccount = dao.findAccountByEmail(loginDetails[0]);
+            if (oAccount.isPresent()) {
+                if (oAccount.get().getEmail().equalsIgnoreCase(loginDetails[0]) && argon2.verify(oAccount.get().getPasswordDigest(), password)) {
+                    String token = createToken(oAccount.get().getAccountId());
                     if (token != null) {
-                        UserAccountToken userAccountToken = new UserAccountToken(oUserAccount.get().getUserAccountId(), token);
-                        response = Response.status(Response.Status.OK).entity(userAccountToken).build();
+                        AccountToken accountToken = new AccountToken(oAccount.get().getAccountId(), token);
+                        response = Response.status(Response.Status.OK).entity(accountToken).build();
                     } else {
                         response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
                     }
@@ -81,14 +81,14 @@ public class AuthResource {
 
     @POST
     @Path("/password-resets")
-    public Response createPasswordReset(UserAccount userAccount) {
+    public Response createPasswordReset(Account account) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
-        Optional<UserAccount> oUserAccount = dao.findUserAccountByEmail(userAccount.getEmail());
-        if (oUserAccount.isPresent()) {
+        Optional<Account> oAccount = dao.findAccountByEmail(account.getEmail());
+        if (oAccount.isPresent()) {
             try {
                 String passwordResetDigest = Utils.createDigest();
-                dao.updatePasswordResetDigest(oUserAccount.get().getUserAccountId(), passwordResetDigest, Instant.now());
-                emailManager.sendResetPasswordEmail(oUserAccount.get().getEmail(), oUserAccount.get().getName(), passwordResetDigest);
+                dao.updatePasswordResetDigest(oAccount.get().getAccountId(), passwordResetDigest, Instant.now());
+                emailManager.sendResetPasswordEmail(oAccount.get().getEmail(), oAccount.get().getName(), passwordResetDigest);
                 response = Response.status(Response.Status.CREATED).build();
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
@@ -102,16 +102,16 @@ public class AuthResource {
     @Path("/password-resets/{digest}")
     public Response resetPassword(PasswordReset passwordReset) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
-        Optional<UserAccount> oUserAccount = dao.findUserAccountByEmail(passwordReset.getEmail());
-        if (oUserAccount.isPresent()
-                && oUserAccount.get().getPasswordResetDigest().equals(passwordReset.getDigest())
-                && Duration.between(oUserAccount.get().getPasswordResetRequestedAt(), Instant.now()).getSeconds() < 86400) {
+        Optional<Account> oAccount = dao.findAccountByEmail(passwordReset.getEmail());
+        if (oAccount.isPresent()
+                && oAccount.get().getPasswordResetDigest().equals(passwordReset.getDigest())
+                && Duration.between(oAccount.get().getPasswordResetRequestedAt(), Instant.now()).getSeconds() < 86400) {
             String passwordDigest = argon2.hash(2, 65536, 1, passwordReset.getPassword().toCharArray());
-            dao.updatePasswordDigest(oUserAccount.get().getUserAccountId(), passwordDigest);
-            String token = createToken(oUserAccount.get().getUserAccountId());
+            dao.updatePasswordDigest(oAccount.get().getAccountId(), passwordDigest);
+            String token = createToken(oAccount.get().getAccountId());
             if (token != null) {
-                UserAccountToken userAccountToken = new UserAccountToken(oUserAccount.get().getUserAccountId(), token);
-                response = Response.status(Response.Status.OK).entity(userAccountToken).build();
+                AccountToken accountToken = new AccountToken(oAccount.get().getAccountId(), token);
+                response = Response.status(Response.Status.OK).entity(accountToken).build();
             } else {
                 response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
@@ -120,14 +120,14 @@ public class AuthResource {
         return response;
     }
 
-    private String createToken(long userAccountId) {
+    private String createToken(long accountId) {
         String token = null;
         try {
             token = Utils.getToken();
             String selector = token.substring(0, 16);
             String verifier = token.substring(16);
             String validator = Utils.getHash(verifier);
-            dao.insertUserAccountToken(selector, validator, Instant.now(), userAccountId);
+            dao.insertAccountToken(selector, validator, Instant.now(), accountId);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

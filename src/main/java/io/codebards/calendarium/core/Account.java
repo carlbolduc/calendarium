@@ -6,22 +6,23 @@ import org.jdbi.v3.core.mapper.reflect.ColumnName;
 import java.security.Principal;
 import java.time.Instant;
 
-public class UserAccount implements Principal {
-    private long userAccountId;
+public class Account implements Principal {
+    private long accountId;
     private String email;
     private String name;
+    private Long languageId;
     private String passwordDigest;
     private String passwordResetDigest;
     private Instant passwordResetRequestedAt;
     private Instant createdAt;
     private String tokenValidator;
 
-    public long getUserAccountId() {
-        return userAccountId;
+    public long getAccountId() {
+        return accountId;
     }
 
-    public void setUserAccountId(long userAccountId) {
-        this.userAccountId = userAccountId;
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
     }
 
     public String getEmail() {
@@ -38,6 +39,14 @@ public class UserAccount implements Principal {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getLanguageId() {
+        return languageId;
+    }
+
+    public void setLanguageId(Long languageId) {
+        this.languageId = languageId;
     }
 
     @JsonIgnore

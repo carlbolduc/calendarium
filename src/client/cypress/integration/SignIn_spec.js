@@ -4,7 +4,7 @@ describe('Sign In', () => {
   });
 
   it('contains a sign in header', () => {
-    cy.contains('Sign In');
+    cy.contains('Sign in');
   });
 
   it('contains an email field', () => {

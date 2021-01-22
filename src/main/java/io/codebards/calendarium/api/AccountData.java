@@ -1,8 +1,9 @@
 package io.codebards.calendarium.api;
 
-public class UserAccountData {
+public class AccountData {
     private String email;
     private String name;
+    private Long languageId;
     private String password;
 
     public String getEmail() {
@@ -19,6 +20,14 @@ public class UserAccountData {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getLanguageId() {
+        return languageId;
+    }
+
+    public void setLanguageId(Long languageId) {
+        this.languageId = languageId;
     }
 
     public String getPassword() {

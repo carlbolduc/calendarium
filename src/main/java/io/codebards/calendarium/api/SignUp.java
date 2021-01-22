@@ -3,6 +3,7 @@ package io.codebards.calendarium.api;
 public class SignUp {
     private String name;
     private String email;
+    private Long languageId;
     private String password;
 
     public String getName() {
@@ -19,6 +20,14 @@ public class SignUp {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Long getLanguageId() {
+        return languageId;
+    }
+
+    public void setLanguageId(Long languageId) {
+        this.languageId = languageId;
     }
 
     public String getPassword() {

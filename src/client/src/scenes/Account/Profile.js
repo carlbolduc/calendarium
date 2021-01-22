@@ -5,8 +5,8 @@ import Input from '../../components/Form/Input/Input';
 import Button from '../../components/Form/Button/Button';
 
 export default function Profile(props) {
-  const [name, setName] = useState(props.userAccount ? props.userAccount.name : '');
-  const [email, setEmail] = useState(props.userAccount ? props.userAccount.email : '');
+  const [name, setName] = useState(props.account ? props.account.name : '');
+  const [email, setEmail] = useState(props.account ? props.account.email : '');
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [requesting, setRequesting] = useState(false);
@@ -22,7 +22,7 @@ export default function Profile(props) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        url: `${process.env.REACT_APP_API}/user-accounts/${props.userAccount.userAccountId}`,
+        url: `${process.env.REACT_APP_API}/accounts/${props.account.accountId}`,
         data: {
           "name": name,
           "email": email,
@@ -32,7 +32,7 @@ export default function Profile(props) {
         .then(res => {
           if (res.status === 200) {
             setRequesting(false);
-            props.setUserAccount(res.data);
+            props.setAccount(res.data);
           }
         })
         .catch(err => {
@@ -55,8 +55,8 @@ export default function Profile(props) {
     return `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(-2)}-${("0" + date.getDate()).slice(-2)} ${("0" + date.getHours()).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}`;
   }
 
-  const memberSince = props.userAccount ?(
-    <p className="small">Member since {formatDateInternationalWithTime(props.userAccount.createdAt)}</p>
+  const memberSince = props.account ?(
+    <p className="small">Member since {formatDateInternationalWithTime(props.account.createdAt)}</p>
   ) : null;
 
 

@@ -45,7 +45,7 @@ export default function SignIn(props) {
     <Redirect to={{pathname: "/"}}/>
   ) : (
     <div className="p-5">
-      <h1>Sign In</h1>
+      <h1>{props.translate("Sign in")}</h1>
       <form onSubmit={handleSubmit} id="form-sign-in">
         {warning}
         <Input

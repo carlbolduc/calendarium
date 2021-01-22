@@ -1,6 +1,6 @@
 package io.codebards.calendarium.db;
 
-import io.codebards.calendarium.core.UserAccount;
+import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.api.Localisation;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
@@ -17,43 +17,43 @@ public interface Dao {
     @SqlQuery("SELECT 'bidu'")
     String healthCheck();
 
-    // UserAccount
+    // Account
 
-    @SqlUpdate("INSERT INTO user_account (email, name, password_digest) VALUES (:email, :name, :passwordDigest)")
+    @SqlUpdate("INSERT INTO account (email, name, language_id, password_digest) VALUES (:email, :name, :languageId, :passwordDigest)")
     @GetGeneratedKeys
-    long insertUserAccount(@Bind("email") String email, @Bind("name") String name, @Bind("passwordDigest") String passwordDigest);
+    long insertAccount(@Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId, @Bind("passwordDigest") String passwordDigest);
 
-    @SqlQuery("SELECT ua.user_account_id, ua.email, ua.name, uat.validator\n" +
-            "FROM user_account ua\n" +
-            "         INNER JOIN user_account_token uat ON ua.user_account_id = uat.user_account_id\n" +
-            "WHERE uat.selector = :selector")
-    @RegisterBeanMapper(UserAccount.class)
-    Optional<UserAccount> findUserAccount(@Bind("selector") String selector);
+    @SqlQuery("SELECT a.account_id, a.email, a.name, a.language_id, at.validator\n" +
+            "FROM account a\n" +
+            "         INNER JOIN account_token at ON a.account_id = at.account_id\n" +
+            "WHERE at.selector = :selector")
+    @RegisterBeanMapper(Account.class)
+    Optional<Account> findAccount(@Bind("selector") String selector);
 
-    @SqlQuery("SELECT user_account_id, email, name, password_digest, password_reset_digest, password_reset_requested_at FROM user_account WHERE email = :email")
-    @RegisterBeanMapper(UserAccount.class)
-    Optional<UserAccount> findUserAccountByEmail(@Bind("email") String email);
+    @SqlQuery("SELECT account_id, email, name, language_id, password_digest, password_reset_digest, password_reset_requested_at FROM account WHERE email = :email")
+    @RegisterBeanMapper(Account.class)
+    Optional<Account> findAccountByEmail(@Bind("email") String email);
 
-    @SqlQuery("SELECT user_account_id, email, name, created_at FROM user_account WHERE user_account_id = :userAccountId")
-    @RegisterBeanMapper(UserAccount.class)
-    Optional<UserAccount> findUserAccountById(@Bind("userAccountId") long userAccountId);
+    @SqlQuery("SELECT account_id, email, name, language_id, created_at FROM account WHERE account_id = :accountId")
+    @RegisterBeanMapper(Account.class)
+    Optional<Account> findAccountById(@Bind("accountId") long accountId);
 
-    @SqlUpdate("UPDATE user_account SET password_reset_digest = :passwordResetDigest, password_reset_requested_at = :now WHERE user_account_id = :userAccountId")
-    void updatePasswordResetDigest(@Bind("userAccountId") long userAccountId, @Bind("passwordResetDigest") String passwordResetDigest, @Bind("now") Instant now);
+    @SqlUpdate("UPDATE account SET password_reset_digest = :passwordResetDigest, password_reset_requested_at = :now WHERE account_id = :accountId")
+    void updatePasswordResetDigest(@Bind("accountId") long accountId, @Bind("passwordResetDigest") String passwordResetDigest, @Bind("now") Instant now);
 
-    @SqlUpdate("UPDATE user_account SET password_digest = :passwordDigest WHERE user_account_id = :userAccountId")
-    void updatePasswordDigest(@Bind("userAccountId") long userAccountId, @Bind("passwordDigest") String passwordDigest);
+    @SqlUpdate("UPDATE account SET password_digest = :passwordDigest WHERE account_id = :accountId")
+    void updatePasswordDigest(@Bind("accountId") long accountId, @Bind("passwordDigest") String passwordDigest);
 
-    @SqlUpdate("UPDATE user_account SET email = :email, name = :name, password_digest = :passwordDigest WHERE user_account_id = :userAccountId")
-    void updateUserAccount(@Bind("userAccountId") long userAccountId, @Bind("email") String email, @Bind("name") String name, @Bind("passwordDigest") String passwordDigest);
+    @SqlUpdate("UPDATE account SET email = :email, name = :name, language_id = :languageId, password_digest = :passwordDigest WHERE account_id = :accountId")
+    void updateAccount(@Bind("accountId") long accountId, @Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId, @Bind("passwordDigest") String passwordDigest);
 
-    @SqlUpdate("INSERT INTO user_account_token (selector, validator, created_at, user_account_id)\n" +
-            "VALUES (:selector, :validator, :now, :userAccountId)")
-    void insertUserAccountToken(@Bind("selector") String selector, @Bind("validator") String validator, @Bind("now") Instant now, @Bind("userAccountId") long userAccountId);
+    @SqlUpdate("INSERT INTO account_token (selector, validator, created_at, account_id)\n" +
+            "VALUES (:selector, :validator, :now, :accountId)")
+    void insertAccountToken(@Bind("selector") String selector, @Bind("validator") String validator, @Bind("now") Instant now, @Bind("accountId") long accountId);
 
     // Localisation
 
-    @SqlQuery("SELECT en-ca, fr-ca FROM localisation")
+    @SqlQuery("SELECT en_ca, fr_ca FROM localisation")
     @RegisterBeanMapper(Localisation.class)
     List<Localisation> findAllLocalisations();
 }
