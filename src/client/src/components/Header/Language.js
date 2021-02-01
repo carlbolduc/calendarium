@@ -1,16 +1,13 @@
 import React from 'react';
 import 'bootstrap/dist/js/bootstrap.bundle.js';
 
-export default function Language() {
+export default function Language(props) {
   // TODO: get selected language from app state (or account preferences)
   const selectedLanguage = 'English';
 
-  // TODO: get available languages from the table language
-  const availableLanguages = ["English", "Français"];
-
-  const languageOptions = availableLanguages.map((l, index) => {
+  const languageOptions = props.languages.map(l => {
     return (
-      <li key={index}><a className="dropdown-item" href="#">{l}</a></li>
+      <li key={l.languageId}><a className="dropdown-item" href="#">{l.name}</a></li>
     );
   });
 

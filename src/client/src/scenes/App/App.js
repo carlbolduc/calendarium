@@ -14,12 +14,14 @@ import Profile from '../Account/Profile';
 export default function App() {
   const [authenticated, setAuthenticated] = useState(localStorage.getItem('token') !== null);
   const [account, setAccount] = useState({languageId: 1});
+  const [languages, setLanguages] = useState([]);
   const { getLocData, translate } = useLoc(account);
   // const api = Api(signOut);
 
   useEffect(() => {
      //TODO: bug - after signing in, the state doesn't contain the account, we need to reload the page for it to be in the state
     getLocData();
+    getLanguages();
   }, [])
 
   useEffect(() => {
@@ -39,6 +41,18 @@ export default function App() {
     setAuthenticated(false);
   }
 
+  function getLanguages() {
+    axios({
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      url: `${process.env.REACT_APP_API}/loc/languages`,
+    }).then(res => {
+      setLanguages(res.data);
+    })
+  }
+
   function getUser() {
     const token = localStorage.getItem("token");
     if (token !== null) {
@@ -51,7 +65,7 @@ export default function App() {
         url: `${process.env.REACT_APP_API}/accounts`,
       }).then(res => {
         setAccount(res.data);
-      })
+      });
     }
   }
 
@@ -59,6 +73,7 @@ export default function App() {
     <main className="App">
       <Router>
         <Header
+          languages={languages}
           authenticated={authenticated}
           translate={translate}
           signOut={signOut}

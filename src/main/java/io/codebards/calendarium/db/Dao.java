@@ -65,7 +65,7 @@ public interface Dao {
     @SqlUpdate("INSERT INTO localisation (en_ca) VALUES (:enCa) ON CONFLICT (en_ca) DO NOTHING;")
     void insertLocalisation(@Bind("enCa") String enCa);
 
-    @SqlQuery("SELECT * FROM languages")
+    @SqlQuery("SELECT * FROM language")
     @RegisterBeanMapper(Language.class)
     List<Language> findAllLanguages();
 }

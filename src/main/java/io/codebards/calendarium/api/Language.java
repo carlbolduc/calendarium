@@ -2,7 +2,7 @@ package io.codebards.calendarium.api;
 
 public class Language {
     private long languageId;
-    private long localeId;
+    private String localeId;
     private String name;
 
 	public long getLanguageId() {
@@ -13,11 +13,11 @@ public class Language {
 		this.languageId = languageId;
     }
 
-	public long getLocaleId() {
+	public String getLocaleId() {
 		return localeId;
     }
     
-	public void setLocaleId(long localeId) {
+	public void setLocaleId(String localeId) {
 		this.localeId = localeId;
 	}
 	

@@ -30,6 +30,7 @@ export default function Header(props) {
               translate={props.translate}
             />
             <Language
+              languages={props.languages}
               translate={props.translate}
             />
           </ul>
