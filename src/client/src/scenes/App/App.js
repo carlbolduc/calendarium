@@ -18,9 +18,15 @@ export default function App() {
   // const api = Api(signOut);
 
   useEffect(() => {
-    getUser(); //TODO: bug - after signing in, the state doesn't contain the account, we need to reload the page for it to be in the state
+     //TODO: bug - after signing in, the state doesn't contain the account, we need to reload the page for it to be in the state
     getLocData();
   }, [])
+
+  useEffect(() => {
+    if (authenticated) {
+      getUser();
+    }
+  }, [authenticated])
 
   function signIn(data) {
     localStorage.setItem('token', data.token);

@@ -61,6 +61,6 @@ public interface Dao {
     @RegisterBeanMapper(Localisation.class)
     Optional<Localisation> findLocalisationByEnCa(@Bind("enCa") String enCa);
 
-    @SqlUpdate("INSERT INTO localisation (en_ca) VALUES (:enCa)")
+    @SqlUpdate("INSERT INTO localisation (en_ca) VALUES (:enCa) ON CONFLICT (en_ca) DO NOTHING;")
     void insertLocalisation(@Bind("enCa") String enCa);
 }

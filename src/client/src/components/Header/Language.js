@@ -8,9 +8,9 @@ export default function Language() {
   // TODO: get available languages from the table language
   const availableLanguages = ["English", "Français"];
 
-  const languageOptions = availableLanguages.map(l => {
+  const languageOptions = availableLanguages.map((l, index) => {
     return (
-      <li><a className="dropdown-item" href="#">{l}</a></li>
+      <li key={index}><a className="dropdown-item" href="#">{l}</a></li>
     );
   });
 

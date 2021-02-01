@@ -18,7 +18,8 @@ export function useLoc(account) {
   function translate(label) {
     let locTranslated = "";
     // if loc is ready and the label to translate is not empty, translate it
-    if (loc !== undefined && ![null, undefined, 0, ""].includes(label)) {
+    if (loc.length > 0 && ![null, undefined, 0, ""].includes(label)) {
+
       // if user language is en_ca, return the label as is
       if (account.languageId === 1) {
         locTranslated = label;
@@ -26,7 +27,7 @@ export function useLoc(account) {
         // TODO: do this only when in DEV if label doesn't exist in loc, insert it
         const locToTranslate = loc.find(l => l.enCa === label);
         if (locToTranslate === undefined) {
-          axios.post(`${process.env.REACT_APP_API}/loc`, label); //TODO: bug - this sometimes records the label twice, even though the api checks if it's already there
+          axios.post(`${process.env.REACT_APP_API}/loc`, label);
         }
 
       }

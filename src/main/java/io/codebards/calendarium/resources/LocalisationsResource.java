@@ -25,9 +25,6 @@ public class LocalisationsResource {
 
     @POST
     public void addLoc(String enCa) {
-        Optional<Localisation> oLocalisation = dao.findLocalisationByEnCa(enCa);
-        if (!oLocalisation.isPresent()) {
-            dao.insertLocalisation(enCa);
-        }
+        dao.insertLocalisation(enCa);
     }
 }
