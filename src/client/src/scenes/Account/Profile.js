@@ -61,7 +61,7 @@ export default function Profile(props) {
 
   return props.authenticated ? (
     <div className="p-5">
-      <h1>{props.translate("Profile")}</h1>
+      <h1>{props.translate("My profile")}</h1>
       <form onSubmit={handleSubmit} id="form-sign-up">
         <Input
           label={props.translate("Name")}

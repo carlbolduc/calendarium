@@ -69,7 +69,7 @@ export default function SignIn(props) {
         <p className="small">
           {props.translate("Need an account? Sign up")} <Link to="/sign-up">{props.translate("here")}</Link>. |&nbsp;
           {props.translate("Forgot your password? Request a reset")} <Link to="/forgot-password">{props.translate("here")}</Link>.</p>
-        <Button label={props.translate("Sign In")} type="submit" id="button-sign-in"/>
+        <Button label={props.translate("Sign in")} type="submit" id="button-sign-in"/>
       </form>
     </div>
   );

@@ -74,7 +74,7 @@ export default function SignUp(props) {
           handleChange={(e) => setPassword(e.target.value)}
         />
         <p className="small">{props.translate("Already have an account? Sign in")} <Link to="/sign-in">{props.translate("here")}</Link>.</p>
-        <Button label={props.translate("Sign Up")} type="submit" working={requesting} id="button-sign-up"/>
+        <Button label={props.translate("Sign up")} type="submit" working={requesting} id="button-sign-up"/>
       </form>
     </div>
   );

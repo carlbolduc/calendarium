@@ -1,4 +1,4 @@
-describe('Sign In', () => {
+describe('Sign in', () => {
   it('displays the app sign in page', () => {
     cy.visit('sign-in');
   });
