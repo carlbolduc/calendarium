@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
 
 import io.codebards.calendarium.api.Localisation;
 import io.codebards.calendarium.db.Dao;
@@ -24,7 +25,8 @@ public class LocalisationsResource {
     }
 
     @POST
-    public void addLoc(String enCa) {
+    public Response addLoc(String enCa) {
         dao.insertLocalisation(enCa);
+        return Response.noContent().build();
     }
 }
