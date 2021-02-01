@@ -13,8 +13,11 @@ export default function Account(props) {
       </a>
       <ul className="dropdown-menu" aria-labelledby="dropdown-account">
         <li>{props.authenticated 
-          ? <Link className="dropdown-item" to="/profile">{props.translate("Profile")}</Link> 
+          ? <Link className="dropdown-item" to="/profile">{props.translate("My profile")}</Link> 
           : <Link className="dropdown-item" to="/sign-up">{props.translate("Sign up")}</Link>}</li>
+        {props.authenticated 
+          ? <li><Link className="dropdown-item" to="/subscription">{props.translate("My subscription")}</Link></li> 
+          : null}
         <li>{props.authenticated 
           ? <a className="dropdown-item" href="#" onClick={props.signOut}>{props.translate("Sign out")}</a> 
           : <Link className="dropdown-item" to="sign-in">{props.translate("Sign in")}</Link>}</li>

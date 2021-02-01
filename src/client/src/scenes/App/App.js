@@ -8,6 +8,7 @@ import SignIn from '../Auth/SignIn';
 import ForgotPassword from '../Auth/ForgotPassword';
 import Home from '../Home/Home';
 import Profile from '../Account/Profile';
+import Subscription from '../Account/Subscription';
 
 
 
@@ -86,6 +87,14 @@ export default function App() {
           </Route>
           <Route path="/profile">
             <Profile
+              account={account}
+              setAccount={setAccount}
+              authenticated={authenticated}
+              translate={translate}
+            />
+          </Route>
+          <Route path="/subscription">
+            <Subscription
               account={account}
               setAccount={setAccount}
               authenticated={authenticated}
