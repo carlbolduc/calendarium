@@ -380,4 +380,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="3" author="mag">
+        <!-- Add column calendar.public -->
+        <addColumn tableName="calendar">
+            <column name="public" type="boolean"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
