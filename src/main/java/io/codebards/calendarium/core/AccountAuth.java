@@ -6,7 +6,7 @@ import org.jdbi.v3.core.mapper.reflect.ColumnName;
 import java.security.Principal;
 import java.time.Instant;
 
-public class Account implements Principal {
+public class AccountAuth implements Principal {
     private long accountId;
     private String email;
     private String name;

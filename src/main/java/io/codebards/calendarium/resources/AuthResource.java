@@ -4,7 +4,7 @@ import io.codebards.calendarium.api.SignUp;
 import io.codebards.calendarium.api.PasswordReset;
 import io.codebards.calendarium.api.AccountToken;
 import io.codebards.calendarium.core.EmailManager;
-import io.codebards.calendarium.core.Account;
+import io.codebards.calendarium.core.AccountAuth;
 import io.codebards.calendarium.core.Utils;
 import io.codebards.calendarium.db.Dao;
 import de.mkammerer.argon2.Argon2;
@@ -37,7 +37,7 @@ public class AuthResource {
     @Path("/sign-up")
     public Response signUp(SignUp signUp) {
         Response response;
-        Optional<Account> oAccount = dao.findAccountByEmail(signUp.getEmail());
+        Optional<AccountAuth> oAccount = dao.findAccountByEmail(signUp.getEmail());
         if (oAccount.isPresent()) {
             response = Response.status(Response.Status.CONFLICT).build();
         } else {
@@ -63,7 +63,7 @@ public class AuthResource {
             String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
             final String[] loginDetails = credentials.split(":", 2);
             final char[] password = loginDetails[1].toCharArray();
-            Optional<Account> oAccount = dao.findAccountByEmail(loginDetails[0]);
+            Optional<AccountAuth> oAccount = dao.findAccountByEmail(loginDetails[0]);
             if (oAccount.isPresent()) {
                 if (oAccount.get().getEmail().equalsIgnoreCase(loginDetails[0]) && argon2.verify(oAccount.get().getPasswordDigest(), password)) {
                     String token = createToken(oAccount.get().getAccountId());
@@ -81,9 +81,9 @@ public class AuthResource {
 
     @POST
     @Path("/password-resets")
-    public Response createPasswordReset(Account account) {
+    public Response createPasswordReset(AccountAuth account) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
-        Optional<Account> oAccount = dao.findAccountByEmail(account.getEmail());
+        Optional<AccountAuth> oAccount = dao.findAccountByEmail(account.getEmail());
         if (oAccount.isPresent()) {
             try {
                 String passwordResetDigest = Utils.createDigest();
@@ -102,7 +102,7 @@ public class AuthResource {
     @Path("/password-resets/{digest}")
     public Response resetPassword(PasswordReset passwordReset) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
-        Optional<Account> oAccount = dao.findAccountByEmail(passwordReset.getEmail());
+        Optional<AccountAuth> oAccount = dao.findAccountByEmail(passwordReset.getEmail());
         if (oAccount.isPresent()
                 && oAccount.get().getPasswordResetDigest().equals(passwordReset.getDigest())
                 && Duration.between(oAccount.get().getPasswordResetRequestedAt(), Instant.now()).getSeconds() < 86400) {

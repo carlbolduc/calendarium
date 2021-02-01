@@ -1,8 +1,8 @@
 package io.codebards.calendarium.resources;
 
-import io.codebards.calendarium.api.AccountData;
+import io.codebards.calendarium.api.Account;
 import io.codebards.calendarium.core.StripeService;
-import io.codebards.calendarium.core.Account;
+import io.codebards.calendarium.core.AccountAuth;
 import io.codebards.calendarium.db.Dao;
 import de.mkammerer.argon2.Argon2;
 import io.dropwizard.auth.Auth;
@@ -29,9 +29,9 @@ public class AccountsResource {
     }
 
     @GET
-    public Response getAccount(@Auth Account auth) {
+    public Response getAccount(@Auth AccountAuth auth) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
-        Optional<Account> oAccount = dao.findAccountById(auth.getAccountId());
+        Optional<AccountAuth> oAccount = dao.findAccountById(auth.getAccountId());
         if (oAccount.isPresent()) {
             response = Response.status(Response.Status.OK).entity(oAccount.get()).build();
         }
@@ -40,11 +40,11 @@ public class AccountsResource {
 
     @PUT
     @Path("/{accountId}")
-    public Response putAccount(@Auth Account auth, AccountData data) {
+    public Response putAccount(@Auth AccountAuth auth, Account data) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
         String passwordDigest = argon2.hash(2, 65536, 1, data.getPassword().toCharArray());
         dao.updateAccount(auth.getAccountId(), data.getEmail(), data.getName(), data.getLanguageId(), passwordDigest);
-        Optional<Account> oAccount = dao.findAccountById(auth.getAccountId());
+        Optional<AccountAuth> oAccount = dao.findAccountById(auth.getAccountId());
         if (oAccount.isPresent()) {
             response = Response.status(Response.Status.OK).entity(oAccount.get()).build();
         }

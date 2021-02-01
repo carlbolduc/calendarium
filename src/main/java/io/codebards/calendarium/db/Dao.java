@@ -1,6 +1,7 @@
 package io.codebards.calendarium.db;
 
-import io.codebards.calendarium.core.Account;
+import io.codebards.calendarium.core.AccountAuth;
+import io.codebards.calendarium.api.Language;
 import io.codebards.calendarium.api.Localisation;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
@@ -27,16 +28,16 @@ public interface Dao {
             "FROM account a\n" +
             "         INNER JOIN account_token at ON a.account_id = at.account_id\n" +
             "WHERE at.selector = :selector")
-    @RegisterBeanMapper(Account.class)
-    Optional<Account> findAccount(@Bind("selector") String selector);
+    @RegisterBeanMapper(AccountAuth.class)
+    Optional<AccountAuth> findAccount(@Bind("selector") String selector);
 
     @SqlQuery("SELECT account_id, email, name, language_id, password_digest, password_reset_digest, password_reset_requested_at FROM account WHERE email = :email")
-    @RegisterBeanMapper(Account.class)
-    Optional<Account> findAccountByEmail(@Bind("email") String email);
+    @RegisterBeanMapper(AccountAuth.class)
+    Optional<AccountAuth> findAccountByEmail(@Bind("email") String email);
 
     @SqlQuery("SELECT account_id, email, name, language_id, created_at FROM account WHERE account_id = :accountId")
-    @RegisterBeanMapper(Account.class)
-    Optional<Account> findAccountById(@Bind("accountId") long accountId);
+    @RegisterBeanMapper(AccountAuth.class)
+    Optional<AccountAuth> findAccountById(@Bind("accountId") long accountId);
 
     @SqlUpdate("UPDATE account SET password_reset_digest = :passwordResetDigest, password_reset_requested_at = :now WHERE account_id = :accountId")
     void updatePasswordResetDigest(@Bind("accountId") long accountId, @Bind("passwordResetDigest") String passwordResetDigest, @Bind("now") Instant now);
@@ -63,4 +64,8 @@ public interface Dao {
 
     @SqlUpdate("INSERT INTO localisation (en_ca) VALUES (:enCa) ON CONFLICT (en_ca) DO NOTHING;")
     void insertLocalisation(@Bind("enCa") String enCa);
+
+    @SqlQuery("SELECT * FROM languages")
+    @RegisterBeanMapper(Language.class)
+    List<Language> findAllLanguages();
 }
