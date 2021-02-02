@@ -9,6 +9,9 @@ import ForgotPassword from '../Auth/ForgotPassword';
 import Home from '../Home/Home';
 import Profile from '../Account/Profile';
 import Subscription from '../Account/Subscription';
+import MyEvents from '../Events/MyEvents';
+import MyCalendars from '../Calendars/MyCalendars';
+import PublicCalendars from '../Calendars/PublicCalendars';
 
 
 
@@ -110,6 +113,30 @@ export default function App() {
           </Route>
           <Route path="/subscription">
             <Subscription
+              account={account}
+              setAccount={setAccount}
+              authenticated={authenticated}
+              translate={translate}
+            />
+          </Route>
+          <Route path="/my-events">
+            <MyEvents
+              account={account}
+              setAccount={setAccount}
+              authenticated={authenticated}
+              translate={translate}
+            />
+          </Route>
+          <Route path="/my-calendars">
+            <MyCalendars
+              account={account}
+              setAccount={setAccount}
+              authenticated={authenticated}
+              translate={translate}
+            />
+          </Route>
+          <Route path="/public-calendars">
+            <PublicCalendars
               account={account}
               setAccount={setAccount}
               authenticated={authenticated}
