@@ -13,14 +13,15 @@ export default function Header(props) {
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto mb-2 mb-lg-0">
+            {/* TODO: set className="nav-link active" when we are on that page */}
+            {props.authenticated
+              ? <li className="nav-item"><Link className="nav-link" to="/my-events">{props.translate("My events")}</Link></li>
+              : null}
+            {props.authenticated
+              ? <li className="nav-item"><Link className="nav-link" to="/my-calendars">{props.translate("My calendars")}</Link></li>
+              : null}
             <li className="nav-item">
-              <Link className="nav-link active" aria-current="page" to="/">{props.translate("Home")}</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/">{props.translate("Link")}</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/">{props.translate("Link")}</Link>
+              <Link className="nav-link" to="/public-calendars">{props.translate("Public calendars")}</Link>
             </li>
           </ul>
           <ul className="navbar-nav ml-auto mb-2 mb-lg-0">

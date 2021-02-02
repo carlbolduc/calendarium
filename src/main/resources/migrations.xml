@@ -34,6 +34,10 @@
             <column name="updated_at" type="timestamptz"/>
             <column name="updated_by" type="bigint"/>
         </createTable>
+        <!-- Add unique constraint on localisation.en_ca column -->
+        <sql>
+            ALTER TABLE localisation ADD UNIQUE (en_ca);
+        </sql>
 
         <!-- Create table account -->
         <createTable tableName="account">
@@ -122,6 +126,7 @@
             <column name="primary_color" type="clob"/>
             <column name="secondary_color" type="clob"/>
             <column name="start_week_on" type="clob"/>
+            <column name="public" type="boolean"/>
             <column name="event_approval_required" type="boolean"/>
             <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
             <column name="created_by" type="bigint"/>
@@ -367,16 +372,10 @@
             CREATE TRIGGER row_updated BEFORE UPDATE ON activity FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
         </sql>
 
-        <!-- Insert English and Français to language -->
+        <!-- Insert English and Français to language and a first row to Localisation -->
         <sql>
-          INSERT INTO language (locale_id, name) VALUES ('en_ca', 'English'),('fr_ca', 'Français')
-        </sql>
-    </changeSet>
-
-    <changeSet id="2" author="mag">
-        <!-- Add unique constraint on localisation.en_ca column -->
-        <sql>
-            ALTER TABLE localisation ADD UNIQUE (en_ca);
+          INSERT INTO language (locale_id, name) VALUES ('enCa', 'English'),('frCa', 'Français');
+          INSERT INTO localisation (en_ca, fr_ca) VALUES ('Account', 'Compte');
         </sql>
     </changeSet>
 
