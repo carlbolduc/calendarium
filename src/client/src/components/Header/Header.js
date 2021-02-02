@@ -31,7 +31,9 @@ export default function Header(props) {
             />
             <Language
               languages={props.languages}
+              languageId={props.languageId}
               translate={props.translate}
+              switchLanguage={props.switchLanguage}
             />
           </ul>
         </div>

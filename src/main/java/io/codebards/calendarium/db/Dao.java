@@ -45,8 +45,11 @@ public interface Dao {
     @SqlUpdate("UPDATE account SET password_digest = :passwordDigest WHERE account_id = :accountId")
     void updatePasswordDigest(@Bind("accountId") long accountId, @Bind("passwordDigest") String passwordDigest);
 
+    @SqlUpdate("UPDATE account SET email = :email, name = :name, language_id = :languageId WHERE account_id = :accountId")
+    void updateAccount(@Bind("accountId") long accountId, @Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId);
+
     @SqlUpdate("UPDATE account SET email = :email, name = :name, language_id = :languageId, password_digest = :passwordDigest WHERE account_id = :accountId")
-    void updateAccount(@Bind("accountId") long accountId, @Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId, @Bind("passwordDigest") String passwordDigest);
+    void updateAccountAndPassword(@Bind("accountId") long accountId, @Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId, @Bind("passwordDigest") String passwordDigest);
 
     @SqlUpdate("INSERT INTO account_token (selector, validator, created_at, account_id)\n" +
             "VALUES (:selector, :validator, :now, :accountId)")

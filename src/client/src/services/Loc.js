@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-export function useLoc(account) {
+export function useLoc(account, languages) {
   const [loc, setLoc] = useState([]);
   function getLocData() {
     axios({
@@ -16,12 +16,12 @@ export function useLoc(account) {
   }
 
   function translate(label) {
-    let locTranslated = "";
+    let locTranslated = '';
     // if loc is ready and the label to translate is not empty, translate it
-    if (loc.length > 0 && ![null, undefined, 0, ""].includes(label)) {
-
+    if (loc.length > 0 && languages.length > 0 && ![null, undefined, 0, ''].includes(label)) {
+      const defaultLanguage = languages.find(l => l.localeId === 'enCa');
       // if user language is en_ca, return the label as is
-      if (account.languageId === 1) {
+      if (defaultLanguage.languageId === account.languageId) {
         locTranslated = label;
 
         // TODO: do this only when in DEV if label doesn't exist in loc, insert it
@@ -33,6 +33,7 @@ export function useLoc(account) {
       }
       // if user language is not en_ca, try to translate it
       else {
+        const language = languages.find(l => l.languageId === account.languageId);
         // search label in loc
         const locToTranslate = loc.find(l => l.enCa === label);
         // if label doesn't exist in loc, return label as is
@@ -40,8 +41,7 @@ export function useLoc(account) {
           locTranslated = label;
           // if label exist, return its translation for the account language id
         } else {
-          //TODO: instead of hardcoded frCa, return the user language translation, using user last set language, which is saved when the user changes it from the dropdown
-          locTranslated = locToTranslate.frCa;
+          locTranslated = locToTranslate[language.localeId] !== null ? locToTranslate[language.localeId] : label;
         }
       }
     }

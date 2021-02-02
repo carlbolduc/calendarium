@@ -42,8 +42,13 @@ public class AccountsResource {
     @Path("/{accountId}")
     public Response putAccount(@Auth AccountAuth auth, Account data) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
-        String passwordDigest = argon2.hash(2, 65536, 1, data.getPassword().toCharArray());
-        dao.updateAccount(auth.getAccountId(), data.getEmail(), data.getName(), data.getLanguageId(), passwordDigest);
+        if (data.getPassword() != null) {
+            // TODO validate password standard
+            String passwordDigest = argon2.hash(2, 65536, 1, data.getPassword().toCharArray());
+            dao.updateAccountAndPassword(auth.getAccountId(), data.getEmail(), data.getName(), data.getLanguageId(), passwordDigest);
+        } else {
+            dao.updateAccount(auth.getAccountId(), data.getEmail(), data.getName(), data.getLanguageId());
+        }
         Optional<AccountAuth> oAccount = dao.findAccountById(auth.getAccountId());
         if (oAccount.isPresent()) {
             response = Response.status(Response.Status.OK).entity(oAccount.get()).build();

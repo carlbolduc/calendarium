@@ -16,7 +16,7 @@ export default function App() {
   const [authenticated, setAuthenticated] = useState(localStorage.getItem('token') !== null);
   const [account, setAccount] = useState({languageId: 1});
   const [languages, setLanguages] = useState([]);
-  const { getLocData, translate } = useLoc(account);
+  const { getLocData, translate } = useLoc(account, languages);
   // const api = Api(signOut);
 
   useEffect(() => {
@@ -70,14 +70,42 @@ export default function App() {
     }
   }
 
+  function updateAccount(data) {
+    const token = localStorage.getItem("token");
+    if (token !== null) {
+      axios({
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        url: `${process.env.REACT_APP_API}/accounts/${account.accountId}`,
+        data: data
+      }).then(res => {
+        setAccount(res.data);
+      });
+    }
+  }
+
+  function switchLanguage(languageId) {
+    const data = {
+      name: account.name,
+      email: account.email,
+      languageId: languageId
+    };
+    updateAccount(data);
+  }
+
   return (
     <main className="App">
       <Router>
         <Header
           languages={languages}
+          languageId={account.languageId}
           authenticated={authenticated}
           translate={translate}
           signOut={signOut}
+          switchLanguage={switchLanguage}
         />
         <Switch>
           <Route path="/sign-in">
