@@ -19,6 +19,7 @@ export default function App() {
   const [authenticated, setAuthenticated] = useState(localStorage.getItem('token') !== null);
   const [account, setAccount] = useState({languageId: 1});
   const [languages, setLanguages] = useState([]);
+  const [errors, setErrors] = useState([]);
   const { getLocData, translate } = useLoc(account, languages);
   // const api = Api(signOut);
 
@@ -86,6 +87,9 @@ export default function App() {
         data: data
       }).then(res => {
         setAccount(res.data);
+      }).catch(error => {
+        // Store error in an errors state targeting the page of the error
+        console.log(error);
       });
     }
   }

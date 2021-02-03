@@ -6,6 +6,7 @@ import io.codebards.calendarium.core.AccountAuth;
 import io.codebards.calendarium.db.Dao;
 import de.mkammerer.argon2.Argon2;
 import io.dropwizard.auth.Auth;
+import liquibase.pro.packaged.au;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -42,6 +43,29 @@ public class AccountsResource {
     @Path("/{accountId}")
     public Response putAccount(@Auth AccountAuth auth, Account data) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
+        // Check if email was changed
+        if (!data.getEmail().equals(auth.getEmail())) {
+            // Email was updated, validate that new email is available
+            Optional<AccountAuth> oAccount = dao.findAccountByEmail(data.getEmail());
+            if (oAccount.isPresent()) {
+                // New email is already used in the database
+                response = Response.status(Response.Status.CONFLICT).build();
+            } else {
+                Optional<AccountAuth> oUpdatedAccount = updateAccount(auth, data);
+                if (oUpdatedAccount.isPresent()) {
+                    response = Response.status(Response.Status.OK).entity(oUpdatedAccount.get()).build();
+                }
+            }
+        } else {
+            Optional<AccountAuth> oUpdatedAccount = updateAccount(auth, data);
+            if (oUpdatedAccount.isPresent()) {
+                response = Response.status(Response.Status.OK).entity(oUpdatedAccount.get()).build();
+            }
+        }
+        return response;
+    }
+
+    private Optional<AccountAuth> updateAccount(AccountAuth auth, Account data) {
         if (data.getPassword() != null) {
             // TODO validate password standard
             String passwordDigest = argon2.hash(2, 65536, 1, data.getPassword().toCharArray());
@@ -49,11 +73,7 @@ public class AccountsResource {
         } else {
             dao.updateAccount(auth.getAccountId(), data.getEmail(), data.getName(), data.getLanguageId());
         }
-        Optional<AccountAuth> oAccount = dao.findAccountById(auth.getAccountId());
-        if (oAccount.isPresent()) {
-            response = Response.status(Response.Status.OK).entity(oAccount.get()).build();
-        }
-        return response;
+        return dao.findAccountById(auth.getAccountId());
     }
 
 }
