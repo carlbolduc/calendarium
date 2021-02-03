@@ -19,12 +19,11 @@ export default function App() {
   const [authenticated, setAuthenticated] = useState(localStorage.getItem('token') !== null);
   const [account, setAccount] = useState({languageId: 1});
   const [languages, setLanguages] = useState([]);
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState([]); // TODO: investigate context for this state
   const { getLocData, translate } = useLoc(account, languages);
   // const api = Api(signOut);
 
   useEffect(() => {
-     //TODO: bug - after signing in, the state doesn't contain the account, we need to reload the page for it to be in the state
     getLocData();
     getLanguages();
   }, [])
@@ -75,7 +74,7 @@ export default function App() {
   }
 
   function updateAccount(data) {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (token !== null) {
       axios({
         method: 'PUT',
@@ -88,7 +87,7 @@ export default function App() {
       }).then(res => {
         setAccount(res.data);
       }).catch(error => {
-        // Store error in an errors state targeting the page of the error
+        // TODO: Store error in an errors state targeting the page of the error
         console.log(error);
       });
     }
