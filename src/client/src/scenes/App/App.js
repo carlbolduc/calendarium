@@ -91,12 +91,16 @@ export default function App() {
   }
 
   function switchLanguage(languageId) {
-    const data = {
-      name: account.name,
-      email: account.email,
-      languageId: languageId
-    };
-    updateAccount(data);
+    if (authenticated) {
+      updateAccount({
+        name: account.name,
+        email: account.email,
+        languageId: languageId
+      });
+    } else {
+      setAccount({languageId: languageId});
+    }
+    
   }
 
   return (
