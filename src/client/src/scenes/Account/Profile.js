@@ -6,7 +6,7 @@ import Button from '../../components/Form/Button/Button';
 export default function Profile(props) {
   const [name, setName] = useState(props.account.name);
   const [email, setEmail] = useState(props.account.email);
-  const [currentPassword, setCurrentPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('')
   const [requesting, setRequesting] = useState(false);
 
@@ -16,11 +16,19 @@ export default function Profile(props) {
 
   useEffect(() => {
     if (requesting) {
-      props.updateAccount({
-        "name": name,
-        "email": email,
-        "password": newPassword
-      }, () => {
+      const data = newPassword !== '' ? (
+        {
+          'name': name,
+          'email': email,
+          'password': newPassword
+        }
+      ) : (
+        {
+          'name': name,
+          'email': email
+        }
+      )
+      props.updateAccount(data, () => {
         setRequesting(false);
       });
     }

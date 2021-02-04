@@ -6,7 +6,6 @@ import io.codebards.calendarium.core.AccountAuth;
 import io.codebards.calendarium.db.Dao;
 import de.mkammerer.argon2.Argon2;
 import io.dropwizard.auth.Auth;
-import liquibase.pro.packaged.au;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;

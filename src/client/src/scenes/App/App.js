@@ -30,7 +30,7 @@ export default function App() {
 
   useEffect(() => {
     if (authenticated) {
-      getUser();
+      getAccount();
     }
   }, [authenticated])
 
@@ -57,7 +57,7 @@ export default function App() {
     })
   }
 
-  function getUser() {
+  function getAccount() {
     const token = localStorage.getItem("token");
     if (token !== null) {
       axios({
@@ -71,6 +71,21 @@ export default function App() {
         setAccount(res.data);
       });
     }
+  }
+
+  function signUp(data, cb) {
+    // set currently active locale as the language id for the new account
+    data["languageId"] = account.languageId;
+    axios.post(`${process.env.REACT_APP_API}/auth/sign-up`, data).then(res => {
+      localStorage.setItem("token", res.data.token);
+      setAuthenticated(true);
+      getAccount();
+      cb();
+    }).catch(err => {
+      const error = {id: uuidv4(), scene: 'SignUp', type: 'error', message: err.message};
+      setMessages(messages.concat([error]));
+      cb();
+    });
   }
 
   function updateAccount(data, cb) {
@@ -93,7 +108,7 @@ export default function App() {
         setAccount(res.data);
         if (cb) cb();
       }).catch(err => {
-        const error = {id: uuidv4(), page: 'Profile', type: 'error', message: err.message};
+        const error = {id: uuidv4(), scene: 'Profile', type: 'error', message: err.message};
         setMessages(messages.concat([error]));
         if (cb) cb();
       });
@@ -112,8 +127,8 @@ export default function App() {
     setMessages(messages.filter(m => m.id !== id));
   }
 
-  function clearMessages(page) {
-    setMessages(messages.filter(m => m.page !== page));
+  function clearMessages(scene) {
+    setMessages(messages.filter(m => m.scene !== scene));
   }
 
   function uuidv4() {
@@ -143,9 +158,12 @@ export default function App() {
           </Route>
           <Route path="/sign-up">
             <SignUp
-              signIn={signIn}
+              signUp={signUp}
               authenticated={authenticated}
               translate={translate}
+              messages={messages.filter(m => m.scene === 'SignUp')}
+              clearMessage={clearMessage}
+              clearMessages={() => clearMessages('SignUp')}
             />
           </Route>
           <Route path="/forgot-password">
@@ -160,7 +178,7 @@ export default function App() {
               updateAccount={updateAccount}
               authenticated={authenticated}
               translate={translate}
-              messages={messages.filter(m => m.page === 'Profile')}
+              messages={messages.filter(m => m.scene === 'Profile')}
               clearMessage={clearMessage}
               clearMessages={() => clearMessages('Profile')}
             />
