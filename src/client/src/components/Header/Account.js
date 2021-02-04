@@ -8,7 +8,7 @@ export default function Account(props) {
 
   return (
     <li className="nav-item dropdown">
-      <a className="nav-link dropdown-toggle" href="#" id="dropdown-account" role="button" data-toggle="dropdown" aria-expanded="false">
+      <a className="nav-link dropdown-toggle" href="#" id="dropdown-account" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         {props.translate("Account")}
       </a>
       <ul className="dropdown-menu" aria-labelledby="dropdown-account">
