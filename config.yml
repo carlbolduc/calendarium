@@ -9,6 +9,6 @@ database:
     charSet: UTF-8
 thirdParty:
   env: ${ENV:-production}
-  accessKey: ${POUTINE_AWS_ACCESS_KEY:-bidu}
-  secretKey: ${POUTINE_AWS_SECRET_KEY:-pouet}
+  accessKey: ${CODEBARDS_AWS_ACCESS_KEY:-bidu}
+  secretKey: ${CODEBARDS_AWS_SECRET_KEY:-pouet}
   stripeApiKey: ${CODEBARDS_STRIPE_KEY:-yebo}

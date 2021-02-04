@@ -115,6 +115,18 @@ export default function App() {
     }
   }
 
+  function createPasswordReset(data, cb) {
+    axios.post(`${process.env.REACT_APP_API}/auth/password-resets`, data).then(() => {
+      const success = {id: uuidv4(), scene: "ForgotPassword", type: "success", message: "Bravo"};
+      setMessages(messages.concat([success]));
+      cb();
+      }).catch(err => {
+        const error = {id: uuidv4(), scene: "ForgotPassword", type: "error", message: err.message};
+        setMessages(messages.concat([error]));
+        if (cb) cb();
+      });
+  }
+
   function switchLanguage(languageId) {
     if (authenticated) {
       updateAccount({languageId: languageId });
@@ -133,7 +145,7 @@ export default function App() {
 
   function uuidv4() {
     return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+      ((c ^ crypto.getRandomValues(new Uint8Array(1))[0]) & (15 >> c / 4)).toString(16)
     );
   }
 
@@ -168,8 +180,12 @@ export default function App() {
           </Route>
           <Route path="/forgot-password">
             <ForgotPassword
+              createPasswordReset={createPasswordReset}
               authenticated={authenticated}
               translate={translate}
+              messages={messages.filter(m => m.scene === "ForgotPassword")}
+              clearMessage={clearMessage}
+              clearMessages={() => clearMessages("ForgotPassword")}
             />
           </Route>
           <Route path="/profile">

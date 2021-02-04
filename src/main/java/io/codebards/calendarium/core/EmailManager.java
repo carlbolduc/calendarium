@@ -5,7 +5,7 @@ import com.amazonaws.services.simpleemail.model.*;
 
 public class EmailManager {
     // This address must be verified with Amazon SES.
-    private final String from = "bidu@poutine.company";
+    private final String from = "grove@codebards.io";
     private final AmazonSimpleEmailService emailClient;
 
     public EmailManager(AmazonSimpleEmailService emailClient) {
