@@ -17,7 +17,7 @@ import PublicCalendars from '../Calendars/PublicCalendars';
 
 export default function App() {
   const [authenticated, setAuthenticated] = useState(localStorage.getItem('token') !== null);
-  const [account, setAccount] = useState({languageId: 1});
+  const [account, setAccount] = useState({name: '', email: '', languageId: 1});
   const [languages, setLanguages] = useState([]);
   const [errors, setErrors] = useState([]); // TODO: investigate context for this state
   const { getLocData, translate } = useLoc(account, languages);
@@ -93,7 +93,7 @@ export default function App() {
         setAccount(res.data);
         if (cb) cb();
       }).catch(err => {
-        const error = {id: uuidv4(), message: err.message};
+        const error = {id: uuidv4(), page: 'Profile', message: err.message};
         setErrors(errors.concat([error]));
         if (cb) cb();
       });
@@ -110,6 +110,10 @@ export default function App() {
 
   function dismissError(id) {
     setErrors(errors.filter(e => e.id !== id));
+  }
+
+  function cleanErrors(page) {
+    setErrors(errors.filter(e => e.page !== page));
   }
 
   function uuidv4() {
@@ -158,6 +162,7 @@ export default function App() {
               translate={translate}
               errors={errors}
               dismissError={dismissError}
+              cleanErrors={cleanErrors}
             />
           </Route>
           <Route path="/subscription">

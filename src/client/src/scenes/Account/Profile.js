@@ -4,11 +4,15 @@ import Input from '../../components/Form/Input/Input';
 import Button from '../../components/Form/Button/Button';
 
 export default function Profile(props) {
-  const [name, setName] = useState(props.account ? props.account.name : '');
-  const [email, setEmail] = useState(props.account ? props.account.email : '');
+  const [name, setName] = useState(props.account.name);
+  const [email, setEmail] = useState(props.account.email);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState('')
   const [requesting, setRequesting] = useState(false);
+
+  useEffect(() => {
+    return () => props.cleanErrors('Page');
+  }, []);
 
   useEffect(() => {
     if (requesting) {
@@ -37,7 +41,7 @@ export default function Profile(props) {
     <p className="small">{props.translate("Member since")} {formatDateInternationalWithTime(props.account.createdAt)}</p>
   ) : null;
 
-  const errors = props.errors.map(e => (
+  const errors = props.errors.filter(e => e.page === 'Profile').map(e => (
     <li key={e.id} onClick={() => props.dismissError(e.id)}>{e.message}</li>
   ));
 
