@@ -73,9 +73,14 @@ export default function App() {
     }
   }
 
-  function updateAccount(data) {
+  function updateAccount(data, cb) {
     const token = localStorage.getItem('token');
     if (token !== null) {
+      const updatedAccount = {...account};
+      const keys = Object.keys(data);
+      for (let key of keys) {
+        updatedAccount[key] = data[key];
+      }
       axios({
         method: 'PUT',
         headers: {
@@ -83,27 +88,34 @@ export default function App() {
           'Authorization': `Bearer ${token}`
         },
         url: `${process.env.REACT_APP_API}/accounts/${account.accountId}`,
-        data: data
+        data: updatedAccount
       }).then(res => {
         setAccount(res.data);
-      }).catch(error => {
-        // TODO: Store error in an errors state targeting the page of the error
-        console.log(error);
+        if (cb) cb();
+      }).catch(err => {
+        const error = {id: uuidv4(), message: err.message};
+        setErrors(errors.concat([error]));
+        if (cb) cb();
       });
     }
   }
 
   function switchLanguage(languageId) {
     if (authenticated) {
-      updateAccount({
-        name: account.name,
-        email: account.email,
-        languageId: languageId
-      });
+      updateAccount({languageId: languageId });
     } else {
       setAccount({languageId: languageId});
     }
-    
+  }
+
+  function dismissError(id) {
+    setErrors(errors.filter(e => e.id !== id));
+  }
+
+  function uuidv4() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
   }
 
   return (
@@ -141,9 +153,11 @@ export default function App() {
           <Route path="/profile">
             <Profile
               account={account}
-              setAccount={setAccount}
+              updateAccount={updateAccount}
               authenticated={authenticated}
               translate={translate}
+              errors={errors}
+              dismissError={dismissError}
             />
           </Route>
           <Route path="/subscription">

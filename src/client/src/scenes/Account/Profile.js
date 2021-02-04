@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import { Redirect } from 'react-router-dom';
-import axios from 'axios';
 import Input from '../../components/Form/Input/Input';
 import Button from '../../components/Form/Button/Button';
 
@@ -8,39 +7,18 @@ export default function Profile(props) {
   const [name, setName] = useState(props.account ? props.account.name : '');
   const [email, setEmail] = useState(props.account ? props.account.email : '');
   const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+  const [newPassword, setNewPassword] = useState('')
   const [requesting, setRequesting] = useState(false);
-  const [emailAlreadyExist, setEmailAlreadyExist] = useState(false);
 
   useEffect(() => {
     if (requesting) {
-      setEmailAlreadyExist(false);
-      const token = localStorage.getItem("token");
-      axios({
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        url: `${process.env.REACT_APP_API}/accounts/${props.account.accountId}`,
-        data: {
-          "name": name,
-          "email": email,
-          "password": newPassword
-        },
-      })
-        .then(res => {
-          if (res.status === 200) {
-            setRequesting(false);
-            props.setAccount(res.data);
-          }
-        })
-        .catch(err => {
-          if (err.response.status === 409) {
-            setRequesting(false);
-            setEmailAlreadyExist(true);
-          }
-        });
+      props.updateAccount({
+        "name": name,
+        "email": email,
+        "password": newPassword
+      }, () => {
+        setRequesting(false);
+      });
     }
   }, [requesting])
 
@@ -59,9 +37,14 @@ export default function Profile(props) {
     <p className="small">{props.translate("Member since")} {formatDateInternationalWithTime(props.account.createdAt)}</p>
   ) : null;
 
+  const errors = props.errors.map(e => (
+    <li key={e.id} onClick={() => props.dismissError(e.id)}>{e.message}</li>
+  ));
+
   return props.authenticated ? (
     <div className="p-5">
       <h1>{props.translate("My profile")}</h1>
+      <ul>{errors}</ul>
       <form onSubmit={handleSubmit} id="form-sign-up">
         <Input
           label={props.translate("Name")}
@@ -85,7 +68,7 @@ export default function Profile(props) {
           label={props.translate("Current Password")}
           type="password"
           id="input-current-password"
-          required={true}
+          required={false}
           placeholder={props.translate("Enter your current password.")}
           value={currentPassword}
           handleChange={(e) => setCurrentPassword(e.target.value)}
@@ -94,7 +77,7 @@ export default function Profile(props) {
           label={props.translate("New Password")}
           type="password"
           id="input-new-password"
-          required={true}
+          required={currentPassword !== ''}
           placeholder={props.translate("Choose a new password.")}
           value={newPassword}
           handleChange={(e) => setNewPassword(e.target.value)}
