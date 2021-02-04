@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {Link, Redirect} from 'react-router-dom';
-import Input from '../../components/Form/Input/Input';
-import Button from '../../components/Form/Button/Button';
+import React, {useEffect, useState} from "react";
+import {Link, Redirect} from "react-router-dom";
+import Input from "../../components/Form/Input/Input";
+import Button from "../../components/Form/Button/Button";
 
 export default function SignUp(props) {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [requesting, setRequesting] = useState(false);
 
   useEffect(() => {
@@ -16,9 +16,9 @@ export default function SignUp(props) {
   useEffect(() => {
     if (requesting) {
       props.signUp({
-        'name': name,
-        'email': email,
-        'password': password
+        "name": name,
+        "email": email,
+        "password": password
       }, () => {
         setRequesting(false);
       });
@@ -31,12 +31,12 @@ export default function SignUp(props) {
     setRequesting(true);
   }
 
-  const errors = props.messages.filter(m => m.type === 'error').map(e => (
+  const errors = props.messages.filter(m => m.type === "error").map(e => (
     <li key={e.id} onClick={() => props.clearMessage(e.id)}>{e.message}</li>
   ));
 
   return props.authenticated ? (
-    <Redirect to={{pathname: '/'}}/>
+    <Redirect to={{pathname: "/"}}/>
   ) : (
     <div className="p-5">
       <h1>{props.translate("Create an account")}</h1>

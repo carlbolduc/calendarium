@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from 'react';
-import { Redirect } from 'react-router-dom';
-import Input from '../../components/Form/Input/Input';
-import Button from '../../components/Form/Button/Button';
+import React, {useEffect, useState} from "react";
+import { Redirect } from "react-router-dom";
+import Input from "../../components/Form/Input/Input";
+import Button from "../../components/Form/Button/Button";
 
 export default function Profile(props) {
   const [name, setName] = useState(props.account.name);
   const [email, setEmail] = useState(props.account.email);
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('')
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("")
   const [requesting, setRequesting] = useState(false);
 
   useEffect(() => {
@@ -16,16 +16,16 @@ export default function Profile(props) {
 
   useEffect(() => {
     if (requesting) {
-      const data = newPassword !== '' ? (
+      const data = newPassword !== "" ? (
         {
-          'name': name,
-          'email': email,
-          'password': newPassword
+          "name": name,
+          "email": email,
+          "password": newPassword
         }
       ) : (
         {
-          'name': name,
-          'email': email
+          "name": name,
+          "email": email
         }
       )
       props.updateAccount(data, () => {
@@ -49,7 +49,7 @@ export default function Profile(props) {
     <p className="small">{props.translate("Member since")} {formatDateInternationalWithTime(props.account.createdAt)}</p>
   ) : null;
 
-  const errors = props.messages.filter(m => m.type === 'error').map(e => (
+  const errors = props.messages.filter(m => m.type === "error").map(e => (
     <li key={e.id} onClick={() => props.clearMessage(e.id)}>{e.message}</li>
   ));
 
@@ -89,7 +89,7 @@ export default function Profile(props) {
           label={props.translate("New Password")}
           type="password"
           id="input-new-password"
-          required={currentPassword !== ''}
+          required={currentPassword !== ""}
           placeholder={props.translate("Choose a new password.")}
           value={newPassword}
           handleChange={(e) => setNewPassword(e.target.value)}
@@ -101,8 +101,8 @@ export default function Profile(props) {
   ) : (
     <Redirect
       to={{
-        pathname: '/sign-in',
-        state: { from: '/profile' }
+        pathname: "/sign-in",
+        state: { from: "/profile" }
       }}
     />
   );

@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import axios from 'axios';
-import { useLoc } from '../../services/Loc';
-import Header from '../../components/Header/Header';
-import SignUp from '../Auth/SignUp';
-import SignIn from '../Auth/SignIn';
-import ForgotPassword from '../Auth/ForgotPassword';
-import Home from '../Home/Home';
-import Profile from '../Account/Profile';
-import Subscription from '../Account/Subscription';
-import MyEvents from '../Events/MyEvents';
-import MyCalendars from '../Calendars/MyCalendars';
-import PublicCalendars from '../Calendars/PublicCalendars';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import axios from "axios";
+import { useLoc } from "../../services/Loc";
+import Header from "../../components/Header/Header";
+import SignUp from "../Auth/SignUp";
+import SignIn from "../Auth/SignIn";
+import ForgotPassword from "../Auth/ForgotPassword";
+import Home from "../Home/Home";
+import Profile from "../Account/Profile";
+import Subscription from "../Account/Subscription";
+import MyEvents from "../Events/MyEvents";
+import MyCalendars from "../Calendars/MyCalendars";
+import PublicCalendars from "../Calendars/PublicCalendars";
 
 
 
 export default function App() {
-  const [authenticated, setAuthenticated] = useState(localStorage.getItem('token') !== null);
-  const [account, setAccount] = useState({name: '', email: '', languageId: 1});
+  const [authenticated, setAuthenticated] = useState(localStorage.getItem("token") !== null);
+  const [account, setAccount] = useState({name: "", email: "", languageId: 1});
   const [languages, setLanguages] = useState([]);
   const [messages, setMessages] = useState([]);
   const { getLocData, translate } = useLoc(account, languages);
@@ -35,21 +35,21 @@ export default function App() {
   }, [authenticated])
 
   function signIn(data) {
-    localStorage.setItem('token', data.token);
+    localStorage.setItem("token", data.token);
     setAuthenticated(true);
   }
 
   function signOut(e) {
     if (e) { e.preventDefault(); }
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     setAuthenticated(false);
   }
 
   function getLanguages() {
     axios({
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       url: `${process.env.REACT_APP_API}/loc/languages`,
     }).then(res => {
@@ -61,10 +61,10 @@ export default function App() {
     const token = localStorage.getItem("token");
     if (token !== null) {
       axios({
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         url: `${process.env.REACT_APP_API}/accounts`,
       }).then(res => {
@@ -82,14 +82,14 @@ export default function App() {
       getAccount();
       cb();
     }).catch(err => {
-      const error = {id: uuidv4(), scene: 'SignUp', type: 'error', message: err.message};
+      const error = {id: uuidv4(), scene: "SignUp", type: "error", message: err.message};
       setMessages(messages.concat([error]));
       cb();
     });
   }
 
   function updateAccount(data, cb) {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token !== null) {
       const updatedAccount = {...account};
       const keys = Object.keys(data);
@@ -97,10 +97,10 @@ export default function App() {
         updatedAccount[key] = data[key];
       }
       axios({
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         url: `${process.env.REACT_APP_API}/accounts/${account.accountId}`,
         data: updatedAccount
@@ -108,7 +108,7 @@ export default function App() {
         setAccount(res.data);
         if (cb) cb();
       }).catch(err => {
-        const error = {id: uuidv4(), scene: 'Profile', type: 'error', message: err.message};
+        const error = {id: uuidv4(), scene: "Profile", type: "error", message: err.message};
         setMessages(messages.concat([error]));
         if (cb) cb();
       });
@@ -161,9 +161,9 @@ export default function App() {
               signUp={signUp}
               authenticated={authenticated}
               translate={translate}
-              messages={messages.filter(m => m.scene === 'SignUp')}
+              messages={messages.filter(m => m.scene === "SignUp")}
               clearMessage={clearMessage}
-              clearMessages={() => clearMessages('SignUp')}
+              clearMessages={() => clearMessages("SignUp")}
             />
           </Route>
           <Route path="/forgot-password">
@@ -178,9 +178,9 @@ export default function App() {
               updateAccount={updateAccount}
               authenticated={authenticated}
               translate={translate}
-              messages={messages.filter(m => m.scene === 'Profile')}
+              messages={messages.filter(m => m.scene === "Profile")}
               clearMessage={clearMessage}
-              clearMessages={() => clearMessages('Profile')}
+              clearMessages={() => clearMessages("Profile")}
             />
           </Route>
           <Route path="/subscription">
