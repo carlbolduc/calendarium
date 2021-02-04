@@ -19,7 +19,7 @@ export default function App() {
   const [authenticated, setAuthenticated] = useState(localStorage.getItem('token') !== null);
   const [account, setAccount] = useState({name: '', email: '', languageId: 1});
   const [languages, setLanguages] = useState([]);
-  const [errors, setErrors] = useState([]); // TODO: investigate context for this state
+  const [messages, setMessages] = useState([]);
   const { getLocData, translate } = useLoc(account, languages);
   // const api = Api(signOut);
 
@@ -93,8 +93,8 @@ export default function App() {
         setAccount(res.data);
         if (cb) cb();
       }).catch(err => {
-        const error = {id: uuidv4(), page: 'Profile', message: err.message};
-        setErrors(errors.concat([error]));
+        const error = {id: uuidv4(), page: 'Profile', type: 'error', message: err.message};
+        setMessages(messages.concat([error]));
         if (cb) cb();
       });
     }
@@ -108,12 +108,12 @@ export default function App() {
     }
   }
 
-  function dismissError(id) {
-    setErrors(errors.filter(e => e.id !== id));
+  function clearMessage(id) {
+    setMessages(messages.filter(m => m.id !== id));
   }
 
-  function cleanErrors(page) {
-    setErrors(errors.filter(e => e.page !== page));
+  function clearMessages(page) {
+    setMessages(messages.filter(m => m.page !== page));
   }
 
   function uuidv4() {
@@ -160,9 +160,9 @@ export default function App() {
               updateAccount={updateAccount}
               authenticated={authenticated}
               translate={translate}
-              errors={errors}
-              dismissError={dismissError}
-              cleanErrors={cleanErrors}
+              messages={messages.filter(m => m.page === 'Profile')}
+              clearMessage={clearMessage}
+              clearMessages={() => clearMessages('Profile')}
             />
           </Route>
           <Route path="/subscription">

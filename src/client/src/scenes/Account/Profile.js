@@ -11,7 +11,7 @@ export default function Profile(props) {
   const [requesting, setRequesting] = useState(false);
 
   useEffect(() => {
-    return () => props.cleanErrors('Page');
+    return () => props.clearMessages();
   }, []);
 
   useEffect(() => {
@@ -41,8 +41,8 @@ export default function Profile(props) {
     <p className="small">{props.translate("Member since")} {formatDateInternationalWithTime(props.account.createdAt)}</p>
   ) : null;
 
-  const errors = props.errors.filter(e => e.page === 'Profile').map(e => (
-    <li key={e.id} onClick={() => props.dismissError(e.id)}>{e.message}</li>
+  const errors = props.messages.filter(m => m.type === 'error').map(e => (
+    <li key={e.id} onClick={() => props.clearMessage(e.id)}>{e.message}</li>
   ));
 
   return props.authenticated ? (
