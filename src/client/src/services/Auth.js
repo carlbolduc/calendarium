@@ -5,16 +5,13 @@ import {uuidv4} from "./Helpers";
 export function useAuth(messages, setMessages) {
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [account, setAccount] = useState({name: "", email: "", languageId: 1});
+  const authenticated = token !== null;
 
   useEffect(() => {
     if (token !== null) {
       getAccount();
     }
   }, [token]);
-
-  function authenticated() {
-    return token !== null;
-  }
 
   function signUp(data, cb) {
     // set currently active locale as the language id for the new account
@@ -54,6 +51,9 @@ export function useAuth(messages, setMessages) {
         url: `${process.env.REACT_APP_API}/accounts`,
       }).then(res => {
         setAccount(res.data);
+      }).catch(() => {
+        localStorage.removeItem("token");
+        setToken(null);
       });
     }
   }
@@ -74,11 +74,13 @@ export function useAuth(messages, setMessages) {
         url: `${process.env.REACT_APP_API}/accounts/${account.accountId}`,
         data: updatedAccount
       }).then(res => {
+        const message =  {id: uuidv4(), scene: "Profile", type: "success", message: "Profile successfully updated"};
+        setMessages(messages.concat([message]));
         setAccount(res.data);
         if (cb) cb();
       }).catch(err => {
-        const error = {id: uuidv4(), scene: "Profile", type: "error", message: err.message};
-        setMessages(messages.concat([error]));
+        const message = {id: uuidv4(), scene: "Profile", type: "error", message: err.message};
+        setMessages(messages.concat([message]));
         if (cb) cb();
       });
     } else {

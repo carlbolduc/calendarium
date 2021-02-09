@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import axios from "axios";
-import {uuidv4} from "../../services/Helpers";
+import {useStateCallback, uuidv4} from "../../services/Helpers";
 import {useLoc} from "../../services/Loc";
 import {useAuth} from "../../services/Auth";
 import Header from "../../components/Header/Header";
@@ -17,7 +17,7 @@ import PublicCalendars from "../Calendars/PublicCalendars";
 
 export default function App() {
   const [languages, setLanguages] = useState([]);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useStateCallback([]);
   const {
     account,
     authenticated,
@@ -55,8 +55,14 @@ export default function App() {
     setMessages(messages.filter(m => m.id !== id));
   }
 
-  function clearMessages(scene) {
-    setMessages(messages.filter(m => m.scene !== scene));
+  function clearMessages(scene, cb) {
+    if (cb) {
+      setMessages(messages.filter(m => m.scene !== scene), () => {
+        cb();
+      });
+    } else {
+      setMessages(messages.filter(m => m.scene !== scene));
+    }
   }
 
   return (
@@ -106,7 +112,7 @@ export default function App() {
               translate={translate}
               messages={messages.filter(m => m.scene === "Profile")}
               clearMessage={clearMessage}
-              clearMessages={() => clearMessages("Profile")}
+              clearMessages={clearMessages}
             />
           </Route>
           <Route path="/subscription">

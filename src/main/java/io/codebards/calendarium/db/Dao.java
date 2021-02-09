@@ -39,6 +39,9 @@ public interface Dao {
     @RegisterBeanMapper(AccountAuth.class)
     Optional<AccountAuth> findAccountById(@Bind("accountId") long accountId);
 
+    @SqlQuery("SELECT password_digest FROM account WHERE account_id = :accountId")
+    String findPasswordDigest(@Bind("accountId") long accountId);
+
     @SqlUpdate("UPDATE account SET password_reset_digest = :passwordResetDigest, password_reset_requested_at = :now WHERE account_id = :accountId")
     void updatePasswordResetDigest(@Bind("accountId") long accountId, @Bind("passwordResetDigest") String passwordResetDigest, @Bind("now") Instant now);
 
@@ -71,4 +74,5 @@ public interface Dao {
     @SqlQuery("SELECT * FROM language")
     @RegisterBeanMapper(Language.class)
     List<Language> findAllLanguages();
+
 }
