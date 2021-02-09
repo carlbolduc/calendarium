@@ -110,9 +110,6 @@ export default function App() {
               updateAccount={updateAccount}
               authenticated={authenticated}
               translate={translate}
-              messages={messages.filter(m => m.scene === "Profile")}
-              clearMessage={clearMessage}
-              clearMessages={clearMessages}
             />
           </Route>
           <Route path="/subscription">

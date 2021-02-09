@@ -2,7 +2,7 @@ import {useState, useEffect} from "react";
 import axios from "axios";
 import {uuidv4} from "./Helpers";
 
-export function useAuth(messages, setMessages) {
+export function useAuth() {
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [account, setAccount] = useState({name: "", email: "", languageId: 1});
   const authenticated = token !== null;
@@ -22,7 +22,6 @@ export function useAuth(messages, setMessages) {
       cb();
     }).catch(err => {
       const error = {id: uuidv4(), scene: "SignUp", type: "error", message: err.message};
-      setMessages(messages.concat([error]));
       cb();
     });
   }
@@ -74,14 +73,22 @@ export function useAuth(messages, setMessages) {
         url: `${process.env.REACT_APP_API}/accounts/${account.accountId}`,
         data: updatedAccount
       }).then(res => {
-        const message =  {id: uuidv4(), scene: "Profile", type: "success", message: "Profile successfully updated"};
-        setMessages(messages.concat([message]));
         setAccount(res.data);
-        if (cb) cb();
+        if (cb) {
+          const result = {
+            success: true,
+            message: "Profile successfully updated"
+          }
+          cb(result);
+        }
       }).catch(err => {
-        const message = {id: uuidv4(), scene: "Profile", type: "error", message: err.message};
-        setMessages(messages.concat([message]));
-        if (cb) cb();
+        if (cb) {
+          const result = {
+            success: false,
+            message: err.message
+          }
+          cb(result);
+        }
       });
     } else {
       setAccount(updatedAccount);
@@ -91,11 +98,9 @@ export function useAuth(messages, setMessages) {
   function createPasswordReset(data, cb) {
     axios.post(`${process.env.REACT_APP_API}/auth/password-resets`, data).then(() => {
       const success = {id: uuidv4(), scene: "ForgotPassword", type: "success", message: "Bravo"};
-      setMessages(messages.concat([success]));
       cb();
     }).catch(err => {
       const error = {id: uuidv4(), scene: "ForgotPassword", type: "error", message: err.message};
-      setMessages(messages.concat([error]));
       if (cb) cb();
     });
   }

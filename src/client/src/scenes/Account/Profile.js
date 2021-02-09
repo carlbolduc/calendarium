@@ -11,35 +11,30 @@ export default function Profile(props) {
   const [requesting, setRequesting] = useState(false);
 
   useEffect(() => {
-    return () => props.clearMessages("Profile");
-  }, []);
-
-  useEffect(() => {
     setName(props.account.name);
     setEmail(props.account.email);
   }, [props.account]);
 
   useEffect(() => {
     if (requesting) {
-      props.clearMessages("Profile", () => {
-        const data = newPassword !== "" ? (
-          {
-            "name": name,
-            "email": email,
-            "currentPassword": currentPassword,
-            "newPassword": newPassword
-          }
-        ) : (
+      const data = newPassword !== "" ? (
+        {
+          "name": name,
+          "email": email,
+          "currentPassword": currentPassword,
+          "newPassword": newPassword
+        }
+      ) : (
           {
             "name": name,
             "email": email
           }
-        )
-        props.updateAccount(data, () => {
-          setCurrentPassword("");
-          setNewPassword("");
-          setRequesting(false);
-        });
+        );
+      props.updateAccount(data, result => {
+        console.log(result);
+        setCurrentPassword("");
+        setNewPassword("");
+        setRequesting(false);
       });
     }
   }, [requesting])
@@ -59,21 +54,9 @@ export default function Profile(props) {
     <p className="small">{props.translate("Member since")} {formatDateInternationalWithTime(props.account.createdAt)}</p>
   ) : null;
 
-  const successes = props.messages.filter(m => m.type === "success").map(e => (
-    <li key={e.id} onClick={() => props.clearMessage(e.id)}>{e.message}</li>
-  ));
-
-  const errors = props.messages.filter(m => m.type === "error").map(e => (
-    <li key={e.id} onClick={() => props.clearMessage(e.id)}>{e.message}</li>
-  ));
-
   return props.authenticated ? (
     <div className="p-5">
       <h1>{props.translate("My profile")}</h1>
-      <ul>
-        {successes}
-        {errors}
-      </ul>
       <form onSubmit={handleSubmit} id="form-sign-up">
         <Input
           label={props.translate("Name")}
