@@ -11,11 +11,7 @@ import io.codebards.calendarium.core.EmailManager;
 import io.codebards.calendarium.core.StripeService;
 import io.codebards.calendarium.core.AccountAuth;
 import io.codebards.calendarium.db.Dao;
-import io.codebards.calendarium.resources.AuthResource;
-import io.codebards.calendarium.resources.BotResource;
-import io.codebards.calendarium.resources.LocalisationsResource;
-import io.codebards.calendarium.resources.OpsResource;
-import io.codebards.calendarium.resources.AccountsResource;
+import io.codebards.calendarium.resources.*;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import io.dropwizard.Application;
@@ -81,6 +77,7 @@ public class App extends Application<Config> {
         final AuthResource authResource = new AuthResource(dao, argon2, emailManager);
         final AccountsResource accountsResource = new AccountsResource(dao, argon2, stripeService);
         final LocalisationsResource localisationsResource = new LocalisationsResource(dao);
+        final SubscriptionsResource subscriptionsResource = new SubscriptionsResource(dao, config.getThirdPartyFactory().getStripeApiKey(), config.getThirdPartyFactory().getStripeWebhookSecret());
 
         if (config.getThirdPartyFactory().getEnv().equals("development")) {
             setupCors(environment);
@@ -99,6 +96,7 @@ public class App extends Application<Config> {
         environment.jersey().register(authResource);
         environment.jersey().register(accountsResource);
         environment.jersey().register(localisationsResource);
+        environment.jersey().register(subscriptionsResource);
     }
 
     private void setupCors(Environment environment) {

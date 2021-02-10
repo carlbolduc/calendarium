@@ -13,3 +13,4 @@ thirdParty:
   accessKey: ${CODEBARDS_AWS_ACCESS_KEY:-bidu}
   secretKey: ${CODEBARDS_AWS_SECRET_KEY:-pouet}
   stripeApiKey: ${CODEBARDS_STRIPE_KEY:-yebo}
+  stripeWebhookSecret: ${CODEBARDS_STRIPE_WEBHOOK_SECRET:-sodang}

@@ -8,10 +8,12 @@ public class ThirdPartyFactory {
     private String env;
     private String baseUrl;
     @NotEmpty
-    private String accessKey = "";
+    private String accessKey;
     @NotEmpty
-    private String secretKey = "";
-    private String stripeApiKey = "";
+    private String secretKey;
+    private String stripeApiKey;
+    private String stripeWebhookSecret;
+
 
     @JsonProperty
     public String getEnv() {
@@ -36,6 +38,11 @@ public class ThirdPartyFactory {
     @JsonProperty
     public String getStripeApiKey() {
       return stripeApiKey;
+    }
+
+    @JsonProperty
+    public String getStripeWebhookSecret() {
+        return stripeWebhookSecret;
     }
 
 }
