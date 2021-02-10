@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Link, Redirect} from 'react-router-dom';
-import Input from '../../components/Form/Input/Input';
-import Button from '../../components/Form/Button/Button';
+import Input from '../../components/Form/Input';
+import Button from '../../components/Form/Button';
 
 export default function SignIn(props) {
   const [email, setEmail] = useState("");
@@ -57,11 +57,11 @@ export default function SignIn(props) {
           value={password}
           handleChange={(e) => setPassword(e.target.value)}
         />
-        <p className="small">
-          {props.translate("Need an account? Sign up")} <Link to="/sign-up">{props.translate("here")}</Link>. |&nbsp;
-          {props.translate("Forgot your password? Request a reset")} <Link to="/forgot-password">{props.translate("here")}</Link>.</p>
         <Button label={props.translate("Sign in")} type="submit" id="button-sign-in"/>
       </form>
+      <p className="small">
+          {props.translate("Need an account? Sign up")} <Link to="/sign-up">{props.translate("here")}</Link>. |&nbsp;
+          {props.translate("Forgot your password? Request a reset")} <Link to="/forgot-password">{props.translate("here")}</Link>.</p>
     </div>
   );
 

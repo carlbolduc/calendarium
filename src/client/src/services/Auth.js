@@ -142,7 +142,8 @@ export function useAuth() {
     if (cb) {
       const result = {
         success: false,
-        message: err.message
+        message: err.message,
+        errorCode: err.response.status
       }
       cb(result);
     }

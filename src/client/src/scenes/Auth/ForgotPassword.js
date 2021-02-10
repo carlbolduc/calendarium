@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-import Input from '../../components/Form/Input/Input';
-import Button from '../../components/Form/Button/Button';
+import Input from '../../components/Form/Input';
+import Button from '../../components/Form/Button';
 
 export default function ForgotPassword(props) {
   const [email, setEmail] = useState("");
