@@ -1,6 +1,5 @@
 package io.codebards.calendarium.resources;
 
-import io.codebards.calendarium.api.Account;
 import io.codebards.calendarium.api.AccountUpdate;
 import io.codebards.calendarium.core.StripeService;
 import io.codebards.calendarium.core.AccountAuth;
