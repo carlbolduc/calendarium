@@ -95,6 +95,7 @@ export default function Profile(props) {
           handleChange={(e) => setNewPassword(e.target.value)}
         />
         {memberSince}
+        {/* TODO: disable button when nothing has changed in the form */}
         <Button label={props.translate("Save")} type="submit" working={requesting} id="button-save" />
       </form>
     </div>
