@@ -19,7 +19,8 @@ export function useAuth() {
       saveToken(res.data.token);
       if (cb) {
         const result = {
-          success: true
+          success: true,
+          message: "Account created successfully."
         }
         cb(result);
       }
@@ -92,7 +93,8 @@ export function useAuth() {
         setAccount(res.data);
         if (cb) {
           const result = {
-            success: true
+            success: true,
+            message: "Profile successfully updated."
           }
           cb(result);
         }
@@ -108,7 +110,8 @@ export function useAuth() {
     axios.post(`${process.env.REACT_APP_API}/auth/password-resets`, data).then(() => {
       if (cb) {
         const result = {
-          success: true
+          success: true,
+          message: "Password reset requested successfully."
         }
         cb(result);
       }
@@ -125,7 +128,8 @@ export function useAuth() {
       saveToken(res.data.token);
       if (cb) {
         const result = {
-          success: true
+          success: true,
+          message: "Password has been reset successfully."
         }
         cb(result);
       }
@@ -138,7 +142,7 @@ export function useAuth() {
     if (cb) {
       const result = {
         success: false,
-        errorCode: err.response.status
+        message: err.message
       }
       cb(result);
     }
