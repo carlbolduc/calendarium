@@ -6,16 +6,17 @@ import Button from '../../components/Form/Button/Button';
 export default function ForgotPassword(props) {
   const [email, setEmail] = useState("");
   const [requesting, setRequesting] = useState(false);
-
-  useEffect(() => {
-    return () => props.clearMessages();
-  }, []);
+  const [requested, setRequested] = useState(false);
 
   useEffect(() => {
     if (requesting) {
       props.createPasswordReset({
         email: email
-      }, () => {
+      }, result => {
+        if (result.success === true) {
+          setRequested(true);
+        }
+        console.log(result);
         setRequesting(false);
       })
     }
@@ -32,23 +33,11 @@ export default function ForgotPassword(props) {
   //   </div>
   // ) : null;
 
-  const successes = props.messages.filter(m => m.type === "success").map(s => (
-    <li key={s.id} onClick={() => props.clearMessage(s.id)}>{s.message}</li>
-  ));
-
-  const errors = props.messages.filter(m => m.type === "error").map(e => (
-    <li key={e.id} onClick={() => props.clearMessage(e.id)}>{e.message}</li>
-  ));
-
-  const main = props.messages.find(m => m.type === "success") !== undefined ? (
+  const main = requested ? (
     <p>{props.translate("You will receive password reset instructions by email shortly.")}</p>
   ) : (
       <>
         <h1>{props.translate("Forgot your password?")}</h1>
-        <ul>
-          {successes}
-          {errors}
-        </ul>
         <form onSubmit={handleSubmit} id="form-forgot-password">
           {/* {warning} */}
           <Input

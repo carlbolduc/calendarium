@@ -1,6 +1,5 @@
 import {useState, useEffect} from "react";
 import axios from "axios";
-import {uuidv4} from "./Helpers";
 
 export function useAuth() {
   const [token, setToken] = useState(localStorage.getItem("token"));
@@ -19,10 +18,21 @@ export function useAuth() {
     axios.post(`${process.env.REACT_APP_API}/auth/sign-up`, data).then(res => {
       localStorage.setItem("token", res.data.token);
       setToken(res.data.token);
-      cb();
+      if (cb) {
+        const result = {
+          success: true,
+          message: "Account created successfully."
+        }
+        cb(result);
+      }
     }).catch(err => {
-      const error = {id: uuidv4(), scene: "SignUp", type: "error", message: err.message};
-      cb();
+      if (cb) {
+        const result = {
+          success: false,
+          message: err.message
+        }
+        cb(result);
+      }
     });
   }
 
@@ -77,7 +87,7 @@ export function useAuth() {
         if (cb) {
           const result = {
             success: true,
-            message: "Profile successfully updated"
+            message: "Profile successfully updated."
           }
           cb(result);
         }
@@ -97,13 +107,23 @@ export function useAuth() {
 
   function createPasswordReset(data, cb) {
     axios.post(`${process.env.REACT_APP_API}/auth/password-resets`, data).then(() => {
-      const success = {id: uuidv4(), scene: "ForgotPassword", type: "success", message: "Bravo"};
-      cb();
+      if (cb) {
+        const result = {
+          success: true,
+          message: "Password reset requested successfully."
+        }
+        cb(result);
+      }
     }).catch(err => {
-      const error = {id: uuidv4(), scene: "ForgotPassword", type: "error", message: err.message};
-      if (cb) cb();
+      if (cb) {
+        const result = {
+          success: false,
+          message: err.message
+        }
+        cb(result);
+      }
     });
   }
 
-  return {account, authenticated, signUp, signIn, signOut, getAccount, updateAccount, createPasswordReset};
+  return {account, authenticated, signUp, signIn, signOut, updateAccount, createPasswordReset};
 }

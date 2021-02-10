@@ -10,16 +10,13 @@ export default function SignUp(props) {
   const [requesting, setRequesting] = useState(false);
 
   useEffect(() => {
-    return () => props.clearMessages();
-  }, []);
-
-  useEffect(() => {
     if (requesting) {
       props.signUp({
         "name": name,
         "email": email,
         "password": password
-      }, () => {
+      }, result => {
+        console.log(result);
         setRequesting(false);
       });
     }
@@ -31,16 +28,11 @@ export default function SignUp(props) {
     setRequesting(true);
   }
 
-  const errors = props.messages.filter(m => m.type === "error").map(e => (
-    <li key={e.id} onClick={() => props.clearMessage(e.id)}>{e.message}</li>
-  ));
-
   return props.authenticated ? (
     <Redirect to={{pathname: "/"}}/>
   ) : (
     <div className="p-5">
       <h1>{props.translate("Create an account")}</h1>
-      <ul>{errors}</ul>
       <form onSubmit={handleSubmit} id="form-sign-up">
         <Input
           label={props.translate("Name")}

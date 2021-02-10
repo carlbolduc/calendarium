@@ -17,17 +17,15 @@ import PublicCalendars from "../Calendars/PublicCalendars";
 
 export default function App() {
   const [languages, setLanguages] = useState([]);
-  const [messages, setMessages] = useStateCallback([]);
   const {
     account,
     authenticated,
     signUp,
     signIn,
     signOut,
-    getAccount,
     updateAccount,
     createPasswordReset
-  } = useAuth(messages, setMessages, uuidv4);
+  } = useAuth();
   const {getLocData, translate} = useLoc(account, languages);
 
   useEffect(() => {
@@ -49,20 +47,6 @@ export default function App() {
 
   function switchLanguage(languageId) {
     updateAccount({languageId: languageId});
-  }
-
-  function clearMessage(id) {
-    setMessages(messages.filter(m => m.id !== id));
-  }
-
-  function clearMessages(scene, cb) {
-    if (cb) {
-      setMessages(messages.filter(m => m.scene !== scene), () => {
-        cb();
-      });
-    } else {
-      setMessages(messages.filter(m => m.scene !== scene));
-    }
   }
 
   return (
@@ -89,9 +73,6 @@ export default function App() {
               signUp={signUp}
               authenticated={authenticated}
               translate={translate}
-              messages={messages.filter(m => m.scene === "SignUp")}
-              clearMessage={clearMessage}
-              clearMessages={() => clearMessages("SignUp")}
             />
           </Route>
           <Route path="/forgot-password">
@@ -99,9 +80,6 @@ export default function App() {
               createPasswordReset={createPasswordReset}
               authenticated={authenticated}
               translate={translate}
-              messages={messages.filter(m => m.scene === "ForgotPassword")}
-              clearMessage={clearMessage}
-              clearMessages={() => clearMessages("ForgotPassword")}
             />
           </Route>
           <Route path="/profile">
