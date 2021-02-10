@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from "react";
 import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import axios from "axios";
-import {useStateCallback, uuidv4} from "../../services/Helpers";
 import {useLoc} from "../../services/Loc";
 import {useAuth} from "../../services/Auth";
 import Header from "../../components/Header/Header";
@@ -14,6 +13,7 @@ import Subscription from "../Account/Subscription";
 import MyEvents from "../Events/MyEvents";
 import MyCalendars from "../Calendars/MyCalendars";
 import PublicCalendars from "../Calendars/PublicCalendars";
+import PasswordReset from "../Auth/PasswordReset";
 
 export default function App() {
   const [languages, setLanguages] = useState([]);
@@ -24,7 +24,8 @@ export default function App() {
     signIn,
     signOut,
     updateAccount,
-    createPasswordReset
+    createPasswordReset,
+    resetPassword
   } = useAuth();
   const {getLocData, translate} = useLoc(account, languages);
 
@@ -78,6 +79,13 @@ export default function App() {
           <Route path="/forgot-password">
             <ForgotPassword
               createPasswordReset={createPasswordReset}
+              authenticated={authenticated}
+              translate={translate}
+            />
+          </Route>
+          <Route path="/password-resets/:id">
+            <PasswordReset
+              resetPassword={resetPassword}
               authenticated={authenticated}
               translate={translate}
             />

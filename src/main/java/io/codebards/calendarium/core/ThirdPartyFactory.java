@@ -6,15 +6,21 @@ import javax.validation.constraints.NotEmpty;
 
 public class ThirdPartyFactory {
     private String env;
+    private String baseUrl;
     @NotEmpty
     private String accessKey = "";
     @NotEmpty
     private String secretKey = "";
     private String stripeApiKey = "";
 
-    @JsonProperty("env")
+    @JsonProperty
     public String getEnv() {
       return env;
+    }
+
+    @JsonProperty
+    public String getBaseUrl() {
+        return baseUrl;
     }
 
     @JsonProperty
@@ -23,26 +29,13 @@ public class ThirdPartyFactory {
     }
 
     @JsonProperty
-    public void setAccessKey(String accessKey) {
-        this.accessKey = accessKey;
-    }
-
-    @JsonProperty
     public String getSecretKey() {
         return secretKey;
     }
 
     @JsonProperty
-    public void setSecretKey(String secretKey) {
-        this.secretKey = secretKey;
-    }
-
     public String getStripeApiKey() {
       return stripeApiKey;
-    }
-  
-    public void setStripeApiKey(String stripeApiKey) {
-      this.stripeApiKey = stripeApiKey;
     }
 
 }

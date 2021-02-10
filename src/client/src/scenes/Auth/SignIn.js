@@ -1,7 +1,5 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link, Redirect} from 'react-router-dom';
-import PropTypes from 'prop-types';
-import axios from 'axios';
 import Input from '../../components/Form/Input/Input';
 import Button from '../../components/Form/Button/Button';
 
@@ -9,30 +7,23 @@ export default function SignIn(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [authenticationFailed, setAuthenticationFailed] = useState(false);
+  const [requesting, setRequesting] = useState(false);
+
+  useEffect(() => {
+    if (requesting) {
+      props.signIn({
+        "email": email,
+        "password": password
+      }, result => {
+        console.log(result);
+        setRequesting(false);
+      });
+    }
+  }, [requesting])
 
   function handleSubmit(e) {
     e.preventDefault();
-    setAuthenticationFailed(false);
-    const base64StringOfUserColonPassword = btoa(`${email}:${password}`);
-    axios({
-      method: 'get',
-      url: `${process.env.REACT_APP_API}/auth/sign-in`,
-      headers: {
-        Authorization: 'Basic ' + base64StringOfUserColonPassword,
-      },
-    })
-      .then(res => {
-        if (res.status === 200) {
-          props.signIn(res.data);
-        } else {
-          // authentication failed
-        }
-      })
-      .catch(err => {
-        if (err.response.status === 401) {
-          setAuthenticationFailed(true);
-        }
-      });
+    setRequesting(true);
   }
 
   const warning = authenticationFailed ? (
@@ -74,8 +65,4 @@ export default function SignIn(props) {
     </div>
   );
 
-}
-
-SignIn.propTypes = {
-  signIn: PropTypes.func,
 }

@@ -16,8 +16,7 @@ export function useAuth() {
     // set currently active locale as the language id for the new account
     data["languageId"] = account.languageId;
     axios.post(`${process.env.REACT_APP_API}/auth/sign-up`, data).then(res => {
-      localStorage.setItem("token", res.data.token);
-      setToken(res.data.token);
+      saveToken(res.data.token);
       if (cb) {
         const result = {
           success: true,
@@ -26,19 +25,27 @@ export function useAuth() {
         cb(result);
       }
     }).catch(err => {
-      if (cb) {
-        const result = {
-          success: false,
-          message: err.message
-        }
-        cb(result);
-      }
+      errorCallback(err, cb);
     });
   }
 
-  function signIn(data) {
-    localStorage.setItem("token", data.token);
-    setToken(data.token);
+  function signIn(data, cb) {
+    const base64StringOfUserColonPassword = btoa(`${data.email}:${data.password}`);
+    axios({
+      method: 'get',
+      url: `${process.env.REACT_APP_API}/auth/sign-in`,
+      headers: {
+        Authorization: 'Basic ' + base64StringOfUserColonPassword,
+      },
+    }).then(res => {
+        if (res.status === 200) {
+          saveToken(res.data.token)
+        } else {
+          // authentication failed
+        }
+      }).catch(err => {
+        errorCallback(err, cb);
+      });
   }
 
   function signOut(e) {
@@ -92,13 +99,7 @@ export function useAuth() {
           cb(result);
         }
       }).catch(err => {
-        if (cb) {
-          const result = {
-            success: false,
-            message: err.message
-          }
-          cb(result);
-        }
+        errorCallback(err, cb);
       });
     } else {
       setAccount(updatedAccount);
@@ -115,15 +116,42 @@ export function useAuth() {
         cb(result);
       }
     }).catch(err => {
-      if (cb) {
-        const result = {
-          success: false,
-          message: err.message
-        }
-        cb(result);
-      }
+      errorCallback(err, cb);
     });
   }
 
-  return {account, authenticated, signUp, signIn, signOut, updateAccount, createPasswordReset};
+  function resetPassword(data, cb) {
+    axios.put(`${process.env.REACT_APP_API}/auth/password-resets/${data.id}`, {
+      id: data.id,
+      password: data.password
+    }).then(res => {
+      saveToken(res.data.token);
+      if (cb) {
+        const result = {
+          success: true,
+          message: "Password has been reset successfully."
+        }
+        cb(result);
+      }
+    }).catch(err => {
+      errorCallback(err, cb);
+    });
+  }
+
+  function errorCallback(err, cb) {
+    if (cb) {
+      const result = {
+        success: false,
+        message: err.message
+      }
+      cb(result);
+    }
+  }
+
+  function saveToken(token) {
+    localStorage.setItem("token", token);
+    setToken(token);
+  }
+
+  return {account, authenticated, signUp, signIn, signOut, updateAccount, createPasswordReset, resetPassword};
 }

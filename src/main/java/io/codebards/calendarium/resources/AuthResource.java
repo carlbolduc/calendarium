@@ -99,23 +99,22 @@ public class AuthResource {
     }
 
     @PUT
-    @Path("/password-resets/{digest}")
+    @Path("/password-resets/{id}")
     public Response resetPassword(PasswordReset passwordReset) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
-        Optional<AccountAuth> oAccount = dao.findAccountByEmail(passwordReset.getEmail());
+        Optional<AccountAuth> oAccount = dao.findAccountByPasswordReset(passwordReset.getId());
         if (oAccount.isPresent()
-                && oAccount.get().getPasswordResetDigest().equals(passwordReset.getDigest())
+                && oAccount.get().getPasswordResetDigest().equals(passwordReset.getId())
                 && Duration.between(oAccount.get().getPasswordResetRequestedAt(), Instant.now()).getSeconds() < 86400) {
-            String passwordDigest = argon2.hash(2, 65536, 1, passwordReset.getPassword().toCharArray());
-            dao.updatePasswordDigest(oAccount.get().getAccountId(), passwordDigest);
             String token = createToken(oAccount.get().getAccountId());
             if (token != null) {
+                String passwordDigest = argon2.hash(2, 65536, 1, passwordReset.getPassword().toCharArray());
+                dao.updatePasswordDigest(oAccount.get().getAccountId(), passwordDigest);
                 AccountToken accountToken = new AccountToken(oAccount.get().getAccountId(), token);
                 response = Response.status(Response.Status.OK).entity(accountToken).build();
             } else {
                 response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
-
         }
         return response;
     }

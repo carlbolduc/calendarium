@@ -7,9 +7,11 @@ public class EmailManager {
     // This address must be verified with Amazon SES.
     private final String from = "grove@codebards.io";
     private final AmazonSimpleEmailService emailClient;
+    private final String baseUrl;
 
-    public EmailManager(AmazonSimpleEmailService emailClient) {
+    public EmailManager(AmazonSimpleEmailService emailClient, String baseUrl) {
         this.emailClient = emailClient;
+        this.baseUrl = baseUrl;
     }
 
     // If the account is still in the sandbox, to address must be verified.
@@ -17,13 +19,13 @@ public class EmailManager {
 
         // The HTML body for the email.
         final String htmlBody = "<h1>Hi, " + name + "</h1>"
-                + "<p>Click <a href=\"https://calendarium.ca/reset-password?digest="
+                + "<p>Click <a href=\"" + baseUrl + "/password-resets/"
                 + passwordResetDigest
                 + "\">here</a> to reset your password</p>.";
 
         // The email body for recipients with non-HTML email clients.
         final String textBody = "Hi, " + name + "\n"
-                + "Reach https://calendarium.ca/reset-password?digest="
+                + "Reach " + baseUrl + "/reset-password?digest="
                 + passwordResetDigest
                 + " to reset your password.";
 

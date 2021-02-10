@@ -1,24 +1,15 @@
 package io.codebards.calendarium.api;
 
 public class PasswordReset {
-    private String email;
-    private String digest;
+    private String id;
     private String password;
 
-    public String getEmail() {
-        return email;
+    public String getId() {
+        return id;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getDigest() {
-        return digest;
-    }
-
-    public void setDigest(String digest) {
-        this.digest = digest;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getPassword() {

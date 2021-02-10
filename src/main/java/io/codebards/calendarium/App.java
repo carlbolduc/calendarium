@@ -74,7 +74,7 @@ public class App extends Application<Config> {
 //        final AmazonS3 fileClient = AmazonS3ClientBuilder.standard().withRegion(Regions.CA_CENTRAL_1).withCredentials(new AWSStaticCredentialsProvider(awsCredentials)).build();
 
         final Dao dao = jdbi.onDemand(Dao.class);
-        final EmailManager emailManager = new EmailManager(emailClient);
+        final EmailManager emailManager = new EmailManager(emailClient, config.getThirdPartyFactory().getBaseUrl());
         final StripeService stripeService = new StripeService(config.getThirdPartyFactory().getStripeApiKey());
         final OpsResource opsResource = new OpsResource(dao);
         final BotResource botResource = new BotResource(dao);

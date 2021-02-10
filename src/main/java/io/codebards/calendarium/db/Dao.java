@@ -35,6 +35,10 @@ public interface Dao {
     @RegisterBeanMapper(AccountAuth.class)
     Optional<AccountAuth> findAccountByEmail(@Bind("email") String email);
 
+    @SqlQuery("SELECT account_id, email, name, language_id, password_digest, password_reset_digest, password_reset_requested_at FROM account WHERE password_reset_digest = :digest")
+    @RegisterBeanMapper(AccountAuth.class)
+    Optional<AccountAuth> findAccountByPasswordReset(@Bind("digest") String digest);
+
     @SqlQuery("SELECT account_id, email, name, language_id, created_at FROM account WHERE account_id = :accountId")
     @RegisterBeanMapper(AccountAuth.class)
     Optional<AccountAuth> findAccountById(@Bind("accountId") long accountId);
@@ -45,7 +49,7 @@ public interface Dao {
     @SqlUpdate("UPDATE account SET password_reset_digest = :passwordResetDigest, password_reset_requested_at = :now WHERE account_id = :accountId")
     void updatePasswordResetDigest(@Bind("accountId") long accountId, @Bind("passwordResetDigest") String passwordResetDigest, @Bind("now") Instant now);
 
-    @SqlUpdate("UPDATE account SET password_digest = :passwordDigest WHERE account_id = :accountId")
+    @SqlUpdate("UPDATE account SET password_digest = :passwordDigest, password_reset_digest = NULL, password_reset_requested_at = NULL WHERE account_id = :accountId")
     void updatePasswordDigest(@Bind("accountId") long accountId, @Bind("passwordDigest") String passwordDigest);
 
     @SqlUpdate("UPDATE account SET email = :email, name = :name, language_id = :languageId WHERE account_id = :accountId")
