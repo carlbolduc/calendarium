@@ -24,3 +24,13 @@ export function useStateCallback(initialState) {
 
   return [state, setStateCallback];
 }
+
+export function errorCallback(err, cb) {
+  if (cb) {
+    const result = {
+      success: false,
+      message: err.message
+    }
+    cb(result);
+  }
+}

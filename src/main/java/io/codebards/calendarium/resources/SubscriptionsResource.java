@@ -9,15 +9,22 @@ import io.codebards.calendarium.core.AccountAuth;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
 
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
 
+@RolesAllowed({"USER"})
 @Path("/subscriptions")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class SubscriptionsResource {
     private final Dao dao;
     private final String stripeApiKey;
@@ -31,7 +38,7 @@ public class SubscriptionsResource {
     }
 
     @POST
-    @Path("/stripe-customer")
+    @Path("/stripe-customers")
     public Response createStripeCustomer(@Auth AccountAuth auth) {
         Response response;
         Stripe.apiKey = stripeApiKey;
@@ -50,8 +57,8 @@ public class SubscriptionsResource {
     }
 
     @POST
-    @Path("/stripe-webhook")
-    public Response createWebhook(String payload, @Context HttpHeaders headers) {
+    @Path("/stripe-events")
+    public Response createStripeEvent(String payload, @Context HttpHeaders headers) {
         try {
             String sigHeader = headers.getRequestHeader("Stripe-Signature").get(0);
             Event event = Webhook.constructEvent(payload, sigHeader, stripeWebhookSecret);

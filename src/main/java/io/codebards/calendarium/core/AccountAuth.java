@@ -1,6 +1,7 @@
 package io.codebards.calendarium.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.codebards.calendarium.api.Subscription;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 import java.security.Principal;
@@ -17,6 +18,7 @@ public class AccountAuth implements Principal {
     private Instant createdAt;
     private String tokenValidator;
     private String stripeCusId;
+    private Subscription subscription;
 
     public long getAccountId() {
         return accountId;
@@ -48,6 +50,22 @@ public class AccountAuth implements Principal {
 
     public void setLanguageId(Long languageId) {
         this.languageId = languageId;
+    }
+
+    public String getStripeCusId() {
+        return stripeCusId;
+    }
+
+    public void setStripeCusId(String stripeCusId) {
+        this.stripeCusId = stripeCusId;
+    }
+
+    public Subscription getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(Subscription subscription) {
+        this.subscription = subscription;
     }
 
     @JsonIgnore
@@ -103,14 +121,6 @@ public class AccountAuth implements Principal {
     @ColumnName("validator")
     public void setTokenValidator(String tokenValidator) {
         this.tokenValidator = tokenValidator;
-    }
-
-    private String getStripeCusId() {
-        return stripeCusId;
-    }
-
-    private void setStripeId(String stripeCusId) {
-        this.stripeCusId = stripeCusId;
     }
 
 }

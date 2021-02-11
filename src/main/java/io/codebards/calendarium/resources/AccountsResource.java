@@ -33,6 +33,8 @@ public class AccountsResource {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
         Optional<AccountAuth> oAccount = dao.findAccountById(auth.getAccountId());
         if (oAccount.isPresent()) {
+            // Set subscription information
+            oAccount.get().setSubscription(dao.findSubscriptionByAccountId(auth.getAccountId()));
             response = Response.status(Response.Status.OK).entity(oAccount.get()).build();
         }
         return response;

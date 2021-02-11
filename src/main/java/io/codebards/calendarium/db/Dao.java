@@ -1,5 +1,6 @@
 package io.codebards.calendarium.db;
 
+import io.codebards.calendarium.api.Subscription;
 import io.codebards.calendarium.core.AccountAuth;
 import io.codebards.calendarium.api.Language;
 import io.codebards.calendarium.api.Localisation;
@@ -64,6 +65,10 @@ public interface Dao {
 
     @SqlUpdate("UPDATE account SET stripe_cus_id = :stripeCusId WHERE account_id = :accountId")
     void setStripeCusId(@Bind("accountId") long accountId, @Bind("stripeCusId") String stripeCusId);
+
+    @SqlQuery("SELECT subscription_id, status, start_at, end_at, stripe_sub_id FROM subscription WHERE account_id = :accountId")
+    @RegisterBeanMapper(Subscription.class)
+    Subscription findSubscriptionByAccountId(@Bind("accountId") long accountId);
 
     // Localisation
 

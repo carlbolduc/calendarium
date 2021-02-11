@@ -1,9 +1,10 @@
 import {useState, useEffect} from "react";
 import axios from "axios";
+import {errorCallback} from "./Helpers";
 
 export function useAuth() {
   const [token, setToken] = useState(localStorage.getItem("token"));
-  const [account, setAccount] = useState({name: "", email: "", languageId: 1});
+  const [account, setAccount] = useState({name: "", email: "", languageId: 1, stripeCusId: null, subscription: null});
   const authenticated = token !== null;
 
   useEffect(() => {
@@ -138,20 +139,10 @@ export function useAuth() {
     });
   }
 
-  function errorCallback(err, cb) {
-    if (cb) {
-      const result = {
-        success: false,
-        message: err.message
-      }
-      cb(result);
-    }
-  }
-
   function saveToken(token) {
     localStorage.setItem("token", token);
     setToken(token);
   }
 
-  return {account, authenticated, signUp, signIn, signOut, updateAccount, createPasswordReset, resetPassword};
+  return {token, account, authenticated, signUp, signIn, signOut, getAccount, updateAccount, createPasswordReset, resetPassword};
 }

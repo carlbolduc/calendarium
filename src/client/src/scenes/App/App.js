@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import axios from "axios";
 import {useLoc} from "../../services/Loc";
 import {useAuth} from "../../services/Auth";
+import {useSubscription} from "../../services/Subscription";
 import Header from "../../components/Header/Header";
 import SignUp from "../Auth/SignUp";
 import SignIn from "../Auth/SignIn";
@@ -18,16 +19,19 @@ import PasswordReset from "../Auth/PasswordReset";
 export default function App() {
   const [languages, setLanguages] = useState([]);
   const {
+    token,
     account,
     authenticated,
     signUp,
     signIn,
     signOut,
+    getAccount,
     updateAccount,
     createPasswordReset,
     resetPassword
   } = useAuth();
   const {getLocData, translate} = useLoc(account, languages);
+  const {customerCreated, subscribed, createCustomer} = useSubscription(token, account, getAccount);
 
   useEffect(() => {
     getLocData();
@@ -103,6 +107,9 @@ export default function App() {
               account={account}
               authenticated={authenticated}
               translate={translate}
+              customerCreated={customerCreated}
+              subscribed={subscribed}
+              createCustomer={createCustomer}
             />
           </Route>
           <Route path="/my-events">
