@@ -1,16 +1,21 @@
 package io.codebards.calendarium.resources;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stripe.Stripe;
+import com.stripe.exception.StripeException;
 import com.stripe.model.*;
 import com.stripe.net.Webhook;
+import io.codebards.calendarium.core.AccountAuth;
 import io.codebards.calendarium.db.Dao;
+import io.dropwizard.auth.Auth;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.Map;
 
 @Path("/subscriptions")
 public class SubscriptionsResource {
@@ -26,13 +31,30 @@ public class SubscriptionsResource {
     }
 
     @POST
-    @Path("/webhook")
-    public Response createWebhook(String payload, @Context HttpHeaders headers) {
-
-        String sigHeader = headers.getRequestHeader("Stripe-Signature").get(0);
-        Event event = null;
+    @Path("/stripe-customer")
+    public Response createStripeCustomer(@Auth AccountAuth auth) {
+        Response response;
+        Stripe.apiKey = stripeApiKey;
+        Map<String, Object> params = new HashMap<>();
+        params.put("email", auth.getEmail());
         try {
-            event = Webhook.constructEvent(payload, sigHeader, stripeWebhookSecret);
+            Customer customer = Customer.create(params);
+            dao.setStripeCusId(auth.getAccountId(), customer.getId());
+            // Customer successfully created, client should fetch the account again to obtain the stripe customer id
+            response = Response.ok().build();
+        } catch (StripeException e) {
+            // Stripe failed to create the customer, client should ask the customer to retry
+            response = Response.serverError().build();
+        }
+        return response;
+    }
+
+    @POST
+    @Path("/stripe-webhook")
+    public Response createWebhook(String payload, @Context HttpHeaders headers) {
+        try {
+            String sigHeader = headers.getRequestHeader("Stripe-Signature").get(0);
+            Event event = Webhook.constructEvent(payload, sigHeader, stripeWebhookSecret);
             // Deserialize the nested object inside the event
             EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
             StripeObject stripeObject = null;

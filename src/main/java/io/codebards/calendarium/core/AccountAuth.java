@@ -16,6 +16,7 @@ public class AccountAuth implements Principal {
     private Instant passwordResetRequestedAt;
     private Instant createdAt;
     private String tokenValidator;
+    private String stripeCusId;
 
     public long getAccountId() {
         return accountId;
@@ -102,6 +103,14 @@ public class AccountAuth implements Principal {
     @ColumnName("validator")
     public void setTokenValidator(String tokenValidator) {
         this.tokenValidator = tokenValidator;
+    }
+
+    private String getStripeCusId() {
+        return stripeCusId;
+    }
+
+    private void setStripeId(String stripeCusId) {
+        this.stripeCusId = stripeCusId;
     }
 
 }

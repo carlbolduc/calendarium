@@ -379,4 +379,13 @@
         </sql>
     </changeSet>
 
+    <changeSet id="2" author="carl">
+        <addColumn tableName="account">
+            <column name="stripe_cus_id" type="clob"/>
+        </addColumn>
+        <addColumn tableName="subscription">
+            <column name="stripe_sub_id" type="clob"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

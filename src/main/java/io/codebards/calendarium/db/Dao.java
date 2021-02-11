@@ -39,7 +39,7 @@ public interface Dao {
     @RegisterBeanMapper(AccountAuth.class)
     Optional<AccountAuth> findAccountByPasswordReset(@Bind("digest") String digest);
 
-    @SqlQuery("SELECT account_id, email, name, language_id, created_at FROM account WHERE account_id = :accountId")
+    @SqlQuery("SELECT account_id, email, name, language_id, stripe_cus_id, created_at FROM account WHERE account_id = :accountId")
     @RegisterBeanMapper(AccountAuth.class)
     Optional<AccountAuth> findAccountById(@Bind("accountId") long accountId);
 
@@ -61,6 +61,9 @@ public interface Dao {
     @SqlUpdate("INSERT INTO account_token (selector, validator, created_at, account_id)\n" +
             "VALUES (:selector, :validator, :now, :accountId)")
     void insertAccountToken(@Bind("selector") String selector, @Bind("validator") String validator, @Bind("now") Instant now, @Bind("accountId") long accountId);
+
+    @SqlUpdate("UPDATE account SET stripe_cus_id = :stripeCusId WHERE account_id = :accountId")
+    void setStripeCusId(@Bind("accountId") long accountId, @Bind("stripeCusId") String stripeCusId);
 
     // Localisation
 
