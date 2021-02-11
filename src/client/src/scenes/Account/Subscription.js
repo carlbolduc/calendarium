@@ -1,7 +1,11 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
+import {Elements} from '@stripe/react-stripe-js';
+import {loadStripe} from '@stripe/stripe-js';
+import CheckoutForm from "./CheckoutForm";
 
 export default function Subscription(props) {
+  const stripePromise = loadStripe(process.env.STRIPE_PK);
 
   function subscribe(e) {
     e.preventDefault();
@@ -33,7 +37,11 @@ export default function Subscription(props) {
         // Show subscription details
       } else {
         if (props.customerCreated) {
-          // We have the customer id, we can load the Stripe form
+          result = (
+            <Elements stripe={stripePromise}>
+              <CheckoutForm />
+            </Elements>
+          )
         } else {
           result = pricing;
         }
