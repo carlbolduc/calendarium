@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { Redirect } from "react-router-dom";
-import Input from "../../components/Form/Input/Input";
-import Button from "../../components/Form/Button/Button";
+import Input from "../../components/Form/Input";
+import Button from "../../components/Form/Button";
 
 export default function Profile(props) {
   const [name, setName] = useState(props.account.name);

@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from "react";
 import { useParams } from "react-router-dom";
 import {Redirect} from "react-router-dom";
-import Input from "../../components/Form/Input/Input";
-import Button from "../../components/Form/Button/Button";
+import Input from "../../components/Form/Input";
+import Button from "../../components/Form/Button";
 
 export default function PasswordReset(props) {
   const [invalidDigest, setInvalidDigest] = useState(false);

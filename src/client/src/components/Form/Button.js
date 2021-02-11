@@ -5,7 +5,7 @@ export default function Button(props) {
     <button
       id={props.id}
       type={props.type}
-      className="btn btn-primary"
+      className="btn btn-primary my-3"
       disabled
     >
       <span className="spinner-border spinner-border-sm mr-1"/>
@@ -15,7 +15,7 @@ export default function Button(props) {
     <button
       id={props.id}
       type={props.type}
-      className="btn btn-primary"
+      className="btn btn-primary my-3"
       disabled={props.disabled ? props.disabled : null}
     >{props.label}</button>
   );
