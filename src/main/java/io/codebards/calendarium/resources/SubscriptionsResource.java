@@ -2,9 +2,15 @@ package io.codebards.calendarium.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stripe.Stripe;
+import com.stripe.exception.CardException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.*;
 import com.stripe.net.Webhook;
+import com.stripe.param.CustomerUpdateParams;
+import com.stripe.param.PaymentMethodAttachParams;
+import com.stripe.param.SubscriptionCreateParams;
+import io.codebards.calendarium.api.PaymentIntentStatus;
+import io.codebards.calendarium.api.Price;
 import io.codebards.calendarium.core.AccountAuth;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
@@ -18,6 +24,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,6 +59,49 @@ public class SubscriptionsResource {
         } catch (StripeException e) {
             // Stripe failed to create the customer, client should ask the customer to retry
             response = Response.serverError().build();
+        }
+        return response;
+    }
+
+    @POST
+    @Path("/stripe-subscriptions")
+    public Response createStripeSubscription(@Auth AccountAuth auth, PaymentMethod paymentMethod) {
+        Response response;
+        Stripe.apiKey = stripeApiKey;
+        Customer customer = null;
+        try {
+            customer = Customer.retrieve(auth.getStripeCusId());
+            try {
+                // Set the default payment method on the customer
+                PaymentMethod pm = PaymentMethod.retrieve(paymentMethod.getId());
+                pm.attach(PaymentMethodAttachParams.builder().setCustomer(customer.getId()).build());
+                CustomerUpdateParams customerUpdateParams = CustomerUpdateParams
+                        .builder()
+                        .setInvoiceSettings(CustomerUpdateParams.InvoiceSettings.builder().setDefaultPaymentMethod(pm.getId()).build())
+                        .build();
+                customer.update(customerUpdateParams);
+                // Get price id from database
+                Price price = dao.findPrice();
+                // Create the subscription
+                SubscriptionCreateParams subCreateParams = SubscriptionCreateParams
+                        .builder()
+                        .addItem(SubscriptionCreateParams.Item.builder().setPrice(price.getStripePriceId()).build())
+                        .setCustomer(customer.getId())
+                        .addAllExpand(Collections.singletonList("latest_invoice.payment_intent"))
+                        .build();
+                Subscription subscription = Subscription.create(subCreateParams);
+                // TODO: sub status should be an enum (only in Java, not in db)
+                dao.insertSubscription(auth.getAccountId(), subscription.getId(), price.getPriceId(), subscription.getCurrentPeriodStart(), subscription.getCurrentPeriodEnd(), "active");
+                if (subscription.getLatestInvoiceObject().getPaymentIntentObject().getStatus().equals(PaymentIntentStatus.SUCCEEDED.getStatus())) {
+                    // TODO: It worked, check what we must return to client
+                    //...
+                };
+                response = Response.ok().build();
+            } catch (CardException e) {
+                response = Response.serverError().entity(e.getLocalizedMessage()).build();
+            }
+        } catch (StripeException e) {
+            response = Response.serverError().entity(e.getLocalizedMessage()).build();
         }
         return response;
     }

@@ -1,5 +1,6 @@
 package io.codebards.calendarium.db;
 
+import io.codebards.calendarium.api.Price;
 import io.codebards.calendarium.api.Subscription;
 import io.codebards.calendarium.core.AccountAuth;
 import io.codebards.calendarium.api.Language;
@@ -63,13 +64,6 @@ public interface Dao {
             "VALUES (:selector, :validator, :now, :accountId)")
     void insertAccountToken(@Bind("selector") String selector, @Bind("validator") String validator, @Bind("now") Instant now, @Bind("accountId") long accountId);
 
-    @SqlUpdate("UPDATE account SET stripe_cus_id = :stripeCusId WHERE account_id = :accountId")
-    void setStripeCusId(@Bind("accountId") long accountId, @Bind("stripeCusId") String stripeCusId);
-
-    @SqlQuery("SELECT subscription_id, status, start_at, end_at, stripe_sub_id FROM subscription WHERE account_id = :accountId")
-    @RegisterBeanMapper(Subscription.class)
-    Subscription findSubscriptionByAccountId(@Bind("accountId") long accountId);
-
     // Localisation
 
     @SqlQuery("SELECT en_ca, fr_ca FROM localisation")
@@ -87,4 +81,19 @@ public interface Dao {
     @RegisterBeanMapper(Language.class)
     List<Language> findAllLanguages();
 
+    // Subscription
+
+    @SqlUpdate("UPDATE account SET stripe_cus_id = :stripeCusId WHERE account_id = :accountId")
+    void setStripeCusId(@Bind("accountId") long accountId, @Bind("stripeCusId") String stripeCusId);
+
+    @SqlQuery("SELECT subscription_id, status, start_at, end_at, stripe_sub_id FROM subscription WHERE account_id = :accountId")
+    @RegisterBeanMapper(Subscription.class)
+    Subscription findSubscriptionByAccountId(@Bind("accountId") long accountId);
+
+    @SqlQuery("SELECT * FROM price LIMIT 1")
+    @RegisterBeanMapper(Price.class)
+    Price findPrice();
+
+    @SqlUpdate("INSERT INTO subscription (account_id, stripe_sub_id, price_id, start_at, end_at, status) VALUES (:accountId, :stripeSubId, :priceId, :startAt, :endAt, :status)")
+    void insertSubscription(@Bind("accountId") long accountId, @Bind("stripeSubId") String stripeSubId, @Bind("priceId") long priceId, @Bind("startAt") long startAt, @Bind("endAt") long endAt, @Bind("status") String status);
 }
