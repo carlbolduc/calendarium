@@ -9,6 +9,7 @@ import com.stripe.net.Webhook;
 import com.stripe.param.CustomerUpdateParams;
 import com.stripe.param.PaymentMethodAttachParams;
 import com.stripe.param.SubscriptionCreateParams;
+import com.stripe.param.SubscriptionUpdateParams;
 import io.codebards.calendarium.api.PaymentIntentStatus;
 import io.codebards.calendarium.api.Price;
 import io.codebards.calendarium.api.SubscriptionStatus;
@@ -17,10 +18,7 @@ import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -104,6 +102,30 @@ public class SubscriptionsResource {
             }
         } catch (StripeException e) {
             response = Response.serverError().entity(e.getLocalizedMessage()).build();
+        }
+        return response;
+    }
+
+    @PUT
+    @Path("/stripe-subscriptions/{id}")
+    public Response cancelSubscription(@Auth AccountAuth auth) {
+        // TODO: add new object representing possible Subscription updates, including cancelAtPeriodEnd to support cancellation
+        Response response;
+        Stripe.apiKey = stripeApiKey;
+        String stripeSubId = dao.findStripeSubId(auth.getAccountId());
+        if (stripeSubId != null) {
+            try {
+                Subscription subscription = Subscription.retrieve(stripeSubId);
+                SubscriptionUpdateParams params = SubscriptionUpdateParams.builder().setCancelAtPeriodEnd(true).build();
+                subscription.update(params);
+                // TODO: update subscription and set status to cancel
+                response = Response.ok().build();
+            } catch (StripeException e) {
+                e.printStackTrace();
+                response = Response.serverError().build();
+            }
+        } else {
+            response = Response.status(Response.Status.NOT_FOUND).build();
         }
         return response;
     }
