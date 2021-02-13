@@ -11,6 +11,7 @@ import com.stripe.param.PaymentMethodAttachParams;
 import com.stripe.param.SubscriptionCreateParams;
 import io.codebards.calendarium.api.PaymentIntentStatus;
 import io.codebards.calendarium.api.Price;
+import io.codebards.calendarium.api.SubscriptionStatus;
 import io.codebards.calendarium.core.AccountAuth;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
@@ -24,6 +25,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,7 +70,7 @@ public class SubscriptionsResource {
     public Response createStripeSubscription(@Auth AccountAuth auth, PaymentMethod paymentMethod) {
         Response response;
         Stripe.apiKey = stripeApiKey;
-        Customer customer = null;
+        Customer customer;
         try {
             customer = Customer.retrieve(auth.getStripeCusId());
             try {
@@ -83,6 +85,7 @@ public class SubscriptionsResource {
                 // Get price id from database
                 Price price = dao.findPrice();
                 // Create the subscription
+                // TODO: obtain tax rates based on billing info found in paymentMethod
                 SubscriptionCreateParams subCreateParams = SubscriptionCreateParams
                         .builder()
                         .addItem(SubscriptionCreateParams.Item.builder().setPrice(price.getStripePriceId()).build())
@@ -90,12 +93,11 @@ public class SubscriptionsResource {
                         .addAllExpand(Collections.singletonList("latest_invoice.payment_intent"))
                         .build();
                 Subscription subscription = Subscription.create(subCreateParams);
-                // TODO: sub status should be an enum (only in Java, not in db)
-                dao.insertSubscription(auth.getAccountId(), subscription.getId(), price.getPriceId(), subscription.getCurrentPeriodStart(), subscription.getCurrentPeriodEnd(), "active");
+                dao.insertSubscription(auth.getAccountId(), subscription.getId(), price.getPriceId(), Instant.ofEpochSecond(subscription.getCurrentPeriodStart()), Instant.ofEpochSecond(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus());
                 if (subscription.getLatestInvoiceObject().getPaymentIntentObject().getStatus().equals(PaymentIntentStatus.SUCCEEDED.getStatus())) {
                     // TODO: It worked, check what we must return to client
-                    //...
-                };
+                    // Check with Stripe if it's possible to get a subscription that is not succeeded when we reach this step
+                }
                 response = Response.ok().build();
             } catch (CardException e) {
                 response = Response.serverError().entity(e.getLocalizedMessage()).build();

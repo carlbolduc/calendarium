@@ -95,5 +95,5 @@ public interface Dao {
     Price findPrice();
 
     @SqlUpdate("INSERT INTO subscription (account_id, stripe_sub_id, price_id, start_at, end_at, status) VALUES (:accountId, :stripeSubId, :priceId, :startAt, :endAt, :status)")
-    void insertSubscription(@Bind("accountId") long accountId, @Bind("stripeSubId") String stripeSubId, @Bind("priceId") long priceId, @Bind("startAt") long startAt, @Bind("endAt") long endAt, @Bind("status") String status);
+    void insertSubscription(@Bind("accountId") long accountId, @Bind("stripeSubId") String stripeSubId, @Bind("priceId") long priceId, @Bind("startAt") Instant startAt, @Bind("endAt") Instant endAt, @Bind("status") String status);
 }

@@ -2,7 +2,7 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 import {Elements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
-import CheckoutForm from "./CheckoutForm";
+import SubscribeForm from "./SubscribeForm";
 
 export default function Subscription(props) {
   const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
@@ -39,7 +39,10 @@ export default function Subscription(props) {
         if (props.customerCreated) {
           result = (
             <Elements stripe={stripePromise}>
-              <CheckoutForm createSubscription={props.createSubscription} />
+              <SubscribeForm
+                createSubscription={props.createSubscription}
+                translate={props.translate}
+              />
             </Elements>
           )
         } else {

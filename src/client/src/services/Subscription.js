@@ -41,16 +41,10 @@ export function useSubscription(token, account, getAccount) {
         url: `${process.env.REACT_APP_API}/subscriptions/stripe-subscriptions`,
         data: paymentMethod
       }).then(() => {
-        if (cb) {
-          const result = {
-            success: true,
-            message: "Subscription created successfully."
-          }
-          // Fetch account to retrieve the new stripeCusId value
-          getAccount();
-          cb(result);
-        }
+        // Success, fetch account to retrieve the subscription
+        getAccount();
       }).catch(err => {
+        // Let caller know that something went wrong
         errorCallback(err, cb);
       });
     }
