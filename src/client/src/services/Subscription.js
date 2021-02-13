@@ -26,9 +26,35 @@ export function useSubscription(token, account, getAccount) {
         }
       }).catch(err => {
         errorCallback(err, cb);
-      })
+      });
     }
   }
 
-  return {customerCreated, subscribed, createCustomer};
+  function createSubscription(paymentMethod, cb) {
+    if (token !== null && account.stripeCusId !== null) {
+      axios({
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        url: `${process.env.REACT_APP_API}/subscriptions/stripe-subscriptions`,
+        data: paymentMethod
+      }).then(() => {
+        if (cb) {
+          const result = {
+            success: true,
+            message: "Subscription created successfully."
+          }
+          // Fetch account to retrieve the new stripeCusId value
+          getAccount();
+          cb(result);
+        }
+      }).catch(err => {
+        errorCallback(err, cb);
+      });
+    }
+  }
+
+  return {customerCreated, subscribed, createCustomer, createSubscription};
 }

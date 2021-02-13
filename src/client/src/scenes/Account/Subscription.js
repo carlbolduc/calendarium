@@ -5,7 +5,7 @@ import {loadStripe} from '@stripe/stripe-js';
 import CheckoutForm from "./CheckoutForm";
 
 export default function Subscription(props) {
-  const stripePromise = loadStripe(process.env.STRIPE_PK);
+  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
 
   function subscribe(e) {
     e.preventDefault();
@@ -39,7 +39,7 @@ export default function Subscription(props) {
         if (props.customerCreated) {
           result = (
             <Elements stripe={stripePromise}>
-              <CheckoutForm />
+              <CheckoutForm createSubscription={props.createSubscription} />
             </Elements>
           )
         } else {

@@ -4,7 +4,7 @@ public class Price {
     private long priceId;
     private String stripePriceId;
     private String stripeProductId;
-    private long price;
+    private int price;
 
     public long getPriceId() {
         return priceId;
@@ -34,7 +34,7 @@ public class Price {
         return price;
     }
 
-    public void setPrice(long price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 }

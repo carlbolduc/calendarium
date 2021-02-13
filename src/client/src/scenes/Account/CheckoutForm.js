@@ -1,6 +1,6 @@
 import {CardElement, useStripe, useElements} from '@stripe/react-stripe-js';
 
-export default function CheckoutForm() {
+export default function CheckoutForm(props) {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -29,6 +29,8 @@ export default function CheckoutForm() {
       console.log('[error]', error);
     } else {
       console.log('[PaymentMethod]', paymentMethod);
+      props.createSubscription(paymentMethod, result => {
+      });
     }
   };
 

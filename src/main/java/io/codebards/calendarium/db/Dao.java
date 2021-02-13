@@ -26,7 +26,7 @@ public interface Dao {
     @GetGeneratedKeys
     long insertAccount(@Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId, @Bind("passwordDigest") String passwordDigest);
 
-    @SqlQuery("SELECT a.account_id, a.email, a.name, a.language_id, at.validator\n" +
+    @SqlQuery("SELECT a.account_id, a.email, a.name, a.language_id, a.stripe_cus_id, at.validator\n" +
             "FROM account a\n" +
             "         INNER JOIN account_token at ON a.account_id = at.account_id\n" +
             "WHERE at.selector = :selector")
