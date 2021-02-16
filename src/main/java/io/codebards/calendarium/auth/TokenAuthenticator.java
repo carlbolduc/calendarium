@@ -24,6 +24,7 @@ public class TokenAuthenticator implements Authenticator<String, AccountAuth> {
             if (oAccount.isPresent()) {
                 try {
                     if (Utils.getHash(verifier).equals(oAccount.get().getTokenValidator())) {
+                        oAccount.get().setSubscription(dao.findSubscriptionByAccountId(oAccount.get().getAccountId()));
                         return oAccount;
                     }
                 } catch (NoSuchAlgorithmException e) {

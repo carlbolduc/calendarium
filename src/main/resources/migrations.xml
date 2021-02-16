@@ -401,4 +401,8 @@
         </sql>
     </changeSet>
 
+    <changeSet id="2" author="carl">
+        <renameColumn tableName="calendar" oldColumnName="public" newColumnName="publicCalendar" />
+    </changeSet>
+
 </databaseChangeLog>

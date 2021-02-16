@@ -78,6 +78,7 @@ public class App extends Application<Config> {
         final AccountsResource accountsResource = new AccountsResource(dao, argon2, stripeService);
         final LocalisationsResource localisationsResource = new LocalisationsResource(dao);
         final SubscriptionsResource subscriptionsResource = new SubscriptionsResource(dao, config.getThirdPartyFactory().getStripeApiKey(), config.getThirdPartyFactory().getStripeWebhookSecret());
+        final CalendarsResource calendarsResource = new CalendarsResource(dao);
 
         if (config.getThirdPartyFactory().getEnv().equals("development")) {
             setupCors(environment);
@@ -97,6 +98,7 @@ public class App extends Application<Config> {
         environment.jersey().register(accountsResource);
         environment.jersey().register(localisationsResource);
         environment.jersey().register(subscriptionsResource);
+        environment.jersey().register(calendarsResource);
     }
 
     private void setupCors(Environment environment) {

@@ -2,10 +2,16 @@ package io.codebards.calendarium.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.codebards.calendarium.api.Subscription;
+import io.codebards.calendarium.api.SubscriptionStatus;
+
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 import java.security.Principal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class AccountAuth implements Principal {
     private long accountId;
@@ -107,8 +113,7 @@ public class AccountAuth implements Principal {
 
     @JsonIgnore
     public boolean hasRole(String role) {
-        // TODO: implement role validation
-        return true;
+        return getRoles().contains(role);
     }
 
     @JsonIgnore
@@ -121,6 +126,16 @@ public class AccountAuth implements Principal {
     @ColumnName("validator")
     public void setTokenValidator(String tokenValidator) {
         this.tokenValidator = tokenValidator;
+    }
+
+    @JsonIgnore
+    public Set<String> getRoles() {
+        List<String> roles = new ArrayList<>();
+        roles.add("USER");
+        if (subscription != null && subscription.getStatus().equals(SubscriptionStatus.ACTIVE.getStatus())) {
+            roles.add("SUBSCRIBER");
+        }
+        return new HashSet<>(roles);
     }
 
 }
