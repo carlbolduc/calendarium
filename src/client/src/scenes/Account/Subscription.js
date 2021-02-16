@@ -3,6 +3,7 @@ import { Redirect } from "react-router-dom";
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import SubscribeForm from "./SubscribeForm";
+import Button from "../../components/Form/Button";
 
 export default function Subscription(props) {
   const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
@@ -35,7 +36,7 @@ export default function Subscription(props) {
           <h5 className="card-title">{props.translate("Calendarium Unlimited")}</h5>
           <h6 className="card-subtitle mb-2 text-muted">{props.translate("$600 / year")}</h6>
           <p className="card-text">{props.translate("Includes unlimited calendars and unlimited additional users.")}</p>
-          <a className="btn btn-primary" href="#" onClick={(e) => subscribe(e)}>{props.translate("Subscribe")}</a>
+          <Button label={props.translate("Subscribe")} type="button" id="button-subscribe" onClick={(e) => subscribe(e)} />
         </div>
       </div>
     </div>
