@@ -1,10 +1,32 @@
+import {useState, useEffect} from "react";
 import axios from "axios";
 import {errorCallback} from "./Helpers";
 
 export function useCalendar(token, subscribed) {
+  const [calendars, setCalendars] = useState([]);
+
+  useEffect(() => {
+    if (token !== null) {
+      getCalendars();
+    }
+  }, [token]);
 
   function getCalendars() {
-    console.log("TODO: get calendars from the API");
+    if (token !== null) {
+      axios({
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        url: `${process.env.REACT_APP_API}/calendars`,
+      }).then(res => {
+        setCalendars(res.data);
+      }).catch(err => {
+        console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendars' from 'useCalendar' hook");
+        console.log(err.response);
+      });
+    }
   }
 
   function createCalendar(data, cb) {
@@ -27,5 +49,5 @@ export function useCalendar(token, subscribed) {
     }
   }
 
-  return {getCalendars, createCalendar};
+  return {calendars, getCalendars, createCalendar};
 }

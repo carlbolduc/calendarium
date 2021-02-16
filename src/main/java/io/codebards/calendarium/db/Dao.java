@@ -6,6 +6,7 @@ import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.api.Calendar;
 import io.codebards.calendarium.api.Language;
 import io.codebards.calendarium.api.Localisation;
+import liquibase.pro.packaged.B;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -108,10 +109,30 @@ public interface Dao {
 
     // Calendar
 
+    @SqlQuery("SELECT c.calendar_id,\n" +
+            "       c.enable_en,\n" +
+            "       c.enable_fr,\n" +
+            "       c.name_en,\n" +
+            "       c.name_fr,\n" +
+            "       c.description_en,\n" +
+            "       c.description_fr,\n" +
+            "       c.link_en,\n" +
+            "       c.link_fr,\n" +
+            "       c.primary_color,\n" +
+            "       c.secondary_color\n" +
+            "FROM calendar c\n" +
+            "         INNER JOIN calendar_access ca on c.calendar_id = ca.calendar_id\n" +
+            "WHERE ca.account_id = :accountId")
+    @RegisterBeanMapper(Calendar.class)
+    List<Calendar> findCalendars(@Bind("accountId") long accountId);
+
     @SqlUpdate("INSERT INTO calendar (enable_fr, enable_en, name_fr, name_en, description_fr, description_en, link_fr,\n" +
             "                      link_en, primary_color, secondary_color, public_calendar, event_approval_required)\n" +
             "VALUES (:enableFr, :enableEn, :enableFr, :nameEn, :descriptionFr, :descriptionEn, :linkFr, :linkEn,\n" +
             "        :primaryColor, :secondaryColor, :publicCalendar, :eventApprovalRequired)")
     @GetGeneratedKeys
     long insertCalendar(@Bind("accountId") long accountId, @BindBean Calendar calendar);
+
+    @SqlUpdate("INSERT INTO calendar_access (account_id, calendar_id, status) VALUES (:accountId, :calendarId, :status)")
+    void insertCalendarAccess(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @Bind("status") String status);
 }
