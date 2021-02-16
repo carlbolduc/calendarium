@@ -20,7 +20,6 @@ export default function SignUp(props) {
         "email": email,
         "password": password
       }, result => {
-        console.log(result);
         setResult(result);
         setRequesting(false);
       });
@@ -39,7 +38,7 @@ export default function SignUp(props) {
       <>
         <div className="p-5">
           <h1>{props.translate("Create an account")}</h1>
-          <Message result={result} />
+          <Message result={result} origin="signUp" translate={props.translate} />
           <form onSubmit={handleSubmit} id="form-sign-up">
             <Input
               label={props.translate("Name")}

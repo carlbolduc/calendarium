@@ -1,17 +1,53 @@
 import React from 'react';
 
 export default function Message(props) {
-  let message = null;
-  if (props.result && !props.result.success) {
-    message = (
-      <div className="alert alert-danger alert-dismissible fade show my-4" role="alert">
-        {/* TODO: create an enum for all possible message to use here */}
-        {props.result.message}
-        <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" />
-      </div>
-    );
-  } else {
-    // TODO: implement the green/success message
-  }
-  return message;
+  let result = null;
+  if (props.result) {
+    if (props.result.success) {
+      // map of all possible success messages
+      let messages = new Map();
+      messages.set("signUp","Account created successfully.");
+      messages.set("signIn","Successfully signed in.");
+      messages.set("forgotPassword","We have received your password reset request. Instructions are on their way, check your email!");
+      messages.set("passwordReset","Your password has been reset successfully. You're good to go!");
+      messages.set("profile","Your profile changes have been saved successfully.");
+
+      // manage the unexpected successes
+      let message = messages.get(props.origin);
+      if (message === undefined) {message = "Success!"};
+
+      result = (
+        <div className="alert alert-success alert-dismissible fade show my-4" role="alert">
+          {props.translate(message)}
+          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" />
+        </div>
+      );
+    } else {
+      // map of all possible error messages
+      let messages = new Map();
+      messages.set("signUp409","We already have someone else registered with this email. Make sure it is entered correctly. If this is really your email, try signing in instead, or request a password reset.");
+      messages.set("signUp500","Something went wrong with our servers when trying to create your account. Try again, and if this error keeps popping, contact us in the grove.");
+      messages.set("signIn401","We didn't recognise your email or your password. Make sure they are entered correctly and try again.");
+      messages.set("signIn500","Something went wrong with our servers when trying to sign you in. Try again, and if this error keeps popping, contact us in the grove.");
+      messages.set("forgotPassword404","We didn't recognise your email. Make sure it is entered correctly and try again.");
+      messages.set("forgotPassword500","Something went wrong with our servers when trying to receive your password reset request. Try again, and if that error keeps popping, contact us in the grove.");
+      messages.set("passwordReset404","We didn't recognise this reset link. Try clicking on it again from the email you received, and if this error keeps popping, you can either request a new reset or contact us in the grove.");
+      messages.set("passwordReset500","Something went wrong with our servers when trying to reset your password. Try again, and if this error keeps popping, contact us in the grove.");
+      messages.set("profile404","We couldn't find your profile. Try saving your changes again, and if this error keeps popping, contact us in the grove");
+      messages.set("profile409","We already have someone else registered with the new email you've entered, so we cannot update your profile to this email. Choose a different one, or make sure it is entered correctly, then try saving your changes again.");
+      messages.set("profile401","It seems your account is not allowed to make changes to this profile. If this doesn't feel right, contact us in the grove.")
+
+      // manage the unexpected errors
+      let message = messages.get(props.origin + props.result.errorCode);
+      if (message === undefined) {message = "We have encountered the unexpected. Mark the calendar! And maybe contact us in the grove."};
+
+      result = (
+        <div className="alert alert-danger alert-dismissible fade show my-4" role="alert">
+          {props.translate(message)}
+          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" />
+        </div>
+      );
+    }
+  } 
+  return result;
 }

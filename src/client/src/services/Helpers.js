@@ -29,7 +29,6 @@ export function errorCallback(err, cb) {
   if (cb) {
     const result = {
       success: false,
-      message: err.message,
       errorCode: err.response.status
     }
     cb(result);
