@@ -13,6 +13,7 @@ import com.stripe.param.SubscriptionUpdateParams;
 import io.codebards.calendarium.api.PaymentIntentStatus;
 import io.codebards.calendarium.api.Price;
 import io.codebards.calendarium.api.SubscriptionStatus;
+import io.codebards.calendarium.api.SubscriptionUpdate;
 import io.codebards.calendarium.core.AccountAuth;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
@@ -108,25 +109,26 @@ public class SubscriptionsResource {
 
     @PUT
     @Path("/stripe-subscriptions/{id}")
-    public Response cancelSubscription(@Auth AccountAuth auth) {
-        // TODO: add new object representing possible Subscription updates, including cancelAtPeriodEnd to support cancellation
-        Response response;
-        Stripe.apiKey = stripeApiKey;
-        String stripeSubId = dao.findStripeSubId(auth.getAccountId());
-        if (stripeSubId != null) {
-            try {
-                Subscription subscription = Subscription.retrieve(stripeSubId);
-                SubscriptionUpdateParams params = SubscriptionUpdateParams.builder().setCancelAtPeriodEnd(true).build();
-                subscription.update(params);
-                // TODO: update subscription and set status to cancel
-                response = Response.ok().build();
-            } catch (StripeException e) {
-                e.printStackTrace();
-                response = Response.serverError().build();
+    public Response cancelSubscription(@Auth AccountAuth auth, SubscriptionUpdate update) {
+        Response response = Response.ok().build();;
+        if (update.getCancelAtPeriodEnd()) {
+            Stripe.apiKey = stripeApiKey;
+            String stripeSubId = dao.findStripeSubId(auth.getAccountId());
+            if (stripeSubId != null) {
+                try {
+                    Subscription subscription = Subscription.retrieve(stripeSubId);
+                    SubscriptionUpdateParams params = SubscriptionUpdateParams.builder().setCancelAtPeriodEnd(true).build();
+                    subscription.update(params);
+                    dao.updateSubscriptionStatus(stripeSubId, SubscriptionStatus.CANCELED.getStatus());
+                } catch (StripeException e) {
+                    e.printStackTrace();
+                    response = Response.serverError().build();
+                }
+            } else {
+                response = Response.status(Response.Status.NOT_FOUND).build();
             }
-        } else {
-            response = Response.status(Response.Status.NOT_FOUND).build();
         }
+        
         return response;
     }
 

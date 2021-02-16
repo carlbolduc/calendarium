@@ -99,4 +99,7 @@ public interface Dao {
 
     @SqlQuery("SELECT stripe_sub_id FROM subscription WHERE account_id = :accountId")
     String findStripeSubId(@Bind("accountId") long accountId);
+
+    @SqlUpdate("UPDATE subscription SET status = :status WHERE stripe_sub_id = :stripeSubId")
+    void updateSubscriptionStatus(@Bind("stripeSubId") String stripeSubId, @Bind("status") String status);
 }
