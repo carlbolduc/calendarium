@@ -8,7 +8,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import io.codebards.calendarium.core.AccountAuth;
+import io.codebards.calendarium.api.Calendar;
+import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
 
@@ -26,7 +27,7 @@ public class CalendarsResource {
 
     @POST
     @RolesAllowed({"SUBSCRIBER"})
-    public Response createCalendar(@Auth AccountAuth auth) {
+    public Response createCalendar(@Auth Account auth, Calendar calendar) {
         Response response = Response.ok().build();
 
         

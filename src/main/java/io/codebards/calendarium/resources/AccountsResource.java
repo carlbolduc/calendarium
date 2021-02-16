@@ -2,7 +2,7 @@ package io.codebards.calendarium.resources;
 
 import io.codebards.calendarium.api.AccountUpdate;
 import io.codebards.calendarium.core.StripeService;
-import io.codebards.calendarium.core.AccountAuth;
+import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.db.Dao;
 import de.mkammerer.argon2.Argon2;
 import io.dropwizard.auth.Auth;
@@ -29,9 +29,9 @@ public class AccountsResource {
     }
 
     @GET
-    public Response getAccount(@Auth AccountAuth auth) {
+    public Response getAccount(@Auth Account auth) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
-        Optional<AccountAuth> oAccount = dao.findAccountById(auth.getAccountId());
+        Optional<Account> oAccount = dao.findAccountById(auth.getAccountId());
         if (oAccount.isPresent()) {
             // Set subscription information
             oAccount.get().setSubscription(dao.findSubscriptionByAccountId(auth.getAccountId()));
@@ -42,9 +42,9 @@ public class AccountsResource {
 
     @PUT
     @Path("/{accountId}")
-    public Response putAccount(@Auth AccountAuth auth, AccountUpdate accountUpdate) {
+    public Response putAccount(@Auth Account auth, AccountUpdate accountUpdate) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
-        Optional<AccountAuth> oAccount = dao.findAccountByEmail(accountUpdate.getEmail());
+        Optional<Account> oAccount = dao.findAccountByEmail(accountUpdate.getEmail());
         // Check if email was changed
         if (!accountUpdate.getEmail().equals(auth.getEmail())) {
             // Email was updated, validate that new email is available

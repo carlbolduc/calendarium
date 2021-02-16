@@ -1,6 +1,6 @@
 package io.codebards.calendarium.api;
 
-public class Account {
+public class AccountWut {
     private String email;
     private String name;
     private Long languageId;

@@ -2,7 +2,7 @@ package io.codebards.calendarium.db;
 
 import io.codebards.calendarium.api.Price;
 import io.codebards.calendarium.api.Subscription;
-import io.codebards.calendarium.core.AccountAuth;
+import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.api.Language;
 import io.codebards.calendarium.api.Localisation;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
@@ -30,20 +30,20 @@ public interface Dao {
             "FROM account a\n" +
             "         INNER JOIN account_token at ON a.account_id = at.account_id\n" +
             "WHERE at.selector = :selector")
-    @RegisterBeanMapper(AccountAuth.class)
-    Optional<AccountAuth> findAccount(@Bind("selector") String selector);
+    @RegisterBeanMapper(Account.class)
+    Optional<Account> findAccount(@Bind("selector") String selector);
 
     @SqlQuery("SELECT account_id, email, name, language_id, password_digest, password_reset_digest, password_reset_requested_at FROM account WHERE email = :email")
-    @RegisterBeanMapper(AccountAuth.class)
-    Optional<AccountAuth> findAccountByEmail(@Bind("email") String email);
+    @RegisterBeanMapper(Account.class)
+    Optional<Account> findAccountByEmail(@Bind("email") String email);
 
     @SqlQuery("SELECT account_id, email, name, language_id, password_digest, password_reset_digest, password_reset_requested_at FROM account WHERE password_reset_digest = :digest")
-    @RegisterBeanMapper(AccountAuth.class)
-    Optional<AccountAuth> findAccountByPasswordReset(@Bind("digest") String digest);
+    @RegisterBeanMapper(Account.class)
+    Optional<Account> findAccountByPasswordReset(@Bind("digest") String digest);
 
     @SqlQuery("SELECT account_id, email, name, language_id, stripe_cus_id, created_at FROM account WHERE account_id = :accountId")
-    @RegisterBeanMapper(AccountAuth.class)
-    Optional<AccountAuth> findAccountById(@Bind("accountId") long accountId);
+    @RegisterBeanMapper(Account.class)
+    Optional<Account> findAccountById(@Bind("accountId") long accountId);
 
     @SqlQuery("SELECT password_digest FROM account WHERE account_id = :accountId")
     String findPasswordDigest(@Bind("accountId") long accountId);

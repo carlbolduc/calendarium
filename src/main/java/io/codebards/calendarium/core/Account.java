@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class AccountAuth implements Principal {
+public class Account implements Principal {
     private long accountId;
     private String email;
     private String name;

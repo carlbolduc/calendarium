@@ -9,7 +9,7 @@ import io.codebards.calendarium.auth.CalendariumAuthorizer;
 import io.codebards.calendarium.auth.TokenAuthenticator;
 import io.codebards.calendarium.core.EmailManager;
 import io.codebards.calendarium.core.StripeService;
-import io.codebards.calendarium.core.AccountAuth;
+import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.db.Dao;
 import io.codebards.calendarium.resources.*;
 import de.mkammerer.argon2.Argon2;
@@ -84,14 +84,14 @@ public class App extends Application<Config> {
             setupCors(environment);
         }
 
-        environment.jersey().register(new AuthDynamicFeature(new OAuthCredentialAuthFilter.Builder<AccountAuth>()
+        environment.jersey().register(new AuthDynamicFeature(new OAuthCredentialAuthFilter.Builder<Account>()
                 .setAuthenticator(new TokenAuthenticator(dao))
                 .setAuthorizer(new CalendariumAuthorizer())
                 .setPrefix("Bearer")
                 .buildAuthFilter()));
         environment.jersey().register(RolesAllowedDynamicFeature.class);
         //If you want to use @Auth to inject a custom Principal type into your resource
-        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(AccountAuth.class));
+        environment.jersey().register(new AuthValueFactoryProvider.Binder<>(Account.class));
         environment.jersey().register(opsResource);
         environment.jersey().register(botResource);
         environment.jersey().register(authResource);

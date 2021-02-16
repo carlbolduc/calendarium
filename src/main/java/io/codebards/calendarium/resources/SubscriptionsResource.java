@@ -14,7 +14,7 @@ import io.codebards.calendarium.api.PaymentIntentStatus;
 import io.codebards.calendarium.api.Price;
 import io.codebards.calendarium.api.SubscriptionStatus;
 import io.codebards.calendarium.api.SubscriptionUpdate;
-import io.codebards.calendarium.core.AccountAuth;
+import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
 
@@ -47,7 +47,7 @@ public class SubscriptionsResource {
 
     @POST
     @Path("/stripe-customers")
-    public Response createStripeCustomer(@Auth AccountAuth auth) {
+    public Response createStripeCustomer(@Auth Account auth) {
         Response response;
         Stripe.apiKey = stripeApiKey;
         Map<String, Object> params = new HashMap<>();
@@ -65,7 +65,7 @@ public class SubscriptionsResource {
     }
 
     @POST
-    public Response createSubscription(@Auth AccountAuth auth, PaymentMethod paymentMethod) {
+    public Response createSubscription(@Auth Account auth, PaymentMethod paymentMethod) {
         Response response;
         Stripe.apiKey = stripeApiKey;
         Customer customer;
@@ -108,7 +108,7 @@ public class SubscriptionsResource {
 
     @PUT
     @Path("/{id}")
-    public Response cancelSubscription(@Auth AccountAuth auth, SubscriptionUpdate update) {
+    public Response cancelSubscription(@Auth Account auth, SubscriptionUpdate update) {
         Response response = Response.ok().build();;
         if (update.getCancelAtPeriodEnd()) {
             Stripe.apiKey = stripeApiKey;
