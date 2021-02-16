@@ -17,6 +17,7 @@ export default function Button(props) {
       type={props.type}
       className="btn btn-primary my-3"
       disabled={props.disabled ? props.disabled : null}
+      onClick={props.onClick ? props.onClick : null}
     >{props.label}</button>
   );
 }

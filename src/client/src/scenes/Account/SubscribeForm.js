@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements} from "@stripe/react-stripe-js";
+import React, { useState } from "react";
+import { CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import Button from "../../components/Form/Button";
 
 export default function SubscribeForm(props) {
@@ -27,7 +27,7 @@ export default function SubscribeForm(props) {
     const cardNumberElement = elements.getElement(CardNumberElement);
 
     // Use your card Element with other Stripe.js APIs
-    const {error, paymentMethod} = await stripe.createPaymentMethod({
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
       card: cardNumberElement,
       billing_details: {
@@ -55,18 +55,19 @@ export default function SubscribeForm(props) {
   return (
     <form onSubmit={handleSubmit}>
       <CardNumberElement />
-      <CardExpiryElement/>
-      <CardCvcElement/>
-      <input name="line1" type="text"/>
-      <input name="city" type="text"/>
+      <CardExpiryElement />
+      <CardCvcElement />
+      <input name="line1" type="text" />
+      <input name="city" type="text" />
       <select name="country">
         <option value="CA">Canada</option>
       </select>
       <select name="state">
         <option value="QC">Quebec</option>
       </select>
-      <input name="postal_code" type="text"/>
-      <Button label={props.translate("Subscribe")} type="submit" id="button-subscribe" disabled={!stripe}/>
+      <input name="postal_code" type="text" />
+      <Button label={props.translate("Cancel")} type="button" id="button-cancel" onClick={() => props.setWantToSubscribe(false)} />
+      <Button label={props.translate("Subscribe")} type="submit" id="button-subscribe" disabled={!stripe} />
     </form>
   );
 };
