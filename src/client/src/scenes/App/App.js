@@ -33,7 +33,7 @@ export default function App() {
   } = useAuth();
   const {getLocData, translate} = useLoc(account, languages);
   const {customerCreated, subscribed, createCustomer, createSubscription, updateSubscription} = useSubscription(token, account, getAccount);
-  const {getCalendar, createCalendar} = useCalendar(token, subscribed);
+  const {getCalendars, createCalendar} = useCalendar(token, subscribed);
 
   useEffect(() => {
     getLocData();
@@ -128,7 +128,7 @@ export default function App() {
               account={account}
               authenticated={authenticated}
               translate={translate}
-              getCalendar={getCalendar}
+              getCalendars={getCalendars}
               createCalendar={createCalendar}
             />
           </Route>

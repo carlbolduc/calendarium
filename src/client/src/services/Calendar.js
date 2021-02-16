@@ -27,5 +27,5 @@ export function useCalendar(token, subscribed) {
     }
   }
 
-  return {getCalendar, createCalendar};
+  return {getCalendars, createCalendar};
 }
