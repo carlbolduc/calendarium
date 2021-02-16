@@ -4,6 +4,7 @@ import axios from "axios";
 import {useLoc} from "../../services/Loc";
 import {useAuth} from "../../services/Auth";
 import {useSubscription} from "../../services/Subscription";
+import {useCalendar} from "../../services/Calendar";
 import Header from "../../components/Header/Header";
 import SignUp from "../Auth/SignUp";
 import SignIn from "../Auth/SignIn";
@@ -32,6 +33,7 @@ export default function App() {
   } = useAuth();
   const {getLocData, translate} = useLoc(account, languages);
   const {customerCreated, subscribed, createCustomer, createSubscription, updateSubscription} = useSubscription(token, account, getAccount);
+  const {getCalendar, createCalendar} = useCalendar(token, subscribed);
 
   useEffect(() => {
     getLocData();
@@ -126,6 +128,8 @@ export default function App() {
               account={account}
               authenticated={authenticated}
               translate={translate}
+              getCalendar={getCalendar}
+              createCalendar={createCalendar}
             />
           </Route>
           <Route path="/public-calendars">

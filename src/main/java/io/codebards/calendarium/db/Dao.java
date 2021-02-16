@@ -3,10 +3,12 @@ package io.codebards.calendarium.db;
 import io.codebards.calendarium.api.Price;
 import io.codebards.calendarium.api.Subscription;
 import io.codebards.calendarium.core.Account;
+import io.codebards.calendarium.api.Calendar;
 import io.codebards.calendarium.api.Language;
 import io.codebards.calendarium.api.Localisation;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
@@ -102,4 +104,14 @@ public interface Dao {
 
     @SqlUpdate("UPDATE subscription SET status = :status WHERE stripe_sub_id = :stripeSubId")
     void updateSubscriptionStatus(@Bind("stripeSubId") String stripeSubId, @Bind("status") String status);
+
+
+    // Calendar
+
+    @SqlUpdate("INSERT INTO calendar (enable_fr, enable_en, name_fr, name_en, description_fr, description_en, link_fr,\n" +
+            "                      link_en, primary_color, secondary_color, public_calendar, event_approval_required)\n" +
+            "VALUES (:enableFr, :enableEn, :enableFr, :nameEn, :descriptionFr, :descriptionEn, :linkFr, :linkEn,\n" +
+            "        :primaryColor, :secondaryColor, :publicCalendar, :eventApprovalRequired)")
+    @GetGeneratedKeys
+    long insertCalendar(@Bind("accountId") long accountId, @BindBean Calendar calendar);
 }
