@@ -1,0 +1,93 @@
+account
+  account_id
+  email
+  name
+  language_id
+  password_digest
+  password_reset_digest
+  password_reset_requested_at
+  created_at
+  created_by
+  updated_at
+  updated_by
+
+subscription
+  subscription_id
+  account_id
+  start_at
+  end_at
+  status (active, cancelled, expired)
+  created_at
+  created_by
+  updated_at
+  updated_by
+
+calendar
+  calendar_id
+  enable_fr (boolean to indicate if we want to use the French language for the calendar content)
+  enable_en (boolean to indicate if we want to use the English language for the calendar content)
+  name_fr
+  name_en
+  description_fr
+  description_en
+  link_name_fr
+  link_name_en
+  primary_color
+  secondary_color
+  start_week_on (Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday)
+  event_approval_required
+  created_at
+  created_by
+  updated_at
+  updated_by
+
+calendar_access
+  calendar_access_id
+  account_id
+  calendar_id
+  status (owner, invited, requested, active, inactive)
+  created_at
+  created_by
+  updated_at
+  updated_by
+
+event
+  event_id
+  account_id
+  calendar_id
+  status (draft, pending_approval, published)
+  name_fr
+  name_en
+  description_fr
+  description_en
+  start_at
+  end_at
+  all_day
+  hyperlink_fr
+  hyperlink_en
+  created_at
+  created_by
+  updated_at
+  updated_by
+
+email_template
+  email_template_id
+  name
+  title_fr
+  title_en
+  body_fr
+  body_en
+  created_at
+  created_by
+  updated_at
+  updated_by
+
+activity
+  activity_id
+  account_id
+  type (account created, email sent, signed in, signed out, calendar created, calendar updated, event created, event updated, ...)
+  description
+  created_at
+  created_by
+  updated_at
+  updated_by
