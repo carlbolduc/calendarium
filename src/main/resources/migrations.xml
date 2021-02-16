@@ -402,7 +402,11 @@
     </changeSet>
 
     <changeSet id="2" author="carl">
-        <renameColumn tableName="calendar" oldColumnName="public" newColumnName="publicCalendar" />
+        <renameColumn tableName="calendar" oldColumnName="public" newColumnName="public_calendar" />
+        <renameColumn tableName="calendar" oldColumnName="link_name_en" newColumnName="link_en"/>
+        <renameColumn tableName="calendar" oldColumnName="link_name_fr" newColumnName="link_fr"/>
+        <addUniqueConstraint tableName="calendar" columnNames="link_en"/>
+        <addUniqueConstraint tableName="calendar" columnNames="link_fr"/>
     </changeSet>
 
 </databaseChangeLog>
