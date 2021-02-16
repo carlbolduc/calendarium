@@ -3,11 +3,11 @@ import {CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElem
 import Button from "../../components/Form/Button";
 
 export default function SubscribeForm(props) {
-  const [line1, setLine1] = useState("");
-  const [city, setCity] = useState("");
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-  const [postalCode, setPostalCode] = useState("");
+  const [line1, setLine1] = useState("123");
+  const [city, setCity] = useState("Quebec");
+  const [country, setCountry] = useState("CA");
+  const [state, setState] = useState("Quebec");
+  const [postalCode, setPostalCode] = useState("G1S0C7");
   const stripe = useStripe();
   const elements = useElements();
 
