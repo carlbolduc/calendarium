@@ -2,12 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {Link, Redirect} from 'react-router-dom';
 import Input from '../../components/Form/Input';
 import Button from '../../components/Form/Button';
+import Message from "../../components/Form/Message";
 
 export default function SignIn(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [authenticationFailed, setAuthenticationFailed] = useState(false);
   const [requesting, setRequesting] = useState(false);
+  const [result, setResult] = useState("");
 
   useEffect(() => {
     if (requesting) {
@@ -15,7 +17,7 @@ export default function SignIn(props) {
         "email": email,
         "password": password
       }, result => {
-        console.log(result);
+        setResult(result);
         setRequesting(false);
       });
     }
@@ -26,19 +28,13 @@ export default function SignIn(props) {
     setRequesting(true);
   }
 
-  const warning = authenticationFailed ? (
-    <div className="alert alert-warning">
-      Sorry, we didn’t recognize your email address or your password. Want to try again?
-    </div>
-  ) : null;
-
   return props.authenticated ? (
     <Redirect to={{pathname: "/"}}/>
   ) : (
     <div className="p-5">
       <h1>{props.translate("Sign in")}</h1>
+      <Message result={result} origin="signIn" translate={props.translate} />
       <form onSubmit={handleSubmit} id="form-sign-in">
-        {warning}
         <Input
           label={props.translate("Email")}
           type="email"

@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import { Redirect } from "react-router-dom";
 import Input from "../../components/Form/Input";
 import Button from "../../components/Form/Button";
+import Message from "../../components/Form/Message";
 
 export default function Profile(props) {
   const [name, setName] = useState(props.account.name);
@@ -9,6 +10,7 @@ export default function Profile(props) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("")
   const [requesting, setRequesting] = useState(false);
+  const [result, setResult] = useState("");
 
   useEffect(() => {
     setName(props.account.name);
@@ -31,9 +33,9 @@ export default function Profile(props) {
           }
         );
       props.updateAccount(data, result => {
-        console.log(result);
         setCurrentPassword("");
         setNewPassword("");
+        setResult(result);
         setRequesting(false);
       });
     }
@@ -57,7 +59,8 @@ export default function Profile(props) {
   return props.authenticated ? (
     <div className="p-5">
       <h1>{props.translate("My profile")}</h1>
-      <form onSubmit={handleSubmit} id="form-sign-up">
+      <Message result={result} origin="profile" translate={props.translate} />
+      <form onSubmit={handleSubmit} id="form-profile">
         <Input
           label={props.translate("Name")}
           type="text"
@@ -77,20 +80,21 @@ export default function Profile(props) {
           handleChange={(e) => setEmail(e.target.value)}
         />
         <Input
-          label={props.translate("Current Password")}
+          label={props.translate("Current password")}
           type="password"
           id="input-current-password"
+          autoComplete="new-password"
           required={false}
-          placeholder={props.translate("Enter your current password.")}
+          placeholder={props.translate("If you want to change your password, enter your current password.")}
           value={currentPassword}
           handleChange={(e) => setCurrentPassword(e.target.value)}
         />
         <Input
-          label={props.translate("New Password")}
+          label={props.translate("New password")}
           type="password"
           id="input-new-password"
           required={currentPassword !== ""}
-          placeholder={props.translate("Choose a new password.")}
+          placeholder={props.translate("If you want to change your password, enter a new password.")}
           value={newPassword}
           handleChange={(e) => setNewPassword(e.target.value)}
         />

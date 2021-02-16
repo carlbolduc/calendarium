@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import Input from '../../components/Form/Input';
 import Button from '../../components/Form/Button';
+import Message from "../../components/Form/Message";
 
 export default function ForgotPassword(props) {
   const [email, setEmail] = useState("");
   const [requesting, setRequesting] = useState(false);
   const [requested, setRequested] = useState(false);
+  const [result, setResult] = useState("");
 
   useEffect(() => {
     if (requesting) {
@@ -16,7 +18,7 @@ export default function ForgotPassword(props) {
         if (result.success === true) {
           setRequested(true);
         }
-        console.log(result);
+        setResult(result);
         setRequesting(false);
       })
     }
@@ -27,19 +29,16 @@ export default function ForgotPassword(props) {
     setRequesting(true);
   }
 
-  // const warning = unknownEmail ? (
-  //   <div className="alert alert-warning">
-  //     {props.translate("Sorry, we didn’t recognize your email address. Want to try again?")}
-  //   </div>
-  // ) : null;
-
   const main = requested ? (
-    <p>{props.translate("You will receive password reset instructions by email shortly.")}</p>
+    <>
+      <h1>{props.translate("Forgot your password?")}</h1>
+      <Message result={result} origin="forgotPassword" translate={props.translate} />
+    </>
   ) : (
       <>
         <h1>{props.translate("Forgot your password?")}</h1>
+        <Message result={result} origin="forgotPassword" translate={props.translate} />
         <form onSubmit={handleSubmit} id="form-forgot-password">
-          {/* {warning} */}
           <Input
             label={props.translate("Enter your email address below and we’ll send you password reset instructions.")}
             type="email"
@@ -52,8 +51,8 @@ export default function ForgotPassword(props) {
           <Button label={props.translate("Email me reset instructions")} type="submit" working={requesting} id="button-forgot-password" />
         </form>
       </>
-    )
-    ;
+    );
+
   return props.authenticated ? (
     <Redirect to={{ pathname: "/" }} />
   ) : (
