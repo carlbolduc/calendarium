@@ -65,8 +65,7 @@ public class SubscriptionsResource {
     }
 
     @POST
-    @Path("/stripe-subscriptions")
-    public Response createStripeSubscription(@Auth AccountAuth auth, PaymentMethod paymentMethod) {
+    public Response createSubscription(@Auth AccountAuth auth, PaymentMethod paymentMethod) {
         Response response;
         Stripe.apiKey = stripeApiKey;
         Customer customer;
@@ -108,7 +107,7 @@ public class SubscriptionsResource {
     }
 
     @PUT
-    @Path("/stripe-subscriptions/{id}")
+    @Path("/{id}")
     public Response cancelSubscription(@Auth AccountAuth auth, SubscriptionUpdate update) {
         Response response = Response.ok().build();;
         if (update.getCancelAtPeriodEnd()) {

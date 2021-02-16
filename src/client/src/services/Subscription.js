@@ -38,7 +38,7 @@ export function useSubscription(token, account, getAccount) {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        url: `${process.env.REACT_APP_API}/subscriptions/stripe-subscriptions`,
+        url: `${process.env.REACT_APP_API}/subscriptions`,
         data: paymentMethod
       }).then(() => {
         // Success, fetch account to retrieve the subscription
@@ -50,5 +50,31 @@ export function useSubscription(token, account, getAccount) {
     }
   }
 
-  return {customerCreated, subscribed, createCustomer, createSubscription};
+  function updateSubscription(data, cb) {
+    if (token !== null && account.subscription !== null) {
+      axios({
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        url: `${process.env.REACT_APP_API}/subscriptions/${account.subscription.subscriptionId}`,
+        data: data
+      }).then(() => {
+        // Success, fetch account to retrieve the updated subscription
+        getAccount();
+        if (cb) {
+          const result = {
+            success: true
+          }
+          cb(result);
+        }
+      }).catch(err => {
+        // Let caller know that something went wrong
+        errorCallback(err, cb);
+      });
+    }
+  }
+
+  return {customerCreated, subscribed, createCustomer, createSubscription, updateSubscription};
 }

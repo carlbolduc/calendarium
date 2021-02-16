@@ -31,7 +31,7 @@ export default function App() {
     resetPassword
   } = useAuth();
   const {getLocData, translate} = useLoc(account, languages);
-  const {customerCreated, subscribed, createCustomer, createSubscription} = useSubscription(token, account, getAccount);
+  const {customerCreated, subscribed, createCustomer, createSubscription, updateSubscription} = useSubscription(token, account, getAccount);
 
   useEffect(() => {
     getLocData();
@@ -111,6 +111,7 @@ export default function App() {
               subscribed={subscribed}
               createCustomer={createCustomer}
               createSubscription={createSubscription}
+              updateSubscription={updateSubscription}
             />
           </Route>
           <Route path="/my-events">
