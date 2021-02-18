@@ -1,7 +1,10 @@
-import React from 'react';
-import { Redirect } from 'react-router-dom';
+import React, {useState} from "react";
+import {Redirect} from "react-router-dom";
+import NewCalendarForm from "./NewCalendarForm";
 
 export default function MyCalendars(props) {
+  const [showNewCalendarForm, setShowNewCalendarForm] = useState(false);
+
   function createCalendar() {
     const data = {
       enableFr: false,
@@ -13,20 +16,31 @@ export default function MyCalendars(props) {
       console.log("TODO: what do we do here?");
     });
   }
+
   const calendars = props.calendars.map(c => (
     <li key={c.calendarId}>{c.calendarId}</li>
-  ))
+  ));
+
+  const newCalendarButton = showNewCalendarForm ? null : (
+    <button className="btn btn-primary" onClick={() => setShowNewCalendarForm(true)}>New Calendar</button>
+  );
+
+  const newCalendarForm = showNewCalendarForm ? (
+    <NewCalendarForm translate={props.translate} cancel={() => setShowNewCalendarForm(false)}/>
+  ) : null;
+
   return props.authenticated ? (
     <div className="p-5">
       <h1>{props.translate("My calendars")}</h1>
       <ul>{calendars}</ul>
-      <button className="btn" onClick={createCalendar}>Create Calendar</button>
+      {newCalendarButton}
+      {newCalendarForm}
     </div>
   ) : (
     <Redirect
       to={{
-        pathname: '/sign-in',
-        state: { from: '/subscription' }
+        pathname: "/sign-in",
+        state: {from: "/subscription"}
       }}
     />
   );
