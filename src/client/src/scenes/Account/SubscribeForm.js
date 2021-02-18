@@ -75,6 +75,7 @@ export default function SubscribeForm(props) {
   }
 
   return (
+    // TODO: use {props.translate("")} for text visible in the app
     <form onSubmit={handleSubmit} id="form-subscribe">
       <p>You're ready for Calendarium Unlimited! Enter your payment info below.</p>
       <h5>Credit card details</h5>
