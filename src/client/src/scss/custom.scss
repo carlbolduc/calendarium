@@ -3,3 +3,10 @@
 // $body-color: #111;
 
 @import "../../node_modules/bootstrap/scss/bootstrap";
+
+// This sets the color of the placeholder first element of a Select to be like the 
+// text-muted bootstrap color, same as Input form controls placeholder.
+// The Select needs to be required, and the first element needs to not have a value.
+select:invalid {
+  color: #6c757d !important;
+}
