@@ -3,9 +3,12 @@ import { Redirect } from 'react-router-dom';
 import Input from '../../components/Form/Input';
 import Button from '../../components/Form/Button';
 import Message from "../../components/Form/Message";
+import {emailValid} from "../../services/Helpers";
+import InvalidFeedback from "../../components/Form/InvalidFeedback";
 
 export default function ForgotPassword(props) {
   const [email, setEmail] = useState("");
+  const [invalidEmail, setInvalidEmail] = useState(false);
   const [requesting, setRequesting] = useState(false);
   const [requested, setRequested] = useState(false);
   const [result, setResult] = useState("");
@@ -26,7 +29,11 @@ export default function ForgotPassword(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    setRequesting(true);
+    if (emailValid(email)) {
+      setRequesting(true);
+    } else {
+      setInvalidEmail(true);
+    }
   }
 
   const main = requested ? (
@@ -38,7 +45,7 @@ export default function ForgotPassword(props) {
       <>
         <h1>{props.translate("Forgot your password?")}</h1>
         <Message result={result} origin="forgotPassword" translate={props.translate} />
-        <form onSubmit={handleSubmit} id="form-forgot-password">
+        <form onSubmit={handleSubmit} id="form-forgot-password" noValidate>
           <Input
             label={props.translate("Enter your email address below and we’ll send you password reset instructions.")}
             type="email"
@@ -46,7 +53,11 @@ export default function ForgotPassword(props) {
             required={true}
             placeholder={props.translate("Enter your email address.")}
             value={email}
-            handleChange={(e) => setEmail(e.target.value)}
+            handleChange={(e) => {
+              setEmail(e.target.value);
+              setInvalidEmail(false);
+            }}
+            invalidFeedback={invalidEmail ? <InvalidFeedback feedback="You must enter a valid email address."/> : null}
           />
           <Button label={props.translate("Email me reset instructions")} type="submit" working={requesting} id="button-forgot-password" />
         </form>
