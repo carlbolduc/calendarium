@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Link, Redirect } from "react-router-dom";
+import {textValid, emailValid, passwordValid} from "../../services/Helpers";
 import Input from "../../components/Form/Input";
 import Button from "../../components/Form/Button";
 import Checkbox from "../../components/Form/Checkbox";
 import Message from "../../components/Form/Message";
+import InvalidFeedback from "../../components/Form/InvalidFeedback";
 
 export default function SignUp(props) {
   const [name, setName] = useState("")
+  const [invalidName, setInvalidName] = useState(false);
   const [email, setEmail] = useState("");
+  const [invalidEmail, setInvalidEmail] = useState(false);
   const [password, setPassword] = useState("");
+  const [invalidPassword, setInvalidPassword] = useState(false);
   const [termsConditions, setTermsConditions] = useState(false);
+  const [invalidTermsAndConditions, setInvalidTermsAndConditions] = useState(false);
   const [requesting, setRequesting] = useState(false);
   const [result, setResult] = useState("");
 
@@ -27,9 +33,15 @@ export default function SignUp(props) {
   }, [requesting])
 
   function handleSubmit(e) {
-    // TODO: add password validations
     e.preventDefault();
-    setRequesting(true);
+    if (textValid(name) && emailValid(email) && passwordValid(password) && termsConditions) {
+      setRequesting(true);
+    } else {
+      if (!textValid(name)) setInvalidName(true);
+      if (!emailValid(email)) setInvalidEmail(true);
+      if (!passwordValid(password)) setInvalidPassword(true);
+      if (!termsConditions) setInvalidTermsAndConditions(true);
+    }
   }
 
   return props.authenticated ? (
@@ -39,7 +51,7 @@ export default function SignUp(props) {
         <div className="p-5">
           <h1>{props.translate("Create an account")}</h1>
           <Message result={result} origin="signUp" translate={props.translate} />
-          <form onSubmit={handleSubmit} id="form-sign-up">
+          <form onSubmit={handleSubmit} id="form-sign-up" noValidate>
             <Input
               label={props.translate("Name")}
               type="text"
@@ -47,7 +59,11 @@ export default function SignUp(props) {
               required={true}
               placeholder={props.translate("Enter your first name and last name.")}
               value={name}
-              handleChange={(e) => setName(e.target.value)}
+              handleChange={(e) => {
+                setName(e.target.value);
+                setInvalidName(false);
+              }}
+              invalidFeedback={invalidName ? <InvalidFeedback feedback="You must enter a name."/> : null}
             />
             <Input
               label={props.translate("Email")}
@@ -56,7 +72,11 @@ export default function SignUp(props) {
               required={true}
               placeholder={props.translate("Enter your email address.")}
               value={email}
-              handleChange={(e) => setEmail(e.target.value)}
+              handleChange={(e) => {
+                setEmail(e.target.value);
+                setInvalidEmail(false);
+              }}
+              invalidFeedback={invalidEmail ? <InvalidFeedback feedback="You must enter a valid email address."/> : null}
             />
             <Input
               label={props.translate("Password")}
@@ -65,7 +85,11 @@ export default function SignUp(props) {
               required={true}
               placeholder={props.translate("Choose a password.")}
               value={password}
-              handleChange={(e) => setPassword(e.target.value)}
+              handleChange={(e) => {
+                setPassword(e.target.value);
+                setInvalidPassword(false);
+              }}
+              invalidFeedback={invalidPassword ? <InvalidFeedback feedback="You password must be at least 8 characters long."/> : null}
             />
             <div className="row">
               <div className="col-auto">
@@ -74,8 +98,11 @@ export default function SignUp(props) {
                   id="terms-conditions"
                   value={termsConditions}
                   required={true}
-                  handleChange={(e) => setTermsConditions(e.target.value)}
-                  invalidFeedback={props.translate("You must agree before signing up.")}
+                  handleChange={(e) => {
+                    setTermsConditions(e.target.checked);
+                    setInvalidTermsAndConditions(false);
+                  }}
+                  invalidFeedback={invalidTermsAndConditions ? <InvalidFeedback feedback="You must agree before submitting."/> : null}
                 />
               </div>
               <div className="col">

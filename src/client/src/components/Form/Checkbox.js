@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export default function Checkbox(props) {
   return (
@@ -17,6 +17,7 @@ export default function Checkbox(props) {
       >
         {props.label}
       </label>
+      {props.invalidFeedback}
     </div>
   );
 }

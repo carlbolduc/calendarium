@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export default function Input(props) {
   return (
@@ -15,6 +15,7 @@ export default function Input(props) {
         value={props.value}
         onChange={props.handleChange}
       />
+      {props.invalidFeedback}
     </div>
   );
 }
