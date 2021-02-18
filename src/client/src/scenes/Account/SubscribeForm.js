@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import Button from "../../components/Form/Button";
+import Input from "../../components/Form/Input";
+import Select from "../../components/Form/Select";
 
 export default function SubscribeForm(props) {
   const [line1, setLine1] = useState("123");
@@ -52,20 +54,76 @@ export default function SubscribeForm(props) {
     }
   };
 
+  function countries() {
+    // TODO: generate list of all countries, maybe from an open API?
+    return (
+      [
+        { value: "CA", label: "Canada" },
+        { value: "US", label: "United States" }
+      ]
+    );
+  }
+
+  function states() {
+    // TODO: generate list of all states, maybe from an open API?
+    return (
+      [
+        { value: "QC", label: "Quebec" },
+        { value: "ON", label: "Ontario" }
+      ]
+    );
+  }
+
   return (
-    <form onSubmit={handleSubmit}>
-      <CardNumberElement />
-      <CardExpiryElement />
-      <CardCvcElement />
-      <input name="line1" type="text" />
-      <input name="city" type="text" />
-      <select name="country">
-        <option value="CA">Canada</option>
-      </select>
-      <select name="state">
-        <option value="QC">Quebec</option>
-      </select>
-      <input name="postal_code" type="text" />
+    <form onSubmit={handleSubmit} id="form-subscribe">
+      <p>You're ready for Calendarium Unlimited! Enter your payment info below.</p>
+      <h5>Credit card details</h5>
+      <CardNumberElement className="form-control mb-2" />
+      <CardExpiryElement className="form-control mb-2" />
+      <CardCvcElement className="form-control mb-2" />
+      <h5 className="mt-4">Billing address</h5>
+      <Input
+        label="Street address"
+        id="line1"
+        name="line1"
+        type="text"
+        placeholder="Enter your street address."
+        required={true}
+      />
+      <Input
+        label="City"
+        id="city"
+        name="city"
+        type="text"
+        placeholder="Enter your city."
+        required={true}
+      />
+      <Select
+        label="Country"
+        id="country"
+        name="country"
+        ariaLabel="Country"
+        placeholder="Select your country."
+        options={countries()}
+        required={true}
+      />
+      <Select
+        label="State"
+        id="state"
+        name="state"
+        ariaLabel="State"
+        placeholder="Select your state."
+        options={states()}
+        required={true}
+      />
+      <Input
+        label="Postal code"
+        id="postal_code"
+        name="postal_code"
+        type="text"
+        placeholder="Enter your postal code."
+        required={true}
+      />
       <Button label={props.translate("Cancel")} type="button" id="button-cancel" onClick={() => props.setWantToSubscribe(false)} />
       <Button label={props.translate("Subscribe")} type="submit" id="button-subscribe" disabled={!stripe} />
     </form>

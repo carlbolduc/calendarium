@@ -33,7 +33,7 @@ export default function Subscription(props) {
       <p>
         <Button label={props.translate("What can Calendarium do?")} id="button-features-list" type="button" dataBsToggle="collapse" dataBsTarget="#features-list" ariaExpanded="false" ariaControls="features-list" />
       </p>
-      <div className="collapse" id="features-list">
+      <div className="collapse mb-4" id="features-list">
         <div className="card card-body">
           <FeaturesList translate={props.translate} />
         </div>
