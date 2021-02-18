@@ -47,7 +47,7 @@ export default function Subscription(props) {
       <svg className="card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"></rect><text x="26%" y="50%" fill="#dee2e6" dy=".3em">Image placeholder</text></svg>
       <div className="card-body">
         <h5 className="card-title">{props.translate("Calendarium Unlimited")}</h5>
-        <h6 className="card-subtitle mb-2 text-muted">{props.translate("$600 / year")}</h6>
+        <h6 className="card-subtitle mb-2 text-muted">{props.translate("$600 CAD / year")}</h6>
         <p className="card-text">{props.translate("Includes unlimited calendars and unlimited additional users.")}</p>
         <Button label={props.translate("Subscribe")} type="button" id="button-subscribe" onClick={(e) => subscribe(e)} />
       </div>

@@ -126,6 +126,7 @@ export default function SubscribeForm(props) {
       />
       <Button label={props.translate("Cancel")} type="button" id="button-cancel" onClick={() => props.setWantToSubscribe(false)} />
       <Button label={props.translate("Subscribe")} type="submit" id="button-subscribe" disabled={!stripe} />
+      <p><span className="fw-bold">You will be charged $600 CAD now</span>, and then each year until you cancel your subscription.</p>
     </form>
   );
 };
