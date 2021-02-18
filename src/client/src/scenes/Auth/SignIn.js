@@ -3,11 +3,14 @@ import {Link, Redirect} from 'react-router-dom';
 import Input from '../../components/Form/Input';
 import Button from '../../components/Form/Button';
 import Message from "../../components/Form/Message";
+import {emailValid, passwordValid} from "../../services/Helpers";
+import InvalidFeedback from "../../components/Form/InvalidFeedback";
 
 export default function SignIn(props) {
   const [email, setEmail] = useState("");
+  const [invalidEmail, setInvalidEmail] = useState(false);
   const [password, setPassword] = useState("");
-  const [authenticationFailed, setAuthenticationFailed] = useState(false);
+  const [invalidPassword, setInvalidPassword] = useState(false);
   const [requesting, setRequesting] = useState(false);
   const [result, setResult] = useState("");
 
@@ -17,15 +20,23 @@ export default function SignIn(props) {
         "email": email,
         "password": password
       }, result => {
-        setResult(result);
-        setRequesting(false);
+        if (!result.success) {
+          setResult(result);
+          setRequesting(false);
+        }
+        // Signed in user gets immediately redirected to home page
       });
     }
   }, [requesting])
 
   function handleSubmit(e) {
     e.preventDefault();
-    setRequesting(true);
+    if (emailValid(email) && passwordValid(password)) {
+      setRequesting(true);
+    } else {
+      if (!emailValid(email)) setInvalidEmail(true);
+      if (!passwordValid(password)) setInvalidPassword(true);
+    }
   }
 
   return props.authenticated ? (
@@ -34,7 +45,7 @@ export default function SignIn(props) {
     <div className="p-5">
       <h1>{props.translate("Sign in")}</h1>
       <Message result={result} origin="signIn" translate={props.translate} />
-      <form onSubmit={handleSubmit} id="form-sign-in">
+      <form onSubmit={handleSubmit} id="form-sign-in" noValidate>
         <Input
           label={props.translate("Email")}
           type="email"
@@ -42,7 +53,11 @@ export default function SignIn(props) {
           required={true}
           placeholder={props.translate("Enter your email address.")}
           value={email}
-          handleChange={(e) => setEmail(e.target.value)}
+          handleChange={(e) => {
+            setEmail(e.target.value);
+            setInvalidEmail(false);
+          }}
+          invalidFeedback={invalidEmail ? <InvalidFeedback feedback="You must enter a valid email address."/> : null}
         />
         <Input
           label={props.translate("Password")}
@@ -51,7 +66,11 @@ export default function SignIn(props) {
           required={true}
           placeholder={props.translate("Enter your password.")}
           value={password}
-          handleChange={(e) => setPassword(e.target.value)}
+          handleChange={(e) => {
+            setPassword(e.target.value);
+            setInvalidPassword(false);
+          }}
+          invalidFeedback={invalidPassword ? <InvalidFeedback feedback="You password must be at least 8 characters long."/> : null}
         />
         <Button label={props.translate("Sign in")} type="submit" id="button-sign-in"/>
       </form>
