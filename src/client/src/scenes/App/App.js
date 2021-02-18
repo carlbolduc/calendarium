@@ -142,6 +142,7 @@ export default function App() {
           </Route>
           <Route path="/">
             <Home
+              authenticated={authenticated}
               translate={translate}
             />
           </Route>

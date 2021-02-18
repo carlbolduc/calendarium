@@ -49,7 +49,7 @@ export default function Profile(props) {
   }
 
   const memberSince = props.account ?(
-    <p className="small">{props.translate("Member since")} {DateTime.fromSeconds(props.account.createdAt).toLocaleString(DateTime.DATETIME_MED)}</p>
+    <p className="small">{props.translate("Member since")} {DateTime.fromSeconds(props.account.createdAt).toLocaleString(DateTime.DATETIME_FULL)}</p>
   ) : null;
 
   return props.authenticated ? (
