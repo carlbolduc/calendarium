@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { Redirect } from "react-router-dom";
+import { DateTime } from "luxon";
 import Input from "../../components/Form/Input";
 import Button from "../../components/Form/Button";
 import Message from "../../components/Form/Message";
@@ -47,13 +48,8 @@ export default function Profile(props) {
     setRequesting(true);
   }
 
-  function formatDateInternationalWithTime(timestamp) {
-    const date = new Date(timestamp * 1000);
-    return `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(-2)}-${("0" + date.getDate()).slice(-2)} ${("0" + date.getHours()).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}`;
-  }
-
   const memberSince = props.account ?(
-    <p className="small">{props.translate("Member since")} {formatDateInternationalWithTime(props.account.createdAt)}</p>
+    <p className="small">{props.translate("Member since")} {DateTime.fromSeconds(props.account.createdAt).toLocaleString(DateTime.DATETIME_MED)}</p>
   ) : null;
 
   return props.authenticated ? (
