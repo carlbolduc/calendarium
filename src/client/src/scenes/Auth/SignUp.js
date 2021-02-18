@@ -89,7 +89,7 @@ export default function SignUp(props) {
                 setPassword(e.target.value);
                 setInvalidPassword(false);
               }}
-              invalidFeedback={invalidPassword ? <InvalidFeedback feedback="You password must be at least 8 characters long."/> : null}
+              invalidFeedback={invalidPassword ? <InvalidFeedback feedback="Your password must be at least 8 characters long."/> : null}
             />
             <div className="row">
               <div className="col-auto">

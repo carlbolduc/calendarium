@@ -70,7 +70,7 @@ export default function SignIn(props) {
             setPassword(e.target.value);
             setInvalidPassword(false);
           }}
-          invalidFeedback={invalidPassword ? <InvalidFeedback feedback="You password must be at least 8 characters long."/> : null}
+          invalidFeedback={invalidPassword ? <InvalidFeedback feedback="Your password must be at least 8 characters long."/> : null}
         />
         <Button label={props.translate("Sign in")} type="submit" id="button-sign-in"/>
       </form>
