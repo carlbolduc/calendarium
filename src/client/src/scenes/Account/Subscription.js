@@ -6,30 +6,31 @@ import { DateTime } from "luxon";
 import SubscribeForm from "./SubscribeForm";
 import Button from "../../components/Form/Button";
 import FeaturesList from "../../components/Content/FeaturesList";
+import Message from "../../components/Form/Message";
 
 export default function Subscription(props) {
   const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
   const [wantToSubscribe, setWantToSubscribe] = useState(false);
+  const [wantToCancel, setWantToCancel] = useState(false);
   const [result, setResult] = useState("");
 
   function subscribe(e) {
     e.preventDefault();
     setWantToSubscribe(true);
-    if (props.customerCreated) {
-      // show Stripe form
-      console.log("Customer already exist, show stripe form.");
-    } else {
+    if (!props.customerCreated) {
       props.createCustomer(result => {
         if (result.success) {
-          // show Stripe form
           console.log("Customer created, show stripe form.");
+        } else {
+          // TODO: manage error creating customer
         }
       });
     }
   }
 
   function cancelSubscription(e) {
-    // TODO: implement cancel subscription
+    // TODO: display "you're about to cancel, is that ok?"
+    // TODO: call cancel subscription
   }
 
   const productPresentation = (
