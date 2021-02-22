@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 import Input from "../../components/Form/Input";
 import Button from "../../components/Form/Button";
@@ -11,18 +11,23 @@ export default function NewCalendarForm(props) {
   const [nameEn, setNameEn] = useState("");
   const [invalidNameEn, setInvalidNameEn] = useState(false);
   const [descriptionEn, setDescriptionEn] = useState("");
+  const [invalidDescriptionEn, setInvalidDescriptionEn] = useState(false);
   const [linkEn, setLinkEn] = useState("");
+  const [invalidLinkEn, setInvalidLinkEn] = useState(false);
   const [enableFr, setEnableFr] = useState(false);
   const [nameFr, setNameFr] = useState("");
   const [invalidNameFr, setInvalidNameFr] = useState(false);
   const [descriptionFr, setDescriptionFr] = useState("");
+  const [invalidDescriptionFr, setInvalidDescriptionFr] = useState(false);
   const [linkFr, setLinkFr] = useState("");
+  const [invalidLinkFr, setInvalidLinkFr] = useState(false);
   const [startWeekOn, setStartWeekOn] = useState("");
   const [primaryColor, setPrimaryColor] = useState("");
   const [secondaryColor, setSecondaryColor] = useState("");
   const [publicCalendar, setPublicCalendar] = useState(false);
   const [requesting, setRequesting] = useState(false);
   const [eventApprovalRequired, setEventApprovalRequired] = useState(false);
+  const [noLanguageEnabled, setNoLanguageEnabled] = useState(false);
 
   useEffect(() => {
     if (requesting) {
@@ -30,9 +35,57 @@ export default function NewCalendarForm(props) {
     }
   }, [requesting]);
 
+  useEffect(() => {
+    if (enableEn || enableFr) {
+      setNoLanguageEnabled(false);
+
+    }
+    if (!enableEn) {
+      setInvalidNameEn(false);
+      setInvalidDescriptionEn(false);
+      setInvalidLinkEn(false);
+    }
+    if (!enableFr) {
+      setInvalidNameFr(false);
+      setInvalidDescriptionFr(false);
+      setInvalidLinkFr(false);
+    }
+  }, [enableEn, enableFr])
+
   function handleSubmit(e) {
     e.preventDefault();
-
+    const enValid = textValid(nameEn) && textValid(descriptionEn) && textValid(linkEn);
+    const frValid = textValid(nameFr) && textValid(descriptionFr) && textValid(linkFr);
+    if (enableEn && enableFr) {
+      if (enValid && frValid) {
+        setRequesting(true);
+      } else {
+        if (!textValid(nameEn)) setInvalidNameEn(true);
+        if (!textValid(descriptionEn)) setInvalidDescriptionEn(true);
+        if (!textValid(linkEn)) setInvalidLinkEn(true);
+        if (!textValid(nameFr)) setInvalidNameFr(true);
+        if (!textValid(descriptionFr)) setInvalidDescriptionFr(true);
+        if (!textValid(linkFr)) setInvalidLinkFr(true);
+      }
+    } else if (enableEn) {
+      if (enValid) {
+        setRequesting(true);
+      } else {
+        if (!textValid(nameEn)) setInvalidNameEn(true);
+        if (!textValid(descriptionEn)) setInvalidDescriptionEn(true);
+        if (!textValid(linkEn)) setInvalidLinkEn(true);
+      }
+    } else if (enableFr) {
+      if (frValid) {
+        setRequesting(true);
+      } else {
+        if (!textValid(nameFr)) setInvalidNameFr(true);
+        if (!textValid(descriptionFr)) setInvalidDescriptionFr(true);
+        if (!textValid(linkFr)) setInvalidLinkFr(true);
+      }
+    } else {
+      setNoLanguageEnabled(true);
+    }
   }
 
   const englishFields = enableEn ? (
@@ -55,7 +108,11 @@ export default function NewCalendarForm(props) {
         id="input-description-en"
         placeholder={"Describe your calendar"}
         value={descriptionEn}
-        handleChange={e => setDescriptionEn(e.target.value)}
+        handleChange={e => {
+          setDescriptionEn(e.target.value);
+          setInvalidDescriptionEn(false);
+        }}
+        invalidFeedback={invalidDescriptionEn ? <InvalidFeedback feedback="You must enter a description."/> : null}
       />
       <Input
         label="Link"
@@ -63,7 +120,11 @@ export default function NewCalendarForm(props) {
         id="input-link-en"
         placeholder={"Link..."}
         value={linkEn}
-        handleChange={e => setLinkEn(e.target.value)}
+        handleChange={e => {
+          setLinkEn(e.target.value);
+          setInvalidLinkEn(false);
+        }}
+        invalidFeedback={invalidLinkEn ? <InvalidFeedback feedback="You must enter a link."/> : null}
       />
     </>
   ) : null;
@@ -88,7 +149,11 @@ export default function NewCalendarForm(props) {
         id="input-description-fr"
         placeholder={"Describe your calendar"}
         value={descriptionFr}
-        handleChange={e => setDescriptionFr(e.target.value)}
+        handleChange={e => {
+          setDescriptionFr(e.target.value);
+          setInvalidDescriptionFr(false);
+        }}
+        invalidFeedback={invalidDescriptionFr ? <InvalidFeedback feedback="You must enter a description"/> : null}
       />
       <Input
         label="Link"
@@ -96,12 +161,17 @@ export default function NewCalendarForm(props) {
         id="input-link-fr"
         placeholder={"Link..."}
         value={linkFr}
-        handleChange={e => setLinkFr(e.target.value)}
+        handleChange={e => {
+          setLinkFr(e.target.value);
+          setInvalidLinkFr(false);
+        }}
+        invalidFeedback={invalidLinkFr ? <InvalidFeedback feedback="You must enter a link"/> : null}
       />
     </>
   ) : null;
   return (
     <form onSubmit={handleSubmit} id="form-new-calendar" noValidate>
+      {noLanguageEnabled ? <InvalidFeedback feedback="Enable at least one language."/> : null}
       <Checkbox
         label="Enable English calendar"
         id="enable-en"
