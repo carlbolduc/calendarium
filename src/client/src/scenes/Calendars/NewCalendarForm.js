@@ -4,6 +4,7 @@ import Input from "../../components/Form/Input";
 import Button from "../../components/Form/Button";
 import {textValid} from "../../services/Helpers";
 import Checkbox from "../../components/Form/Checkbox";
+import Select from "../../components/Form/Select";
 
 export default function NewCalendarForm(props) {
   const [enableEn, setEnableEn] = useState(false);
@@ -14,6 +15,11 @@ export default function NewCalendarForm(props) {
   const [enableFr, setEnableFr] = useState(false);
   const [nameFr, setNameFr] = useState("");
   const [invalidNameFr, setInvalidNameFr] = useState(false);
+  const [descriptionFr, setDescriptionFr] = useState("");
+  const [linkFr, setLinkFr] = useState("");
+  const [startWeekOn, setStartWeekOn] = useState("");
+  const [primaryColor, setPrimaryColor] = useState("");
+  const [secondaryColor, setSecondaryColor] = useState("");
   const [publicCalendar, setPublicCalendar] = useState(false);
   const [requesting, setRequesting] = useState(false);
   const [eventApprovalRequired, setEventApprovalRequired] = useState(false);
@@ -40,7 +46,7 @@ export default function NewCalendarForm(props) {
             handleChange={e => setEnableEn(e.target.checked)}
           />
           <Input
-            label={"Name"}
+            label={"English name"}
             type="text"
             id="input-name-en"
             placeholder={"Enter the English calendar name"}
@@ -87,10 +93,48 @@ export default function NewCalendarForm(props) {
             }}
             invalidFeedback={invalidNameFr ? <InvalidFeedback feedback="..."/> : null}
           />
+          <Input
+            label="Description"
+            type="text"
+            id="input-description-fr"
+            placeholder={"Describe your calendar"}
+            value={descriptionFr}
+            handleChange={e => setDescriptionFr(e.target.value)}
+          />
+          <Input
+            label="Link"
+            type="text"
+            id="input-link-fr"
+            placeholder={"Link..."}
+            value={linkFr}
+            handleChange={e => setLinkFr(e.target.value)}
+          />
         </div>
       </div>
-
-
+      <Select
+        label="Start week on"
+        id="select-start-week-on"
+        placeholder={"Start week on"}
+        options={[{label: "Sunday", value: "Sunday"}, {label: "Monday", value: "Monday"}, {label: "Tuesday", value: "Tuesday"}, {label: "Wednesday", value: "Wednesday"}, {label: "Thursday", value: "Thursday"}, {label: "Friday", value: "Friday"}, {label: "Saturday", value: "Saturday"}]}
+        value={startWeekOn}
+        handleChange={e => setStartWeekOn(e.target.value)}
+      />
+      <Input
+        label="Primary color"
+        type="color"
+        id="input-primary-color"
+        placeholder={"Primary Color"}
+        value={primaryColor}
+        handleChange={e => setPrimaryColor(e.target.value)}
+      />
+      <Input
+        label="Secondary color"
+        type="color"
+        id="input-secondary-color"
+        placeholder={"Secondary Color"}
+        value={secondaryColor}
+        handleChange={e => setSecondaryColor(e.target.value)}
+      />
       <Checkbox
         label="This calendar is available publicly"
         id="public-calendar"

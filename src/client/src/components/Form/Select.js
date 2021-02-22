@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export default function Select(props) {
   const options = props.options.map((o, index) => (
