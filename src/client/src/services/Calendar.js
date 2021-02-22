@@ -42,6 +42,12 @@ export function useCalendar(token, subscribed) {
       }).then(() => {
         // Success, fetch calendars
         getCalendars();
+        if (cb) {
+          const result = {
+            success: true
+          }
+          cb(result);
+        }
       }).catch(err => {
         // Let caller know that something went wrong
         errorCallback(err, cb);

@@ -21,7 +21,7 @@ export default function NewCalendarForm(props) {
   const [invalidDescriptionFr, setInvalidDescriptionFr] = useState(false);
   const [linkFr, setLinkFr] = useState("");
   const [invalidLinkFr, setInvalidLinkFr] = useState(false);
-  const [startWeekOn, setStartWeekOn] = useState("");
+  const [startWeekOn, setStartWeekOn] = useState("Sunday");
   const [primaryColor, setPrimaryColor] = useState("");
   const [secondaryColor, setSecondaryColor] = useState("");
   const [publicCalendar, setPublicCalendar] = useState(false);
@@ -31,14 +31,35 @@ export default function NewCalendarForm(props) {
 
   useEffect(() => {
     if (requesting) {
-      console.log("TODO: validate and submit form");
+      // Name and link must be unique, set them to null if they are an empty string
+      const calendar = {
+        enableEn: enableEn,
+        nameEn: nameEn === "" ? null : nameEn,
+        descriptionEn: descriptionEn,
+        linkEn: linkEn === "" ? null : linkEn,
+        enableFr: enableFr,
+        nameFr: nameFr === "" ? null : nameFr,
+        descriptionFr: descriptionFr,
+        linkFr: linkFr === "" ? null : linkFr,
+        startWeekOn: startWeekOn,
+        primaryColor: primaryColor,
+        secondaryColor: secondaryColor,
+        publicCalendar: publicCalendar,
+        eventApprovalRequired: eventApprovalRequired
+      }
+      props.createCalendar(calendar, result => {
+        props.setResult(result);
+        setRequesting(false);
+        if (result.success) {
+          props.hideForm();
+        }
+      });
     }
   }, [requesting]);
 
   useEffect(() => {
     if (enableEn || enableFr) {
       setNoLanguageEnabled(false);
-
     }
     if (!enableEn) {
       setInvalidNameEn(false);
