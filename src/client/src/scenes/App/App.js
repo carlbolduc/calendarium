@@ -127,6 +127,7 @@ export default function App() {
             <MyCalendars
               account={account}
               authenticated={authenticated}
+              subscribed={subscribed}
               translate={translate}
               calendars={calendars}
               getCalendars={getCalendars}
