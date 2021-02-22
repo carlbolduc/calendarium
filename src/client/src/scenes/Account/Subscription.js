@@ -60,13 +60,15 @@ export default function Subscription(props) {
     </div>
   );
 
+  const endAt = props.account.subscription ? DateTime.fromSeconds(props.account.subscription.endAt).toLocaleString(DateTime.DATE_FULL) : null;
+
   const subscriptionDetails = (
     <div className="mt-4">
       <p>{props.translate("Here are the details about your subscription.")}</p>
       <h5 className="mt-4">{props.translate("Calendarium Unlimited")}</h5>
       <p>{props.translate("$600 CAD per year")}</p>
       {/* TODO: set this sentence according to subscription status active or canceled */}
-      <p>{props.translate("Your subscription renews on")} {DateTime.fromSeconds(props.account.subscription.endAt).toLocaleString(DateTime.DATE_FULL)}.</p>
+      <p>{props.translate("Your subscription renews on")} {endAt}.</p>
     </div>
   );
 
