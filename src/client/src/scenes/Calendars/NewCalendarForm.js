@@ -35,82 +35,87 @@ export default function NewCalendarForm(props) {
 
   }
 
+  const englishFields = enableEn ? (
+    <>
+      <Input
+        label={"English name"}
+        type="text"
+        id="input-name-en"
+        placeholder={"Enter the English calendar name"}
+        value={nameEn}
+        handleChange={e => {
+          setNameEn(e.target.value);
+          setInvalidNameEn(false);
+        }}
+        invalidFeedback={invalidNameEn ? <InvalidFeedback feedback="..."/> : null}
+      />
+      <Input
+        label="Description"
+        type="text"
+        id="input-description-en"
+        placeholder={"Describe your calendar"}
+        value={descriptionEn}
+        handleChange={e => setDescriptionEn(e.target.value)}
+      />
+      <Input
+        label="Link"
+        type="text"
+        id="input-link-en"
+        placeholder={"Link..."}
+        value={linkEn}
+        handleChange={e => setLinkEn(e.target.value)}
+      />
+    </>
+  ) : null;
+
+  const frenchFields = enableFr ? (
+    <>
+      <Input
+        label={props.translate("French Name")}
+        type="text"
+        id="input-name-fr"
+        placeholder={"Enter the French calendar name"}
+        value={nameFr}
+        handleChange={e => {
+          setNameFr(e.target.value);
+          setInvalidNameFr(false);
+        }}
+        invalidFeedback={invalidNameFr ? <InvalidFeedback feedback="..."/> : null}
+      />
+      <Input
+        label="Description"
+        type="text"
+        id="input-description-fr"
+        placeholder={"Describe your calendar"}
+        value={descriptionFr}
+        handleChange={e => setDescriptionFr(e.target.value)}
+      />
+      <Input
+        label="Link"
+        type="text"
+        id="input-link-fr"
+        placeholder={"Link..."}
+        value={linkFr}
+        handleChange={e => setLinkFr(e.target.value)}
+      />
+    </>
+  ) : null;
   return (
     <form onSubmit={handleSubmit} id="form-new-calendar" noValidate>
-      <div className="row">
-        <div className="col-auto">
-          <Checkbox
-            label="Enable English calendar"
-            id="enable-en"
-            value={enableEn}
-            handleChange={e => setEnableEn(e.target.checked)}
-          />
-          <Input
-            label={"English name"}
-            type="text"
-            id="input-name-en"
-            placeholder={"Enter the English calendar name"}
-            value={nameEn}
-            handleChange={e => {
-              setNameEn(e.target.value);
-              setInvalidNameEn(false);
-            }}
-            invalidFeedback={invalidNameEn ? <InvalidFeedback feedback="..."/> : null}
-          />
-          <Input
-            label="Description"
-            type="text"
-            id="input-description-en"
-            placeholder={"Describe your calendar"}
-            value={descriptionEn}
-            handleChange={e => setDescriptionEn(e.target.value)}
-          />
-          <Input
-            label="Link"
-            type="text"
-            id="input-link-en"
-            placeholder={"Link..."}
-            value={linkEn}
-            handleChange={e => setLinkEn(e.target.value)}
-          />
-        </div>
-        <div className="col-auto">
-          <Checkbox
-            label="Enable French calendar"
-            id="enable-fr"
-            value={enableFr}
-            handleChange={e => setEnableFr(e.target.checked)}
-          />
-          <Input
-            label={props.translate("French Name")}
-            type="text"
-            id="input-name-fr"
-            placeholder={"Enter the French calendar name"}
-            value={nameFr}
-            handleChange={e => {
-              setNameFr(e.target.value);
-              setInvalidNameFr(false);
-            }}
-            invalidFeedback={invalidNameFr ? <InvalidFeedback feedback="..."/> : null}
-          />
-          <Input
-            label="Description"
-            type="text"
-            id="input-description-fr"
-            placeholder={"Describe your calendar"}
-            value={descriptionFr}
-            handleChange={e => setDescriptionFr(e.target.value)}
-          />
-          <Input
-            label="Link"
-            type="text"
-            id="input-link-fr"
-            placeholder={"Link..."}
-            value={linkFr}
-            handleChange={e => setLinkFr(e.target.value)}
-          />
-        </div>
-      </div>
+      <Checkbox
+        label="Enable English calendar"
+        id="enable-en"
+        value={enableEn}
+        handleChange={e => setEnableEn(e.target.checked)}
+      />
+      {englishFields}
+      <Checkbox
+        label="Enable French calendar"
+        id="enable-fr"
+        value={enableFr}
+        handleChange={e => setEnableFr(e.target.checked)}
+      />
+      {frenchFields}
       <Select
         label="Start week on"
         id="select-start-week-on"
