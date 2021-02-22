@@ -6,8 +6,7 @@ export default function Select(props) {
   ));
 
   return (
-    <div className="mb-3">
-      <label htmlFor={props.id} className="form-label">{props.label}</label>
+    <div className="form-floating mb-3">
       <select
         className="form-select"
         id={props.id}
@@ -18,6 +17,12 @@ export default function Select(props) {
         <option key="0" value="">{props.placeholder}</option>
         {options}
       </select>
+      <label 
+        htmlFor={props.id} 
+        className="form-label"
+      >
+        {props.label}
+      </label>
     </div>
   );
 }

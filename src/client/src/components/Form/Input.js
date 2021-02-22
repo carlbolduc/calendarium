@@ -1,12 +1,15 @@
 import React from "react";
 
 export default function Input(props) {
+  const classes = props.type === "color"
+    ? "form-control form-control-color"
+    : "form-control";
+
   return (
-    <div className="mb-3">
-      <label htmlFor={props.id} className="form-label">{props.label}</label>
+    <div className="form-floating mb-3">
       <input
         type={props.type}
-        className="form-control"
+        className={classes}
         id={props.id}
         name={props.name ? props.name : null}
         autoComplete={props.autoComplete ? props.autoComplete : null}
@@ -15,6 +18,12 @@ export default function Input(props) {
         value={props.value}
         onChange={props.handleChange}
       />
+      <label 
+        htmlFor={props.id} 
+        className="form-label"
+      >
+        {props.label}
+      </label>
       {props.invalidFeedback}
     </div>
   );
