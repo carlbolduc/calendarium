@@ -13,6 +13,7 @@ export default function Select(props) {
         name={props.name ? props.name : null}
         aria-label={props.ariaLabel ? props.ariaLabel : null}
         required={props.required ? props.required : null}
+        title={props.placeholder}
       >
         <option key="0" value="">{props.placeholder}</option>
         {options}
