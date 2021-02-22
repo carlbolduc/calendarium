@@ -108,17 +108,21 @@ public class SubscriptionsResource {
 
     @PUT
     @Path("/{id}")
-    public Response cancelSubscription(@Auth Account auth, SubscriptionUpdate update) {
-        Response response = Response.ok().build();;
-        if (update.getCancelAtPeriodEnd()) {
+    public Response updateSubscription(@Auth Account auth, SubscriptionUpdate update) {
+        Response response = Response.ok().build();
+        if (update.getCancelAtPeriodEnd() != null) {
             Stripe.apiKey = stripeApiKey;
             String stripeSubId = dao.findStripeSubId(auth.getAccountId());
             if (stripeSubId != null) {
                 try {
                     Subscription subscription = Subscription.retrieve(stripeSubId);
-                    SubscriptionUpdateParams params = SubscriptionUpdateParams.builder().setCancelAtPeriodEnd(true).build();
+                    SubscriptionUpdateParams params = SubscriptionUpdateParams.builder().setCancelAtPeriodEnd(update.getCancelAtPeriodEnd()).build();
                     subscription.update(params);
-                    dao.updateSubscriptionStatus(stripeSubId, SubscriptionStatus.CANCELED.getStatus());
+                    if (update.getCancelAtPeriodEnd()) {
+                        dao.updateSubscriptionStatus(stripeSubId, SubscriptionStatus.CANCELED.getStatus());
+                    } else {
+                        dao.updateSubscriptionStatus(stripeSubId, SubscriptionStatus.ACTIVE.getStatus());
+                    }
                 } catch (StripeException e) {
                     e.printStackTrace();
                     response = Response.serverError().build();

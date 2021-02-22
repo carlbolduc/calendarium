@@ -39,7 +39,7 @@ export default function Subscription(props) {
     setWantTo(wantToOptions.CANCEL)
   }
 
-  function cancelSubscription(e) {
+  function cancel(e) {
     e.preventDefault();
     props.updateSubscription({ cancelAtPeriodEnd: true}, result => {
       if (result.success) {
@@ -52,6 +52,16 @@ export default function Subscription(props) {
   function wantToReactivate(e) {
     e.preventDefault();
     setWantTo(wantToOptions.REACTIVATE);
+  }
+
+  function reactivate(e) {
+    e.preventDefault();
+    props.updateSubscription({ cancelAtPeriodEnd: false}, result => {
+      if (result.success) {
+        setWantTo("");
+      }
+      setResult(result);
+    });
   }
 
   const productPresentation = (
@@ -132,10 +142,22 @@ export default function Subscription(props) {
               <li>Your calendars will become inaccessible at the end of your subscription.</li>
             </ul>
             <Button label={props.translate("Never mind")} type="button" id="button-never-mind" onClick={() => setWantTo("")} outline={true} />
-            <Button label={props.translate("Cancel my subscription")} type="button" id="button-confirm-cancel" onClick={e => cancelSubscription(e)} />
+            <Button label={props.translate("Cancel my subscription")} type="button" id="button-confirm-cancel" onClick={e => cancel(e)} />
           </div>
         );
-      } else if (props.subscribed) {
+      } else if (wantTo === wantToOptions.REACTIVATE) {
+          result = (
+            <div className="mt-4">
+              <h5>Are you sure you want reactivate your subscription?</h5>
+              <p>When you reactivate...</p>
+              <ul>
+                <li>You will be charged at the end of your current subscription cycle.</li>
+              </ul>
+              <Button label={props.translate("Never mind")} type="button" id="button-never-mind" onClick={() => setWantTo("")} outline={true} />
+              <Button label={props.translate("Reactivate my subscription")} type="button" id="button-confirm-cancel" onClick={e => reactivate(e)} />
+            </div>
+          );
+        } else if (props.subscribed) {
         // Show subscription details
         // TODO: show subscription details only if subscription end date is in the future
         result = (
