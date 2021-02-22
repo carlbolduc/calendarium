@@ -38,10 +38,9 @@ export default function MyCalendars(props) {
     <div className="p-5">
       <h1>{props.translate("My calendars")}</h1>
       <Message result={newCalendarFormResult} origin="NewCalendarForm" translate={props.translate} />
-      {calendars}
       {newCalendarButton}
       {newCalendarForm}
-      <ul>{calendars}</ul>
+      {calendars}
     </div>
   ) : (
     <Redirect
