@@ -25,6 +25,9 @@ export default function Header(props) {
             </li>
           </ul>
           <ul className="navbar-nav mb-2 mb-lg-0">
+            <li className="nav-item">
+              <a className="nav-link" href="mailto:grove@codebards.io">Help</a>
+            </li>
             <Account
               authenticated={props.authenticated}
               signOut={props.signOut}
