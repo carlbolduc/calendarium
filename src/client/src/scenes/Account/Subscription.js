@@ -65,12 +65,16 @@ export default function Subscription(props) {
       <p>{props.translate("Here are the details about your subscription.")}</p>
       <h5 className="mt-4">{props.translate("Calendarium Unlimited")}</h5>
       <p>{props.translate("$600 CAD per year")}</p>
+      {/* TODO: set this sentence according to subscription status active or canceled */}
       <p>{props.translate("Your subscription renews on")} {DateTime.fromSeconds(props.account.subscription.endAt).toLocaleString(DateTime.DATE_FULL)}.</p>
     </div>
   );
 
   const subscriptionActions = (
+    // TODO: display cancel button if sbuscription status is active
     <Button label={props.translate("Cancel subscription")} type="button" id="button-cancel-subscription" onClick={(e) => cancelSubscription(e)} />
+    
+    // TODO: display reactivate button if subscription is canceled and end date is in the future
   );
 
   function renderMain() {
@@ -78,6 +82,7 @@ export default function Subscription(props) {
     if (props.authenticated) {
       if (props.subscribed) {
         // Show subscription details
+        // TODO: show subscription details only if subscription end date is in the future
         result = (
           <>
             {subscriptionDetails}
