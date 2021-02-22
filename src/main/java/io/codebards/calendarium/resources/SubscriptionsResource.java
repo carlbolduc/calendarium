@@ -52,6 +52,7 @@ public class SubscriptionsResource {
         Stripe.apiKey = stripeApiKey;
         Map<String, Object> params = new HashMap<>();
         params.put("email", auth.getEmail());
+        params.put("name", auth.getName());
         try {
             Customer customer = Customer.create(params);
             dao.setStripeCusId(auth.getAccountId(), customer.getId());
