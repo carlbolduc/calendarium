@@ -31,7 +31,7 @@ export default function MyCalendars(props) {
   return props.authenticated ? (
     <div className="p-5">
       <h1>{props.translate("My calendars")}</h1>
-      <Message result={newCalendarFormResult} origin="newCalendarForm" translate={props.translate} />
+      <Message result={newCalendarFormResult} origin="NewCalendarForm" translate={props.translate} />
       <ul>{calendars}</ul>
       {newCalendarButton}
       {newCalendarForm}
