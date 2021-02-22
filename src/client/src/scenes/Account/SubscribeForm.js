@@ -125,7 +125,7 @@ export default function SubscribeForm(props) {
         placeholder="Enter your postal code."
         required={true}
       />
-      <Button label={props.translate("Cancel")} type="button" id="button-cancel" onClick={() => props.setWantToSubscribe(false)} outline={true} />
+      <Button label={props.translate("Cancel")} type="button" id="button-cancel" onClick={props.cancel} outline={true} />
       <Button label={props.translate("Subscribe")} type="submit" id="button-subscribe" disabled={!stripe} />
       <p><span className="fw-bold">You will be charged $600 CAD now</span>, and then each year until you cancel your subscription.</p>
     </form>

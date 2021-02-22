@@ -1,6 +1,12 @@
-import React from 'react';
+import {useState, useEffect} from "react";
 
 export default function Message(props) {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    setShow(true);
+  }, [props.result]);
+
   let result = null;
   if (props.result) {
     if (props.result.success) {
@@ -14,12 +20,15 @@ export default function Message(props) {
 
       // manage the unexpected successes
       let message = messages.get(props.origin);
-      if (message === undefined) {message = "Success!"};
+      if (message === undefined) {message = "Success!"}
 
       result = (
         <div className="alert alert-success alert-dismissible fade show my-4" role="alert">
           {props.translate(message)}
-          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" />
+          <button type="button" className="btn-close" aria-label="Close" onClick={e => {
+            e.preventDefault();
+            setShow(false);
+          }} />
         </div>
       );
     } else {
@@ -39,15 +48,18 @@ export default function Message(props) {
 
       // manage the unexpected errors
       let message = messages.get(props.origin + props.result.errorCode);
-      if (message === undefined) {message = "We have encountered the unexpected. Mark the calendar! And maybe contact us in the grove."};
+      if (message === undefined) {message = "We have encountered the unexpected. Mark the calendar! And maybe contact us in the grove."}
 
       result = (
         <div className="alert alert-danger alert-dismissible fade show my-4" role="alert">
           {props.translate(message)}
-          <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close" />
+          <button type="button" className="btn-close" aria-label="Close" onClick={e => {
+            e.preventDefault();
+            setShow(false);
+          }} />
         </div>
       );
     }
   } 
-  return result;
+  return show ? result : null;
 }

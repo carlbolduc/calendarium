@@ -3,13 +3,14 @@ import {Redirect} from "react-router-dom";
 import NewCalendarForm from "./NewCalendarForm";
 import Message from "../../components/Form/Message";
 import Button from "../../components/Form/Button";
+import CalendarPreview from "./CalendarPreview";
 
 export default function MyCalendars(props) {
   const [showNewCalendarForm, setShowNewCalendarForm] = useState(false);
   const [newCalendarFormResult, setNewCalendarFormResult] = useState(null);
 
   const calendars = props.calendars.map(c => (
-    <li key={c.calendarId}>{c.nameEn}</li>
+    <CalendarPreview key={c.id} calendar={c} />
   ));
 
   const newCalendarButton = showNewCalendarForm || !props.subscribed ? null : (
@@ -36,7 +37,8 @@ export default function MyCalendars(props) {
   return props.authenticated ? (
     <div className="p-5">
       <h1>{props.translate("My calendars")}</h1>
-      <Message result={newCalendarFormResult} origin="newCalendarForm" translate={props.translate} />
+      <Message result={newCalendarFormResult} origin="NewCalendarForm" translate={props.translate} />
+      {calendars}
       {newCalendarButton}
       {newCalendarForm}
       <ul>{calendars}</ul>
