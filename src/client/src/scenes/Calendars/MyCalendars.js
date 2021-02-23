@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {Redirect} from "react-router-dom";
+import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
 import NewCalendarForm from "./NewCalendarForm";
 import Message from "../../components/Form/Message";
 import Button from "../../components/Form/Button";
@@ -12,19 +12,29 @@ export default function MyCalendars(props) {
   const title = !showNewCalendarForm ? (
     <h1>{props.translate("My calendars")}</h1>
   ) : null;
-  
-  const calendars = !showNewCalendarForm ? props.calendars.map(c => (
-    <CalendarPreview key={c.calendarId} calendar={c} />
-  )) : null;
+
+  function calendars() {
+    let result = null;
+    if (!showNewCalendarForm) {
+      result = (
+        <div className="row">
+          {props.calendars.map(c => (
+            <CalendarPreview key={c.calendarId} calendar={c} language={props.account.languageId} translate={props.translate} />
+          ))}
+        </div>
+      );
+    };
+    return result;
+  }
 
   const newCalendarButton = showNewCalendarForm || !props.subscribed ? null : (
-    <Button 
-      label={props.translate("New calendar")} 
-      id="button-new-calendar" 
+    <Button
+      label={props.translate("New calendar")}
+      id="button-new-calendar"
       onClick={() => {
         setShowNewCalendarForm(true);
         setNewCalendarFormResult(null);
-      }} 
+      }}
     />
   );
 
@@ -42,16 +52,16 @@ export default function MyCalendars(props) {
     <div className="p-5">
       {title}
       <Message result={newCalendarFormResult} origin="NewCalendarForm" translate={props.translate} />
-      {calendars}
+      {calendars()}
       {newCalendarButton}
       {newCalendarForm}
     </div>
   ) : (
-    <Redirect
-      to={{
-        pathname: "/sign-in",
-        state: {from: "/subscription"}
-      }}
-    />
-  );
+      <Redirect
+        to={{
+          pathname: "/sign-in",
+          state: { from: "/subscription" }
+        }}
+      />
+    );
 }
