@@ -16,7 +16,7 @@ export default function Calendar(props) {
   function renderMonth() {
     const result = [];
     let week = [];
-    let dayOfWeek = dayNumber(props.calendar.startDay);
+    let dayOfWeek = dayNumber(props.calendar.startWeekOn);
     const monthStartWeekday = date.startOf("month").weekday;
     for (let i = 0; i < date.daysInMonth; i++) {
       // Prepend empty days
