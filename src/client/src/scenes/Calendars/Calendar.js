@@ -27,7 +27,7 @@ export default function Calendar(props) {
       week.push(i+1);
       if (week.length === 7) {
         result.push(
-          <Week key={uuidv4()} days={week} currentDay={currentDay}/>
+          <Week key={uuidv4()} days={week} currentDay={currentDay} setCurrentDay={setCurrentDay}/>
         );
         week = [];
       } else if (i === date.daysInMonth-1) {
@@ -35,7 +35,7 @@ export default function Calendar(props) {
           week.push(null);
         }
         result.push(
-          <Week key={uuidv4()} days={week} currentDay={currentDay}/>
+          <Week key={uuidv4()} days={week} currentDay={currentDay} setCurrentDay={setCurrentDay}/>
         );
       }
     }
