@@ -126,6 +126,22 @@ public interface Dao {
     @RegisterBeanMapper(Calendar.class)
     List<Calendar> findCalendars(@Bind("accountId") long accountId);
 
+    @SqlQuery("SELECT calendar_id,\n" +
+            "       enable_en,\n" +
+            "       enable_fr,\n" +
+            "       name_en,\n" +
+            "       name_fr,\n" +
+            "       description_en,\n" +
+            "       description_fr,\n" +
+            "       link_en,\n" +
+            "       link_fr,\n" +
+            "       primary_color,\n" +
+            "       secondary_color\n" +
+            "FROM calendar\n" +
+            "WHERE link_en = :link OR link_fr = :link")
+    @RegisterBeanMapper(Calendar.class)
+    Optional<Calendar> findCalendarByLink(@Bind("link") String link);
+
     @SqlUpdate("INSERT INTO calendar (enable_fr, enable_en, name_fr, name_en, description_fr, description_en, link_fr,\n" +
             "                      link_en, primary_color, secondary_color, public_calendar, event_approval_required)\n" +
             "VALUES (:enableFr, :enableEn, :enableFr, :nameEn, :descriptionFr, :descriptionEn, :linkFr, :linkEn,\n" +
@@ -135,4 +151,6 @@ public interface Dao {
 
     @SqlUpdate("INSERT INTO calendar_access (account_id, calendar_id, status) VALUES (:accountId, :calendarId, :status)")
     void insertCalendarAccess(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @Bind("status") String status);
+
+    
 }

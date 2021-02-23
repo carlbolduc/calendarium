@@ -1,15 +1,16 @@
 import {Link} from "react-router-dom";
+
 export default function CalendarPreview(props) {
-  function name() {
+  function link() {
     let result;
-    if (props.calendar.nameEn !== null) {
-      result = props.calendar.nameEn;
+    if (props.calendar.linkEn !== null) {
+      result = props.calendar.linkEn;
     } else {
-      result = props.calendar.nameFr;
+      result = props.calendar.linkFr;
     }
     return result;
   }
   return (
-    <div><Link to={`/my-calendars/${name()}`}>{name()}</Link></div>
+    <div><Link to={`/my-calendars/${link()}`}>{link()}</Link></div>
   )
 }
