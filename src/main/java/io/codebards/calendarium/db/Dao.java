@@ -126,17 +126,7 @@ public interface Dao {
     @RegisterBeanMapper(Calendar.class)
     List<Calendar> findCalendars(@Bind("accountId") long accountId);
 
-    @SqlQuery("SELECT calendar_id,\n" +
-            "       enable_en,\n" +
-            "       enable_fr,\n" +
-            "       name_en,\n" +
-            "       name_fr,\n" +
-            "       description_en,\n" +
-            "       description_fr,\n" +
-            "       link_en,\n" +
-            "       link_fr,\n" +
-            "       primary_color,\n" +
-            "       secondary_color\n" +
+    @SqlQuery("SELECT *\n" +
             "FROM calendar\n" +
             "WHERE link_en = :link OR link_fr = :link")
     @RegisterBeanMapper(Calendar.class)
