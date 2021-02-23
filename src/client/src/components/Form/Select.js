@@ -1,6 +1,12 @@
 import Info from "../Icons/Info";
 
 export default function Select(props) {
+  // If props placeholder is not provided, there is no empty value
+  // and select starts with first option
+  const placeholder = props.placeholder ? (
+    <option key="0" value="">{props.placeholder}</option>
+  ) : null;
+
   const options = props.options.map((o, index) => (
     <option key={index + 1} value={o.value}>{o.label}</option>
   ));
@@ -38,7 +44,7 @@ export default function Select(props) {
               required={props.required ? props.required : null}
               title={props.placeholder}
             >
-              <option key="0" value="">{props.placeholder}</option>
+              {placeholder}
               {options}
             </select>
             <label
