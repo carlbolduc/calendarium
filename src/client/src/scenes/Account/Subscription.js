@@ -65,7 +65,7 @@ export default function Subscription(props) {
   }
 
   const productPresentation = (
-    <div className="mt-4">
+    <div>
       <p>{props.translate("By subscribing to Calendarium, you will be able to create and manage your own calendars, and invite people to collaborate with you on these calendars.")}</p>
       <p>
         <Button label={props.translate("What can Calendarium do?")} id="button-features-list" type="button" dataBsToggle="collapse" dataBsTarget="#features-list" ariaExpanded="false" ariaControls="features-list" outline={true} />
@@ -107,7 +107,7 @@ export default function Subscription(props) {
   }
 
   const subscriptionDetails = (
-    <div className="mt-4">
+    <div>
       <p>{props.translate("Here are the details about your subscription.")}</p>
       <h5 className="mt-4">{props.translate("Calendarium Unlimited")}</h5>
       <p>{props.translate("$600 CAD per year")}</p>
@@ -134,7 +134,7 @@ export default function Subscription(props) {
     if (props.authenticated) {
       if (wantTo === wantToOptions.CANCEL) {
         result = (
-          <div className="mt-4">
+          <div>
             <h5>Are you sure you want to cancel your subscription?</h5>
             <p>When you cancel...</p>
             <ul>
@@ -147,7 +147,7 @@ export default function Subscription(props) {
         );
       } else if (wantTo === wantToOptions.REACTIVATE) {
           result = (
-            <div className="mt-4">
+            <div>
               <h5>Are you sure you want reactivate your subscription?</h5>
               <p>When you reactivate...</p>
               <ul>
