@@ -227,8 +227,7 @@ export default function NewCalendarForm(props) {
         <Select
           label="Start week on"
           id="select-start-week-on"
-          placeholder={"Select which day to start the week on."}
-          options={[{ label: "Sunday", value: "Sunday" }, { label: "Monday", value: "Monday" }, { label: "Tuesday", value: "Tuesday" }, { label: "Wednesday", value: "Wednesday" }, { label: "Thursday", value: "Thursday" }, { label: "Friday", value: "Friday" }, { label: "Saturday", value: "Saturday" }]}
+          options={[{ label: "Monday", value: "Monday" }, { label: "Tuesday", value: "Tuesday" }, { label: "Wednesday", value: "Wednesday" }, { label: "Thursday", value: "Thursday" }, { label: "Friday", value: "Friday" }, { label: "Saturday", value: "Saturday" }, { label: "Sunday", value: "Sunday" }]}
           value={startWeekOn}
           handleChange={e => setStartWeekOn(e.target.value)}
           info="Select which day of the week will be the first day displayed on the left in this calendar."
