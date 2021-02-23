@@ -14,7 +14,7 @@ export default function MyCalendars(props) {
   ) : null;
   
   const calendars = !showNewCalendarForm ? props.calendars.map(c => (
-    <CalendarPreview key={c.id} calendar={c} />
+    <CalendarPreview key={c.calendarId} calendar={c} />
   )) : null;
 
   const newCalendarButton = showNewCalendarForm || !props.subscribed ? null : (

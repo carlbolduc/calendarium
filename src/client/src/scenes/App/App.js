@@ -16,6 +16,7 @@ import MyEvents from "../Events/MyEvents";
 import MyCalendars from "../Calendars/MyCalendars";
 import PublicCalendars from "../Calendars/PublicCalendars";
 import PasswordReset from "../Auth/PasswordReset";
+import Calendar from "../Calendars/Calendar";
 
 export default function App() {
   const [languages, setLanguages] = useState([]);
@@ -33,7 +34,7 @@ export default function App() {
   } = useAuth();
   const {getLocData, translate} = useLoc(account, languages);
   const {customerCreated, subscribed, createCustomer, createSubscription, updateSubscription} = useSubscription(token, account, getAccount);
-  const {calendars, getCalendars, createCalendar} = useCalendar(token, subscribed);
+  const {calendars, calendar, getCalendars, getCalendar, createCalendar} = useCalendar(token, subscribed);
 
   useEffect(() => {
     getLocData();
@@ -123,7 +124,15 @@ export default function App() {
               translate={translate}
             />
           </Route>
-          <Route path="/my-calendars">
+          <Route exact path="/my-calendars/:link">
+            <Calendar
+              authenticated={authenticated}
+              translate={translate}
+              calendar={calendar}
+              getCalendar={getCalendar}
+            />
+          </Route>
+          <Route exact path="/my-calendars">
             <MyCalendars
               account={account}
               authenticated={authenticated}

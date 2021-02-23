@@ -13,6 +13,7 @@ import io.dropwizard.auth.Auth;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RolesAllowed({"USER"})
 @Path("/calendars")
@@ -29,6 +30,17 @@ public class CalendarsResource {
     @GET
     public List<Calendar> getCalendars(@Auth Account auth) {
         return dao.findCalendars(auth.getAccountId());
+    }
+
+    @GET
+    @Path("/{link}")
+    public Response getCalendar(@Auth Account auth, @PathParam("link") String link) {
+        Response response = Response.status(Response.Status.NOT_FOUND).build();
+        Optional<Calendar> oCalendar = dao.findCalendarByLink(link);
+        if (oCalendar.isPresent()) {
+            response = Response.ok(oCalendar.get()).build();
+        }
+        return response;
     }
 
     @POST
