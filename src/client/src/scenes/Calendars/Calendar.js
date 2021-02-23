@@ -6,7 +6,7 @@ import Week from "./Week";
 
 export default function Calendar(props) {
   let { link } = useParams();
-  const [date, setDate] = useState(DateTime.now().plus({months:3}));
+  const [date, setDate] = useState(DateTime.now());
   const [currentDay, setCurrentDay] = useState(DateTime.now().day);
 
   useEffect(() => {
