@@ -1,4 +1,4 @@
-import InfoIcon from "./InfoIcon";
+import Info from "../Icons/Info";
 
 export default function Select(props) {
   const options = props.options.map((o, index) => (
@@ -15,7 +15,7 @@ export default function Select(props) {
       aria-expanded="false"
       aria-controls={`collapse-help-${props.id}`}
     >
-      <InfoIcon />
+      <Info />
     </button>
   ) : null;
 
