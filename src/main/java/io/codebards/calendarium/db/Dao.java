@@ -134,7 +134,7 @@ public interface Dao {
 
     @SqlUpdate("INSERT INTO calendar (enable_fr, enable_en, name_fr, name_en, description_fr, description_en, link_fr,\n" +
             "                      link_en, primary_color, secondary_color, public_calendar, event_approval_required)\n" +
-            "VALUES (:enableFr, :enableEn, :enableFr, :nameEn, :descriptionFr, :descriptionEn, :linkFr, :linkEn,\n" +
+            "VALUES (:enableFr, :enableEn, :nameFr, :nameEn, :descriptionFr, :descriptionEn, :linkFr, :linkEn,\n" +
             "        :primaryColor, :secondaryColor, :publicCalendar, :eventApprovalRequired)")
     @GetGeneratedKeys
     long insertCalendar(@Bind("accountId") long accountId, @BindBean Calendar calendar);
