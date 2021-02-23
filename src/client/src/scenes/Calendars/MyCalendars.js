@@ -10,7 +10,7 @@ export default function MyCalendars(props) {
   const [newCalendarFormResult, setNewCalendarFormResult] = useState(null);
 
   const calendars = props.calendars.map(c => (
-    <CalendarPreview key={c.id} calendar={c} />
+    <CalendarPreview key={c.calendarId} calendar={c} />
   ));
 
   const newCalendarButton = showNewCalendarForm || !props.subscribed ? null : (
