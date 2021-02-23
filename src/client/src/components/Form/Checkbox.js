@@ -1,4 +1,4 @@
-import InfoIcon from "./InfoIcon";
+import Info from "../Icons/Info";
 
 export default function Checkbox(props) {
   const infoButton = props.info ? (
@@ -11,7 +11,7 @@ export default function Checkbox(props) {
       aria-expanded="false"
       aria-controls={`collapse-help-${props.id}`}
     >
-      <InfoIcon />
+      <Info />
     </button>
   ) : null;
 
