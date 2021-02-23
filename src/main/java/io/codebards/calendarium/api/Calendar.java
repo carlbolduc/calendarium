@@ -10,6 +10,7 @@ public class Calendar {
     private String descriptionFr;
     private String linkEn;
     private String linkFr;
+    private String startWeekOn;
     private String primaryColor;
     private String secondaryColor;
     private Boolean publicCalendar = false;
@@ -85,6 +86,14 @@ public class Calendar {
 
     public void setLinkFr(String linkFr) {
         this.linkFr = linkFr;
+    }
+
+    public String getStartWeekOn() {
+        return startWeekOn;
+    }
+
+    public void setStartWeekOn(String startWeekOn) {
+        this.startWeekOn = startWeekOn;
     }
 
     public String getPrimaryColor() {
