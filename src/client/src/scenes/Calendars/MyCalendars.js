@@ -9,9 +9,13 @@ export default function MyCalendars(props) {
   const [showNewCalendarForm, setShowNewCalendarForm] = useState(false);
   const [newCalendarFormResult, setNewCalendarFormResult] = useState(null);
 
-  const calendars = props.calendars.map(c => (
+  const title = !showNewCalendarForm ? (
+    <h1>{props.translate("My calendars")}</h1>
+  ) : null;
+  
+  const calendars = !showNewCalendarForm ? props.calendars.map(c => (
     <CalendarPreview key={c.calendarId} calendar={c} />
-  ));
+  )) : null;
 
   const newCalendarButton = showNewCalendarForm || !props.subscribed ? null : (
     <Button 
@@ -36,11 +40,11 @@ export default function MyCalendars(props) {
 
   return props.authenticated ? (
     <div className="p-5">
-      <h1>{props.translate("My calendars")}</h1>
+      {title}
       <Message result={newCalendarFormResult} origin="NewCalendarForm" translate={props.translate} />
+      {calendars}
       {newCalendarButton}
       {newCalendarForm}
-      {calendars}
     </div>
   ) : (
     <Redirect
