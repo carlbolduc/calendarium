@@ -33,7 +33,7 @@ export default function App() {
     createPasswordReset,
     resetPassword
   } = useAuth();
-  const {getLocData, translate} = useLoc(account, languages);
+  const { getLocData, translate, language } = useLoc(account, languages);
   const {customerCreated, subscribed, createCustomer, createSubscription, updateSubscription} = useSubscription(token, account, getAccount);
   const {calendars, calendar, getCalendars, getCalendar, createCalendar} = useCalendar(token, subscribed);
   const {events, getEvents} = useEvent(token);
@@ -71,35 +71,35 @@ export default function App() {
           switchLanguage={switchLanguage}
         />
         <Switch>
-          <Route path="/sign-in">
+          <Route exact path="/sign-in">
             <SignIn
               signIn={signIn}
               authenticated={authenticated}
               translate={translate}
             />
           </Route>
-          <Route path="/sign-up">
+          <Route exact path="/sign-up">
             <SignUp
               signUp={signUp}
               authenticated={authenticated}
               translate={translate}
             />
           </Route>
-          <Route path="/forgot-password">
+          <Route exact path="/forgot-password">
             <ForgotPassword
               createPasswordReset={createPasswordReset}
               authenticated={authenticated}
               translate={translate}
             />
           </Route>
-          <Route path="/password-resets/:id">
+          <Route exact path="/password-resets/:id">
             <PasswordReset
               resetPassword={resetPassword}
               authenticated={authenticated}
               translate={translate}
             />
           </Route>
-          <Route path="/profile">
+          <Route exact path="/profile">
             <Profile
               account={account}
               updateAccount={updateAccount}
@@ -107,7 +107,7 @@ export default function App() {
               translate={translate}
             />
           </Route>
-          <Route path="/subscription">
+          <Route exact path="/subscription">
             <Subscription
               account={account}
               authenticated={authenticated}
@@ -119,7 +119,7 @@ export default function App() {
               updateSubscription={updateSubscription}
             />
           </Route>
-          <Route path="/my-events">
+          <Route exact path="/my-events">
             <MyEvents
               account={account}
               authenticated={authenticated}
@@ -128,30 +128,33 @@ export default function App() {
               getEvents={getEvents}
             />
           </Route>
-          <Route exact path="/my-calendars/:link">
-            <Calendar
-              authenticated={authenticated}
-              translate={translate}
-              calendar={calendar}
-              getCalendar={getCalendar}
-            />
-          </Route>
           <Route exact path="/my-calendars">
             <MyCalendars
               account={account}
               authenticated={authenticated}
               subscribed={subscribed}
               translate={translate}
+              language={language}
               calendars={calendars}
               getCalendars={getCalendars}
               createCalendar={createCalendar}
             />
           </Route>
-          <Route path="/public-calendars">
+          <Route exact path="/public-calendars">
             <PublicCalendars
               account={account}
               authenticated={authenticated}
               translate={translate}
+              language={language}
+            />
+          </Route>
+          <Route exact path="/:link">
+            <Calendar
+              authenticated={authenticated}
+              translate={translate}
+              language={language}
+              calendar={calendar}
+              getCalendar={getCalendar}
             />
           </Route>
           <Route path="/">

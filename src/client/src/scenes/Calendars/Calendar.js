@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Redirect } from "react-router-dom";
 import { DateTime } from "luxon";
-import { dayNumber, nextWeekDay, uuidv4 } from "../../services/Helpers";
+import { dayNumber, nextWeekDay, uuidv4, decideWhatToDisplay } from "../../services/Helpers";
 import Week from "./Week";
 
 export default function Calendar(props) {
@@ -12,6 +12,22 @@ export default function Calendar(props) {
   useEffect(() => {
     props.getCalendar(link);
   }, [])
+
+  function name() {
+    let result = null;
+    if (props.calendar !== null) {
+      result =  decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
+    }
+    return result;
+  }
+
+  function description() {
+    let result = null;
+    if (props.calendar !== null) {
+      result = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.descriptionEn, props.calendar.descriptionFr);
+    }
+    return result;
+  }
 
   function renderMonth() {
     const result = [];
@@ -44,8 +60,8 @@ export default function Calendar(props) {
   
   return props.authenticated ? (
     <div className="p-5">
-      <h1>{link}</h1>
-      <div>Le Calendar</div>
+      <h1>{name()}</h1>
+      <div>{description()}</div>
       <table className="table table-bordered text-center">
         <tbody>
           {props.calendar !== null ? renderMonth() : null}
