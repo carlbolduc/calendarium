@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { textColor } from "../../services/Helpers";
 
 export default function CalendarPreview(props) {
   function link() {
@@ -45,15 +46,14 @@ export default function CalendarPreview(props) {
 
   return (
     <div className="col-auto">
-      <div className="card mb-4" style={{ width: "18rem" }}>
-        <svg className="card-img-top" width="100%" height="60" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Image cap" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill={props.calendar.primaryColor} /></svg>
-        <svg className="card-img-middle" width="100%" height="30" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Image cap" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill={props.calendar.secondaryColor} /></svg>
-        <div className="card-body">
-          <h5 className="card-title">{name()}</h5>
+      <div className={`card mb-4 ${textColor(props.calendar.primaryColor)}`} style={{ width: "18rem", height: "18rem", backgroundColor: props.calendar.primaryColor }}>
+        <h5 className="card-header">{name()}</h5>
+        <div className="card-body overflow-auto">
           <p className="card-text">{description()}</p>
           <Link className="stretched-link" to={`/my-calendars/${link()}`}></Link>
         </div>
       </div>
     </div>
+
   )
 }
