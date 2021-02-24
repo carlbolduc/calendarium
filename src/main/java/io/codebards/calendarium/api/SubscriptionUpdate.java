@@ -4,7 +4,7 @@ public class SubscriptionUpdate {
     private Boolean cancelAtPeriodEnd;
 
     public Boolean getCancelAtPeriodEnd() {
-        return cancelAtPeriodEnd;
+        return cancelAtPeriodEnd != null && cancelAtPeriodEnd;
     }
 
     public void setCancelAtPeriodEnd(Boolean cancelAtPeriodEnd) {

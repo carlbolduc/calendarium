@@ -5,6 +5,7 @@ import {useLoc} from "../../services/Loc";
 import {useAuth} from "../../services/Auth";
 import {useSubscription} from "../../services/Subscription";
 import {useCalendar} from "../../services/Calendar";
+import {useEvent} from "../../services/Event";
 import Header from "../../components/Header/Header";
 import SignUp from "../Auth/SignUp";
 import SignIn from "../Auth/SignIn";
@@ -35,6 +36,7 @@ export default function App() {
   const {getLocData, translate} = useLoc(account, languages);
   const {customerCreated, subscribed, createCustomer, createSubscription, updateSubscription} = useSubscription(token, account, getAccount);
   const {calendars, calendar, getCalendars, getCalendar, createCalendar} = useCalendar(token, subscribed);
+  const {events, getEvents} = useEvent(token);
 
   useEffect(() => {
     getLocData();
@@ -122,6 +124,8 @@ export default function App() {
               account={account}
               authenticated={authenticated}
               translate={translate}
+              events={events}
+              getEvents={getEvents}
             />
           </Route>
           <Route exact path="/my-calendars/:link">

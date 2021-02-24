@@ -25,7 +25,7 @@ public class Calendar {
     }
 
     public Boolean getEnableEn() {
-        return enableEn;
+        return enableEn != null && enableEn;
     }
 
     public void setEnableEn(Boolean enableEn) {
@@ -33,7 +33,7 @@ public class Calendar {
     }
 
     public Boolean getEnableFr() {
-        return enableFr;
+        return enableFr != null && enableFr;
     }
 
     public void setEnableFr(Boolean enableFr) {
@@ -113,7 +113,7 @@ public class Calendar {
     }
 
     public Boolean getPublicCalendar() {
-        return publicCalendar;
+        return publicCalendar != null && publicCalendar;
     }
 
     public void setPublicCalendar(Boolean publicCalendar) {
@@ -121,7 +121,7 @@ public class Calendar {
     }
 
     public Boolean getEventApprovalRequired() {
-        return eventApprovalRequired;
+        return eventApprovalRequired != null && eventApprovalRequired;
     }
 
     public void setEventApprovalRequired(Boolean eventApprovalRequired) {

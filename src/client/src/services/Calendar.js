@@ -8,6 +8,7 @@ export function useCalendar(token, subscribed) {
 
   useEffect(() => {
     if (token !== null) {
+      // TODO: move this into the MyCalendar initial mount function
       getCalendars();
     }
   }, [token]);

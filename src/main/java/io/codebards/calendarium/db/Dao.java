@@ -1,12 +1,7 @@
 package io.codebards.calendarium.db;
 
-import io.codebards.calendarium.api.Price;
-import io.codebards.calendarium.api.Subscription;
+import io.codebards.calendarium.api.*;
 import io.codebards.calendarium.core.Account;
-import io.codebards.calendarium.api.Calendar;
-import io.codebards.calendarium.api.Language;
-import io.codebards.calendarium.api.Localisation;
-import liquibase.pro.packaged.B;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -118,29 +113,65 @@ public interface Dao {
             "       c.description_fr,\n" +
             "       c.link_en,\n" +
             "       c.link_fr,\n" +
+            "       c.start_week_on,\n" +
             "       c.primary_color,\n" +
-            "       c.secondary_color\n" +
+            "       c.secondary_color,\n" +
+            "       c.public_calendar,\n" +
+            "       c.event_approval_required\n" +
             "FROM calendar c\n" +
             "         INNER JOIN calendar_access ca on c.calendar_id = ca.calendar_id\n" +
             "WHERE ca.account_id = :accountId")
     @RegisterBeanMapper(Calendar.class)
     List<Calendar> findCalendars(@Bind("accountId") long accountId);
 
-    @SqlQuery("SELECT *\n" +
-            "FROM calendar\n" +
-            "WHERE link_en = :link OR link_fr = :link")
+    @SqlQuery("SELECT c.calendar_id,\n" +
+            "       c.enable_en,\n" +
+            "       c.enable_fr,\n" +
+            "       c.name_en,\n" +
+            "       c.name_fr,\n" +
+            "       c.description_en,\n" +
+            "       c.description_fr,\n" +
+            "       c.link_en,\n" +
+            "       c.link_fr,\n" +
+            "       c.start_week_on,\n" +
+            "       c.primary_color,\n" +
+            "       c.secondary_color,\n" +
+            "       c.public_calendar,\n" +
+            "       c.event_approval_required\n" +
+            "FROM calendar c\n" +
+            "         INNER JOIN calendar_access ca on c.calendar_id = ca.calendar_id\n" +
+            "WHERE ca.account_id = :accountId\n" +
+            "  AND (c.link_en = :link OR c.link_fr = :link)")
     @RegisterBeanMapper(Calendar.class)
-    Optional<Calendar> findCalendarByLink(@Bind("link") String link);
+    Optional<Calendar> findCalendarByLink(@Bind("accountId") long accountId, @Bind("link") String link);
 
-    @SqlUpdate("INSERT INTO calendar (enable_fr, enable_en, name_fr, name_en, description_fr, description_en, link_fr,\n" +
-            "                      link_en, primary_color, secondary_color, public_calendar, event_approval_required)\n" +
-            "VALUES (:enableFr, :enableEn, :nameFr, :nameEn, :descriptionFr, :descriptionEn, :linkFr, :linkEn,\n" +
-            "        :primaryColor, :secondaryColor, :publicCalendar, :eventApprovalRequired)")
+    @SqlUpdate("INSERT INTO calendar (enable_en, enable_fr, name_en, name_fr, description_en, description_fr, link_en, link_fr,\n" +
+            "                      start_week_on, primary_color, secondary_color, public_calendar, event_approval_required)\n" +
+            "VALUES (:enableEn, :enableFr, :nameEn, :nameFr, :descriptionEn, :descriptionFr, :linkEn, :linkFr,\n" +
+            "        :startWeekOn, :primaryColor, :secondaryColor, :publicCalendar, :eventApprovalRequired)")
     @GetGeneratedKeys
     long insertCalendar(@Bind("accountId") long accountId, @BindBean Calendar calendar);
 
     @SqlUpdate("INSERT INTO calendar_access (account_id, calendar_id, status) VALUES (:accountId, :calendarId, :status)")
     void insertCalendarAccess(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @Bind("status") String status);
 
-    
+    // Events
+
+    @SqlQuery("SELECT event_id,\n" +
+            "       status,\n" +
+            "       name_en,\n" +
+            "       name_fr,\n" +
+            "       description_en,\n" +
+            "       description_fr,\n" +
+            "       hyperlink_en,\n" +
+            "       hyperlink_fr,\n" +
+            "       start_at,\n" +
+            "       end_at,\n" +
+            "       all_day,\n" +
+            "       account_id,\n" +
+            "       calendar_id\n" +
+            "FROM event\n" +
+            "WHERE account_id = :accountId")
+    @RegisterBeanMapper(Event.class)
+    List<Event> findEventsByAccount(@Bind("accountId") long accountId);
 }

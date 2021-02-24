@@ -79,6 +79,7 @@ public class App extends Application<Config> {
         final LocalisationsResource localisationsResource = new LocalisationsResource(dao);
         final SubscriptionsResource subscriptionsResource = new SubscriptionsResource(dao, config.getThirdPartyFactory().getStripeApiKey(), config.getThirdPartyFactory().getStripeWebhookSecret());
         final CalendarsResource calendarsResource = new CalendarsResource(dao);
+        final EventsResource eventsResource = new EventsResource(dao);
 
         if (config.getThirdPartyFactory().getEnv().equals("development")) {
             setupCors(environment);
@@ -99,6 +100,7 @@ public class App extends Application<Config> {
         environment.jersey().register(localisationsResource);
         environment.jersey().register(subscriptionsResource);
         environment.jersey().register(calendarsResource);
+        environment.jersey().register(eventsResource);
     }
 
     private void setupCors(Environment environment) {

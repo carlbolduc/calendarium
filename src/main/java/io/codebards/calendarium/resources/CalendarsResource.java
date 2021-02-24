@@ -36,7 +36,7 @@ public class CalendarsResource {
     @Path("/{link}")
     public Response getCalendar(@Auth Account auth, @PathParam("link") String link) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
-        Optional<Calendar> oCalendar = dao.findCalendarByLink(link);
+        Optional<Calendar> oCalendar = dao.findCalendarByLink(auth.getAccountId(), link);
         if (oCalendar.isPresent()) {
             response = Response.ok(oCalendar.get()).build();
         }
