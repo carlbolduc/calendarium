@@ -50,7 +50,7 @@ export default function CalendarPreview(props) {
         <h5 className="card-header">{name()}</h5>
         <div className="card-body overflow-auto">
           <p className="card-text">{description()}</p>
-          <Link className="stretched-link" to={`/my-calendars/${link()}`}></Link>
+          <Link className="stretched-link" to={`/${link()}`}></Link>
         </div>
       </div>
     </div>
