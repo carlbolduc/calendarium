@@ -5,13 +5,13 @@
 @import "../../node_modules/bootstrap/scss/bootstrap";
 
 // This correctly aligns the help icon with Checkbox label
-.btn-help {
+.btn-icon {
   line-height: 1.3 !important;
   vertical-align: top !important;
 }
 
 // This removes the outline around clicked help icon in Input component
-.btn-help:focus {
+.btn-icon:focus {
   box-shadow: none !important;
 }
 

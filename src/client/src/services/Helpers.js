@@ -119,3 +119,8 @@ export function decideWhatToDisplay(language, enableEn, enableFr, textEn, textFr
   }
   return result;
 }
+
+// This function converts a language to an actuale locale. E.g.: "enCa" becomes "en-Ca".
+export function getLocale(language) {
+  return language.substring(0, 2) + "-" + language.substring(2, 4);
+}

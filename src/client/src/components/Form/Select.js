@@ -13,7 +13,7 @@ export default function Select(props) {
 
   const infoButton = props.info ? (
     <button
-      className="btn text-secondary btn-help p-0"
+      className="btn text-secondary btn-icon p-0"
       type="button"
       id="button-help"
       data-bs-toggle="collapse"
