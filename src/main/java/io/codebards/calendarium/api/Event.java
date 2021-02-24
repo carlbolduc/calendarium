@@ -4,18 +4,18 @@ import java.time.Instant;
 
 public class Event {
     private long eventId;
+    private long accountId;
+    private long calendarId;
     private String status;
-    private String nameEn;
     private String nameFr;
-    private String descriptionEn;
+    private String nameEn;
     private String descriptionFr;
-    private String hyperlinkEn;
-    private String hyperlinkFr;
+    private String descriptionEn;
     private Instant startAt;
     private Instant endAt;
     private Boolean allDay;
-    private long accountId;
-    private long calendarId;
+    private String hyperlinkFr;
+    private String hyperlinkEn;
 
     public long getEventId() {
         return eventId;
@@ -23,6 +23,22 @@ public class Event {
 
     public void setEventId(long eventId) {
         this.eventId = eventId;
+    }
+
+    public long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
+    }
+
+    public long getCalendarId() {
+        return calendarId;
+    }
+
+    public void setCalendarId(long calendarId) {
+        this.calendarId = calendarId;
     }
 
     public String getStatus() {
@@ -33,14 +49,6 @@ public class Event {
         this.status = status;
     }
 
-    public String getNameEn() {
-        return nameEn;
-    }
-
-    public void setNameEn(String nameEn) {
-        this.nameEn = nameEn;
-    }
-
     public String getNameFr() {
         return nameFr;
     }
@@ -49,12 +57,12 @@ public class Event {
         this.nameFr = nameFr;
     }
 
-    public String getDescriptionEn() {
-        return descriptionEn;
+    public String getNameEn() {
+        return nameEn;
     }
 
-    public void setDescriptionEn(String descriptionEn) {
-        this.descriptionEn = descriptionEn;
+    public void setNameEn(String nameEn) {
+        this.nameEn = nameEn;
     }
 
     public String getDescriptionFr() {
@@ -65,20 +73,12 @@ public class Event {
         this.descriptionFr = descriptionFr;
     }
 
-    public String getHyperlinkEn() {
-        return hyperlinkEn;
+    public String getDescriptionEn() {
+        return descriptionEn;
     }
 
-    public void setHyperlinkEn(String hyperlinkEn) {
-        this.hyperlinkEn = hyperlinkEn;
-    }
-
-    public String getHyperlinkFr() {
-        return hyperlinkFr;
-    }
-
-    public void setHyperlinkFr(String hyperlinkFr) {
-        this.hyperlinkFr = hyperlinkFr;
+    public void setDescriptionEn(String descriptionEn) {
+        this.descriptionEn = descriptionEn;
     }
 
     public Instant getStartAt() {
@@ -105,19 +105,19 @@ public class Event {
         this.allDay = allDay;
     }
 
-    public long getAccountId() {
-        return accountId;
+    public String getHyperlinkFr() {
+        return hyperlinkFr;
     }
 
-    public void setAccountId(long accountId) {
-        this.accountId = accountId;
+    public void setHyperlinkFr(String hyperlinkFr) {
+        this.hyperlinkFr = hyperlinkFr;
     }
 
-    public long getCalendarId() {
-        return calendarId;
+    public String getHyperlinkEn() {
+        return hyperlinkEn;
     }
 
-    public void setCalendarId(long calendarId) {
-        this.calendarId = calendarId;
+    public void setHyperlinkEn(String hyperlinkEn) {
+        this.hyperlinkEn = hyperlinkEn;
     }
 }

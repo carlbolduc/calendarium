@@ -48,6 +48,6 @@ public class CalendarsResource {
     public Response createCalendar(@Auth Account auth, Calendar calendar) {
         long calendarId = dao.insertCalendar(auth.getAccountId(), calendar);
         dao.insertCalendarAccess(auth.getAccountId(), calendarId, CalendarAccessStatus.OWNER.getStatus());
-        return Response.created(URI.create("/api/calendars/" + calendarId)).build();
+        return Response.noContent().build();
     }
 }
