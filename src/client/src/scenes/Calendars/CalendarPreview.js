@@ -1,47 +1,17 @@
 import { Link } from "react-router-dom";
-import { textColor } from "../../services/Helpers";
+import { textColor, decideWhatToDisplay } from "../../services/Helpers";
 
 export default function CalendarPreview(props) {
   function link() {
-    let result;
-    if (props.language === 1 && props.calendar.enableEn) {
-      result = props.calendar.linkEn; // We're in English and the calendar has English enabled
-    } else if (props.language === 2 && props.calendar.enableFr) {
-      result = props.calendar.linkFr; // We're in French and the calendar has French enabled
-    } else if (props.calendar.linkEn !== "") {
-      result = props.calendar.linkEn; // None of the above and the calendar has an English link
-    } else {
-      result = props.calendar.linkFr; // None of the above and the calendar has a French link
-    }
-    return result;
+    return decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.linkEn, props.calendar.linkFr);
   }
 
   function name() {
-    let result;
-    if (props.language === 1 && props.calendar.enableEn) {
-      result = props.calendar.nameEn; // We're in English and the calendar has English enabled
-    } else if (props.language === 2 && props.calendar.enableFr) {
-      result = props.calendar.nameFr; // We're in French and the calendar has French enabled
-    } else if (props.calendar.nameEn !== "") {
-      result = props.calendar.nameEn; // None of the above and the calendar has an English name
-    } else {
-      result = props.calendar.nameFr; // None of the above and the calendar has a French name
-    }
-    return result;
+    return decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
   }
 
   function description() {
-    let result;
-    if (props.language === 1 && props.calendar.enableEn) {
-      result = props.calendar.descriptionEn; // We're in English and the calendar has English enabled
-    } else if (props.language === 2 && props.calendar.enableFr) {
-      result = props.calendar.descriptionFr; // We're in French and the calendar has French enabled
-    } else if (props.calendar.descriptionEn !== "") {
-      result = props.calendar.descriptionEn; // None of the above and the calendar has an English description
-    } else {
-      result = props.calendar.descriptionFr; // None of the above and the calendar has a French description
-    }
-    return result;
+    return decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.descriptionEn, props.calendar.descriptionFr);
   }
 
   return (

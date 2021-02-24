@@ -19,7 +19,7 @@ export default function MyCalendars(props) {
       result = (
         <div className="row">
           {props.calendars.map(c => (
-            <CalendarPreview key={c.calendarId} calendar={c} language={props.account.languageId} translate={props.translate} />
+            <CalendarPreview key={c.calendarId} calendar={c} language={props.language} translate={props.translate} />
           ))}
         </div>
       );

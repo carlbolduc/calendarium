@@ -96,12 +96,26 @@ export function textColor(backgroundColor) {
   const blue = parseInt(backgroundColor.substring(5, 7), 16);
 
   // determine the overall intensity of the color to choose the corresponding text color
-  if ((red*0.299 + green*0.587 + blue*0.114) > 186) {
+  if ((red * 0.299 + green * 0.587 + blue * 0.114) > 186) {
     //use #000000 
     return "text-dark";
   } else {
     //use #ffffff
     return "text-white";
   }
+}
 
+// This function returns the right text to display for a calendar user content, according to calendar settings and current language
+export function decideWhatToDisplay(language, enableEn, enableFr, textEn, textFr) {
+  let result;
+  if (language === "enCa" && enableEn) { // we're in English and the calendar has English enabled
+    result = textEn;
+  } else if (language === "frCa" && enableFr) { // we're in French and the calendar has French enabled
+    result = textFr;
+  } else if (enableEn && textEn !== "") { // none of the above, the calendar has English enabled and text isn't empty
+    result = textEn;
+  } else { // none of the above, we must use the French text
+    result = textFr;
+  }
+  return result;
 }

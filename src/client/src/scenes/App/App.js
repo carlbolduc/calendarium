@@ -32,7 +32,7 @@ export default function App() {
     createPasswordReset,
     resetPassword
   } = useAuth();
-  const {getLocData, translate} = useLoc(account, languages);
+  const { getLocData, translate, language } = useLoc(account, languages);
   const {customerCreated, subscribed, createCustomer, createSubscription, updateSubscription} = useSubscription(token, account, getAccount);
   const {calendars, calendar, getCalendars, getCalendar, createCalendar} = useCalendar(token, subscribed);
 
@@ -130,6 +130,7 @@ export default function App() {
               authenticated={authenticated}
               subscribed={subscribed}
               translate={translate}
+              language={language}
               calendars={calendars}
               getCalendars={getCalendars}
               createCalendar={createCalendar}
@@ -140,12 +141,14 @@ export default function App() {
               account={account}
               authenticated={authenticated}
               translate={translate}
+              language={language}
             />
           </Route>
           <Route exact path="/:link">
             <Calendar
               authenticated={authenticated}
               translate={translate}
+              language={language}
               calendar={calendar}
               getCalendar={getCalendar}
             />
