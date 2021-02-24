@@ -224,7 +224,7 @@ public interface Dao {
             "        :descriptionEn, :startAt, :endAt, :allDay, :hyperlinkFr, :hyperlinkEn)")
     void insertEvent(@BindBean Event event);
 
-    @SqlQuery("UPDATE event\n" +
+    @SqlUpdate("UPDATE event\n" +
             "SET calendar_id    = :calendarId,\n" +
             "    status         = :status,\n" +
             "    name_fr        = :nameFr,\n" +
