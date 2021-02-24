@@ -77,8 +77,27 @@ public class EventsResource {
     @DELETE
     @Path("/{eventId}")
     public Response deleteEvent(@Auth Account auth, @PathParam("eventId") long eventId) {
-        // TODO
-        return Response.noContent().build();
+        Response response = Response.status(Response.Status.UNAUTHORIZED).build();
+        Optional<Event> oEvent = dao.findEvent(eventId);
+        if (oEvent.isPresent()) {
+            // Event exists
+            if (oEvent.get().getAccountId() == auth.getAccountId()) {
+                // Event owner can delete its own events
+                dao.deleteEvent(eventId);
+                response = Response.noContent().build();
+            } else {
+                List<CalendarAccess> calendarAccesses = dao.findCalendarAccesses(auth.getAccountId());
+                Optional<CalendarAccess> oCalendarAccess = calendarAccesses.stream().filter(ca -> ca.getCalendarId() == oEvent.get().getCalendarId()).findFirst();
+                if (oCalendarAccess.isPresent() && oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.OWNER.getStatus())) {
+                    // Calendar owner can delete any event in its calendar
+                    dao.deleteEvent(eventId);
+                    response = Response.noContent().build();
+                }
+            }
+        } else {
+            response = Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return response;
     }
 
     private Response updateEventIfPossible(CalendarAccess calendarAccess, Event event) {

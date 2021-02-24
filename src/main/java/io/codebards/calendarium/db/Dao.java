@@ -239,6 +239,9 @@ public interface Dao {
             "WHERE event_id = :eventId")
     void updateEvent(@BindBean Event event);
 
+    @SqlUpdate("DELETE FROM event WHERE event_id = :eventId")
+    void deleteEvent(@Bind("eventId") long eventId);
+
     // Calendar Access
 
     @SqlQuery("SELECT calendar_access_id, account_id, calendar_id, status\n" +
