@@ -36,7 +36,7 @@ export default function App() {
   const { getLocData, translate, language } = useLoc(account, languages);
   const {customerCreated, subscribed, createCustomer, createSubscription, updateSubscription} = useSubscription(token, account, getAccount);
   const {calendars, calendar, getCalendars, getCalendar, createCalendar} = useCalendar(token, subscribed);
-  const {events, getEvents} = useEvent(token);
+  const {events, getEvents, createEvent} = useEvent(token);
 
   useEffect(() => {
     getLocData();
@@ -126,6 +126,7 @@ export default function App() {
               translate={translate}
               events={events}
               getEvents={getEvents}
+              createEvent={createEvent}
             />
           </Route>
           <Route exact path="/my-calendars">

@@ -21,5 +21,10 @@ export function useEvent(token) {
             });
         }
     }
-    return {events, getEvents};
+
+    function createEvent() {
+        console.log("TODO")
+    }
+
+    return {events, getEvents, createEvent};
 }
