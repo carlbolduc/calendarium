@@ -2,6 +2,7 @@ import {useState, useEffect} from "react";
 import Button from "../../components/Form/Button";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 import Input from "../../components/Form/Input";
+import Checkbox from "../../components/Form/Checkbox";
 
 export default function EventForm(props) {
   const [status, setStatus] = useState("");
@@ -115,6 +116,13 @@ export default function EventForm(props) {
     <form onSubmit={handleSubmit} id="form-event" noValidate>
       {englishFields}
       {frenchFields}
+      <Checkbox
+        label="All day"
+        id="all-day"
+        value={allDay}
+        handleChange={e => setAllDay(e.target.checked)}
+        info="When this is checked, ???."
+      />
       <Button label={props.translate("Cancel")} id="button-cancel" onClick={props.cancel} outline={true} />
       <Button label={props.translate("Post this event")} type="submit" working={requesting} id="button-save" />
     </form>
