@@ -75,5 +75,56 @@ export function useCalendar(token, subscribed) {
     }
   }
 
-  return {calendars, calendar, getCalendars, getCalendar, createCalendar};
+  function updateCalendar(calendarId, data, cb) {
+    if (token !== null && subscribed) {
+      axios({
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        url: `${process.env.REACT_APP_API}/calendars/${calendarId}`,
+        data: data
+      }).then(() => {
+        // Success, fetch calendar
+        getCalendar(data.linkEn, cb);
+        if (cb) {
+          const result = {
+            success: true
+          }
+          cb(result);
+        }
+      }).catch(err => {
+        // Let caller know that something went wrong
+        errorCallback(err, cb);
+      });
+    }
+  }
+
+  function deleteCalendar(calendarId, cb) {
+    if (token !== null && subscribed) {
+      axios({
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        url: `${process.env.REACT_APP_API}/calendars/${calendarId}`
+      }).then(() => {
+        // Success, fetch calendars
+        getCalendars();
+        if (cb) {
+          const result = {
+            success: true
+          }
+          cb(result);
+        }
+      }).catch(err => {
+        // Let caller know that something went wrong
+        errorCallback(err, cb);
+      });
+    }
+  }
+
+  return {calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar};
 }

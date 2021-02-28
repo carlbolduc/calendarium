@@ -180,6 +180,12 @@ public interface Dao {
     @SqlUpdate("INSERT INTO calendar_access (account_id, calendar_id, status) VALUES (:accountId, :calendarId, :status)")
     void insertCalendarAccess(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @Bind("status") String status);
 
+    @SqlUpdate("UPDATE calendar SET enable_en = :enableEn, enable_fr = :enableFr, name_en = :nameEn, name_fr = :nameFr, description_en = :descriptionEn, description_fr = :descriptionFr, link_en = :linkEn, link_fr = :linkFr, start_week_on = :startWeekOn, primary_color = :primaryColor, secondary_color = :secondaryColor, public_calendar = :publicCalendar, event_approval_required = :eventApprovalRequired WHERE calendar_id = :calendarId")
+    void updateCalendar(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @BindBean Calendar calendar);
+
+    @SqlUpdate("DELETE FROM calendar WHERE calendar_id = :calendarId")
+    void deleteCalendar(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId);
+
     // Events
 
     @SqlQuery("SELECT event_id,\n" +

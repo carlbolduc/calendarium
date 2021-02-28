@@ -6,27 +6,27 @@ import { textValid } from "../../services/Helpers";
 import Checkbox from "../../components/Form/Checkbox";
 import Select from "../../components/Form/Select";
 
-export default function NewCalendarForm(props) {
-  const [enableEn, setEnableEn] = useState(true);
-  const [nameEn, setNameEn] = useState("");
+export default function CalendarForm(props) {
+  const [enableEn, setEnableEn] = useState(props.calendar !== undefined ? props.calendar.enableEn : true);
+  const [nameEn, setNameEn] = useState(props.calendar !== undefined ? props.calendar.nameEn : "");
   const [invalidNameEn, setInvalidNameEn] = useState(false);
-  const [descriptionEn, setDescriptionEn] = useState("");
+  const [descriptionEn, setDescriptionEn] = useState(props.calendar !== undefined ? props.calendar.descriptionEn : "");
   const [invalidDescriptionEn, setInvalidDescriptionEn] = useState(false);
-  const [linkEn, setLinkEn] = useState("");
+  const [linkEn, setLinkEn] = useState(props.calendar !== undefined ? props.calendar.linkEn : "");
   const [invalidLinkEn, setInvalidLinkEn] = useState(false);
-  const [enableFr, setEnableFr] = useState(false);
-  const [nameFr, setNameFr] = useState("");
+  const [enableFr, setEnableFr] = useState(props.calendar !== undefined ? props.calendar.enableFr : false);
+  const [nameFr, setNameFr] = useState(props.calendar !== undefined ? props.calendar.nameFr : "");
   const [invalidNameFr, setInvalidNameFr] = useState(false);
-  const [descriptionFr, setDescriptionFr] = useState("");
+  const [descriptionFr, setDescriptionFr] = useState(props.calendar !== undefined ? props.calendar.descriptionFr : "");
   const [invalidDescriptionFr, setInvalidDescriptionFr] = useState(false);
-  const [linkFr, setLinkFr] = useState("");
+  const [linkFr, setLinkFr] = useState(props.calendar !== undefined ? props.calendar.linkFr : "");
   const [invalidLinkFr, setInvalidLinkFr] = useState(false);
-  const [startWeekOn, setStartWeekOn] = useState("Sunday");
-  const [primaryColor, setPrimaryColor] = useState("");
-  const [secondaryColor, setSecondaryColor] = useState("");
-  const [publicCalendar, setPublicCalendar] = useState(false);
+  const [startWeekOn, setStartWeekOn] = useState(props.calendar !== undefined ? props.calendar.startWeekOn : "Sunday");
+  const [primaryColor, setPrimaryColor] = useState(props.calendar !== undefined ? props.calendar.primaryColor : "#ffffff");
+  const [secondaryColor, setSecondaryColor] = useState(props.calendar !== undefined ? props.calendar.secondaryColor : "#ffffff");
+  const [publicCalendar, setPublicCalendar] = useState(props.calendar !== undefined ? props.calendar.publicCalendar : false);
   const [requesting, setRequesting] = useState(false);
-  const [eventApprovalRequired, setEventApprovalRequired] = useState(false);
+  const [eventApprovalRequired, setEventApprovalRequired] = useState(props.calendar !== undefined ? props.calendar.eventApprovalRequired : false);
   const [noLanguageEnabled, setNoLanguageEnabled] = useState(false);
 
   useEffect(() => {
@@ -47,13 +47,23 @@ export default function NewCalendarForm(props) {
         publicCalendar: publicCalendar,
         eventApprovalRequired: eventApprovalRequired
       }
-      props.createCalendar(calendar, result => {
-        props.setResult(result);
-        setRequesting(false);
-        if (result.success) {
-          props.hideForm();
-        }
-      });
+      if (props.new) {
+        props.createCalendar(calendar, result => {
+          props.setResult(result);
+          setRequesting(false);
+          if (result.success) {
+            props.hideForm();
+          }
+        });
+      } else {
+        props.updateCalendar(props.calendar.calendarId, calendar, result => {
+          props.setResult(result);
+          setRequesting(false);
+          if (result.success) {
+            props.hideForm();
+          }
+        });
+      }
     }
   }, [requesting]);
 
@@ -196,10 +206,15 @@ export default function NewCalendarForm(props) {
       />
     </>
   ) : null;
+
+  const renderTitle = props.new ? "New calendar" : "Calendar settings";
+
+  const renderSubmitButton = props.new ? "Create this calendar" : "Save changes";
+
   return (
     // TODO: use {props.translate("")} for text visible in the app
     <>
-      <h1>{props.translate("New calendar")}</h1>
+      <h1>{props.translate(renderTitle)}</h1>
       <form onSubmit={handleSubmit} id="form-new-calendar" noValidate>
         {noLanguageEnabled ? <InvalidFeedback feedback="Enable at least one language." /> : null}
         <div className="row mb-3">
@@ -269,7 +284,7 @@ export default function NewCalendarForm(props) {
           info="When this is checked, you will need to approve all events created by other users that you have invited to this calendar. You can uncheck this at any time to remove the restriction and instantly approve any pending events."
         />
         <Button label={props.translate("Cancel")} id="button-cancel" onClick={props.cancel} outline={true} />
-        <Button label={props.translate("Create this calendar")} type="submit" working={requesting} id="button-save" />
+        <Button label={props.translate(renderSubmitButton)} type="submit" working={requesting} id="button-save" />
       </form>
     </>
   );

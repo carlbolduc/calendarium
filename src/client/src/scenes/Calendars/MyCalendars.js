@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
-import NewCalendarForm from "./NewCalendarForm";
+import CalendarForm from "./CalendarForm";
 import Message from "../../components/Form/Message";
 import Button from "../../components/Form/Button";
 import CalendarPreview from "./CalendarPreview";
 
 export default function MyCalendars(props) {
-  const [showNewCalendarForm, setShowNewCalendarForm] = useState(false);
-  const [newCalendarFormResult, setNewCalendarFormResult] = useState(null);
+  const [showCalendarForm, setShowCalendarForm] = useState(false);
+  const [calendarFormResult, setCalendarFormResult] = useState(null);
 
-  const title = !showNewCalendarForm ? (
+  const title = !showCalendarForm ? (
     <h1>{props.translate("My calendars")}</h1>
   ) : null;
 
   function calendars() {
     let result = null;
-    if (!showNewCalendarForm) {
+    if (!showCalendarForm) {
       result = (
         <div className="row">
           {props.calendars.map(c => (
@@ -27,34 +27,35 @@ export default function MyCalendars(props) {
     return result;
   }
 
-  const newCalendarButton = showNewCalendarForm || !props.subscribed ? null : (
+  const newCalendarButton = showCalendarForm || !props.subscribed ? null : (
     <Button
       label={props.translate("New calendar")}
       id="button-new-calendar"
       onClick={() => {
-        setShowNewCalendarForm(true);
-        setNewCalendarFormResult(null);
+        setShowCalendarForm(true);
+        setCalendarFormResult(null);
       }}
     />
   );
 
-  const newCalendarForm = showNewCalendarForm ? (
-    <NewCalendarForm
+  const calendarForm = showCalendarForm ? (
+    <CalendarForm
+      new={true}
       translate={props.translate}
-      cancel={() => setShowNewCalendarForm(false)}
+      cancel={() => setShowCalendarForm(false)}
       createCalendar={props.createCalendar}
-      hideForm={() => setShowNewCalendarForm(false)}
-      setResult={setNewCalendarFormResult}
+      hideForm={() => setShowCalendarForm(false)}
+      setResult={setCalendarFormResult}
     />
   ) : null;
 
   return props.authenticated ? (
     <div className="p-5">
       {title}
-      <Message result={newCalendarFormResult} origin="NewCalendarForm" translate={props.translate} />
+      <Message result={calendarFormResult} origin="CalendarForm" translate={props.translate} />
       {calendars()}
       {newCalendarButton}
-      {newCalendarForm}
+      {calendarForm}
     </div>
   ) : (
       <Redirect
