@@ -159,6 +159,7 @@ export default function App() {
               subscribed={subscribed}
               updateCalendar={updateCalendar}
               deleteCalendar={deleteCalendar}
+              createEvent={createEvent}
             />
           </Route>
           <Route path="/">

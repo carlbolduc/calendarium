@@ -7,6 +7,7 @@ import ArrowLeft from "../../components/Icons/ArrowLeft";
 import ArrowRight from "../../components/Icons/ArrowRight";
 import CalendarForm from "./CalendarForm";
 import Button from "../../components/Form/Button";
+import EventForm from "../Events/EventForm";
 
 export default function Calendar(props) {
   let { link } = useParams();
@@ -14,6 +15,8 @@ export default function Calendar(props) {
   const [currentDay, setCurrentDay] = useState(DateTime.now().day);
   const [showCalendarForm, setShowCalendarForm] = useState(false);
   const [calendarFormResult, setCalendarFormResult] = useState(null);
+  const [showEventForm, setShowEventForm] = useState(false);
+  const [eventFormResult, setEventFormResult] = useState(null);
 
   useEffect(() => {
     props.getCalendar(link);
@@ -140,6 +143,28 @@ export default function Calendar(props) {
     />
   );
 
+  const newEventButton = showEventForm ? null : (
+    <Button
+      label={props.translate("New event")}
+      id="button-new-event"
+      onClick={() => {
+        setShowEventForm(true);
+        setEventFormResult(null);
+      }}
+    />
+  );
+
+  const eventForm = showEventForm ? (
+    <EventForm
+      translate={props.translate}
+      cancel={() => setShowEventForm(false)}
+      createEvent={props.createEvent}
+      hideForm={() => setShowEventForm(false)}
+      setResult={setEventFormResult}
+      calendar={props.calendar}
+    />
+  ) : null;
+
   function renderMain() {
     let result = null;
     if (showCalendarForm) {
@@ -170,6 +195,8 @@ export default function Calendar(props) {
               </div>
               <div className="col">
                 <h2>Events go here</h2>
+                {newEventButton}
+                {eventForm}
               </div>
             </div>
           </div>
