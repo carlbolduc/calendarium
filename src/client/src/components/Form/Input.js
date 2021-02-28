@@ -73,7 +73,7 @@ export default function Input(props) {
               />
               <label
                 htmlFor={props.id}
-                className="form-label"
+                className="form-label text-secondary"
               >
                 {props.label}
               </label>
