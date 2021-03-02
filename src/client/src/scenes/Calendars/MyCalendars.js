@@ -31,6 +31,7 @@ export default function MyCalendars(props) {
     <Button
       label={props.translate("New calendar")}
       id="button-new-calendar"
+      outline={true}
       onClick={() => {
         setShowCalendarForm(true);
         setCalendarFormResult(null);

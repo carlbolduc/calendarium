@@ -42,6 +42,7 @@ export default function Calendar(props) {
     <Button
       label={props.translate("Calendar settings")}
       id="button-calendar-settings"
+      outline={true}
       onClick={() => {
         setShowCalendarForm(true);
         setCalendarFormResult(null);
@@ -62,10 +63,39 @@ export default function Calendar(props) {
     />
   );
 
+  // TODO: validate that this is the owner of the calendar to show the manage users button
+  // TODO: create a page to manage users and link it here
+  const manageUsersButton = props.subscribed ? (
+    <Button
+      label={props.translate("Manage users")}
+      id="button-manage-users"
+      outline={true}
+      onClick={() => {
+        setShowCalendarForm(true);
+        setCalendarFormResult(null);
+      }}
+    />
+  ) : null;
+
+  // TODO: validate that this is the owner of the calendar to show the manage events button
+  // TODO: create a page to manage events and link it here
+  const manageEventsButton = props.subscribed ? (
+    <Button
+      label={props.translate("Manage events")}
+      id="button-manage-events"
+      outline={true}
+      onClick={() => {
+        setShowCalendarForm(true);
+        setCalendarFormResult(null);
+      }}
+    />
+  ) : null;
+
   const newEventButton = showEventForm ? null : (
     <Button
       label={props.translate("New event")}
       id="button-new-event"
+      outline={true}
       onClick={() => {
         setShowEventForm(true);
         setEventFormResult(null);
@@ -88,8 +118,10 @@ export default function Calendar(props) {
 
   const actionButtonsZone = showEventForm || showCalendarForm ? null : (
     <div className="mb-4">
-      {calendarSettingsButton}
       {newEventButton}
+      {manageEventsButton}
+      {manageUsersButton}
+      {calendarSettingsButton}
     </div>
   );
 
@@ -103,7 +135,7 @@ export default function Calendar(props) {
         </>
       );
     } else if (showEventForm) {
-      // We're editing the calendar settings
+      // We're adding a new event
       result = (
         <>
           {eventForm}
