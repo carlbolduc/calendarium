@@ -1,9 +1,9 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import Button from "../../components/Form/Button";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 import Input from "../../components/Form/Input";
 import Checkbox from "../../components/Form/Checkbox";
-import {DateTime} from "luxon";
+import { DateTime } from "luxon";
 import Month from "../Calendars/Month";
 
 export default function EventForm(props) {
@@ -118,42 +118,49 @@ export default function EventForm(props) {
   ) : null;
 
   const startDateSelector = showStartDateSelector ? (
-    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white"}}>
+    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white" }}>
       <Month
         startWeekOn={"Monday"}
         currentDay={DateTime.now()}
         setCurrentDay={setStartDate}
         language={props.language}
-        />
+      />
     </div>
   ) : null;
 
+  const renderTitle = props.new ? "New event" : "Edit event";
+
+  const renderSubmitButton = props.new ? "Create this event" : "Save changes";
+
   return (
-    <form onSubmit={handleSubmit} id="form-event" noValidate>
-      {englishFields}
-      {frenchFields}
-      <div style={{ position: "relative"}}>
-        <Input
-          label="Select day"
-          type="text"
-          id="input-start-day"
-          placeholder="Select day"
-          info="???"
-          value={startDate}
-          readOnly={true}
-          onClick={() => setShowStartDateSelector(!showStartDateSelector)}
+    <>
+      <h1>{props.translate(renderTitle)}</h1>
+      <form onSubmit={handleSubmit} id="form-event" noValidate>
+        {englishFields}
+        {frenchFields}
+        <div style={{ position: "relative" }}>
+          <Input
+            label="Select day"
+            type="text"
+            id="input-start-day"
+            placeholder="Select day"
+            info="???"
+            value={startDate}
+            readOnly={true}
+            onClick={() => setShowStartDateSelector(!showStartDateSelector)}
+          />
+          {startDateSelector}
+        </div>
+        <Checkbox
+          label="All day"
+          id="all-day"
+          value={allDay}
+          handleChange={e => setAllDay(e.target.checked)}
+          info="When this is checked, ???."
         />
-        {startDateSelector}
-      </div>
-      <Checkbox
-        label="All day"
-        id="all-day"
-        value={allDay}
-        handleChange={e => setAllDay(e.target.checked)}
-        info="When this is checked, ???."
-      />
-      <Button label={props.translate("Cancel")} id="button-cancel" onClick={props.cancel} outline={true} />
-      <Button label={props.translate("Post this event")} type="submit" working={requesting} id="button-save" />
-    </form>
+        <Button label={props.translate("Cancel")} id="button-cancel" onClick={props.cancel} outline={true} />
+        <Button label={props.translate(renderSubmitButton)} type="submit" working={requesting} id="button-save" />
+      </form>
+    </>
   );
 }

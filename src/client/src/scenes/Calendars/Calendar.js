@@ -6,6 +6,7 @@ import CalendarForm from "./CalendarForm";
 import Button from "../../components/Form/Button";
 import EventForm from "../Events/EventForm";
 import Month from "./Month";
+import Message from "../../components/Form/Message";
 
 export default function Calendar(props) {
   let { link } = useParams();
@@ -72,8 +73,9 @@ export default function Calendar(props) {
     />
   );
 
-  const eventForm = showEventForm ? (
+  const eventForm = (
     <EventForm
+      new={true}
       language={props.language}
       translate={props.translate}
       cancel={() => setShowEventForm(false)}
@@ -82,7 +84,14 @@ export default function Calendar(props) {
       setResult={setEventFormResult}
       calendar={props.calendar}
     />
-  ) : null;
+  );
+
+  const actionButtonsZone = showEventForm || showCalendarForm ? null : (
+    <div className="mb-4">
+      {calendarSettingsButton}
+      {newEventButton}
+    </div>
+  );
 
   function renderMain() {
     let result;
@@ -93,11 +102,20 @@ export default function Calendar(props) {
           {calendarForm}
         </>
       );
+    } else if (showEventForm) {
+      // We're editing the calendar settings
+      result = (
+        <>
+          {eventForm}
+        </>
+      );
     } else {
       // We're viewing the calendar details and events
       result = (
         <>
           <h1>{renderName()}</h1>
+          <Message result={calendarFormResult} origin="CalendarForm" translate={props.translate} />
+          {actionButtonsZone}
           <div>{renderDescription()}</div>
           <div className="container mt-4 px-0">
             <div className="row justify-content-center">
@@ -108,12 +126,14 @@ export default function Calendar(props) {
                   setCurrentDay={setCurrentDay}
                   language={props.language}
                 />
-                {calendarSettingsButton}
               </div>
               <div className="col">
-                <h2>Events go here</h2>
-                {newEventButton}
-                {eventForm}
+                <h2>Events</h2>
+                <ul>
+                  <li>List the events</li>
+                  <li>All the events</li>
+                  <li>Only the events</li>
+                </ul>
               </div>
             </div>
           </div>

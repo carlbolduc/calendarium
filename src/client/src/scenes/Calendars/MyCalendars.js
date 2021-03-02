@@ -27,7 +27,7 @@ export default function MyCalendars(props) {
     return result;
   }
 
-  const newCalendarButton = showCalendarForm || !props.subscribed ? null : (
+  const newCalendarButton = !props.subscribed ? null : (
     <Button
       label={props.translate("New calendar")}
       id="button-new-calendar"
@@ -36,6 +36,12 @@ export default function MyCalendars(props) {
         setCalendarFormResult(null);
       }}
     />
+  );
+
+  const actionButtonsZone = showCalendarForm ? null : (
+    <div className="mb-4">
+      {newCalendarButton}
+    </div>
   );
 
   const calendarForm = showCalendarForm ? (
@@ -53,8 +59,8 @@ export default function MyCalendars(props) {
     <div className="p-5">
       {title}
       <Message result={calendarFormResult} origin="CalendarForm" translate={props.translate} />
+      {actionButtonsZone}
       {calendars()}
-      {newCalendarButton}
       {calendarForm}
     </div>
   ) : (
