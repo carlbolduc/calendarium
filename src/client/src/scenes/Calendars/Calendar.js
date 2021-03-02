@@ -7,6 +7,8 @@ import Button from "../../components/Form/Button";
 import EventForm from "../Events/EventForm";
 import Month from "./Month";
 import Message from "../../components/Form/Message";
+import Users from "../Users/Users";
+import Events from "../Events/Events";
 
 export default function Calendar(props) {
   let { link } = useParams();
@@ -15,6 +17,8 @@ export default function Calendar(props) {
   const [calendarFormResult, setCalendarFormResult] = useState(null);
   const [showEventForm, setShowEventForm] = useState(false);
   const [eventFormResult, setEventFormResult] = useState(null);
+  const [showManageUsers, setShowManageUsers] = useState(false);
+  const [showManageEvents, setShowManageEvents] = useState(false);
 
   useEffect(() => {
     props.getCalendar(link);
@@ -64,32 +68,46 @@ export default function Calendar(props) {
   );
 
   // TODO: validate that this is the owner of the calendar to show the manage users button
-  // TODO: create a page to manage users and link it here
   const manageUsersButton = props.subscribed ? (
     <Button
       label={props.translate("Manage users")}
       id="button-manage-users"
       outline={true}
       onClick={() => {
-        setShowCalendarForm(true);
-        setCalendarFormResult(null);
+        setShowManageUsers(true);
       }}
     />
   ) : null;
 
+  const manageUsers = (
+    <Users
+      calendar={props.calendar}
+      translate={props.translate}
+      cancel={() => setShowManageUsers(false)}
+      hideForm={() => setShowManageUsers(false)}
+    />
+  );
+
   // TODO: validate that this is the owner of the calendar to show the manage events button
-  // TODO: create a page to manage events and link it here
   const manageEventsButton = props.subscribed ? (
     <Button
       label={props.translate("Manage events")}
       id="button-manage-events"
       outline={true}
       onClick={() => {
-        setShowCalendarForm(true);
-        setCalendarFormResult(null);
+        setShowManageEvents(true);
       }}
     />
   ) : null;
+
+  const manageEvents = (
+    <Events
+      calendar={props.calendar}
+      translate={props.translate}
+      cancel={() => setShowManageEvents(false)}
+      hideForm={() => setShowManageEvents(false)}
+    />
+  );
 
   const newEventButton = showEventForm ? null : (
     <Button
@@ -139,6 +157,20 @@ export default function Calendar(props) {
       result = (
         <>
           {eventForm}
+        </>
+      );
+    } else if (showManageUsers) {
+      // We're managing the calendar users
+      result = (
+        <>
+          {manageUsers}
+        </>
+      );
+    } else if (showManageEvents) {
+      // We're managing the calendar events
+      result = (
+        <>
+          {manageEvents}
         </>
       );
     } else {
