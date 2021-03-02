@@ -1,15 +1,13 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Button from "../../components/Form/Button";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 import Input from "../../components/Form/Input";
 import Checkbox from "../../components/Form/Checkbox";
-import {DateTime} from "luxon";
+import { DateTime } from "luxon";
 import Month from "../Calendars/Month";
-import Select from "../../components/Form/Select";
-import {timeList} from "../../services/Helpers";
+import { timeList } from "../../services/Helpers";
 
 export default function EventForm(props) {
-  const [status, setStatus] = useState("");
   const [nameEn, setNameEn] = useState("");
   const [invalidNameEn, setInvalidNameEn] = useState(false);
   const [nameFr, setNameFr] = useState("");
@@ -18,29 +16,52 @@ export default function EventForm(props) {
   const [descriptionFr, setDescriptionFr] = useState("");
   const [hyperlinkEn, setHyperlinkEn] = useState("");
   const [hyperlinkFr, setHyperlinkFr] = useState("");
-  const [startDate, setStartDate] = useState("");
+  const [startDate, setStartDate] = useState(DateTime.now());
   const [showStartDateSelector, setShowStartDateSelector] = useState(false);
   const [startTime, setStartTime] = useState("");
   const [showStartTimeSelector, setShowStartTimeSelector] = useState(false);
-  const [endDate, setEndDate] = useState("");
+  const [endDate, setEndDate] = useState(DateTime.now());
   const [showEndDateSelector, setShowEndDateSelector] = useState(false);
   const [endTime, setEndTime] = useState("");
   const [showEndTimeSelector, setShowEndTimeSelector] = useState(false);
-  const [startAt, setStartAt] = useState(null);
-  const [endAt, setEndAt] = useState(null);
   const [allDay, setAllDay] = useState(null);
   const [requesting, setRequesting] = useState(false);
 
   useEffect(() => {
-    const event = {};
-    props.createEvent(event, result => {
-      props.setResult(result);
-      setRequesting(false);
-      if (result.success) {
-        props.hideForm();
+    function getTimeValues(time) {
+      let hour;
+      let minute;
+      if (time.indexOf("pm") !== -1) {
+        hour = Number(time.split(":")[0]) + 12;
+        minute = Number(time.replace("pm", "").split(":")[1]);
+      } else {
+        hour = Number(time.split(":")[0]);
+        minute = Number(time.replace("am", "").split(":")[1]);
       }
-    })
-
+      return { hour: hour, minute: minute};
+    }
+    if (requesting) {
+      const startTimeValues = getTimeValues(startTime);
+      const endTimeValues = getTimeValues(endTime);
+      const startAt = startDate.set({ hour: startTimeValues.hour, minute: startTimeValues.minute });
+      const endAt = endDate.set({ hour: endTimeValues.hour, minute: endTimeValues.minute });
+      const event = {
+        calendarId: props.calendar.calendarId,
+        nameEn: nameEn,
+        descriptionEn: descriptionEn,
+        hyperlinkEn: hyperlinkEn,
+        startAt: startAt.toSeconds(),
+        endAt: endAt.toSeconds(),
+        allDay: allDay
+      };
+      props.createEvent(event, result => {
+        props.setResult(result);
+        setRequesting(false);
+        if (result.success) {
+          props.hideForm();
+        }
+      })
+    }
   }, [requesting]);
 
   function handleSubmit(e) {
@@ -125,21 +146,22 @@ export default function EventForm(props) {
   ) : null;
 
   const startDateSelector = showStartDateSelector ? (
-    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white"}}>
+    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white" }}>
       <Month
         startWeekOn={"Monday"}
         currentDay={DateTime.now()}
         selectDay={date => {
-          setStartDate(date.toLocaleString(DateTime.DATE_HUGE));
+          setStartDate(date);
+          setEndDate(date);
           setShowStartDateSelector(false);
         }}
         language={props.language}
-        />
+      />
     </div>
   ) : null;
 
   // TODO: pass correct locale
-  const startTimes = timeList("en-ca").map((t, index) =>(
+  const startTimes = timeList("en-ca").map((t, index) => (
     <div key={index} onClick={() => {
       setStartTime(t);
       setShowStartTimeSelector(false);
@@ -147,18 +169,18 @@ export default function EventForm(props) {
   ));
 
   const startTimeSelector = showStartTimeSelector ? (
-    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white", height: 200, overflow: "scroll"}}>
+    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white", height: 200, overflow: "scroll" }}>
       {startTimes}
     </div>
   ) : null;
 
   const endDateSelector = showEndDateSelector ? (
-    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white"}}>
+    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white" }}>
       <Month
         startWeekOn={"Monday"}
         currentDay={DateTime.now()}
         selectDay={date => {
-          setEndDate(date.toLocaleString(DateTime.DATE_HUGE));
+          setEndDate(date);
           setShowEndDateSelector(false);
         }}
         language={props.language}
@@ -167,7 +189,7 @@ export default function EventForm(props) {
   ) : null;
 
   // TODO: pass correct locale
-  const endTimes = timeList("en-ca").map((t, index) =>(
+  const endTimes = timeList("en-ca").map((t, index) => (
     <div key={index} onClick={() => {
       setEndTime(t);
       setShowEndTimeSelector(false);
@@ -175,7 +197,7 @@ export default function EventForm(props) {
   ));
 
   const endTimeSelector = showEndTimeSelector ? (
-    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white", height: 200, overflow: "scroll"}}>
+    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white", height: 200, overflow: "scroll" }}>
       {endTimes}
     </div>
   ) : null;
@@ -186,20 +208,20 @@ export default function EventForm(props) {
     <form onSubmit={handleSubmit} id="form-event" noValidate>
       {englishFields}
       {frenchFields}
-      <div style={{ position: "relative"}}>
+      <div style={{ position: "relative" }}>
         <Input
           label="Start date"
           type="text"
           id="input-start-date"
           placeholder="Select date"
           info="???"
-          value={startDate}
+          value={startDate.toLocaleString(DateTime.DATE_HUGE)}
           readOnly={true}
           onClick={() => setShowStartDateSelector(!showStartDateSelector)}
         />
         {startDateSelector}
       </div>
-      <div style={{ position: "relative"}}>
+      <div style={{ position: "relative" }}>
         <Input
           label="Start time"
           type="text"
@@ -212,20 +234,20 @@ export default function EventForm(props) {
         />
         {startTimeSelector}
       </div>
-      <div style={{ position: "relative"}}>
+      <div style={{ position: "relative" }}>
         <Input
           label="End date"
           type="text"
           id="input-end-date"
           placeholder="Select date"
           info="???"
-          value={endDate}
+          value={endDate.toLocaleString(DateTime.DATE_HUGE)}
           readOnly={true}
           onClick={() => setShowEndDateSelector(!showEndDateSelector)}
         />
         {endDateSelector}
       </div>
-      <div style={{ position: "relative"}}>
+      <div style={{ position: "relative" }}>
         <Input
           label="End time"
           type="text"
