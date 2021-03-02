@@ -5,6 +5,7 @@ import Button from "../../components/Form/Button";
 import { textValid } from "../../services/Helpers";
 import Checkbox from "../../components/Form/Checkbox";
 import Select from "../../components/Form/Select";
+import Textarea from "../../components/Form/Textarea";
 
 export default function CalendarForm(props) {
   const [enableEn, setEnableEn] = useState(props.calendar !== undefined ? props.calendar.enableEn : true);
@@ -134,12 +135,13 @@ export default function CalendarForm(props) {
         }}
         invalidFeedback={invalidNameEn ? <InvalidFeedback feedback="You must enter a name." /> : null}
       />
-      <Input
+      <Textarea
         label="English description"
         type="text"
         id="input-description-en"
         placeholder={"Describe your calendar in English."}
         info={"Describe your calendar in English."}
+        height="100"
         value={descriptionEn}
         handleChange={e => {
           setDescriptionEn(e.target.value);
@@ -178,12 +180,13 @@ export default function CalendarForm(props) {
         }}
         invalidFeedback={invalidNameFr ? <InvalidFeedback feedback="You must enter a name." /> : null}
       />
-      <Input
+      <Textarea
         label="French description"
         type="text"
         id="input-description-fr"
         placeholder={"Describe your calendar in French."}
         info={"Describe your calendar in French."}
+        height="100"
         value={descriptionFr}
         handleChange={e => {
           setDescriptionFr(e.target.value);
