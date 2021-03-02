@@ -9,7 +9,6 @@ import Month from "./Month";
 
 export default function Calendar(props) {
   let { link } = useParams();
-  const [date, setDate] = useState(DateTime.now());
   const [currentDay, setCurrentDay] = useState(DateTime.now().day);
   const [showCalendarForm, setShowCalendarForm] = useState(false);
   const [calendarFormResult, setCalendarFormResult] = useState(null);
@@ -75,6 +74,7 @@ export default function Calendar(props) {
 
   const eventForm = showEventForm ? (
     <EventForm
+      language={props.language}
       translate={props.translate}
       cancel={() => setShowEventForm(false)}
       createEvent={props.createEvent}
@@ -103,8 +103,6 @@ export default function Calendar(props) {
             <div className="row justify-content-center">
               <div className="col-auto">
                 <Month
-                  date={date}
-                  setDate={setDate}
                   startWeekOn={props.calendar === null ? "Monday" : props.calendar.startWeekOn}
                   currentDay={currentDay}
                   setCurrentDay={setCurrentDay}

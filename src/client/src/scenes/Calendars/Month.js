@@ -1,20 +1,21 @@
 import {useState, useEffect} from "react";
 import {dayNumber, getLocale, nextWeekDay, uuidv4} from "../../services/Helpers";
-import {Info} from "luxon";
+import {DateTime, Info} from "luxon";
 import Week from "./Week";
 import ArrowLeft from "../../components/Icons/ArrowLeft";
 import ArrowRight from "../../components/Icons/ArrowRight";
 
 export default function Month(props) {
+  const [date, setDate] = useState(DateTime.now());
   const [weeks, setWeeks] = useState([]);
 
   useEffect(() => {
-    if (props.date !== null) {
+    if (date !== null) {
       const result = [];
       let week = [];
       let dayOfWeek = dayNumber(props.startWeekOn);
-      const monthStartWeekday = props.date.startOf("month").weekday;
-      for (let i = 0; i < props.date.daysInMonth; i++) {
+      const monthStartWeekday = date.startOf("month").weekday;
+      for (let i = 0; i < date.daysInMonth; i++) {
         // Prepend empty days
         while (dayOfWeek !== monthStartWeekday) {
           week.push(null);
@@ -24,7 +25,7 @@ export default function Month(props) {
         if (week.length === 7) {
           result.push(week);
           week = [];
-        } else if (i === props.date.daysInMonth - 1) {
+        } else if (i === date.daysInMonth - 1) {
           while (week.length < 7) {
             week.push(null);
           }
@@ -33,15 +34,16 @@ export default function Month(props) {
       }
       setWeeks(result);
     }
-  }, [props.date]);
+  }, [date]);
 
   function changeMonth(plusOrMinus) {
     if (plusOrMinus === "plus") {
-      props.setDate(props.date.plus({ months: 1 }));
+      setDate(date.plus({ months: 1 }));
     } else if (plusOrMinus === "minus") {
-      props.setDate(props.date.minus({ months: 1 }));
+      setDate(date.minus({ months: 1 }));
     }
   }
+
   function renderHeader() {
     const dayOfWeek = dayNumber(props.startWeekOn);
     const locale = getLocale(props.language);
@@ -58,7 +60,7 @@ export default function Month(props) {
             <ArrowLeft />
           </button>
         </th>
-        <th className="border-0 p-1" colSpan="5">{props.date.setLocale(getLocale(props.language)).monthLong} {props.date.year}</th>
+        <th className="border-0 p-1" colSpan="5">{date.setLocale(getLocale(props.language)).monthLong} {date.year}</th>
         <th className="border-0 p-1">
           <button
             className="btn text-secondary btn-icon p-0"

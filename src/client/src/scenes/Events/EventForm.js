@@ -3,6 +3,8 @@ import Button from "../../components/Form/Button";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 import Input from "../../components/Form/Input";
 import Checkbox from "../../components/Form/Checkbox";
+import {DateTime} from "luxon";
+import Month from "../Calendars/Month";
 
 export default function EventForm(props) {
   const [status, setStatus] = useState("");
@@ -14,6 +16,9 @@ export default function EventForm(props) {
   const [descriptionFr, setDescriptionFr] = useState("");
   const [hyperlinkEn, setHyperlinkEn] = useState("");
   const [hyperlinkFr, setHyperlinkFr] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [showStartDateSelector, setShowStartDateSelector] = useState(false);
+  const [startTime, setStartTime] = useState("");
   const [startAt, setStartAt] = useState(null);
   const [endAt, setEndAt] = useState(null);
   const [allDay, setAllDay] = useState(null);
@@ -112,10 +117,34 @@ export default function EventForm(props) {
     </>
   ) : null;
 
+  const startDateSelector = showStartDateSelector ? (
+    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white"}}>
+      <Month
+        startWeekOn={"Monday"}
+        currentDay={DateTime.now()}
+        setCurrentDay={setStartDate}
+        language={props.language}
+        />
+    </div>
+  ) : null;
+
   return (
     <form onSubmit={handleSubmit} id="form-event" noValidate>
       {englishFields}
       {frenchFields}
+      <div style={{ position: "relative"}}>
+        <Input
+          label="Select day"
+          type="text"
+          id="input-start-day"
+          placeholder="Select day"
+          info="???"
+          value={startDate}
+          readOnly={true}
+          onClick={() => setShowStartDateSelector(!showStartDateSelector)}
+        />
+        {startDateSelector}
+      </div>
       <Checkbox
         label="All day"
         id="all-day"

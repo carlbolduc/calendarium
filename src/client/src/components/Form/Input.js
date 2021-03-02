@@ -70,6 +70,7 @@ export default function Input(props) {
                 placeholder={props.placeholder ? props.placeholder : null}
                 value={props.value}
                 onChange={props.handleChange}
+                onClick={props.onClick}
               />
               <label
                 htmlFor={props.id}
