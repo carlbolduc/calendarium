@@ -48,7 +48,7 @@ export default function Month(props) {
     return (
       <thead>
       <tr>
-        <th>
+        <th className="border-0 p-1">
           <button
             className="btn text-secondary btn-icon p-0"
             type="button"
@@ -58,8 +58,8 @@ export default function Month(props) {
             <ArrowLeft />
           </button>
         </th>
-        <th colSpan="5">{props.date.setLocale(getLocale(props.language)).monthLong} {props.date.year}</th>
-        <th>
+        <th className="border-0 p-1" colSpan="5">{props.date.setLocale(getLocale(props.language)).monthLong} {props.date.year}</th>
+        <th className="border-0 p-1">
           <button
             className="btn text-secondary btn-icon p-0"
             type="button"
@@ -71,13 +71,13 @@ export default function Month(props) {
         </th>
       </tr>
       <tr className="text-muted">
-        <th>{Info.weekdays("narrow", { locale: locale })[dayOfWeek - 1]}</th>
-        <th>{Info.weekdays("narrow", { locale: locale })[dayOfWeek]}</th>
-        <th>{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 1) % 7]}</th>
-        <th>{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 2) % 7]}</th>
-        <th>{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 3) % 7]}</th>
-        <th>{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 4) % 7]}</th>
-        <th>{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 5) % 7]}</th>
+        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[dayOfWeek - 1]}</th>
+        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[dayOfWeek]}</th>
+        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 1) % 7]}</th>
+        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 2) % 7]}</th>
+        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 3) % 7]}</th>
+        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 4) % 7]}</th>
+        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 5) % 7]}</th>
       </tr>
       </thead>
     );
