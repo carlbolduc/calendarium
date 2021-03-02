@@ -210,14 +210,14 @@ export default function CalendarForm(props) {
     </>
   ) : null;
 
-  const renderTitle = props.new ? "New calendar" : "Calendar settings";
+  const title = props.new ? "New calendar" : "Calendar settings";
 
-  const renderSubmitButton = props.new ? "Create this calendar" : "Save changes";
+  const submitButton = props.new ? "Create this calendar" : "Save changes";
 
   return (
     // TODO: use {props.translate("")} for text visible in the app
     <>
-      <h1>{props.translate(renderTitle)}</h1>
+      <h1>{props.translate(title)}</h1>
       <form onSubmit={handleSubmit} id="form-new-calendar" noValidate>
         {noLanguageEnabled ? <InvalidFeedback feedback="Enable at least one language." /> : null}
         <div className="row mb-3">
@@ -287,7 +287,7 @@ export default function CalendarForm(props) {
           info="When this is checked, you will need to approve all events created by other users that you have invited to this calendar. You can uncheck this at any time to remove the restriction and instantly approve any pending events."
         />
         <Button label={props.translate("Cancel")} id="button-cancel" onClick={props.cancel} outline={true} />
-        <Button label={props.translate(renderSubmitButton)} type="submit" working={requesting} id="button-save" />
+        <Button label={props.translate(submitButton)} type="submit" working={requesting} id="button-save" />
       </form>
     </>
   );
