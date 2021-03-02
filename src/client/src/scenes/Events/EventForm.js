@@ -64,7 +64,6 @@ export default function EventForm(props) {
         event.endAt = endDate.set({ hour: endTimeValues.hour, minute: endTimeValues.minute });
       }
 
-
       props.createEvent(event, result => {
         props.setResult(result);
         setRequesting(false);
@@ -231,17 +230,14 @@ export default function EventForm(props) {
     </div>
   ) : null;
 
-  const renderTitle = (
-    <>
-      {props.new ? props.translate("New event in") : props.translate("Edit event in")} {decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr)}
-    </>
-  );
+  const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
+  const title = props.new ? `${props.translate("New event in")} ${calendarName}` : `${props.translate("Edit event in")} ${calendarName}`;
 
-  const renderSubmitButton = props.new ? props.translate("Create this event") : props.translate("Save changes");
+  const submitButton = props.new ? props.translate("Create this event") : props.translate("Save changes");
 
   return (
     <>
-      <h1>{props.translate(renderTitle)}</h1>
+      <h1>{title}</h1>
       <form onSubmit={handleSubmit} id="form-event" noValidate>
         <div className="row mb-3">
           {englishFields}
@@ -307,7 +303,7 @@ export default function EventForm(props) {
           info="When this is checked, ???."
         />
         <Button label={props.translate("Cancel")} id="button-cancel" onClick={props.cancel} outline={true} />
-        <Button label={props.translate(renderSubmitButton)} type="submit" working={requesting} id="button-save" />
+        <Button label={props.translate(submitButton)} type="submit" working={requesting} id="button-save" />
       </form>
     </>
   );
