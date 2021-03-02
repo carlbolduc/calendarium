@@ -5,7 +5,7 @@ import Input from "../../components/Form/Input";
 import Checkbox from "../../components/Form/Checkbox";
 import { DateTime } from "luxon";
 import Month from "../Calendars/Month";
-import { timeList } from "../../services/Helpers";
+import { textValid, timeList } from "../../services/Helpers";
 
 export default function EventForm(props) {
   const [nameEn, setNameEn] = useState("");
@@ -28,32 +28,43 @@ export default function EventForm(props) {
   const [requesting, setRequesting] = useState(false);
 
   useEffect(() => {
-    function getTimeValues(time) {
-      let hour;
-      let minute;
-      if (time.indexOf("pm") !== -1) {
-        hour = Number(time.split(":")[0]) + 12;
-        minute = Number(time.replace("pm", "").split(":")[1]);
-      } else {
-        hour = Number(time.split(":")[0]);
-        minute = Number(time.replace("am", "").split(":")[1]);
-      }
-      return { hour: hour, minute: minute};
-    }
     if (requesting) {
-      const startTimeValues = getTimeValues(startTime);
-      const endTimeValues = getTimeValues(endTime);
-      const startAt = startDate.set({ hour: startTimeValues.hour, minute: startTimeValues.minute });
-      const endAt = endDate.set({ hour: endTimeValues.hour, minute: endTimeValues.minute });
+      function getTimeValues(time) {
+        let hour;
+        let minute;
+        if (time.indexOf("pm") !== -1) {
+          hour = Number(time.split(":")[0]) + 12;
+          minute = Number(time.replace("pm", "").split(":")[1]);
+        } else {
+          hour = Number(time.split(":")[0]);
+          minute = Number(time.replace("am", "").split(":")[1]);
+        }
+        return { hour: hour, minute: minute};
+      }
+
       const event = {
         calendarId: props.calendar.calendarId,
-        nameEn: nameEn,
-        descriptionEn: descriptionEn,
-        hyperlinkEn: hyperlinkEn,
-        startAt: startAt.toSeconds(),
-        endAt: endAt.toSeconds(),
+        nameEn: nameEn !== "" ? nameEn : null,
+        nameFr: nameFr !== "" ? nameFr : null,
+        descriptionEn: descriptionEn !== "" ? descriptionEn : null,
+        descriptionFr: descriptionFr !== "" ? descriptionFr : null,
+        hyperlinkEn: hyperlinkEn !== "" ? hyperlinkEn : null,
+        hyperlinkFr: hyperlinkFr !== "" ? hyperlinkFr : null,
+        startAt: null,
+        endAt: null,
         allDay: allDay
       };
+
+      if (allDay) {
+
+      } else {
+        const startTimeValues = getTimeValues(startTime);
+        const endTimeValues = getTimeValues(endTime);
+        event.startAt = startDate.set({ hour: startTimeValues.hour, minute: startTimeValues.minute });
+        event.endAt = endDate.set({ hour: endTimeValues.hour, minute: endTimeValues.minute });
+      }
+
+
       props.createEvent(event, result => {
         props.setResult(result);
         setRequesting(false);
@@ -66,8 +77,26 @@ export default function EventForm(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (true) {
-      setRequesting(true);
+    if (props.calendar.enableEn && props.calendar.enableFr) {
+      if (textValid(nameEn) && textValid(nameFr)) {
+        debugger
+        setRequesting(true);
+      } else {
+        if (!textValid(nameEn)) setInvalidNameEn(true);
+        if (!textValid(nameFr)) setInvalidNameFr(true);
+      }
+    } else if (props.calendar.enableEn) {
+      if (textValid(nameEn)) {
+        setRequesting(true);
+      } else {
+        setInvalidNameEn(true);
+      }
+    } else if (props.calendar.enableFr) {
+      if (textValid(nameFr)) {
+        setRequesting(true);
+      } else {
+        setInvalidNameFr(true);
+      }
     }
   }
 
