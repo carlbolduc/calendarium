@@ -36,6 +36,10 @@ export default function Month(props) {
     }
   }, [date]);
 
+  function selectDay(d) {
+    props.selectDay(DateTime.fromFormat(`${date.year}-${date.month}-${d}`, "yyyy-M-d"));
+  }
+
   function changeMonth(plusOrMinus) {
     if (plusOrMinus === "plus") {
       setDate(date.plus({ months: 1 }));
@@ -86,7 +90,7 @@ export default function Month(props) {
   }
 
   const month = weeks.map(week =>(
-    <Week key={uuidv4()} days={week} currentDay={props.currentDay} setCurrentDay={props.setCurrentDay} />
+    <Week key={uuidv4()} days={week} currentDay={props.currentDay} selectDay={selectDay} />
   ));
 
   return (

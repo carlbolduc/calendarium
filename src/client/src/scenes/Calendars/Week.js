@@ -8,7 +8,7 @@ export default function Week(props) {
       key={uuidv4()} 
       day={d} 
       currentDay={props.currentDay}
-      setCurrentDay={props.setCurrentDay}
+      selectDay={props.selectDay}
      />
   ));
 

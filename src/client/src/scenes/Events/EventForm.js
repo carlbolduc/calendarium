@@ -1,10 +1,12 @@
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import Button from "../../components/Form/Button";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 import Input from "../../components/Form/Input";
 import Checkbox from "../../components/Form/Checkbox";
 import {DateTime} from "luxon";
 import Month from "../Calendars/Month";
+import Select from "../../components/Form/Select";
+import {timeList} from "../../services/Helpers";
 
 export default function EventForm(props) {
   const [status, setStatus] = useState("");
@@ -19,6 +21,11 @@ export default function EventForm(props) {
   const [startDate, setStartDate] = useState("");
   const [showStartDateSelector, setShowStartDateSelector] = useState(false);
   const [startTime, setStartTime] = useState("");
+  const [showStartTimeSelector, setShowStartTimeSelector] = useState(false);
+  const [endDate, setEndDate] = useState("");
+  const [showEndDateSelector, setShowEndDateSelector] = useState(false);
+  const [endTime, setEndTime] = useState("");
+  const [showEndTimeSelector, setShowEndTimeSelector] = useState(false);
   const [startAt, setStartAt] = useState(null);
   const [endAt, setEndAt] = useState(null);
   const [allDay, setAllDay] = useState(null);
@@ -122,11 +129,58 @@ export default function EventForm(props) {
       <Month
         startWeekOn={"Monday"}
         currentDay={DateTime.now()}
-        setCurrentDay={setStartDate}
+        selectDay={date => {
+          setStartDate(date.toLocaleString(DateTime.DATE_HUGE));
+          setShowStartDateSelector(false);
+        }}
         language={props.language}
         />
     </div>
   ) : null;
+
+  // TODO: pass correct locale
+  const startTimes = timeList("en-ca").map((t, index) =>(
+    <div key={index} onClick={() => {
+      setStartTime(t);
+      setShowStartTimeSelector(false);
+    }}>{t}</div>
+  ));
+
+  const startTimeSelector = showStartTimeSelector ? (
+    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white", height: 200, overflow: "scroll"}}>
+      {startTimes}
+    </div>
+  ) : null;
+
+  const endDateSelector = showEndDateSelector ? (
+    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white"}}>
+      <Month
+        startWeekOn={"Monday"}
+        currentDay={DateTime.now()}
+        selectDay={date => {
+          setEndDate(date.toLocaleString(DateTime.DATE_HUGE));
+          setShowEndDateSelector(false);
+        }}
+        language={props.language}
+      />
+    </div>
+  ) : null;
+
+  // TODO: pass correct locale
+  const endTimes = timeList("en-ca").map((t, index) =>(
+    <div key={index} onClick={() => {
+      setEndTime(t);
+      setShowEndTimeSelector(false);
+    }}>{t}</div>
+  ));
+
+  const endTimeSelector = showEndTimeSelector ? (
+    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white", height: 200, overflow: "scroll"}}>
+      {endTimes}
+    </div>
+  ) : null;
+
+
 
   return (
     <form onSubmit={handleSubmit} id="form-event" noValidate>
@@ -134,16 +188,55 @@ export default function EventForm(props) {
       {frenchFields}
       <div style={{ position: "relative"}}>
         <Input
-          label="Select day"
+          label="Start date"
           type="text"
-          id="input-start-day"
-          placeholder="Select day"
+          id="input-start-date"
+          placeholder="Select date"
           info="???"
           value={startDate}
           readOnly={true}
           onClick={() => setShowStartDateSelector(!showStartDateSelector)}
         />
         {startDateSelector}
+      </div>
+      <div style={{ position: "relative"}}>
+        <Input
+          label="Start time"
+          type="text"
+          id="input-start-time"
+          placeholder="Select time"
+          info="???"
+          value={startTime}
+          onClick={() => setShowStartTimeSelector(!showStartTimeSelector)}
+          handleChange={(e) => setStartTime(e.target.value)}
+        />
+        {startTimeSelector}
+      </div>
+      <div style={{ position: "relative"}}>
+        <Input
+          label="End date"
+          type="text"
+          id="input-end-date"
+          placeholder="Select date"
+          info="???"
+          value={endDate}
+          readOnly={true}
+          onClick={() => setShowEndDateSelector(!showEndDateSelector)}
+        />
+        {endDateSelector}
+      </div>
+      <div style={{ position: "relative"}}>
+        <Input
+          label="End time"
+          type="text"
+          id="input-end-time"
+          placeholder="Select time"
+          info="???"
+          value={endTime}
+          onClick={() => setShowEndTimeSelector(!showEndTimeSelector)}
+          handleChange={(e) => setEndTime(e.target.value)}
+        />
+        {endTimeSelector}
       </div>
       <Checkbox
         label="All day"
