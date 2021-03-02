@@ -117,9 +117,9 @@ export default function Calendar(props) {
           <Message result={calendarFormResult} origin="CalendarForm" translate={props.translate} />
           {actionButtonsZone}
           <div>{renderDescription()}</div>
-          <div className="container mt-4 px-0">
+          <div className="mt-4 px-0">
             <div className="row justify-content-center">
-              <div className="col-auto">
+              <div className="col-12 col-md-auto">
                 <Month
                   startWeekOn={props.calendar === null ? "Monday" : props.calendar.startWeekOn}
                   currentDay={currentDay}
@@ -127,7 +127,7 @@ export default function Calendar(props) {
                   language={props.language}
                 />
               </div>
-              <div className="col">
+              <div className="col-12 col-md">
                 <h2>Events</h2>
                 <ul>
                   <li>List the events</li>

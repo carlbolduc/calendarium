@@ -44,7 +44,7 @@ export default function EventForm(props) {
   }
 
   const englishFields = props.calendar.enableEn ? (
-    <>
+    <div className="col-12 col-md-6">
       <Input
         label={"English name"}
         type="text"
@@ -77,11 +77,11 @@ export default function EventForm(props) {
         value={hyperlinkEn}
         handleChange={e => setHyperlinkEn(e.target.value)}
       />
-    </>
+    </div>
   ) : null;
 
   const frenchFields = props.calendar.enableFr ? (
-    <>
+    <div className="col-12 col-md-6">
       <Input
         label={props.translate("French name")}
         type="text"
@@ -114,7 +114,7 @@ export default function EventForm(props) {
         value={hyperlinkFr}
         handleChange={e => setHyperlinkFr(e.target.value)}
       />
-    </>
+    </div>
   ) : null;
 
   const startDateSelector = showStartDateSelector ? (
@@ -136,8 +136,10 @@ export default function EventForm(props) {
     <>
       <h1>{props.translate(renderTitle)}</h1>
       <form onSubmit={handleSubmit} id="form-event" noValidate>
-        {englishFields}
-        {frenchFields}
+        <div className="row mb-3">
+          {englishFields}
+          {frenchFields}
+        </div>
         <div style={{ position: "relative" }}>
           <Input
             label="Select day"
