@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, Redirect } from "react-router-dom";
-import { DateTime, Info } from "luxon";
-import { dayNumber, nextWeekDay, uuidv4, decideWhatToDisplay, getLocale } from "../../services/Helpers";
-import Week from "./Week";
-import ArrowLeft from "../../components/Icons/ArrowLeft";
-import ArrowRight from "../../components/Icons/ArrowRight";
+import { DateTime } from "luxon";
+import { decideWhatToDisplay } from "../../services/Helpers";
 import CalendarForm from "./CalendarForm";
 import Button from "../../components/Form/Button";
 import EventForm from "../Events/EventForm";
+import Month from "./Month";
 
 export default function Calendar(props) {
   let { link } = useParams();
@@ -35,85 +33,6 @@ export default function Calendar(props) {
     let result = null;
     if (props.calendar !== null) {
       result = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.descriptionEn, props.calendar.descriptionFr);
-    }
-    return result;
-  }
-
-  function changeMonth(plusOrMinus) {
-    if (plusOrMinus === "plus") {
-      setDate(date.plus({ months: 1 }));
-    } else if (plusOrMinus === "minus") {
-      setDate(date.minus({ months: 1 }));
-    }
-  }
-
-  function renderMonthHeader() {
-    return (
-      <>
-        <th>
-          <button
-            className="btn text-secondary btn-icon p-0"
-            type="button"
-            id="button-arrow-left"
-            onClick={() => changeMonth("minus")}
-          >
-            <ArrowLeft />
-          </button>
-        </th>
-        <th colSpan="5">{date.setLocale(getLocale(props.language)).monthLong} {date.year}</th>
-        <th>
-          <button
-            className="btn text-secondary btn-icon p-0"
-            type="button"
-            id="button-arrow-left"
-            onClick={() => changeMonth("plus")}
-          >
-            <ArrowRight />
-          </button>
-        </th>
-      </>
-    );
-  }
-
-  function renderMonth() {
-    const result = [];
-    let week = [];
-    let dayOfWeek = dayNumber(props.calendar.startWeekOn);
-    const monthStartWeekday = date.startOf("month").weekday;
-    // Weekdays line
-    const locale = getLocale(props.language);
-    result.push(
-      <tr className="text-muted">
-        <td>{Info.weekdays("narrow", { locale: locale })[dayOfWeek - 1]}</td>
-        <td>{Info.weekdays("narrow", { locale: locale })[dayOfWeek]}</td>
-        <td>{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 1) % 7]}</td>
-        <td>{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 2) % 7]}</td>
-        <td>{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 3) % 7]}</td>
-        <td>{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 4) % 7]}</td>
-        <td>{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 5) % 7]}</td>
-      </tr>
-    );
-    // Calendar days
-    for (let i = 0; i < date.daysInMonth; i++) {
-      // Prepend empty days
-      while (dayOfWeek !== monthStartWeekday) {
-        week.push(null);
-        dayOfWeek = nextWeekDay(dayOfWeek);
-      }
-      week.push(i + 1);
-      if (week.length === 7) {
-        result.push(
-          <Week key={uuidv4()} days={week} currentDay={currentDay} setCurrentDay={setCurrentDay} />
-        );
-        week = [];
-      } else if (i === date.daysInMonth - 1) {
-        while (week.length < 7) {
-          week.push(null);
-        }
-        result.push(
-          <Week key={uuidv4()} days={week} currentDay={currentDay} setCurrentDay={setCurrentDay} />
-        );
-      }
     }
     return result;
   }
@@ -166,7 +85,7 @@ export default function Calendar(props) {
   ) : null;
 
   function renderMain() {
-    let result = null;
+    let result;
     if (showCalendarForm) {
       // We're editing the calendar settings
       result = (
@@ -183,14 +102,14 @@ export default function Calendar(props) {
           <div className="container mt-4 px-0">
             <div className="row justify-content-center">
               <div className="col-auto">
-                <table className="table table-bordered text-center">
-                  <thead>
-                    {props.calendar !== null ? renderMonthHeader() : null}
-                  </thead>
-                  <tbody>
-                    {props.calendar !== null ? renderMonth() : null}
-                  </tbody>
-                </table>
+                <Month
+                  date={date}
+                  setDate={setDate}
+                  startWeekOn={props.calendar === null ? "Monday" : props.calendar.startWeekOn}
+                  currentDay={currentDay}
+                  setCurrentDay={setCurrentDay}
+                  language={props.language}
+                />
                 {calendarSettingsButton}
               </div>
               <div className="col">
