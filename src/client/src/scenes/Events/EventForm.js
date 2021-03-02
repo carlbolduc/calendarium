@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Button from "../../components/Form/Button";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 import Input from "../../components/Form/Input";
@@ -72,7 +72,7 @@ export default function EventForm(props) {
   }
 
   const englishFields = props.calendar.enableEn ? (
-    <>
+    <div className="col-12 col-md-6">
       <Input
         label={"English name"}
         type="text"
@@ -105,11 +105,11 @@ export default function EventForm(props) {
         value={hyperlinkEn}
         handleChange={e => setHyperlinkEn(e.target.value)}
       />
-    </>
+    </div>
   ) : null;
 
   const frenchFields = props.calendar.enableFr ? (
-    <>
+    <div className="col-12 col-md-6">
       <Input
         label={props.translate("French name")}
         type="text"
@@ -142,7 +142,7 @@ export default function EventForm(props) {
         value={hyperlinkFr}
         handleChange={e => setHyperlinkFr(e.target.value)}
       />
-    </>
+    </div>
   ) : null;
 
   const startDateSelector = showStartDateSelector ? (
@@ -202,12 +202,18 @@ export default function EventForm(props) {
     </div>
   ) : null;
 
+  const renderTitle = props.new ? "New event" : "Edit event";
 
+  const renderSubmitButton = props.new ? "Create this event" : "Save changes";
 
   return (
+    <>
+    <h1>{props.translate(renderTitle)}</h1>
     <form onSubmit={handleSubmit} id="form-event" noValidate>
-      {englishFields}
-      {frenchFields}
+      <div className="row mb-3">
+        {englishFields}
+        {frenchFields}
+      </div>
       <div style={{ position: "relative" }}>
         <Input
           label="Start date"
@@ -268,7 +274,8 @@ export default function EventForm(props) {
         info="When this is checked, ???."
       />
       <Button label={props.translate("Cancel")} id="button-cancel" onClick={props.cancel} outline={true} />
-      <Button label={props.translate("Post this event")} type="submit" working={requesting} id="button-save" />
+      <Button label={props.translate(renderSubmitButton)} type="submit" working={requesting} id="button-save" />
     </form>
+    </>
   );
 }
