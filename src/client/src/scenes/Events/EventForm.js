@@ -5,7 +5,7 @@ import Input from "../../components/Form/Input";
 import Checkbox from "../../components/Form/Checkbox";
 import { DateTime } from "luxon";
 import Month from "../Calendars/Month";
-import { textValid, timeList } from "../../services/Helpers";
+import { textValid, timeList, decideWhatToDisplay } from "../../services/Helpers";
 
 export default function EventForm(props) {
   const [nameEn, setNameEn] = useState("");
@@ -231,80 +231,84 @@ export default function EventForm(props) {
     </div>
   ) : null;
 
-  const renderTitle = props.new ? "New event" : "Edit event";
+  const renderTitle = (
+    <>
+      {props.new ? props.translate("New event in") : props.translate("Edit event in")} {decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr)}
+    </>
+  );
 
-  const renderSubmitButton = props.new ? "Create this event" : "Save changes";
+  const renderSubmitButton = props.new ? props.translate("Create this event") : props.translate("Save changes");
 
   return (
     <>
-    <h1>{props.translate(renderTitle)}</h1>
-    <form onSubmit={handleSubmit} id="form-event" noValidate>
-      <div className="row mb-3">
-        {englishFields}
-        {frenchFields}
-      </div>
-      <div style={{ position: "relative" }}>
-        <Input
-          label="Start date"
-          type="text"
-          id="input-start-date"
-          placeholder="Select date"
-          info="???"
-          value={startDate.toLocaleString(DateTime.DATE_HUGE)}
-          readOnly={true}
-          onClick={() => setShowStartDateSelector(!showStartDateSelector)}
+      <h1>{props.translate(renderTitle)}</h1>
+      <form onSubmit={handleSubmit} id="form-event" noValidate>
+        <div className="row mb-3">
+          {englishFields}
+          {frenchFields}
+        </div>
+        <div style={{ position: "relative" }}>
+          <Input
+            label="Start date"
+            type="text"
+            id="input-start-date"
+            placeholder="Select date"
+            info="???"
+            value={startDate.toLocaleString(DateTime.DATE_HUGE)}
+            readOnly={true}
+            onClick={() => setShowStartDateSelector(!showStartDateSelector)}
+          />
+          {startDateSelector}
+        </div>
+        <div style={{ position: "relative" }}>
+          <Input
+            label="Start time"
+            type="text"
+            id="input-start-time"
+            placeholder="Select time"
+            info="???"
+            value={startTime}
+            onClick={() => setShowStartTimeSelector(!showStartTimeSelector)}
+            handleChange={(e) => setStartTime(e.target.value)}
+          />
+          {startTimeSelector}
+        </div>
+        <div style={{ position: "relative" }}>
+          <Input
+            label="End date"
+            type="text"
+            id="input-end-date"
+            placeholder="Select date"
+            info="???"
+            value={endDate.toLocaleString(DateTime.DATE_HUGE)}
+            readOnly={true}
+            onClick={() => setShowEndDateSelector(!showEndDateSelector)}
+          />
+          {endDateSelector}
+        </div>
+        <div style={{ position: "relative" }}>
+          <Input
+            label="End time"
+            type="text"
+            id="input-end-time"
+            placeholder="Select time"
+            info="???"
+            value={endTime}
+            onClick={() => setShowEndTimeSelector(!showEndTimeSelector)}
+            handleChange={(e) => setEndTime(e.target.value)}
+          />
+          {endTimeSelector}
+        </div>
+        <Checkbox
+          label="All day"
+          id="all-day"
+          value={allDay}
+          handleChange={e => setAllDay(e.target.checked)}
+          info="When this is checked, ???."
         />
-        {startDateSelector}
-      </div>
-      <div style={{ position: "relative" }}>
-        <Input
-          label="Start time"
-          type="text"
-          id="input-start-time"
-          placeholder="Select time"
-          info="???"
-          value={startTime}
-          onClick={() => setShowStartTimeSelector(!showStartTimeSelector)}
-          handleChange={(e) => setStartTime(e.target.value)}
-        />
-        {startTimeSelector}
-      </div>
-      <div style={{ position: "relative" }}>
-        <Input
-          label="End date"
-          type="text"
-          id="input-end-date"
-          placeholder="Select date"
-          info="???"
-          value={endDate.toLocaleString(DateTime.DATE_HUGE)}
-          readOnly={true}
-          onClick={() => setShowEndDateSelector(!showEndDateSelector)}
-        />
-        {endDateSelector}
-      </div>
-      <div style={{ position: "relative" }}>
-        <Input
-          label="End time"
-          type="text"
-          id="input-end-time"
-          placeholder="Select time"
-          info="???"
-          value={endTime}
-          onClick={() => setShowEndTimeSelector(!showEndTimeSelector)}
-          handleChange={(e) => setEndTime(e.target.value)}
-        />
-        {endTimeSelector}
-      </div>
-      <Checkbox
-        label="All day"
-        id="all-day"
-        value={allDay}
-        handleChange={e => setAllDay(e.target.checked)}
-        info="When this is checked, ???."
-      />
-      <Button label={props.translate("Cancel")} id="button-cancel" onClick={props.cancel} outline={true} />
-      <Button label={props.translate(renderSubmitButton)} type="submit" working={requesting} id="button-save" />
-    </form>
+        <Button label={props.translate("Cancel")} id="button-cancel" onClick={props.cancel} outline={true} />
+        <Button label={props.translate(renderSubmitButton)} type="submit" working={requesting} id="button-save" />
+      </form>
     </>
   );
 }
