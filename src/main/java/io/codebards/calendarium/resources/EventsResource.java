@@ -35,6 +35,7 @@ public class EventsResource {
         // Make sure the account can create events in this calendar
         List<Long> calendarIds = dao.findAccountCalendarIds(auth.getAccountId());
         if (calendarIds.contains(event.getCalendarId())) {
+            event.setAccountId(auth.getAccountId());
             dao.insertEvent(event);
             response = Response.noContent().build();
         }

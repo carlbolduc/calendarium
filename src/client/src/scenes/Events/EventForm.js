@@ -24,7 +24,7 @@ export default function EventForm(props) {
   const [showEndDateSelector, setShowEndDateSelector] = useState(false);
   const [endTime, setEndTime] = useState("");
   const [showEndTimeSelector, setShowEndTimeSelector] = useState(false);
-  const [allDay, setAllDay] = useState(null);
+  const [allDay, setAllDay] = useState(false);
   const [requesting, setRequesting] = useState(false);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function EventForm(props) {
           hour = Number(time.split(":")[0]);
           minute = Number(time.replace("am", "").split(":")[1]);
         }
-        return { hour: hour, minute: minute};
+        return { hour: hour, minute: minute };
       }
 
       const event = {
@@ -56,12 +56,13 @@ export default function EventForm(props) {
       };
 
       if (allDay) {
-
+        event.startAt = startDate.startOf("day").toSeconds();
+        event.endAt = endDate.endOf("day").toSeconds();
       } else {
         const startTimeValues = getTimeValues(startTime);
         const endTimeValues = getTimeValues(endTime);
-        event.startAt = startDate.set({ hour: startTimeValues.hour, minute: startTimeValues.minute });
-        event.endAt = endDate.set({ hour: endTimeValues.hour, minute: endTimeValues.minute });
+        event.startAt = startDate.set({ hour: startTimeValues.hour, minute: startTimeValues.minute, second: 0, millisecond: 0 }).toSeconds();
+        event.endAt = endDate.set({ hour: endTimeValues.hour, minute: endTimeValues.minute, second: 0, millisecond: 0 }).toSeconds();
       }
 
       props.createEvent(event, result => {
@@ -256,19 +257,21 @@ export default function EventForm(props) {
           />
           {startDateSelector}
         </div>
-        <div style={{ position: "relative" }}>
-          <Input
-            label="Start time"
-            type="text"
-            id="input-start-time"
-            placeholder="Select time"
-            info="???"
-            value={startTime}
-            onClick={() => setShowStartTimeSelector(!showStartTimeSelector)}
-            handleChange={(e) => setStartTime(e.target.value)}
-          />
-          {startTimeSelector}
-        </div>
+        {allDay ? null : (
+          <div style={{ position: "relative" }}>
+            <Input
+              label="Start time"
+              type="text"
+              id="input-start-time"
+              placeholder="Select time"
+              info="???"
+              value={startTime}
+              onClick={() => setShowStartTimeSelector(!showStartTimeSelector)}
+              handleChange={(e) => setStartTime(e.target.value)}
+            />
+            {startTimeSelector}
+          </div>
+        )}
         <div style={{ position: "relative" }}>
           <Input
             label="End date"
@@ -282,19 +285,21 @@ export default function EventForm(props) {
           />
           {endDateSelector}
         </div>
-        <div style={{ position: "relative" }}>
-          <Input
-            label="End time"
-            type="text"
-            id="input-end-time"
-            placeholder="Select time"
-            info="???"
-            value={endTime}
-            onClick={() => setShowEndTimeSelector(!showEndTimeSelector)}
-            handleChange={(e) => setEndTime(e.target.value)}
-          />
-          {endTimeSelector}
-        </div>
+        {allDay ? null : (
+          <div style={{ position: "relative" }}>
+            <Input
+              label="End time"
+              type="text"
+              id="input-end-time"
+              placeholder="Select time"
+              info="???"
+              value={endTime}
+              onClick={() => setShowEndTimeSelector(!showEndTimeSelector)}
+              handleChange={(e) => setEndTime(e.target.value)}
+            />
+            {endTimeSelector}
+          </div>
+        )}
         <Checkbox
           label="All day"
           id="all-day"

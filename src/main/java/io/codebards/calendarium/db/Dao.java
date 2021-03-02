@@ -147,7 +147,7 @@ public interface Dao {
             "         inner join calendar_access ca on c.calendar_id = ca.calendar_id\n" +
             "WHERE ca.account_id = :accountId\n" +
             "  AND ca.status IN ('owner', 'active')")
-    List<Long> findAccountCalendarIds(long accountId);
+    List<Long> findAccountCalendarIds(@Bind("accountId") long accountId);
 
     @SqlQuery("SELECT c.calendar_id,\n" +
             "       c.enable_en,\n" +
