@@ -80,6 +80,7 @@ export default function EventForm(props) {
   }, [requesting]);
 
   function handleSubmit(e) {
+    // TODO: simplify validation
     e.preventDefault();
     if (props.calendar.enableEn && props.calendar.enableFr) {
       if (textValid(nameEn) && textValid(nameFr) && validateDates()) {
@@ -100,6 +101,13 @@ export default function EventForm(props) {
         setRequesting(true);
       } else {
         setInvalidNameFr(true);
+      }
+    } else {
+      if (props.calendar.enableEn) {
+        if (!textValid(nameEn)) setInvalidNameEn(true);
+      }
+      if (props.calendar.enableFr) {
+        if (!textValid(nameFr)) setInvalidNameFr(true);
       }
     }
   }
