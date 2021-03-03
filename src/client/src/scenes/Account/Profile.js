@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { Redirect } from "react-router-dom";
 import { DateTime } from "luxon";
 import Input from "../../components/Form/Input";
 import Button from "../../components/Form/Button";
 import Message from "../../components/Form/Message";
-import {emailValid, passwordValid, textValid} from "../../services/Helpers";
+import { emailValid, passwordValid, textValid, getLocale } from "../../services/Helpers";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 
 export default function Profile(props) {
@@ -74,8 +74,8 @@ export default function Profile(props) {
     }
   }
 
-  const memberSince = props.account ?(
-    <p className="small">{props.translate("Member since")} {DateTime.fromSeconds(props.account.createdAt).toLocaleString(DateTime.DATETIME_FULL)}</p>
+  const memberSince = props.account ? (
+    <p className="small">{props.translate("Member since")} {DateTime.fromSeconds(props.account.createdAt).setLocale(getLocale(props.language)).toLocaleString(DateTime.DATETIME_FULL)}</p>
   ) : null;
 
   return props.authenticated ? (
@@ -94,7 +94,7 @@ export default function Profile(props) {
             setName(e.target.value);
             setInvalidName(false);
           }}
-          invalidFeedback={invalidName ? <InvalidFeedback feedback="You must enter a name."/> : null}
+          invalidFeedback={invalidName ? <InvalidFeedback feedback="You must enter a name." /> : null}
         />
         <Input
           label={props.translate("Email")}
@@ -107,7 +107,7 @@ export default function Profile(props) {
             setEmail(e.target.value);
             setInvalidEmail(false);
           }}
-          invalidFeedback={invalidEmail ? <InvalidFeedback feedback="You must enter a valid email address."/> : null}
+          invalidFeedback={invalidEmail ? <InvalidFeedback feedback="You must enter a valid email address." /> : null}
         />
         <Input
           label={props.translate("Current password")}
@@ -121,7 +121,7 @@ export default function Profile(props) {
             setCurrentPassword(e.target.value);
             setInvalidCurrentPassword(false);
           }}
-          invalidFeedback={invalidCurrentPassword ? <InvalidFeedback feedback="Your existing password must be provided when you want to update it."/> : null}
+          invalidFeedback={invalidCurrentPassword ? <InvalidFeedback feedback="Your existing password must be provided when you want to update it." /> : null}
         />
         <Input
           label={props.translate("New password")}
@@ -134,7 +134,7 @@ export default function Profile(props) {
             setNewPassword(e.target.value);
             setInvalidNewPassword(false);
           }}
-          invalidFeedback={invalidNewPassword ? <InvalidFeedback feedback="Your new password must be at least 8 characters long."/> : null}
+          invalidFeedback={invalidNewPassword ? <InvalidFeedback feedback="Your new password must be at least 8 characters long." /> : null}
         />
         {memberSince}
         {/* TODO: disable button when nothing has changed in the form */}
@@ -142,11 +142,11 @@ export default function Profile(props) {
       </form>
     </div>
   ) : (
-    <Redirect
-      to={{
-        pathname: "/sign-in",
-        state: { from: "/profile" }
-      }}
-    />
-  );
+      <Redirect
+        to={{
+          pathname: "/sign-in",
+          state: { from: "/profile" }
+        }}
+      />
+    );
 }
