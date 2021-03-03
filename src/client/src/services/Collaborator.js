@@ -23,7 +23,7 @@ export function useCollaborator(token) {
     }
   }
 
-  function inviteCollaborator(data, cb) {
+  function inviteCollaborator(calendarId, data, cb) {
     if (token !== null) {
       axios({
         method: "POST",
@@ -31,7 +31,7 @@ export function useCollaborator(token) {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        url: `${process.env.REACT_APP_API}/calendar_collaborators`,
+        url: `${process.env.REACT_APP_API}/calendar_collaborators/${calendarId}`,
         data: data
       }).then(() => {
         if (cb) {

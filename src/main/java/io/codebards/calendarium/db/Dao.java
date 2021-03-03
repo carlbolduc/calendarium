@@ -18,7 +18,7 @@ public interface Dao {
     @SqlQuery("SELECT 'bidu'")
     String healthCheck();
 
-    // Account
+    // ******************** Account ********************
 
     @SqlUpdate("INSERT INTO account (email, name, language_id, password_digest) VALUES (:email, :name, :languageId, :passwordDigest)")
     @GetGeneratedKeys
@@ -62,7 +62,7 @@ public interface Dao {
             "VALUES (:selector, :validator, :now, :accountId)")
     void insertAccountToken(@Bind("selector") String selector, @Bind("validator") String validator, @Bind("now") Instant now, @Bind("accountId") long accountId);
 
-    // Localisation
+    // ******************** Localisation ********************
 
     @SqlQuery("SELECT en_ca, fr_ca FROM localisation")
     @RegisterBeanMapper(Localisation.class)
@@ -79,7 +79,7 @@ public interface Dao {
     @RegisterBeanMapper(Language.class)
     List<Language> findAllLanguages();
 
-    // Subscription
+    // ******************** Subscription ********************
 
     @SqlUpdate("UPDATE account SET stripe_cus_id = :stripeCusId WHERE account_id = :accountId")
     void setStripeCusId(@Bind("accountId") long accountId, @Bind("stripeCusId") String stripeCusId);
@@ -101,8 +101,7 @@ public interface Dao {
     @SqlUpdate("UPDATE subscription SET status = :status WHERE stripe_sub_id = :stripeSubId")
     void updateSubscriptionStatus(@Bind("stripeSubId") String stripeSubId, @Bind("status") String status);
 
-
-    // Calendar
+    // ******************** Calendar ********************
 
     @SqlQuery("SELECT c.calendar_id,\n" +
             "       c.enable_en,\n" +
@@ -177,16 +176,13 @@ public interface Dao {
     @GetGeneratedKeys
     long insertCalendar(@Bind("accountId") long accountId, @BindBean Calendar calendar);
 
-    @SqlUpdate("INSERT INTO calendar_access (account_id, calendar_id, status) VALUES (:accountId, :calendarId, :status)")
-    void insertCalendarAccess(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @Bind("status") String status);
-
     @SqlUpdate("UPDATE calendar SET enable_en = :enableEn, enable_fr = :enableFr, name_en = :nameEn, name_fr = :nameFr, description_en = :descriptionEn, description_fr = :descriptionFr, link_en = :linkEn, link_fr = :linkFr, start_week_on = :startWeekOn, primary_color = :primaryColor, secondary_color = :secondaryColor, public_calendar = :publicCalendar, event_approval_required = :eventApprovalRequired WHERE calendar_id = :calendarId")
     void updateCalendar(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @BindBean Calendar calendar);
 
     @SqlUpdate("DELETE FROM calendar WHERE calendar_id = :calendarId")
     void deleteCalendar(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId);
 
-    // Events
+    // ******************** Events ********************
 
     @SqlQuery("SELECT event_id,\n" +
             "       account_id,\n" +
@@ -248,7 +244,10 @@ public interface Dao {
     @SqlUpdate("DELETE FROM event WHERE event_id = :eventId")
     void deleteEvent(@Bind("eventId") long eventId);
 
-    // Calendar Access
+    // ******************** Calendar Access ********************
+
+    @SqlUpdate("INSERT INTO calendar_access (account_id, calendar_id, status) VALUES (:accountId, :calendarId, :status)")
+    void insertCalendarAccess(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @Bind("status") String status);
 
     @SqlQuery("SELECT calendar_access_id, account_id, calendar_id, status\n" +
             "FROM calendar_access\n" +
@@ -261,6 +260,14 @@ public interface Dao {
             "INNER JOIN calendar_access ca on a.account_id = ca.account_id\n" +
             "WHERE calendar_id = :calendarId")
     @RegisterBeanMapper(CalendarCollaborator.class)
-    List<CalendarCollaborator> findCalendarCollaboratorsByCalendar(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId);
+    List<CalendarCollaborator> findCalendarCollaboratorsByCalendar(@Bind("calendarId") long calendarId);
+
+    @SqlQuery("SELECT name, email, status, ca.created_at\n" +
+            "FROM account a\n" +
+            "INNER JOIN calendar_access ca on a.account_id = ca.account_id\n" +
+            "WHERE calendar_id = :calendarId\n" +
+            "AND a.account_id = :accountId")
+    @RegisterBeanMapper(CalendarCollaborator.class)
+    Optional<CalendarCollaborator> findCalendarCollaboratorByAccountId(@Bind("calendarId") long calendarId, @Bind("accountId") long accountId);
 
 }
