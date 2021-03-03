@@ -6,6 +6,7 @@ import { useAuth } from "../../services/Auth";
 import { useSubscription } from "../../services/Subscription";
 import { useCalendar } from "../../services/Calendar";
 import { useEvent } from "../../services/Event";
+import { useUser } from "../../services/User";
 import Header from "../../components/Header/Header";
 import SignUp from "../Auth/SignUp";
 import SignIn from "../Auth/SignIn";
@@ -37,6 +38,7 @@ export default function App() {
   const { customerCreated, subscribed, createCustomer, createSubscription, updateSubscription } = useSubscription(token, account, getAccount);
   const { calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar } = useCalendar(token, subscribed);
   const { events, getEvents, createEvent } = useEvent(token);
+  const { users, getCalendarUsers, inviteUser } = useUser(token);
 
   useEffect(() => {
     getLocData();
@@ -106,6 +108,7 @@ export default function App() {
                 updateAccount={updateAccount}
                 authenticated={authenticated}
                 translate={translate}
+                language={language}
               />
             </Route>
             <Route exact path="/subscription">
@@ -161,6 +164,9 @@ export default function App() {
                 updateCalendar={updateCalendar}
                 deleteCalendar={deleteCalendar}
                 createEvent={createEvent}
+                users={users}
+                getCalendarUsers={getCalendarUsers}
+                inviteUser={inviteUser}
               />
             </Route>
             <Route path="/">

@@ -256,5 +256,11 @@ public interface Dao {
     @RegisterBeanMapper(CalendarAccess.class)
     List<CalendarAccess> findCalendarAccesses(@Bind("accountId") long accountId);
 
+    @SqlQuery("SELECT name, email, status, ca.created_at\n" +
+            "FROM account a\n" +
+            "INNER JOIN calendar_access ca on a.account_id = ca.account_id\n" +
+            "WHERE calendar_id = :calendarId")
+    @RegisterBeanMapper(CalendarUser.class)
+    List<CalendarUser> findCalendarUsersByCalendar(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId);
 
 }

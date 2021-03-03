@@ -83,9 +83,13 @@ export default function Calendar(props) {
     <Users
       calendar={props.calendar}
       translate={props.translate}
+      language={props.language}
       cancel={() => setShowManageUsers(false)}
       hideForm={() => setShowManageUsers(false)}
-    />
+      users={props.users}
+      getCalendarUsers={props.getCalendarUsers}
+      inviteUser={props.inviteUser}
+/>
   );
 
   // TODO: validate that this is the owner of the calendar to show the manage events button
