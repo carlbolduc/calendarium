@@ -182,7 +182,7 @@ export default function Calendar(props) {
       result = (
         <>
           <h1>{renderName()}</h1>
-          <Message result={calendarFormResult} origin="CalendarForm" translate={props.translate} />
+          <Message result={eventFormResult} origin="EventForm" translate={props.translate} />
           {actionButtonsZone}
           <div>{renderDescription()}</div>
           <div className="mt-4 px-0">
