@@ -7,7 +7,7 @@ import Button from "../../components/Form/Button";
 import EventForm from "../Events/EventForm";
 import Month from "./Month";
 import Message from "../../components/Form/Message";
-import Users from "../Users/Users";
+import Collaborators from "../Collaborators/Collaborators";
 import Events from "../Events/Events";
 
 export default function Calendar(props) {
@@ -17,7 +17,7 @@ export default function Calendar(props) {
   const [calendarFormResult, setCalendarFormResult] = useState(null);
   const [showEventForm, setShowEventForm] = useState(false);
   const [eventFormResult, setEventFormResult] = useState(null);
-  const [showManageUsers, setShowManageUsers] = useState(false);
+  const [showManageCollaborators, setShowManageCollaborators] = useState(false);
   const [showManageEvents, setShowManageEvents] = useState(false);
 
   useEffect(() => {
@@ -67,28 +67,28 @@ export default function Calendar(props) {
     />
   );
 
-  // TODO: validate that this is the owner of the calendar to show the manage users button
-  const manageUsersButton = props.subscribed ? (
+  // TODO: validate that this is the owner of the calendar to show the manage collaborators button
+  const manageCollaboratorsButton = props.subscribed ? (
     <Button
-      label={props.translate("Manage users")}
-      id="button-manage-users"
+      label={props.translate("Manage collaborators")}
+      id="button-manage-collaborators"
       outline={true}
       onClick={() => {
-        setShowManageUsers(true);
+        setShowManageCollaborators(true);
       }}
     />
   ) : null;
 
-  const manageUsers = (
-    <Users
+  const manageCollaborators = (
+    <Collaborators
       calendar={props.calendar}
       translate={props.translate}
       language={props.language}
-      cancel={() => setShowManageUsers(false)}
-      hideForm={() => setShowManageUsers(false)}
-      users={props.users}
-      getCalendarUsers={props.getCalendarUsers}
-      inviteUser={props.inviteUser}
+      cancel={() => setShowManageCollaborators(false)}
+      hideForm={() => setShowManageCollaborators(false)}
+      collaborators={props.collaborators}
+      getCalendarCollaborators={props.getCalendarCollaborators}
+      inviteCollaborator={props.inviteCollaborator}
 />
   );
 
@@ -142,7 +142,7 @@ export default function Calendar(props) {
     <div className="mb-4">
       {newEventButton}
       {manageEventsButton}
-      {manageUsersButton}
+      {manageCollaboratorsButton}
       {calendarSettingsButton}
     </div>
   );
@@ -163,11 +163,11 @@ export default function Calendar(props) {
           {eventForm}
         </>
       );
-    } else if (showManageUsers) {
-      // We're managing the calendar users
+    } else if (showManageCollaborators) {
+      // We're managing the calendar collaborators
       result = (
         <>
-          {manageUsers}
+          {manageCollaborators}
         </>
       );
     } else if (showManageEvents) {

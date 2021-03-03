@@ -2,10 +2,10 @@ import { useState } from "react";
 import axios from "axios";
 import {errorCallback} from "./Helpers";
 
-export function useUser(token) {
-  const [users, setUsers] = useState([]);
+export function useCollaborator(token) {
+  const [collaborators, setCollaborators] = useState([]);
 
-  function getCalendarUsers(calendarId) {
+  function getCalendarCollaborators(calendarId) {
     if (token !== null) {
       axios({
         method: "GET",
@@ -13,9 +13,9 @@ export function useUser(token) {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        url: `${process.env.REACT_APP_API}/calendar_users/${calendarId}`,
+        url: `${process.env.REACT_APP_API}/calendar_collaborators/${calendarId}`,
       }).then(res => {
-        setUsers(res.data);
+        setCollaborators(res.data);
       }).catch(err => {
         console.log("THIS SHOULD NEVER HAPPEN, error in 'getEvents' from 'useEvent' hook");
         console.log(err.response);
@@ -23,7 +23,7 @@ export function useUser(token) {
     }
   }
 
-  function inviteUser(data, cb) {
+  function inviteCollaborator(data, cb) {
     if (token !== null) {
       axios({
         method: "POST",
@@ -31,7 +31,7 @@ export function useUser(token) {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        url: `${process.env.REACT_APP_API}/calendar_users`,
+        url: `${process.env.REACT_APP_API}/calendar_collaborators`,
         data: data
       }).then(() => {
         if (cb) {
@@ -47,5 +47,5 @@ export function useUser(token) {
     }
   }
 
-  return { users, getCalendarUsers, inviteUser };
+  return { collaborators, getCalendarCollaborators, inviteCollaborator };
 }

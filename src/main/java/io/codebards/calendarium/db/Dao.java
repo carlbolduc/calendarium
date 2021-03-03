@@ -260,7 +260,7 @@ public interface Dao {
             "FROM account a\n" +
             "INNER JOIN calendar_access ca on a.account_id = ca.account_id\n" +
             "WHERE calendar_id = :calendarId")
-    @RegisterBeanMapper(CalendarUser.class)
-    List<CalendarUser> findCalendarUsersByCalendar(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId);
+    @RegisterBeanMapper(CalendarCollaborator.class)
+    List<CalendarCollaborator> findCalendarCollaboratorsByCalendar(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId);
 
 }

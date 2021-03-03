@@ -2,7 +2,7 @@ package io.codebards.calendarium.api;
 
 import java.time.Instant;
 
-public class CalendarUser {
+public class CalendarCollaborator {
     private long calendarAccessId;
     private String name;
     private String email;
