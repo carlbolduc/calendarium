@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Redirect } from "react-router-dom";
 import { DateTime } from "luxon";
-import { decideWhatToDisplay } from "../../services/Helpers";
+import { decideWhatToDisplay, encodeObject } from "../../services/Helpers";
 import CalendarForm from "./CalendarForm";
 import Button from "../../components/Form/Button";
 import EventForm from "../Events/EventForm";
@@ -9,10 +9,11 @@ import Month from "./Month";
 import Message from "../../components/Form/Message";
 import Collaborators from "../Collaborators/Collaborators";
 import Events from "../Events/Events";
+import Event from "../Events/Event";
 
 export default function Calendar(props) {
   let { link } = useParams();
-  const [currentDay, setCurrentDay] = useState(DateTime.now().day);
+  const [currentDay, setCurrentDay] = useState(DateTime.now());
   const [showCalendarForm, setShowCalendarForm] = useState(false);
   const [calendarFormResult, setCalendarFormResult] = useState(null);
   const [showEventForm, setShowEventForm] = useState(false);
@@ -22,8 +23,18 @@ export default function Calendar(props) {
 
   useEffect(() => {
     props.getCalendar(link);
+  }, []);
 
-  }, [])
+  useEffect(() => {
+    if (props.calendar !== null) {
+      // Build query param with currentDay
+      const q = encodeObject({ startAt: currentDay.toSeconds()});
+      props.getCalendarEvents(props.calendar.calendarId, q, result => {
+        // We do nothing with the result.
+        // TODO: should we display the error if there is one (there should never be one)
+      });
+    }
+  }, [props.calendar, currentDay])
 
   function renderName() {
     let result = null;
@@ -147,6 +158,13 @@ export default function Calendar(props) {
     </div>
   );
 
+
+
+
+  const calendarEvents = props.calendarEvents.map(e => (
+    <Event key={e.eventId} event={e} />
+  ));
+
   function renderMain() {
     let result;
     if (showCalendarForm) {
@@ -191,17 +209,14 @@ export default function Calendar(props) {
                 <Month
                   startWeekOn={props.calendar === null ? "Monday" : props.calendar.startWeekOn}
                   currentDay={currentDay}
+                  selectDay={date => setCurrentDay(date)}
                   setCurrentDay={setCurrentDay}
                   language={props.language}
                 />
               </div>
               <div className="col-12 col-md">
                 <h2>Events</h2>
-                <ul>
-                  <li>List the events</li>
-                  <li>All the events</li>
-                  <li>Only the events</li>
-                </ul>
+                {calendarEvents}
               </div>
             </div>
           </div>

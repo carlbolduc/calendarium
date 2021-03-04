@@ -36,7 +36,7 @@ export default function App() {
   } = useAuth();
   const { getLocData, translate, language } = useLoc(account, languages);
   const { customerCreated, subscribed, createCustomer, createSubscription, updateSubscription } = useSubscription(token, account, getAccount);
-  const { calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar } = useCalendar(token, subscribed);
+  const { calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents } = useCalendar(token, subscribed);
   const { events, getEvents, createEvent } = useEvent(token);
   const { collaborators, getCalendarCollaborators, inviteCollaborator } = useCollaborator(token);
 
@@ -163,6 +163,8 @@ export default function App() {
                 subscribed={subscribed}
                 updateCalendar={updateCalendar}
                 deleteCalendar={deleteCalendar}
+                calendarEvents={calendarEvents}
+                getCalendarEvents={getCalendarEvents}
                 createEvent={createEvent}
                 collaborators={collaborators}
                 getCalendarCollaborators={getCalendarCollaborators}

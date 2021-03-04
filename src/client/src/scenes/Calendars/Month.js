@@ -37,7 +37,8 @@ export default function Month(props) {
   }, [date]);
 
   function selectDay(d) {
-    props.selectDay(DateTime.fromFormat(`${date.year}-${date.month}-${d}`, "yyyy-M-d"));
+    const selectedDate = date.set({day: d});
+    props.selectDay(selectedDate);
   }
 
   function changeMonth(plusOrMinus) {

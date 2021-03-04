@@ -244,6 +244,27 @@ public interface Dao {
     @SqlUpdate("DELETE FROM event WHERE event_id = :eventId")
     void deleteEvent(@Bind("eventId") long eventId);
 
+    @SqlQuery("SELECT event_id,\n" +
+            "       account_id,\n" +
+            "       calendar_id,\n" +
+            "       status,\n" +
+            "       name_fr,\n" +
+            "       name_en,\n" +
+            "       description_fr,\n" +
+            "       description_en,\n" +
+            "       start_at,\n" +
+            "       end_at,\n" +
+            "       all_day,\n" +
+            "       hyperlink_fr,\n" +
+            "       hyperlink_en\n" +
+            "FROM event\n" +
+            "WHERE calendar_id = :calendarId\n" +
+            "  AND start_at >= :startAt\n" +
+            "ORDER BY start_at\n" +
+            "LIMIT 20")
+    @RegisterBeanMapper(Event.class)
+    List<Event> findCalendarEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Instant startAt);
+
     // ******************** Calendar Access ********************
 
     @SqlUpdate("INSERT INTO calendar_access (account_id, calendar_id, status) VALUES (:accountId, :calendarId, :status)")

@@ -214,9 +214,9 @@ export default function EventForm(props) {
         startWeekOn={"Monday"}
         currentDay={DateTime.now()}
         selectDay={date => {
-          setStartDate(date);
+          setStartDate(DateTime.fromFormat(`${date.year}-${date.month}-${date.day}`, "yyyy-M-d"));
           setInvalidStartDate(false);
-          setEndDate(date);
+          setEndDate(DateTime.fromFormat(`${date.year}-${date.month}-${date.day}`, "yyyy-M-d"));
           setInvalidEndDate(false);
           setShowStartDateSelector(false);
         }}

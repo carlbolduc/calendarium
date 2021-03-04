@@ -5,6 +5,7 @@ import {errorCallback} from "./Helpers";
 export function useCalendar(token, subscribed) {
   const [calendars, setCalendars] = useState([]);
   const [calendar, setCalendar] = useState(null);
+  const [calendarEvents, setCalendarEvents] = useState([]);
 
   useEffect(() => {
     if (token !== null) {
@@ -127,5 +128,23 @@ export function useCalendar(token, subscribed) {
     }
   }
 
-  return {calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar};
+  function getCalendarEvents(calendarId, q, cb) {
+    if (token !== null) {
+      axios({
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        url: `${process.env.REACT_APP_API}/calendars/${calendarId}/events?q=${q}`,
+      }).then(res => {
+        setCalendarEvents(res.data);
+      }).catch(err => {
+        console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendarEvents' from 'useCalendar' hook");
+        console.log(err.response);
+      });
+    }
+  }
+
+  return {calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents};
 }
