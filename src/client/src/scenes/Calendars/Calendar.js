@@ -93,16 +93,16 @@ export default function Calendar(props) {
   );
 
   // TODO: validate that this is the owner of the calendar to show the manage events button
-  const manageEventsButton = props.subscribed ? (
+  const manageEventsButton = (
     <Button
-      label={props.translate("Manage events")}
+      label={props.translate(props.subscribed ? "Manage all events" : "Manage my events")}
       id="button-manage-events"
       outline={true}
       onClick={() => {
         setShowManageEvents(true);
       }}
     />
-  ) : null;
+  );
 
   const manageEvents = (
     <Events
