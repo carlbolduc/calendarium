@@ -5,6 +5,8 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
+
+import io.codebards.calendarium.api.Language;
 import io.codebards.calendarium.auth.CalendariumAuthorizer;
 import io.codebards.calendarium.auth.TokenAuthenticator;
 import io.codebards.calendarium.core.EmailManager;
@@ -34,6 +36,7 @@ import org.jdbi.v3.core.Jdbi;
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import java.util.EnumSet;
+import java.util.List;
 
 public class App extends Application<Config> {
     public static void main(String[] args) throws Exception {
@@ -70,7 +73,8 @@ public class App extends Application<Config> {
 //        final AmazonS3 fileClient = AmazonS3ClientBuilder.standard().withRegion(Regions.CA_CENTRAL_1).withCredentials(new AWSStaticCredentialsProvider(awsCredentials)).build();
 
         final Dao dao = jdbi.onDemand(Dao.class);
-        final EmailManager emailManager = new EmailManager(emailClient, config.getThirdPartyFactory().getBaseUrl());
+        List<Language> allLanguages = dao.findAllLanguages();
+        final EmailManager emailManager = new EmailManager(emailClient, config.getThirdPartyFactory().getBaseUrl(), allLanguages, dao);
         final StripeService stripeService = new StripeService(config.getThirdPartyFactory().getStripeApiKey());
         final OpsResource opsResource = new OpsResource(dao);
         final BotResource botResource = new BotResource(dao);

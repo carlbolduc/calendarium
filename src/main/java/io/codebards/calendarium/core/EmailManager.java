@@ -1,36 +1,46 @@
 package io.codebards.calendarium.core;
 
+import java.util.List;
+import java.util.Optional;
+
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.model.*;
+
+import io.codebards.calendarium.api.Language;
+import io.codebards.calendarium.db.Dao;
 
 public class EmailManager {
     // This address must be verified with Amazon SES.
     private final String from = "grove@codebards.io";
     private final AmazonSimpleEmailService emailClient;
     private final String baseUrl;
+    private final List<Language> allLanguages;
+    private final Dao dao;
 
-    public EmailManager(AmazonSimpleEmailService emailClient, String baseUrl) {
+    public EmailManager(AmazonSimpleEmailService emailClient, String baseUrl, List<Language> allLanguages, Dao dao) {
         this.emailClient = emailClient;
         this.baseUrl = baseUrl;
+        this.allLanguages = allLanguages;
+        this.dao = dao;
     }
 
     // If the account is still in the sandbox, to address must be verified.
-    public void sendResetPasswordEmail(String to, String name, String passwordResetDigest) {
+    public void sendResetPasswordEmail(Optional<Account> oAccount, String passwordResetDigest) {
 
         // The HTML body for the email.
-        final String htmlBody = "<h1>Hi, " + name + "</h1>"
+        final String htmlBody = "<h1>Hi, " + oAccount.get().getName() + "</h1>"
                 + "<p>Click <a href=\"" + baseUrl + "/password-resets/"
                 + passwordResetDigest
                 + "\">here</a> to reset your password</p>.";
 
         // The email body for recipients with non-HTML email clients.
-        final String textBody = "Hi, " + name + "\n"
-                + "Reach " + baseUrl + "/reset-password?digest="
+        final String textBody = "Hi, " + oAccount.get().getName() + "\n"
+                + "Reach " + baseUrl + "/password-resets/"
                 + passwordResetDigest
                 + " to reset your password.";
 
         SendEmailRequest emailRequest = new SendEmailRequest()
-                .withDestination(new Destination().withToAddresses(to))
+                .withDestination(new Destination().withToAddresses(oAccount.get().getEmail()))
                 .withMessage(new Message()
                         .withBody(new Body()
                                 .withHtml(new Content()

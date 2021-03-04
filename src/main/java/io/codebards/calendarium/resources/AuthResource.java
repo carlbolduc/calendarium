@@ -88,7 +88,7 @@ public class AuthResource {
             try {
                 String passwordResetDigest = Utils.createDigest();
                 dao.updatePasswordResetDigest(oAccount.get().getAccountId(), passwordResetDigest, Instant.now());
-                emailManager.sendResetPasswordEmail(oAccount.get().getEmail(), oAccount.get().getName(), passwordResetDigest);
+                emailManager.sendResetPasswordEmail(oAccount, passwordResetDigest);
                 response = Response.status(Response.Status.CREATED).build();
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
