@@ -60,6 +60,7 @@ public class SubscriptionsResource {
             response = Response.ok().build();
         } catch (StripeException e) {
             // Stripe failed to create the customer, client should ask the customer to retry
+	    System.out.println(e.getMessage());
             response = Response.serverError().build();
         }
         return response;

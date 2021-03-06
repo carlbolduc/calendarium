@@ -9,6 +9,7 @@ export default function Week(props) {
       day={d} 
       currentDay={props.currentDay}
       selectDay={props.selectDay}
+      date={props.date}
      />
   ));
 

@@ -5,7 +5,7 @@ export default function Day(props) {
       props.selectDay(props.day);
     }
   }
-  const className = props.currentDay === props.day ? "table-primary" : "";
+  const className = props.date.day === props.day ? "table-primary" : "";
   return (
     <td className={className} style={{cursor: "pointer"}} onClick={selectDay}>{props.day}</td>
   )

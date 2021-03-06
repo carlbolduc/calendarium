@@ -38,19 +38,23 @@ export default function Month(props) {
 
   function selectDay(d) {
     const selectedDate = date.set({day: d});
+    setDate(selectedDate);
     props.selectDay(selectedDate);
   }
 
   function changeMonth(plusOrMinus) {
+    let newDate;
     if (plusOrMinus === "plus") {
-      setDate(date.plus({ months: 1 }));
+      newDate = date.plus({ months: 1 });
     } else if (plusOrMinus === "minus") {
-      setDate(date.minus({ months: 1 }));
+      newDate = date.minus({ months: 1 });
     }
+    setDate(newDate.startOf("month"));
   }
 
   function renderHeader() {
     const dayOfWeek = dayNumber(props.startWeekOn);
+    debugger
     const locale = getLocale(props.language);
     return (
       <thead>
@@ -91,7 +95,7 @@ export default function Month(props) {
   }
 
   const month = weeks.map(week =>(
-    <Week key={uuidv4()} days={week} currentDay={props.currentDay} selectDay={selectDay} />
+    <Week key={uuidv4()} days={week} currentDay={props.currentDay} selectDay={selectDay} date={date} />
   ));
 
   return (
