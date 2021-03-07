@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Redirect } from "react-router-dom";
 import { DateTime } from "luxon";
+import { Toast} from "bootstrap";
 import { decideWhatToDisplay, encodeObject } from "../../services/Helpers";
 import CalendarForm from "./CalendarForm";
 import Button from "../../components/Form/Button";
@@ -36,6 +37,13 @@ export default function Calendar(props) {
     }
   }, [props.calendar, currentDay])
 
+  function copyIframe(iframe) {
+    const el = document.getElementById("iframe-copied");
+    const toast = new Toast(el, {});
+    navigator.clipboard.writeText(iframe).then(()=> toast.show());
+  }
+
+
   function renderName() {
     let result = null;
     if (props.calendar !== null) {
@@ -66,7 +74,7 @@ export default function Calendar(props) {
   ) : null;
 
   const iframe = '<iframe src="https://codebards.io"></iframe>';
-  const calendarEmbed = (
+  const calendarEmbed = props.calendar !== null && props.calendar.publicCalendar ? (
     <article>
       <h1>Embed code</h1>
       <div className="input-group mb-3">
@@ -76,10 +84,10 @@ export default function Calendar(props) {
           readOnly={true}
           value={iframe}
         />
-          <span className="input-group-text" style={{cursor: "pointer"}} onClick={() => navigator.clipboard.writeText(iframe)}>Copy</span>
+          <span className="input-group-text" style={{cursor: "pointer"}} onClick={() => copyIframe(iframe)}>Copy</span>
       </div>
     </article>
-  );
+  ) : null;
   const calendarForm = (
     <CalendarForm
       new={false}
@@ -188,6 +196,16 @@ export default function Calendar(props) {
         <>
           {calendarEmbed}
           {calendarForm}
+          <div className="position-fixed bottom-0 end-0 p-3" style={{zIndex: 10}}>
+            <div id="iframe-copied" className="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+              <div className="d-flex">
+                <div className="toast-body">
+                  Copied to clipboard!
+                </div>
+                <button type="button" className="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"/>
+              </div>
+            </div>
+          </div>
         </>
       );
     } else if (showEventForm) {
