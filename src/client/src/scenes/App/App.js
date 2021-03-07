@@ -19,6 +19,8 @@ import MyCalendars from "../Calendars/MyCalendars";
 import PublicCalendars from "../Calendars/PublicCalendars";
 import PasswordReset from "../Auth/PasswordReset";
 import Calendar from "../Calendars/Calendar";
+import Terms from "../Static/Terms";
+import Privacy from "../Static/Privacy";
 
 export default function App() {
   const [languages, setLanguages] = useState([]);
@@ -108,6 +110,16 @@ export default function App() {
                 updateAccount={updateAccount}
                 authenticated={authenticated}
                 translate={translate}
+                language={language}
+              />
+            </Route>
+            <Route exact path="/terms">
+              <Terms
+                language={language}
+              />
+            </Route>
+            <Route exact path="/privacy">
+              <Privacy
                 language={language}
               />
             </Route>
