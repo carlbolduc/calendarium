@@ -88,7 +88,7 @@ export function useCalendar(token, subscribed) {
         data: data
       }).then(() => {
         // Success, fetch calendar
-        getCalendars(data.linkEn, cb);
+        getCalendar(data.linkEn, cb);
         getCalendars();
         if (cb) {
           const result = {
