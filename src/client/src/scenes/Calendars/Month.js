@@ -54,7 +54,6 @@ export default function Month(props) {
 
   function renderHeader() {
     const dayOfWeek = dayNumber(props.startWeekOn);
-    debugger
     const locale = getLocale(props.language);
     return (
       <thead>
@@ -83,7 +82,7 @@ export default function Month(props) {
       </tr>
       <tr className="text-muted">
         <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[dayOfWeek - 1]}</th>
-        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[dayOfWeek]}</th>
+        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[dayOfWeek %7]}</th>
         <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 1) % 7]}</th>
         <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 2) % 7]}</th>
         <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 3) % 7]}</th>
