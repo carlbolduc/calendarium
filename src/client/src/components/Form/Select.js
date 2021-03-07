@@ -43,6 +43,8 @@ export default function Select(props) {
               aria-label={props.ariaLabel ? props.ariaLabel : null}
               required={props.required ? props.required : null}
               title={props.placeholder}
+              value={props.value}
+              onChange={props.handleChange}
             >
               {placeholder}
               {options}
