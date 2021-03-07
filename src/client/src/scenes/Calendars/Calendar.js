@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Redirect } from "react-router-dom";
 import { DateTime } from "luxon";
 import { decideWhatToDisplay, encodeObject } from "../../services/Helpers";
@@ -65,6 +65,21 @@ export default function Calendar(props) {
     />
   ) : null;
 
+  const iframe = '<iframe src="https://codebards.io"></iframe>';
+  const calendarEmbed = (
+    <article>
+      <h1>Embed code</h1>
+      <div className="input-group mb-3">
+        <input
+          type="text"
+          className="form-control"
+          readOnly={true}
+          value={iframe}
+        />
+          <span className="input-group-text" style={{cursor: "pointer"}} onClick={() => navigator.clipboard.writeText(iframe)}>Copy</span>
+      </div>
+    </article>
+  );
   const calendarForm = (
     <CalendarForm
       new={false}
@@ -171,6 +186,7 @@ export default function Calendar(props) {
       // We're editing the calendar settings
       result = (
         <>
+          {calendarEmbed}
           {calendarForm}
         </>
       );
