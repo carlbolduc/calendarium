@@ -47,5 +47,24 @@ export function useEvent(token) {
     }
   }
 
-  return { events, getEvents, createEvent };
+  function searchEvents(q, cb) {
+    if (token !== null) {
+      axios({
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        url: `${process.env.REACT_APP_API}/events/search?q=${q}`,
+      }).then(res => {
+        setEvents(res.data);
+        if (cb) cb();
+      }).catch(err => {
+        console.log("THIS SHOULD NEVER HAPPEN, error in 'searchEvents' from 'useEvent' hook");
+        console.log(err.response);
+      });
+    }
+  }
+
+  return { events, getEvents, createEvent, searchEvents };
 }

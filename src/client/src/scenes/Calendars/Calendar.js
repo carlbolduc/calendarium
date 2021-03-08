@@ -9,8 +9,8 @@ import EventForm from "../Events/EventForm";
 import Month from "./Month";
 import Message from "../../components/Form/Message";
 import Collaborators from "../Collaborators/Collaborators";
-import Events from "../Events/Events";
 import Event from "../Events/Event";
+import EventsSearch from "../../components/Form/EventsSearch";
 
 export default function Calendar(props) {
   let { link } = useParams();
@@ -142,11 +142,16 @@ export default function Calendar(props) {
   );
 
   const manageEvents = (
-    <Events
+    <EventsSearch
       calendar={props.calendar}
+      events={props.events}
+      searchEvents={props.searchEvents}
       translate={props.translate}
-      cancel={() => setShowManageEvents(false)}
-      hideForm={() => setShowManageEvents(false)}
+      actionButtonsZone={
+        <div className="mb-4">
+          <Button label={props.translate("Back to calendar")} id="button-cancel" onClick={() => setShowManageEvents(false)} outline={true} />
+        </div>
+      }
     />
   );
 

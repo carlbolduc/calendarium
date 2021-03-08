@@ -6,14 +6,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.codebards.calendarium.api.Calendar;
 import io.codebards.calendarium.api.CalendarAccessStatus;
 import io.codebards.calendarium.api.Event;
-import io.codebards.calendarium.api.EventsParams;
+import io.codebards.calendarium.api.CalendarEventsParams;
 import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
@@ -94,13 +93,9 @@ public class CalendarsResource {
         mapper.registerModule(new JavaTimeModule()); 
 
         try {
-            EventsParams eventsParams = mapper.readValue(decodedQuery, EventsParams.class);
-            events = dao.findCalendarEvents(calendarId, eventsParams.getStartAt());
-        } catch (JsonMappingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            CalendarEventsParams calendarEventsParams = mapper.readValue(decodedQuery, CalendarEventsParams.class);
+            events = dao.findCalendarEvents(calendarId, calendarEventsParams.getStartAt());
         } catch (JsonProcessingException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

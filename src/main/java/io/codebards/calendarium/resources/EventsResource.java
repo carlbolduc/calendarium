@@ -1,6 +1,10 @@
 package io.codebards.calendarium.resources;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.codebards.calendarium.api.*;
+import io.codebards.calendarium.api.Calendar;
 import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
@@ -9,9 +13,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @RolesAllowed({"USER"})
 @Path("/events")
@@ -101,6 +104,23 @@ public class EventsResource {
         return response;
     }
 
+    @GET
+    @Path("/search")
+    public List<Event> searchEvents(@Auth Account auth, @QueryParam("q") String q) {
+        List<Event> events = new ArrayList<>();
+        String decodedQuery = new String(Base64.getDecoder().decode(q), StandardCharsets.UTF_8);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+
+        try {
+            EventsParams eventsParams = mapper.readValue(decodedQuery, EventsParams.class);
+            events = dao.findEvents(eventsParams);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return events;
+    }
+
     private Response updateEventIfPossible(CalendarAccess calendarAccess, Event event) {
         Response response = Response.status(Response.Status.UNAUTHORIZED).build();
         if (calendarAccess.getStatus().equals(CalendarAccessStatus.OWNER.getStatus())) {
@@ -118,4 +138,5 @@ public class EventsResource {
         }
         return response;
     }
+
 }

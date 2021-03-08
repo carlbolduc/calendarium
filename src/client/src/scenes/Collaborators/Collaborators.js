@@ -43,11 +43,8 @@ export default function Collaborators(props) {
     }
   }
 
-  const title = (
-    <>
-      {props.translate("Collaborators of")} {decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr)}
-    </>
-  );
+  const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
+  const title = `${props.translate("Collaborators of")} ${calendarName}`;
 
   const actionButtonsZone = (
     <div className="mb-4">
@@ -95,7 +92,7 @@ export default function Collaborators(props) {
   function collaborators() {
     // TODO: format nicely and add edit options
     return (
-      <div class="table-responsive">
+      <div className="table-responsive">
         <table className="table">
           <thead>
             <tr>
@@ -123,12 +120,12 @@ export default function Collaborators(props) {
   }
 
   return (
-    <>
+    <article>
       <h1>{title}</h1>
       <Message result={result} origin="collaborators" translate={props.translate} />
       {actionButtonsZone}
       {inviteCollaborator}
       {collaborators()}
-    </>
+    </article>
   );
 }

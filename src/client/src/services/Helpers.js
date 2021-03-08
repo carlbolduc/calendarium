@@ -18,6 +18,12 @@ export const subscriptionStatus = {
   CANCELED: "canceled"
 }
 
+export const eventStatus = {
+  DRAFT: {label: "Draft", value: "draft"},
+  PENDING_APPROVAL: {label: "Pending Approval", value: "pending_approval"},
+  PUBLISHED: {label: "Published", value: "published"}
+}
+
 export function dayNumber(day) {
   let dayNumber;
   switch (day) {

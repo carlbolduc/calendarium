@@ -1,13 +1,11 @@
 import Button from "../../components/Form/Button";
+import Event from "./Event";
 import { decideWhatToDisplay } from "../../services/Helpers";
 
 export default function Events(props) {
 
-  const title = (
-    <>
-      {props.translate("Events of")} {decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr)}
-    </>
-  );
+  const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
+  const title = `${props.translate("Events of")} ${calendarName}`;
 
   const actionButtonsZone = (
     <div className="mb-4">
@@ -15,10 +13,15 @@ export default function Events(props) {
     </div>
   );
 
+  const events = props.events.map(e => (
+    <Event key={e.eventId} event={e} />
+  ));
+
   return (
     <>
       <h1>{title}</h1>
       {actionButtonsZone}
+      {events}
     </>
   );
 }

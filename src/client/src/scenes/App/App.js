@@ -6,7 +6,7 @@ import { useAuth } from "../../services/Auth";
 import { useSubscription } from "../../services/Subscription";
 import { useCalendar } from "../../services/Calendar";
 import { useEvent } from "../../services/Event";
-import { useCollaborator, useUser } from "../../services/Collaborator";
+import { useCollaborator } from "../../services/Collaborator";
 import Header from "../../components/Header/Header";
 import SignUp from "../Auth/SignUp";
 import SignIn from "../Auth/SignIn";
@@ -39,7 +39,7 @@ export default function App() {
   const { getLocData, translate, language } = useLoc(account, languages);
   const { customerCreated, subscribed, createCustomer, createSubscription, updateSubscription } = useSubscription(token, account, getAccount);
   const { calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents } = useCalendar(token, subscribed);
-  const { events, getEvents, createEvent } = useEvent(token);
+  const { events, getEvents, createEvent, searchEvents } = useEvent(token);
   const { collaborators, getCalendarCollaborators, inviteCollaborator } = useCollaborator(token);
 
   useEffect(() => {
@@ -178,6 +178,8 @@ export default function App() {
                 calendarEvents={calendarEvents}
                 getCalendarEvents={getCalendarEvents}
                 createEvent={createEvent}
+                events={events}
+                searchEvents={searchEvents}
                 collaborators={collaborators}
                 getCalendarCollaborators={getCalendarCollaborators}
                 inviteCollaborator={inviteCollaborator}

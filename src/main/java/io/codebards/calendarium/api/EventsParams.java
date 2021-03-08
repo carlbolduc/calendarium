@@ -1,17 +1,22 @@
 package io.codebards.calendarium.api;
 
-import java.time.Instant;
-
 public class EventsParams {
-    
-    private Instant startAt;
+    private String search;
+    private String status;
 
-    public Instant getStartAt() {
-        return startAt;
+    public String getSearch() {
+        return search;
     }
 
-    public void setStartAt(Instant startAt) {
-        this.startAt = startAt;
+    public void setSearch(String search) {
+        this.search = search;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

@@ -21,7 +21,7 @@ export default function Event(props) {
       <p className="small">{duration()}</p>
       <div className="collapse" id={`_${props.event.eventId}`}>
         <div className="card card-body">
-          Description of the event
+          {props.event.descriptionEn}
         </div>
       </div>
     </article>
