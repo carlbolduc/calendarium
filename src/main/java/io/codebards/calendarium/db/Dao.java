@@ -161,7 +161,8 @@ public interface Dao {
             "       c.primary_color,\n" +
             "       c.secondary_color,\n" +
             "       c.public_calendar,\n" +
-            "       c.event_approval_required\n" +
+            "       c.event_approval_required,\n" +
+            "       ca.status AS access\n" +
             "FROM calendar c\n" +
             "         INNER JOIN calendar_access ca on c.calendar_id = ca.calendar_id\n" +
             "WHERE ca.account_id = :accountId\n" +

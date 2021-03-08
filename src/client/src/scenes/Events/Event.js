@@ -29,15 +29,20 @@ export default function Event(props) {
   }
 
   return (
-    <article>
-      <h4 data-bs-toggle="collapse" data-bs-target={`#_${props.event.eventId}`} aria-expanded="false" aria-controls={props.event.eventId}>
-        {props.event.nameEn} {status()}
-      </h4>
-      {props.eventActions}
-      <p className="small">{duration()}</p>
-      <div className="collapse" id={`_${props.event.eventId}`}>
-        <div className="card card-body">
-          {props.event.descriptionEn}
+    <article className="card border-dark mb-3">
+      <div className="row g-0">
+        <div className="col-md-5">
+          <div className="card-body">
+            <h5 className="card-title">{props.event.nameEn}</h5>
+            <h6 className="card-subtitle mb-2 text-muted">{duration()}</h6>
+            {props.eventActions}
+          </div>
+        </div>
+        <div className="col-md-7">
+          <div className="card-body">
+            {status()}
+            <p className="card-text">{props.event.descriptionEn}</p>
+          </div>
         </div>
       </div>
     </article>

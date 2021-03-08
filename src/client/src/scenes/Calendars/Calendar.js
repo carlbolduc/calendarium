@@ -144,6 +144,8 @@ export default function Calendar(props) {
     <EventsSearch
       calendar={props.calendar}
       events={props.events}
+      updateEvent={props.updateEvent}
+      deleteEvent={props.deleteEvent}
       searchEvents={props.searchEvents}
       translate={props.translate}
       actionButtonsZone={

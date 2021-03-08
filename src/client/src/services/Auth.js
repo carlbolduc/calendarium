@@ -4,7 +4,7 @@ import {errorCallback} from "./Helpers";
 
 export function useAuth() {
   const [token, setToken] = useState(localStorage.getItem("token"));
-  const [account, setAccount] = useState({name: "", email: "", languageId: 1, stripeCusId: null, createdAt: new Date().getTime() / 1000, subscription: null});
+  const [account, setAccount] = useState({accountId: null, name: "", email: "", languageId: 1, stripeCusId: null, createdAt: new Date().getTime() / 1000, subscription: null});
   const authenticated = token !== null;
 
   useEffect(() => {

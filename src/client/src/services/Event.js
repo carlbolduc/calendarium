@@ -47,6 +47,55 @@ export function useEvent(token) {
     }
   }
 
+  function updateEvent(event, cb) {
+    if (token !== null) {
+      axios({
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        url: `${process.env.REACT_APP_API}/events/${event.eventId}`,
+        data: event
+      }).then(() => {
+        // Success, fetch calendar
+        if (cb) {
+          const result = {
+            success: true
+          }
+          cb(result);
+        }
+      }).catch(err => {
+        // Let caller know that something went wrong
+        errorCallback(err, cb);
+      });
+    }
+  }
+
+  function deleteEvent(eventId, cb) {
+    if (token !== null) {
+      axios({
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        url: `${process.env.REACT_APP_API}/events/${eventId}`
+      }).then(() => {
+        // Success
+        if (cb) {
+          const result = {
+            success: true
+          }
+          cb(result);
+        }
+      }).catch(err => {
+        // Let caller know that something went wrong
+        errorCallback(err, cb);
+      });
+    }
+  }
+
   function searchEvents(q, cb) {
     if (token !== null) {
       axios({
@@ -66,5 +115,5 @@ export function useEvent(token) {
     }
   }
 
-  return { events, getEvents, createEvent, searchEvents };
+  return { events, getEvents, createEvent, updateEvent, deleteEvent, searchEvents };
 }

@@ -15,6 +15,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @RolesAllowed({"USER"})
 @Path("/events")
@@ -36,8 +38,10 @@ public class EventsResource {
     public Response createEvent(@Auth Account auth, Event event) {
         Response response = Response.status(Response.Status.UNAUTHORIZED).build();
         // Make sure the account can create events in this calendar
-        List<Long> calendarIds = dao.findAccountCalendarIds(auth.getAccountId());
-        if (calendarIds.contains(event.getCalendarId())) {
+        List<CalendarAccess> calendarAccesses = dao.findCalendarAccesses(auth.getAccountId());
+        Optional<CalendarAccess> oCalendarAccess = calendarAccesses.stream().filter(ca -> ca.getCalendarId() == event.getCalendarId()).findAny();
+        if (oCalendarAccess.isPresent()) {
+            event.setStatus(EventStatus.DRAFT.getStatus());
             event.setAccountId(auth.getAccountId());
             dao.insertEvent(event);
             response = Response.noContent().build();

@@ -14,7 +14,6 @@ import ForgotPassword from "../Auth/ForgotPassword";
 import Home from "../Home/Home";
 import Profile from "../Account/Profile";
 import Subscription from "../Account/Subscription";
-import MyEvents from "../Events/MyEvents";
 import MyCalendars from "../Calendars/MyCalendars";
 import PublicCalendars from "../Calendars/PublicCalendars";
 import PasswordReset from "../Auth/PasswordReset";
@@ -39,7 +38,7 @@ export default function App() {
   const { getLocData, translate, language } = useLoc(account, languages);
   const { customerCreated, subscribed, createCustomer, createSubscription, updateSubscription } = useSubscription(token, account, getAccount);
   const { calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents } = useCalendar(token, subscribed);
-  const { events, getEvents, createEvent, searchEvents } = useEvent(token);
+  const { events, createEvent, updateEvent, deleteEvent, searchEvents } = useEvent(token);
   const { collaborators, getCalendarCollaborators, inviteCollaborator } = useCollaborator(token);
 
   useEffect(() => {
@@ -135,16 +134,6 @@ export default function App() {
                 updateSubscription={updateSubscription}
               />
             </Route>
-            <Route exact path="/my-events">
-              <MyEvents
-                account={account}
-                authenticated={authenticated}
-                translate={translate}
-                events={events}
-                getEvents={getEvents}
-                createEvent={createEvent}
-              />
-            </Route>
             <Route exact path="/my-calendars">
               <MyCalendars
                 account={account}
@@ -178,6 +167,8 @@ export default function App() {
                 calendarEvents={calendarEvents}
                 getCalendarEvents={getCalendarEvents}
                 createEvent={createEvent}
+                updateEvent={updateEvent}
+                deleteEvent={deleteEvent}
                 events={events}
                 searchEvents={searchEvents}
                 collaborators={collaborators}

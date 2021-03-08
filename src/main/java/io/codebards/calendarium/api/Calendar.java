@@ -15,6 +15,7 @@ public class Calendar {
     private String secondaryColor;
     private Boolean publicCalendar = false;
     private Boolean eventApprovalRequired = true;
+private String access;
 
     public long getCalendarId() {
         return calendarId;
@@ -127,5 +128,12 @@ public class Calendar {
     public void setEventApprovalRequired(Boolean eventApprovalRequired) {
         this.eventApprovalRequired = eventApprovalRequired;
     }
-    
+
+    public String getAccess() {
+        return access;
+    }
+
+    public void setAccess(String access) {
+        this.access = access;
+    }
 }

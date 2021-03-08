@@ -24,6 +24,14 @@ export const eventStatus = {
   PUBLISHED: {label: "Published", value: "published"}
 }
 
+export const calendarAccessStatus = {
+  OWNER: "owner",
+  INVITED: "invited",
+  REQUESTED: "requested",
+  ACTIVE: "active",
+  INACTIVE: "inactive"
+}
+
 export function dayNumber(day) {
   let dayNumber;
   switch (day) {
