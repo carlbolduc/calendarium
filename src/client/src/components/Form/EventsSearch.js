@@ -27,8 +27,16 @@ export default function EventsSearch(props) {
     setRequesting(true);
   }
 
+  function approveEvent(e) {
+    console.log("TODO");
+  }
+
+  function deleteEvent(e) {
+    console.log("TODO");
+  }
+
   const events = props.events.map(e => (
-    <Event key={e.eventId} event={e} />
+    <Event key={e.eventId} event={e} showStatus={true} eventActions={null}/>
   ));
 
   const calendarName = props.calendar !== null ? decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr) : "";
