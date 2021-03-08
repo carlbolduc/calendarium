@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Redirect } from "react-router-dom";
 import { DateTime } from "luxon";
-import { Toast} from "bootstrap";
 import { decideWhatToDisplay, encodeObject } from "../../services/Helpers";
 import CalendarForm from "./CalendarForm";
 import Button from "../../components/Form/Button";
@@ -39,8 +38,8 @@ export default function Calendar(props) {
 
   function copyIframe(iframe) {
     const el = document.getElementById("iframe-copied");
-    const toast = new Toast(el, {});
-    navigator.clipboard.writeText(iframe).then(()=> toast.show());
+    // const toast = new Toast(el, {});
+    // navigator.clipboard.writeText(iframe).then(()=> toast.show());
   }
 
 
