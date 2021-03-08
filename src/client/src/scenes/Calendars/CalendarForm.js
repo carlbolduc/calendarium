@@ -218,6 +218,7 @@ export default function CalendarForm(props) {
     // TODO: use {props.translate("")} for text visible in the app
     <>
       <h1>{props.translate(title)}</h1>
+      {props.calendarEmbed}
       <form onSubmit={handleSubmit} id="form-new-calendar" noValidate>
         {noLanguageEnabled ? <InvalidFeedback feedback="Enable at least one language." /> : null}
         <div className="row mb-3">

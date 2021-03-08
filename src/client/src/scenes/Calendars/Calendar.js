@@ -73,10 +73,11 @@ export default function Calendar(props) {
     />
   ) : null;
 
-  const iframe = '<iframe src="https://codebards.io"></iframe>';
+  const iframe = (`<iframe src="https://codebards.io/embed/${props.calendar !== null ? props.calendar.calendarId : null}"></iframe>`);
+ 
   const calendarEmbed = props.calendar !== null && props.calendar.publicCalendar ? (
-    <article>
-      <h1>Embed code</h1>
+    <article className="mb-4">
+      <h5>Embed code</h5>
       <div className="input-group mb-3">
         <input
           type="text"
@@ -88,6 +89,7 @@ export default function Calendar(props) {
       </div>
     </article>
   ) : null;
+
   const calendarForm = (
     <CalendarForm
       new={false}
@@ -98,6 +100,7 @@ export default function Calendar(props) {
       deleteCalendar={props.deleteCalendar}
       hideForm={() => setShowCalendarForm(false)}
       setResult={setCalendarFormResult}
+      calendarEmbed={calendarEmbed}
     />
   );
 
@@ -181,9 +184,6 @@ export default function Calendar(props) {
     </div>
   );
 
-
-
-
   const calendarEvents = props.calendarEvents.map(e => (
     <Event key={e.eventId} event={e} />
   ));
@@ -194,10 +194,9 @@ export default function Calendar(props) {
       // We're editing the calendar settings
       result = (
         <>
-          {calendarEmbed}
           {calendarForm}
           <div className="position-fixed bottom-0 end-0 p-3" style={{zIndex: 10}}>
-            <div id="iframe-copied" className="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div id="iframe-copied" className="toast align-items-center text-white bg-secondary border-0" role="alert" aria-live="assertive" aria-atomic="true">
               <div className="d-flex">
                 <div className="toast-body">
                   Copied to clipboard!
