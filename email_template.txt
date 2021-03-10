@@ -62,9 +62,9 @@ Bonjour [account.name],
 
 [calendar_owner.name] vous invite à collaborer au calendrier [calendar.nameFr]. Ce calendrier est disponible en tout temps en ligne. Vous pourrez y consulter les événements ajoutés par les autres collaborateurs et y partager vos propres événements.
 
-Cliquez sur le lien suivant pour créer votre compte :
+Cliquez sur le lien suivant pour accepter l'invitation :
 
-[create_account_link]
+[accept_calendar_invitation_link]
 
 Si vous croyez que ce courriel vous a été envoyé par erreur, vous pouvez l'ignorer en toute sécurité. Si vous avez besoin de plus d'information, n'hésitez pas à répondre à ce courriel.
 
@@ -75,9 +75,9 @@ Hi [account.name],
 
 [calendar_owner.name] is inviting you to collaborate to the calendar [calendar.nameEn]. This calendar is available at any time online. You will be able to consult events created by the other collaborators as well as share your own events.
 
-Click the following link to create your account:
+Click the following link to accept the invitation:
 
-[create_account_link]
+[accept_calendar_invitation_link]
 
 If you believe you were sent this email by mistake, you can safely ignore it. If you have more questions, feel free to reply to this email.
 
