@@ -174,6 +174,7 @@ export default function Calendar(props) {
                   onClick={() => setShowManageEvents(false)} outline={true}/>
         </div>
       }
+      eventActions={eventActions}
     />
   );
 
@@ -234,23 +235,33 @@ export default function Calendar(props) {
   }
 
   function eventActions(event) {
-    const editEvent = props.account.accountId === event.accountId ? (
+    const editEvent = (props.account.accountId === event.accountId) || (props.calendar !== null && props.calendar.access === calendarAccessStatus.OWNER) ? (
       <button type="button" className="btn btn-info btn-sm me-1" onClick={() => setEvent(event)}>Edit</button>
     ) : null;
     let submitForApprovalButton = null;
     let approveButton = null;
+    let publishButton = null;
+    let deleteButton = null;
     if (props.calendar !== null && props.calendar.access === calendarAccessStatus.OWNER) {
-      // TODO: can the owner publish a draft from another user?
-      if ([eventStatus.DRAFT.value, eventStatus.PENDING_APPROVAL.value].indexOf(event.status) !== -1) {
-        approveButton = <button type="button" className="btn btn-success btn-sm me-1" onClick={() => approveEvent(event)}>Approve</button>;
+      if (event.status === eventStatus.PENDING_APPROVAL.value) {
+        approveButton = <button type="button" className="btn btn-success btn-sm me-1" onClick={() => approveEvent(event)}>Approve and publish</button>;
+      } else if (props.account.accountId === event.accountId && event.status === eventStatus.DRAFT.value) {
+        publishButton = <button type="button" className="btn btn-info btn-sm me-1" onClick={() => approveEvent(event)}>Publish</button>;
       }
-    } else if (props.calendar !== null && props.calendar.access === calendarAccessStatus.ACTIVE) {
-      if (event.status === eventStatus.DRAFT.value) {
-        submitForApprovalButton = <button type="button" className="btn btn-info btn-sm me-1" onClick={() => submitForApproval(event)}>Submit</button>;
+      deleteButton = <button type="button" className="btn btn-danger btn-sm" onClick={() => deleteEvent(event)}>Delete</button>;
+    } else if (props.account.accountId === event.accountId) {
+      if (props.calendar !== null && props.calendar.access === calendarAccessStatus.ACTIVE) {
+        if (event.status === eventStatus.DRAFT.value) {
+          if (props.calendar.eventApprovalRequired) {
+            submitForApprovalButton = <button type="button" className="btn btn-info btn-sm me-1" onClick={() => submitForApproval(event)}>Submit for approval</button>;
+          } else {
+            publishButton = <button type="button" className="btn btn-info btn-sm me-1" onClick={() => approveEvent(event)}>Publish</button>;
+          }
+        }
+        deleteButton = <button type="button" className="btn btn-danger btn-sm" onClick={() => deleteEvent(event)}>Delete</button>;
       }
     }
-    const deleteButton = <button type="button" className="btn btn-danger btn-sm" onClick={() => deleteEvent(event)}>Delete</button>;
-    return <div>{editEvent}{submitForApprovalButton}{approveButton}{deleteButton}</div>;
+    return <div>{editEvent}{submitForApprovalButton}{approveButton}{publishButton}{deleteButton}</div>;
   }
 
   const calendarEvents = props.calendarEvents.map(e => (

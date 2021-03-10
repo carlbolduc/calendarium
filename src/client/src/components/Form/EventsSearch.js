@@ -61,28 +61,8 @@ export default function EventsSearch(props) {
     });
   }
 
-  function eventActions(event) {
-    const editEvent = props.account.accountId === event.accountId ? (
-        <button type="button" className="btn btn-info btn-sm me-1" onClick={() => props.editEvent(event)}>Edit</button>
-    ) : null;
-    let submitForApprovalButton = null;
-    let approveButton = null;
-    if (props.calendar !== null && props.calendar.access === calendarAccessStatus.OWNER) {
-      // TODO: can the owner publish a draft from another user?
-      if ([eventStatus.DRAFT.value, eventStatus.PENDING_APPROVAL.value].indexOf(event.status) !== -1) {
-        approveButton = <button type="button" className="btn btn-success btn-sm me-1" onClick={() => approveEvent(event)}>Approve</button>;
-      }
-    } else if (props.calendar !== null && props.calendar.access === calendarAccessStatus.ACTIVE) {
-      if (event.status === eventStatus.DRAFT.value) {
-        submitForApprovalButton = <button type="button" className="btn btn-info btn-sm me-1" onClick={() => submitForApproval(event)}>Submit</button>;
-      }
-    }
-    const deleteButton = <button type="button" className="btn btn-danger btn-sm" onClick={() => deleteEvent(event)}>Delete</button>;
-    return <div>{editEvent}{submitForApprovalButton}{approveButton}{deleteButton}</div>;
-  }
-
   const events = props.events.map(e => (
-    <Event key={e.eventId} event={e} showStatus={true} eventActions={eventActions(e)}/>
+    <Event key={e.eventId} event={e} showStatus={true} eventActions={props.eventActions(e)}/>
   ));
 
   const calendarName = props.calendar !== null ? decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr) : "";
