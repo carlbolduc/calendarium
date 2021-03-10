@@ -9,10 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import io.codebards.calendarium.api.Calendar;
-import io.codebards.calendarium.api.CalendarAccessStatus;
-import io.codebards.calendarium.api.Event;
-import io.codebards.calendarium.api.CalendarEventsParams;
+import io.codebards.calendarium.api.*;
 import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
@@ -86,18 +83,27 @@ public class CalendarsResource {
     @GET
     @RolesAllowed({ "USER" })
     @Path("/{calendarId}/events")
-    public List<Event> getCalendarEvents(@PathParam("calendarId") long calendarId, @QueryParam("q") String q) {
+    public List<Event> getCalendarEvents(@Auth Account auth, @PathParam("calendarId") long calendarId, @QueryParam("q") String q) {
         List<Event> events = new ArrayList<>();
-        String decodedQuery = new String(Base64.getDecoder().decode(q), StandardCharsets.UTF_8);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule()); 
 
-        try {
-            CalendarEventsParams calendarEventsParams = mapper.readValue(decodedQuery, CalendarEventsParams.class);
-            events = dao.findCalendarEvents(calendarId, calendarEventsParams.getStartAt());
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        List<CalendarAccess> calendarAccesses = dao.findCalendarAccesses(auth.getAccountId());
+        Optional<CalendarAccess> oCalendarAccess = calendarAccesses.stream().filter(ca -> ca.getCalendarId() == calendarId).findAny();
+        if (oCalendarAccess.isPresent()) {
+            String decodedQuery = new String(Base64.getDecoder().decode(q), StandardCharsets.UTF_8);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            try {
+                CalendarEventsParams calendarEventsParams = mapper.readValue(decodedQuery, CalendarEventsParams.class);
+                if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.OWNER.getStatus())) {
+                    events = dao.findCalendarOwnerEvents(calendarId, calendarEventsParams.getStartAt());
+                } else if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.ACTIVE.getStatus())) {
+                    events = dao.findCalendarCollaboratorEvents(auth.getAccountId(), calendarId, calendarEventsParams.getStartAt());
+                }
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
         }
+
 
         return events;
     }

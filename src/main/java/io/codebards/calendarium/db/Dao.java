@@ -245,30 +245,39 @@ public interface Dao {
     @SqlUpdate("DELETE FROM event WHERE event_id = :eventId")
     void deleteEvent(@Bind("eventId") long eventId);
 
-    @SqlQuery("SELECT event_id,\n" +
-            "       account_id,\n" +
-            "       calendar_id,\n" +
-            "       status,\n" +
-            "       name_fr,\n" +
-            "       name_en,\n" +
-            "       description_fr,\n" +
-            "       description_en,\n" +
-            "       start_at,\n" +
-            "       end_at,\n" +
-            "       all_day,\n" +
-            "       hyperlink_fr,\n" +
-            "       hyperlink_en\n" +
+    @SqlQuery("SELECT event_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, account_id, calendar_id\n" +
             "FROM event\n" +
             "WHERE calendar_id = :calendarId\n" +
             "  AND start_at >= :startAt\n" +
             "ORDER BY start_at\n" +
             "LIMIT 20")
     @RegisterBeanMapper(Event.class)
-    List<Event> findCalendarEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Instant startAt);
+    List<Event> findCalendarOwnerEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Instant startAt);
 
-    @SqlQuery("SELECT event_id, account_id, calendar_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr FROM event WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%'))) AND (:status = '' OR status = :status)")
+    @SqlQuery("SELECT event_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, account_id, calendar_id\n" +
+            "FROM event\n" +
+            "WHERE account_id = :accountId\n" +
+            "  AND calendar_id = :calendarId\n" +
+            "  AND start_at >= :startAt\n" +
+            "UNION\n" +
+            "SELECT event_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, account_id, calendar_id\n" +
+            "FROM event\n" +
+            "WHERE account_id != :accountId\n" +
+            "  AND calendar_id = :calendarId\n" +
+            "  AND start_at >= :startAt\n" +
+            "  AND status = 'published'\n" +
+            "ORDER BY start_at\n" +
+            "LIMIT 20")
+    @RegisterBeanMapper(Event.class)
+    List<Event> findCalendarCollaboratorEvents(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @Bind("startAt") Instant startAt);
+
+    @SqlQuery("SELECT event_id, account_id, calendar_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr FROM event WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%'))) AND (:status = '' OR status = :status) ORDER BY start_at")
     @RegisterBeanMapper(Event.class)
     List<Event> findEvents(@BindBean EventsParams eventsParams);
+
+    @SqlQuery("SELECT event_id, account_id, calendar_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr FROM event WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%'))) AND (:status = '' OR status = :status) AND calendar_id = :calendarId ORDER BY start_at")
+    @RegisterBeanMapper(Event.class)
+    List<Event> findAllCalendarEvents(@BindBean EventsParams eventsParams);
 
     // ******************** Calendar Access ********************
 
