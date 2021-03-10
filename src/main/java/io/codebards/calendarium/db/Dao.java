@@ -183,7 +183,7 @@ public interface Dao {
     @SqlUpdate("DELETE FROM calendar WHERE calendar_id = :calendarId")
     void deleteCalendar(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId);
 
-    // ******************** Events ********************
+    // ******************** Event ********************
 
     @SqlQuery("SELECT event_id,\n" +
             "       account_id,\n" +
@@ -295,5 +295,13 @@ public interface Dao {
             "AND a.account_id = :accountId")
     @RegisterBeanMapper(CalendarCollaborator.class)
     Optional<CalendarCollaborator> findCalendarCollaboratorByAccountId(@Bind("calendarId") long calendarId, @Bind("accountId") long accountId);
+
+    // ******************** Email Template ********************
+
+    @SqlQuery("SELECT email_template_id, name, title_fr, title_en, body_fr, body_en\n" +
+            "FROM email_template\n" +
+            "WHERE name = :name")
+    @RegisterBeanMapper(EmailTemplate.class)
+    Optional<EmailTemplate> findEmailTemplateByName(@Bind("name") String name);
 
 }

@@ -46,8 +46,9 @@ export default function ForgotPassword(props) {
         <h1>{props.translate("Forgot your password?")}</h1>
         <Message result={result} origin="forgotPassword" translate={props.translate} />
         <form onSubmit={handleSubmit} id="form-forgot-password" noValidate>
+          <label className="form-label">{props.translate("Enter your email address below and we’ll send you password reset instructions.")}</label>
           <Input
-            label={props.translate("Enter your email address below and we’ll send you password reset instructions.")}
+            label={props.translate("Email")}
             type="email"
             id="input-email"
             required={true}

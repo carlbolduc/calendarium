@@ -8,18 +8,18 @@ Ce courriel a été envoyé sur demande à [account.email]
 
 Questions? Écrivez-nous à grove@codebards.io
 
-© 2021 Code Bards
+© [current_year] Code Bards
 1010-1180 rue Louis-Adolphe-Robitaille, Québec, QC, G1S 0C7, Canada 
-Politique de confidentialité: https://calendarium.ca/privacy-policy
+Notre politique de confidentialité : https://calendarium.ca/privacy
 
 body_en:
 This email was sent by request to [account.email] 
 
 Questions? Email us at grove@codebards.io
 
-© 2021 Code Bards
+© [current_year] Code Bards
 1010-1180 rue Louis-Adolphe-Robitaille, Québec, QC, G1S 0C7, Canada 
-Privacy policy: https://calendarium.ca/privacy-policy
+Our privacy policy: https://calendarium.ca/privacy
 
 ---------------------
 
