@@ -279,6 +279,10 @@ public interface Dao {
     @RegisterBeanMapper(Event.class)
     List<Event> findAllCalendarEvents(@BindBean EventsParams eventsParams);
 
+    @SqlQuery("SELECT event_id, account_id, calendar_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr FROM event WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%'))) AND (:status = '' OR status = :status) AND calendar_id = :calendarId AND account_id = :accountId ORDER BY start_at")
+    @RegisterBeanMapper(Event.class)
+    List<Event> findAccountCalendarEvents(@Bind("accountId") long accountId, @BindBean EventsParams eventsParams);
+
     // ******************** Calendar Access ********************
 
     @SqlUpdate("INSERT INTO calendar_access (account_id, calendar_id, status) VALUES (:accountId, :calendarId, :status)")

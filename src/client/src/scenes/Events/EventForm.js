@@ -102,6 +102,7 @@ export default function EventForm(props) {
           }
         });
       } else {
+        event.eventId = props.eventId;
         props.updateEvent(event, result => {
           setRequesting(false);
           if (result.success) {
