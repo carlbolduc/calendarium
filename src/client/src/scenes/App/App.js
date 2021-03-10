@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import axios from "axios";
-import { useLoc } from "../../services/Loc";
-import { useAuth } from "../../services/Auth";
-import { useSubscription } from "../../services/Subscription";
-import { useCalendar } from "../../services/Calendar";
-import { useEvent } from "../../services/Event";
-import { useCollaborator } from "../../services/Collaborator";
+import { useLoc } from "../../services/LocHook";
+import { useAuth } from "../../services/AuthHook";
+import { useSubscription } from "../../services/SubscriptionHook";
+import { useCalendar } from "../../services/CalendarHook";
+import { useEvent } from "../../services/EventHook";
+import { useCollaborator } from "../../services/CollaboratorHook";
 import Header from "../../components/Header/Header";
 import SignUp from "../Auth/SignUp";
 import SignIn from "../Auth/SignIn";
@@ -156,6 +156,7 @@ export default function App() {
             </Route>
             <Route exact path="/:link">
               <Calendar
+                account={account}
                 authenticated={authenticated}
                 translate={translate}
                 language={language}
