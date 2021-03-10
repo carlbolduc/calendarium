@@ -91,15 +91,29 @@ export default function EventForm(props) {
         event.endAt = endDate.set({ hour: endTimeValues.hour, minute: endTimeValues.minute, second: 0, millisecond: 0 }).toSeconds();
       }
 
-      props.createEvent(event, result => {
-        setRequesting(false);
-        if (result.success) {
-          props.getCalendarEvents();
-          props.hideForm();
-        } else {
-          props.setResult(result);
-        }
-      })
+      if (props.event === null) {
+        props.createEvent(event, result => {
+          setRequesting(false);
+          if (result.success) {
+            props.getCalendarEvents();
+            props.hideForm();
+          } else {
+            props.setResult(result);
+          }
+        });
+      } else {
+        props.updateEvent(event, result => {
+          setRequesting(false);
+          if (result.success) {
+            props.getCalendarEvents();
+            props.hideForm();
+          } else {
+            props.setResult(result);
+          }
+        });
+      }
+
+
     }
   }, [requesting]);
 

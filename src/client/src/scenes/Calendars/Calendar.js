@@ -193,6 +193,7 @@ export default function Calendar(props) {
       translate={props.translate}
       cancel={() => setShowEventForm(false)}
       createEvent={props.createEvent}
+      updateEvent={props.updateEvent}
       hideForm={() => setShowEventForm(false)}
       setResult={setEventFormResult}
       calendar={props.calendar}
