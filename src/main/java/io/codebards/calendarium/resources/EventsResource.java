@@ -118,7 +118,13 @@ public class EventsResource {
 
         try {
             EventsParams eventsParams = mapper.readValue(decodedQuery, EventsParams.class);
-            events = dao.findEvents(eventsParams);
+            if (eventsParams.getCalendarId() == null) {
+                // Search for all events
+                events = dao.findEvents(eventsParams);
+            } else {
+                // Search for calendar events
+                events = dao.findAllCalendarEvents(eventsParams);
+            }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

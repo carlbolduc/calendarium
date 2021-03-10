@@ -32,6 +32,28 @@ export default function EventForm(props) {
   const [requesting, setRequesting] = useState(false);
 
   useEffect(() => {
+    if (props.event !== null) {
+      setNameEn(props.event.nameEn);
+      setNameFr(props.event.nameFr);
+      setDescriptionEn(props.event.descriptionEn);
+      setDescriptionFr(props.event.descriptionFr);
+      setHyperlinkEn(props.event.hyperlinkEn);
+      setHyperlinkFr(props.event.hyperlinkFr);
+      if (props.event.allDay) {
+        setAllDay(true);
+      } else {
+        const startAt = DateTime.fromSeconds(props.event.startAt);
+        setStartDate(DateTime.fromFormat(`${startAt.year}-${startAt.month}-${startAt.day}`, "yyyy-M-d"));
+        // TODO: set the time correctly
+        setStartTime(startAt.toLocaleString(DateTime.TIME_SIMPLE));
+        const endAt = DateTime.fromSeconds(props.event.endAt);
+        setEndDate(DateTime.fromFormat(`${endAt.year}-${endAt.month}-${endAt.day}`, "yyyy-M-d"));
+        setEndTime(endAt.toLocaleString(DateTime.TIME_SIMPLE));
+      }
+    }
+  }, [props.event])
+
+  useEffect(() => {
     if (requesting) {
       function getTimeValues(time) {
         let hour;
@@ -70,10 +92,12 @@ export default function EventForm(props) {
       }
 
       props.createEvent(event, result => {
-        props.setResult(result);
         setRequesting(false);
         if (result.success) {
+          props.getCalendarEvents();
           props.hideForm();
+        } else {
+          props.setResult(result);
         }
       })
     }
@@ -271,9 +295,9 @@ export default function EventForm(props) {
   ) : null;
 
   const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
-  const title = props.new ? `${props.translate("New event in")} ${calendarName}` : `${props.translate("Edit event in")} ${calendarName}`;
+  const title = props.event === null ? `${props.translate("New event in")} ${calendarName}` : `${props.translate("Edit event in")} ${calendarName}`;
 
-  const submitButton = props.new ? props.translate("Create this event") : props.translate("Save changes");
+  const submitButton = props.event === null ? props.translate("Create this event") : props.translate("Save changes");
 
   return (
     <>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Redirect } from "react-router-dom";
 import { DateTime } from "luxon";
-import { decideWhatToDisplay, encodeObject } from "../../services/Helpers";
+import {calendarAccessStatus, decideWhatToDisplay, encodeObject, eventStatus} from "../../services/Helpers";
 import CalendarForm from "./CalendarForm";
 import Button from "../../components/Form/Button";
 import EventForm from "../Events/EventForm";
@@ -16,6 +16,7 @@ export default function Calendar(props) {
   const [currentDay, setCurrentDay] = useState(DateTime.now());
   const [showCalendarForm, setShowCalendarForm] = useState(false);
   const [calendarFormResult, setCalendarFormResult] = useState(null);
+  const [event, setEvent] = useState(null);
   const [showEventForm, setShowEventForm] = useState(false);
   const [eventFormResult, setEventFormResult] = useState(null);
   const [showManageCollaborators, setShowManageCollaborators] = useState(false);
@@ -27,14 +28,31 @@ export default function Calendar(props) {
 
   useEffect(() => {
     if (props.calendar !== null) {
-      // Build query param with currentDay
-      const q = encodeObject({ startAt: currentDay.toSeconds()});
-      props.getCalendarEvents(props.calendar.calendarId, q, result => {
-        // We do nothing with the result.
-        // TODO: should we display the error if there is one (there should never be one)
-      });
+      getCalendarEvents();
     }
   }, [props.calendar, currentDay])
+
+  useEffect(() => {
+    if (event !== null) {
+      setShowEventForm(true);
+    } else {
+      setShowEventForm(false);
+    }
+  }, [event]);
+
+  useEffect(() => {
+    if (!showEventForm) {
+      setEvent(null);
+    }
+  }, [showEventForm])
+
+  function getCalendarEvents() {
+    const q = encodeObject({ startAt: currentDay.toSeconds()});
+    props.getCalendarEvents(props.calendar.calendarId, q, result => {
+      // We do nothing with the result.
+      // TODO: should we display the error if there is one (there should never be one)
+    });
+  }
 
   function copyIframe(iframe) {
     const el = document.getElementById("iframe-copied");
@@ -170,7 +188,7 @@ export default function Calendar(props) {
 
   const eventForm = (
     <EventForm
-      new={true}
+      event={event}
       language={props.language}
       translate={props.translate}
       cancel={() => setShowEventForm(false)}
@@ -178,6 +196,7 @@ export default function Calendar(props) {
       hideForm={() => setShowEventForm(false)}
       setResult={setEventFormResult}
       calendar={props.calendar}
+      getCalendarEvents={getCalendarEvents}
     />
   );
 
@@ -190,8 +209,48 @@ export default function Calendar(props) {
     </div>
   );
 
+  function submitForApproval(event) {
+    event.status = eventStatus.PENDING_APPROVAL.value;
+    props.updateEvent(event, () => {
+      getCalendarEvents();
+    });
+  }
+
+  function approveEvent(event) {
+    event.status = eventStatus.PUBLISHED.value;
+    props.updateEvent(event, () => {
+      getCalendarEvents();
+    });
+  }
+
+  function deleteEvent(event) {
+    props.deleteEvent(event.eventId, () => {
+      getCalendarEvents();
+    });
+  }
+
+  function eventActions(event) {
+    let editEvent = null;
+    let submitForApprovalButton = null;
+    let approveButton = null;
+    if (props.calendar !== null && props.calendar.access === calendarAccessStatus.OWNER) {
+      editEvent = <button type="button" className="btn btn-info btn-sm me-1" onClick={() => setEvent(event)}>Edit</button>;
+      // TODO: can the owner publish a draft from another user?
+      if ([eventStatus.DRAFT.value, eventStatus.PENDING_APPROVAL.value].indexOf(event.status) !== -1) {
+        approveButton = <button type="button" className="btn btn-success btn-sm me-1" onClick={() => approveEvent(event)}>Approve</button>;
+      }
+    } else if (props.calendar !== null && props.calendar.access === calendarAccessStatus.ACTIVE) {
+      editEvent = <button type="button" className="btn btn-info btn-sm me-1" onClick={() => setEvent(event)}>Edit</button>;
+      if (event.status === eventStatus.DRAFT.value) {
+        submitForApprovalButton = <button type="button" className="btn btn-info btn-sm me-1" onClick={() => submitForApproval(event)}>Submit</button>;
+      }
+    }
+    const deleteButton = <button type="button" className="btn btn-danger btn-sm" onClick={() => deleteEvent(event)}>Delete</button>;
+    return <div>{editEvent}{submitForApprovalButton}{approveButton}{deleteButton}</div>;
+  }
+
   const calendarEvents = props.calendarEvents.map(e => (
-    <Event key={e.eventId} event={e} />
+    <Event key={e.eventId} event={e} eventActions={eventActions(e)} />
   ));
 
   function renderMain() {

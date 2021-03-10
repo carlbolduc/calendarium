@@ -26,7 +26,7 @@ export default function EventsSearch(props) {
 
   function searchEvents() {
     // Build query param with currentDay
-    const q = encodeObject({ search: search, status: status });
+    const q = encodeObject({ search: search, status: status, calendarId: props.calendar.calendarId });
     props.searchEvents(q, () => {
       setRequesting(false);
       setCanSearch(false);
