@@ -160,15 +160,18 @@ export default function Calendar(props) {
 
   const manageEvents = (
     <EventsSearch
+      account={props.account}
       calendar={props.calendar}
       events={props.events}
+      editEvent={setEvent}
       updateEvent={props.updateEvent}
       deleteEvent={props.deleteEvent}
       searchEvents={props.searchEvents}
       translate={props.translate}
       actionButtonsZone={
         <div className="mb-4">
-          <Button label={props.translate("Back to calendar")} id="button-cancel" onClick={() => setShowManageEvents(false)} outline={true} />
+          <Button label={props.translate("Back to calendar")} id="button-cancel"
+                  onClick={() => setShowManageEvents(false)} outline={true}/>
         </div>
       }
     />
@@ -231,17 +234,17 @@ export default function Calendar(props) {
   }
 
   function eventActions(event) {
-    let editEvent = null;
+    const editEvent = props.account.accountId === event.accountId ? (
+      <button type="button" className="btn btn-info btn-sm me-1" onClick={() => setEvent(event)}>Edit</button>
+    ) : null;
     let submitForApprovalButton = null;
     let approveButton = null;
     if (props.calendar !== null && props.calendar.access === calendarAccessStatus.OWNER) {
-      editEvent = <button type="button" className="btn btn-info btn-sm me-1" onClick={() => setEvent(event)}>Edit</button>;
       // TODO: can the owner publish a draft from another user?
       if ([eventStatus.DRAFT.value, eventStatus.PENDING_APPROVAL.value].indexOf(event.status) !== -1) {
         approveButton = <button type="button" className="btn btn-success btn-sm me-1" onClick={() => approveEvent(event)}>Approve</button>;
       }
     } else if (props.calendar !== null && props.calendar.access === calendarAccessStatus.ACTIVE) {
-      editEvent = <button type="button" className="btn btn-info btn-sm me-1" onClick={() => setEvent(event)}>Edit</button>;
       if (event.status === eventStatus.DRAFT.value) {
         submitForApprovalButton = <button type="button" className="btn btn-info btn-sm me-1" onClick={() => submitForApproval(event)}>Submit</button>;
       }

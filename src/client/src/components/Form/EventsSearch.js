@@ -62,6 +62,9 @@ export default function EventsSearch(props) {
   }
 
   function eventActions(event) {
+    const editEvent = props.account.accountId === event.accountId ? (
+        <button type="button" className="btn btn-info btn-sm me-1" onClick={() => props.editEvent(event)}>Edit</button>
+    ) : null;
     let submitForApprovalButton = null;
     let approveButton = null;
     if (props.calendar !== null && props.calendar.access === calendarAccessStatus.OWNER) {
@@ -75,7 +78,7 @@ export default function EventsSearch(props) {
       }
     }
     const deleteButton = <button type="button" className="btn btn-danger btn-sm" onClick={() => deleteEvent(event)}>Delete</button>;
-    return <div>{submitForApprovalButton}{approveButton}{deleteButton}</div>;
+    return <div>{editEvent}{submitForApprovalButton}{approveButton}{deleteButton}</div>;
   }
 
   const events = props.events.map(e => (

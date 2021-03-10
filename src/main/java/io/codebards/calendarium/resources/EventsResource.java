@@ -112,6 +112,7 @@ public class EventsResource {
     @Path("/search")
     public List<Event> searchEvents(@Auth Account auth, @QueryParam("q") String q) {
         List<Event> events = new ArrayList<>();
+
         String decodedQuery = new String(Base64.getDecoder().decode(q), StandardCharsets.UTF_8);
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -122,8 +123,16 @@ public class EventsResource {
                 // Search for all events
                 events = dao.findEvents(eventsParams);
             } else {
-                // Search for calendar events
-                events = dao.findAllCalendarEvents(eventsParams);
+                List<CalendarAccess> calendarAccesses = dao.findCalendarAccesses(auth.getAccountId());
+                Optional<CalendarAccess> oCalendarAccess = calendarAccesses.stream().filter(ca -> ca.getCalendarId() == eventsParams.getCalendarId()).findAny();
+                if (oCalendarAccess.isPresent()) {
+                    // Search for calendar events
+                    if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.OWNER.getStatus())) {
+                        events = dao.findAllCalendarEvents(eventsParams);
+                    } else {
+                        events = dao.findAccountCalendarEvents(auth.getAccountId(), eventsParams);
+                    }
+                }
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
