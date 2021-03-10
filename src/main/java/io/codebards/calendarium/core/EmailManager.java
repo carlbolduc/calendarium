@@ -50,7 +50,7 @@ public class EmailManager {
 
         // Replace template placeholders
         emailBody = replacePlaceholder(emailBody, "\\[account.name\\]", oAccount.get().getName());
-        emailBody = replacePlaceholder(emailBody, "\\[reset_password_link\\]", baseUrl + "/password-resets/" + passwordResetDigest);
+        emailBody = replacePlaceholder(emailBody, "\\[reset_password_link\\]", baseUrl + "/password-reset?id=" + passwordResetDigest);
 
         // Add footer to email body
         emailBody = emailBody + "\n\n\n" + emailFooter;

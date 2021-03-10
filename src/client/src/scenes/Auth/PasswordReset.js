@@ -1,14 +1,17 @@
-import React, {useState, useEffect} from "react";
-import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import {Redirect} from "react-router-dom";
 import Input from "../../components/Form/Input";
 import Button from "../../components/Form/Button";
 import Message from "../../components/Form/Message";
-import {passwordValid} from "../../services/Helpers";
+import { passwordValid } from "../../services/Helpers";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 
 export default function PasswordReset(props) {
-  let { id } = useParams();
+  function useQuery() {
+      return new URLSearchParams(useLocation().search);
+    }
+  const query = useQuery();
   const [newPassword, setNewPassword] = useState("");
   const [invalidNewPassword, setInvalidNewPassword] = useState(false);
   const [requesting, setRequesting] = useState(false);
@@ -19,7 +22,7 @@ export default function PasswordReset(props) {
     if (requesting) {
       // TODO: add password validations
       props.resetPassword({
-        id: id,
+        id: query.get("id"),
         password: newPassword
       }, result => {
         if (result.success === true) {

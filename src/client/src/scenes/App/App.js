@@ -96,7 +96,7 @@ export default function App() {
                 translate={translate}
               />
             </Route>
-            <Route exact path="/password-resets/:id">
+            <Route exact path="/password-reset">
               <PasswordReset
                 resetPassword={resetPassword}
                 authenticated={authenticated}
