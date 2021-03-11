@@ -27,9 +27,7 @@ export default function Calendar(props) {
   }, []);
 
   useEffect(() => {
-    if (props.calendar !== null) {
-      getCalendarEvents();
-    }
+    getCalendarEvents();
   }, [props.calendar, currentDay])
 
   useEffect(() => {
@@ -60,23 +58,6 @@ export default function Calendar(props) {
     // navigator.clipboard.writeText(iframe).then(()=> toast.show());
   }
 
-
-  function renderName() {
-    let result = null;
-    if (props.calendar !== null) {
-      result = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
-    }
-    return result;
-  }
-
-  function renderDescription() {
-    let result = null;
-    if (props.calendar !== null) {
-      result = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.descriptionEn, props.calendar.descriptionFr);
-    }
-    return result;
-  }
-
   // TODO: validate that this is the owner of the calendar to show the calendar settings button
   const calendarSettingsButton = props.subscribed ? (
     <Button
@@ -90,9 +71,9 @@ export default function Calendar(props) {
     />
   ) : null;
 
-  const iframe = (`<iframe src="https://codebards.io/embed/${props.calendar !== null ? props.calendar.calendarId : null}"></iframe>`);
+  const iframe = (`<iframe src="https://codebards.io/embed/${props.calendar.calendarId}"></iframe>`);
  
-  const calendarEmbed = props.calendar !== null && props.calendar.publicCalendar ? (
+  const calendarEmbed = props.calendar.publicCalendar ? (
     <article className="mb-4">
       <h5>Embed code</h5>
       <div className="input-group mb-3">
@@ -235,14 +216,14 @@ export default function Calendar(props) {
   }
 
   function eventActions(event) {
-    const editEvent = (props.account.accountId === event.accountId) || (props.calendar !== null && props.calendar.access === calendarAccessStatus.OWNER) ? (
+    const editEvent = (props.account.accountId === event.accountId) || (props.calendar.access === calendarAccessStatus.OWNER) ? (
       <button type="button" className="btn btn-info btn-sm me-1" onClick={() => setEvent(event)}>Edit</button>
     ) : null;
     let submitForApprovalButton = null;
     let approveButton = null;
     let publishButton = null;
     let deleteButton = null;
-    if (props.calendar !== null && props.calendar.access === calendarAccessStatus.OWNER) {
+    if (props.calendar.access === calendarAccessStatus.OWNER) {
       if (event.status === eventStatus.PENDING_APPROVAL.value) {
         approveButton = <button type="button" className="btn btn-success btn-sm me-1" onClick={() => approveEvent(event)}>Approve and publish</button>;
       } else if (props.account.accountId === event.accountId && event.status === eventStatus.DRAFT.value) {
@@ -250,7 +231,7 @@ export default function Calendar(props) {
       }
       deleteButton = <button type="button" className="btn btn-danger btn-sm" onClick={() => deleteEvent(event)}>Delete</button>;
     } else if (props.account.accountId === event.accountId) {
-      if (props.calendar !== null && props.calendar.access === calendarAccessStatus.ACTIVE) {
+      if (props.calendar.access === calendarAccessStatus.ACTIVE) {
         if (event.status === eventStatus.DRAFT.value) {
           if (props.calendar.eventApprovalRequired) {
             submitForApprovalButton = <button type="button" className="btn btn-info btn-sm me-1" onClick={() => submitForApproval(event)}>Submit for approval</button>;
@@ -312,15 +293,15 @@ export default function Calendar(props) {
       // We're viewing the calendar details and events
       result = (
         <>
-          <h1>{renderName()}</h1>
+          <h1>{decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr)}</h1>
           <Message result={eventFormResult} origin="EventForm" translate={props.translate} />
           {actionButtonsZone}
-          <div>{renderDescription()}</div>
+          <div>{decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.descriptionEn, props.calendar.descriptionFr)}</div>
           <div className="mt-4 px-0">
             <div className="row justify-content-center">
               <div className="col-12 col-md-auto">
                 <Month
-                  startWeekOn={props.calendar === null ? "Monday" : props.calendar.startWeekOn}
+                  startWeekOn={props.calendar.startWeekOn}
                   currentDay={currentDay}
                   selectDay={date => setCurrentDay(date)}
                   setCurrentDay={setCurrentDay}

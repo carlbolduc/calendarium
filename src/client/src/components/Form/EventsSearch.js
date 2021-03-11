@@ -3,7 +3,7 @@ import Event from "../../scenes/Events/Event";
 import Select from "./Select";
 import Input from "./Input";
 import Button from "./Button";
-import {calendarAccessStatus, decideWhatToDisplay, encodeObject, eventStatus} from "../../services/Helpers";
+import {decideWhatToDisplay, encodeObject, eventStatus} from "../../services/Helpers";
 import Message from "./Message";
 
 export default function EventsSearch(props) {
@@ -38,35 +38,12 @@ export default function EventsSearch(props) {
     setRequesting(true);
   }
 
-  function submitForApproval(event) {
-    event.status = eventStatus.PENDING_APPROVAL.value;
-    props.updateEvent(event, result => {
-      setResult(result);
-      searchEvents();
-    });
-  }
-
-  function approveEvent(event) {
-    event.status = eventStatus.PUBLISHED.value;
-    props.updateEvent(event, result => {
-      setResult(result);
-      searchEvents();
-    });
-  }
-
-  function deleteEvent(event) {
-    props.deleteEvent(event.eventId, result => {
-      setResult(result);
-      searchEvents();
-    });
-  }
-
   const events = props.events.map(e => (
     <Event key={e.eventId} event={e} showStatus={true} eventActions={props.eventActions(e)}/>
   ));
 
-  const calendarName = props.calendar !== null ? decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr) : "";
-  const title = props.calendar !== null ? `${props.translate("Events of")} ${calendarName}` : props.translate("Events");
+  const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
+  const title = `${props.translate("Events of")} ${calendarName}`;
   const searchButton = canSearch ? (
     <Button label="Search" type="submit" working={requesting} id="button-search" />
   ) : (

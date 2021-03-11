@@ -4,7 +4,23 @@ import {errorCallback} from "./Helpers";
 
 export function useCalendar(token, subscribed) {
   const [calendars, setCalendars] = useState([]);
-  const [calendar, setCalendar] = useState(null);
+  const [calendar, setCalendar] = useState({
+    calendarId: null,
+    enableEn: false,
+    enableFr: false,
+    nameEn: "",
+    nameFr: "",
+    descriptionEn: "",
+    descriptionFr: "",
+    linkEn: "",
+    linkFr: "",
+    startWeekOn: "Sunday",
+    primaryColor: "#ffffff",
+    secondaryColor: "#ffffff",
+    publicCalendar: false,
+    eventApprovalRequired: true,
+    access: ""
+  });
   const [calendarEvents, setCalendarEvents] = useState([]);
 
   useEffect(() => {
