@@ -1,32 +1,43 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import {Redirect} from "react-router-dom";
+import { useParams, Redirect } from "react-router-dom";
 import Input from "../../components/Form/Input";
 import Button from "../../components/Form/Button";
 import Message from "../../components/Form/Message";
-import { passwordValid } from "../../services/Helpers";
+import { passwordValid, decideWhatToDisplay } from "../../services/Helpers";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 
 export default function AcceptInvitation(props) {
+  let { link } = useParams();
   function useQuery() {
-      return new URLSearchParams(useLocation().search);
-    }
+    return new URLSearchParams(useLocation().search);
+  }
   const query = useQuery();
-  const [newPassword, setNewPassword] = useState("");
-  const [invalidNewPassword, setInvalidNewPassword] = useState(false);
+  const [password, setPassword] = useState("");
+  const [invalidPassword, setInvalidPassword] = useState(false);
   const [requesting, setRequesting] = useState(false);
   const [accepted, setAccepted] = useState(false);
   const [result, setResult] = useState("");
+
+  useEffect(() => {
+    props.getCalendar({ link: link, calendarAccessId: query.get("id") });
+  }, []);
+
+  useEffect(() => {
+    if (props.calendar.calendarId !== null) {
+      props.getCalendarInvitation({ calendarId: props.calendar.calendarId, calendarAccessId: query.get("id") });
+    }
+  }, [props.calendar]);
 
   useEffect(() => {
     if (requesting) {
       // TODO: add password validations
       props.resetPassword({
         id: query.get("id"),
-        password: newPassword
+        password: password
       }, result => {
         if (result.success === true) {
-          setReseted(true);
+          setAccepted(true);
         }
         setResult(result);
         setRequesting(false);
@@ -36,45 +47,47 @@ export default function AcceptInvitation(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (passwordValid(newPassword)) {
+    if (passwordValid(password)) {
       setRequesting(true);
     } else {
-      setInvalidNewPassword(true);
+      setInvalidPassword(true);
     }
 
   }
 
-  const main = reseted ? (
+  const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
+  const title = `${props.translate("Invitation to collaborate to")} ${calendarName}`;
+
+  const main = (
     <>
-      <h1>{props.translate("Reset your password")}</h1>
-      <Message result={result} origin="passwordReset" translate={props.translate} />
-    </>
-  ) : (
-    <>
-      <h1>{props.translate("Reset your password")}</h1>
-      <Message result={result} origin="passwordReset" translate={props.translate} />
-      <form onSubmit={handleSubmit} id="form-password-reset" noValidate>
+      <h1>{title}</h1>
+      <Message result={result} origin="acceptInvitation" translate={props.translate} />
+      {/* TODO: think about this copy, then add props.translate */}
+      <h5>Welcome to Calendarium.</h5>
+      <p>You have been invited to collaborate to a calendar. The email associated with your account is the email at which you receive your invitation. If you want to change it, you will be able to do so later in your account profile.</p>
+      <p>To complete your account creation, enter a password for your account, then accept the invitation to get started.</p>
+      {/* TODO: hide the password form if account already has a password, and adjust welcome message */}
+      <form onSubmit={handleSubmit} id="form-accept-invitation" noValidate>
         <Input
-          label={props.translate("New password")}
+          label={props.translate("Password")}
           type="password"
-          id="input-new-password"
+          id="input-password"
           required={true}
-          placeholder={props.translate("Enter a new password.")}
-          value={newPassword}
+          placeholder={props.translate("Enter a password.")}
+          value={password}
           handleChange={(e) => {
-            setNewPassword(e.target.value);
-            setInvalidNewPassword(false);
+            setPassword(e.target.value);
+            setInvalidPassword(false);
           }}
-          invalidFeedback={invalidNewPassword ? <InvalidFeedback feedback="Your password must be at least 8 characters long."/> : null}
+          invalidFeedback={invalidPassword ? <InvalidFeedback feedback="Your password must be at least 8 characters long." /> : null}
         />
-        <Button label={props.translate("Reset my password")} type="submit" working={requesting} id="button-rest-password"/>
+        <Button label={props.translate("Accept the invitation")} type="submit" working={requesting} id="button-accept-invitation" />
       </form>
     </>
   );
 
-  // TODO: authenticated comes in as "true" before reseted becomes true, find another way to stay on the page after the reset
-  return props.authenticated && !reseted ? (
-    <Redirect to={{pathname: "/"}}/>
+  return accepted ? (
+    <Redirect to={{ pathname: `/${link}` }} />
   ) : (
     <div className="p-5">
       {main}

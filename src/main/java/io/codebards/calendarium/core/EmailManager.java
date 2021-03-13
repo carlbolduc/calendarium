@@ -7,6 +7,7 @@ import java.util.Optional;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.model.*;
 
+import io.codebards.calendarium.api.Calendar;
 import io.codebards.calendarium.api.EmailTemplate;
 import io.codebards.calendarium.api.Language;
 import io.codebards.calendarium.db.Dao;
@@ -51,6 +52,66 @@ public class EmailManager {
         // Replace template placeholders
         emailBody = replacePlaceholder(emailBody, "\\[account.name\\]", oAccount.get().getName());
         emailBody = replacePlaceholder(emailBody, "\\[reset_password_link\\]", baseUrl + "/password-reset?id=" + passwordResetDigest);
+
+        // Add footer to email body
+        emailBody = emailBody + "\n\n\n" + emailFooter;
+
+        SendEmailRequest emailRequest = new SendEmailRequest()
+                .withDestination(new Destination().withToAddresses(oAccount.get().getEmail()))
+                .withMessage(
+                        new Message()
+                                .withBody(new Body().withText(new Content().withCharset("UTF-8").withData(emailBody)))
+                                .withSubject(new Content().withCharset("UTF-8").withData(emailTitle)))
+                .withSource(from);
+        emailClient.sendEmail(emailRequest);
+    }
+
+    // If the account is still in the sandbox, to address must be verified.
+    public void sendCalendarCollaboratorInvitationEmail(Optional<Account> oAccount, long calendarAccessId, long calendarId, long calendarOwnerAccountId) {
+        // Get calendar
+        Optional<Calendar> oCalendar = dao.findCalendar(calendarId);
+
+        // Get calendar owner account
+        Optional<Account> oCalendarOwner = dao.findAccountById(calendarOwnerAccountId);
+
+        // Get invitee account language
+        long languageId = oAccount.get().getLanguageId();
+        Language language = allLanguages.stream().filter(l -> l.getLanguageId() == languageId).findAny().orElse(null);
+        String locale = language.getLocaleId();
+
+        // Get footer template
+        String emailFooter = getFooter(oAccount, locale);
+
+        // Get email title and body template
+        Optional<EmailTemplate> emailTemplate = getEmailTemplate("Calendar collaborator invitation");
+        String emailTitle = "";
+        String emailBody = "";
+        if (locale.equals("enCa")) {
+            emailTitle = emailTemplate.get().getTitleEn();
+            emailBody = emailTemplate.get().getBodyEn();
+        } else {
+            emailTitle = emailTemplate.get().getTitleFr();
+            emailBody = emailTemplate.get().getBodyFr();
+        }
+
+        // Generate invitation link
+        String calendarLink = "";
+        if (locale.equals("enCa")) {
+            calendarLink = oCalendar.get().getLinkEn();
+        } else {
+            calendarLink = oCalendar.get().getLinkFr();
+        }
+        String invitationLink = baseUrl + "/" + calendarLink + "/accept-invitation?id=" + calendarAccessId;
+
+        // Replace template placeholders
+        emailTitle = replacePlaceholder(emailTitle, "\\[calendar_owner.name\\]", oCalendarOwner.get().getName());
+        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameEn\\]", oCalendar.get().getNameEn());
+        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameFr\\]", oCalendar.get().getNameFr());
+        emailBody = replacePlaceholder(emailBody, "\\[account.name\\]", oAccount.get().getName());
+        emailBody = replacePlaceholder(emailBody, "\\[calendar_owner.name\\]", oCalendarOwner.get().getName());
+        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameEn\\]", oCalendar.get().getNameEn());
+        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameFr\\]", oCalendar.get().getNameFr());
+        emailBody = replacePlaceholder(emailBody, "\\[accept_calendar_invitation_link\\]", invitationLink);
 
         // Add footer to email body
         emailBody = emailBody + "\n\n\n" + emailFooter;
