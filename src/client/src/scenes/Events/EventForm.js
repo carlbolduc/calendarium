@@ -5,7 +5,7 @@ import Input from "../../components/Form/Input";
 import Checkbox from "../../components/Form/Checkbox";
 import { DateTime } from "luxon";
 import Month from "../Calendars/Month";
-import { textValid, timesList, decideWhatToDisplay } from "../../services/Helpers";
+import {textValid, timesList, decideWhatToDisplay, getLocale} from "../../services/Helpers";
 import Textarea from "../../components/Form/Textarea";
 
 export default function EventForm(props) {
@@ -48,15 +48,19 @@ export default function EventForm(props) {
         const startAt = DateTime.fromSeconds(props.event.startAt);
         setStartDate(DateTime.fromFormat(`${startAt.year}-${startAt.month}-${startAt.day}`, "yyyy-M-d"));
         // TODO: set the time correctly
-        setPreviousStartTime(startAt.toLocaleString(DateTime.TIME_SIMPLE));
-        setStartTime(startAt.toLocaleString(DateTime.TIME_SIMPLE));
+        setPreviousStartTime(startAt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE));
+        setStartTime(startAt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE));
         const endAt = DateTime.fromSeconds(props.event.endAt);
         setEndDate(DateTime.fromFormat(`${endAt.year}-${endAt.month}-${endAt.day}`, "yyyy-M-d"));
-        setPreviousEndTime(endAt.toLocaleString(DateTime.TIME_SIMPLE));
-        setEndTime(endAt.toLocaleString(DateTime.TIME_SIMPLE));
+        setPreviousEndTime(endAt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE));
+        setEndTime(endAt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE));
       }
     }
-  }, [props.event])
+  }, [props.event]);
+
+  useEffect(() => {
+    // TODO: change date format
+  }, [props.language]);
 
   useEffect(() => {
     if (requesting) {
