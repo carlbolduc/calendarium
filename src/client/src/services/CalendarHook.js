@@ -1,6 +1,6 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import {errorCallback} from "./Helpers";
+import { errorCallback } from "./Helpers";
 
 export function useCalendar(token, subscribed) {
   const [calendars, setCalendars] = useState([]);
@@ -48,22 +48,23 @@ export function useCalendar(token, subscribed) {
     }
   }
 
-  function getCalendar(link, cb) {
-    if (token !== null) {
-      axios({
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        url: `${process.env.REACT_APP_API}/calendars/${link}`,
-      }).then(res => {
-        setCalendar(res.data);
-      }).catch(err => {
-        console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendars' from 'useCalendar' hook");
-        console.log(err.response);
-      });
-    }
+  function getCalendar(data, cb) {
+    const url = data.calendarAccessId === undefined
+      ? `${process.env.REACT_APP_API}/calendars/${data.link}`
+      : `${process.env.REACT_APP_API}/calendars/anonymous/${data.link}?id=${data.calendarAccessId}`;
+    const header = token !== null
+      ? { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
+      : { "Content-Type": "application/json" }
+    axios({
+      method: "GET",
+      headers: header,
+      url: url,
+    }).then(res => {
+      setCalendar(res.data);
+    }).catch(err => {
+      console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendars' from 'useCalendar' hook");
+      console.log(err.response);
+    });
   }
 
   function createCalendar(data, cb) {
@@ -162,5 +163,5 @@ export function useCalendar(token, subscribed) {
     }
   }
 
-  return {calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents};
+  return { calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents };
 }

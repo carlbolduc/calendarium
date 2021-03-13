@@ -28,7 +28,7 @@ export default function Calendar(props) {
   const [showManageEvents, setShowManageEvents] = useState(false);
 
   useEffect(() => {
-    props.getCalendar(link);
+    props.getCalendar({ link: link });
   }, []);
 
   useEffect(() => {

@@ -8,22 +8,24 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.codebards.calendarium.api.CalendarAccess;
 import io.codebards.calendarium.api.CalendarAccessStatus;
 import io.codebards.calendarium.api.CalendarCollaborator;
+import io.codebards.calendarium.core.EmailManager;
 import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
 
-@RolesAllowed({ "USER" })
 @Path("/calendar_collaborators")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class CalendarCollaboratorsResource {
-
     private final Dao dao;
+    private final EmailManager emailManager;
 
-    public CalendarCollaboratorsResource(Dao dao) {
+    public CalendarCollaboratorsResource(Dao dao, EmailManager emailManager) {
         this.dao = dao;
+        this.emailManager = emailManager;
     }
 
     @GET
@@ -58,9 +60,21 @@ public class CalendarCollaboratorsResource {
             // if it is already there, return an error
             response = Response.status(Response.Status.CONFLICT).build();
         } else {
-            // else create a calendar access for this collaborator, with status invited
-            dao.insertCalendarAccess(accountId, calendarId, CalendarAccessStatus.INVITED.getStatus());
+            // else create a calendar access for this collaborator, with status invited, and send the invitation email
+            long calendarAccessId = dao.insertCalendarAccess(accountId, calendarId, CalendarAccessStatus.INVITED.getStatus());
+            emailManager.sendCalendarCollaboratorInvitationEmail(oAccount, calendarAccessId, calendarId, auth.getAccountId());
             response = Response.status(Response.Status.CREATED).build();
+        }
+        return response;
+    }
+
+    @GET
+    @Path("/{calendarId}/{calendarAccessId}")
+    public Response getCalendarInvitation(@PathParam("calendarId") long calendarId, @PathParam("calendarAccessId") long calendarAccessId) {
+        Response response = Response.status(Response.Status.NOT_FOUND).build();
+        Optional<CalendarAccess> oCalendarAccess = dao.findCalendarAccessByCalendarAccessIdAndCalendarId(calendarAccessId, calendarId);
+        if (oCalendarAccess.isPresent()) {
+            response = Response.ok(oCalendarAccess.get()).build();
         }
         return response;
     }

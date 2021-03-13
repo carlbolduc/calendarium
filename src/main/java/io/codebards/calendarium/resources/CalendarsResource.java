@@ -20,7 +20,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
-@RolesAllowed({ "USER" })
 @Path("/calendars")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -38,10 +37,22 @@ public class CalendarsResource {
     }
 
     @GET
+    @RolesAllowed({ "USER" })
     @Path("/{link}")
     public Response getCalendar(@Auth Account auth, @PathParam("link") String link) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
         Optional<Calendar> oCalendar = dao.findCalendarByLink(auth.getAccountId(), link);
+        if (oCalendar.isPresent()) {
+            response = Response.ok(oCalendar.get()).build();
+        }
+        return response;
+    }
+
+    @GET
+    @Path("/anonymous/{link}")
+    public Response getAnonymousCalendar(@PathParam("link") String link, @QueryParam("id") long id) {
+        Response response = Response.status(Response.Status.NOT_FOUND).build();
+        Optional<Calendar> oCalendar = dao.findAnonymousCalendar(link, id);
         if (oCalendar.isPresent()) {
             response = Response.ok(oCalendar.get()).build();
         }

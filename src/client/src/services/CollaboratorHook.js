@@ -1,9 +1,15 @@
 import { useState } from "react";
 import axios from "axios";
-import {errorCallback} from "./Helpers";
+import { errorCallback } from "./Helpers";
 
 export function useCollaborator(token) {
   const [collaborators, setCollaborators] = useState([]);
+  const [calendarAccess, setCalendarAccess] = useState({
+    calendarAccessId: null,
+    accountId: null,
+    calendarId: null,
+    status: ""
+  })
 
   function getCalendarCollaborators(calendarId) {
     if (token !== null) {
@@ -17,7 +23,7 @@ export function useCollaborator(token) {
       }).then(res => {
         setCollaborators(res.data);
       }).catch(err => {
-        console.log("THIS SHOULD NEVER HAPPEN, error in 'getEvents' from 'useEvent' hook");
+        console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendarCollaborators' from 'useCollaborator' hook");
         console.log(err.response);
       });
     }
@@ -47,5 +53,27 @@ export function useCollaborator(token) {
     }
   }
 
-  return { collaborators, getCalendarCollaborators, inviteCollaborator };
+  function getCalendarInvitation(data) {
+    const url = `${process.env.REACT_APP_API}/calendar_collaborators/${data.calendarId}/${data.calendarAccessId}`;
+    const header = token !== null
+      ? { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
+      : { "Content-Type": "application/json" }
+    axios({
+      method: "GET",
+      headers: header,
+      url: url,
+    }).then(res => {
+      setCalendarAccess(res.data);
+    }).catch(err => {
+      // TODO: manage error cases
+      console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendarCollaborators' from 'useCollaborator' hook");
+      console.log(err.response);
+    });
+  }
+
+  function acceptCalendarInvitation() {
+    // TODO: write the code to acccept a calendar invitation
+  }
+
+  return { collaborators, calendarAccess, getCalendarCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation };
 }

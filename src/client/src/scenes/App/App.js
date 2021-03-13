@@ -20,6 +20,7 @@ import PasswordReset from "../Auth/PasswordReset";
 import Calendar from "../Calendars/Calendar";
 import Terms from "../Static/Terms";
 import Privacy from "../Static/Privacy";
+import AcceptInvitation from "../Calendars/AcceptInvitation";
 
 export default function App() {
   const [languages, setLanguages] = useState([]);
@@ -39,7 +40,7 @@ export default function App() {
   const { customerCreated, subscribed, createCustomer, createSubscription, updateSubscription } = useSubscription(token, account, getAccount);
   const { calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents } = useCalendar(token, subscribed);
   const { events, createEvent, updateEvent, deleteEvent, searchEvents } = useEvent(token);
-  const { collaborators, getCalendarCollaborators, inviteCollaborator } = useCollaborator(token);
+  const { collaborators, calendarAccess, getCalendarCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation } = useCollaborator(token);
 
   useEffect(() => {
     getLocData();
@@ -152,6 +153,19 @@ export default function App() {
                 authenticated={authenticated}
                 translate={translate}
                 language={language}
+              />
+            </Route>
+            <Route exact path="/:link/accept-invitation">
+              <AcceptInvitation
+                account={account}
+                authenticated={authenticated}
+                translate={translate}
+                language={language}
+                calendar={calendar}
+                getCalendar={getCalendar}
+                calendarAccess={calendarAccess}
+                getCalendarInvitation={getCalendarInvitation}
+                acceptCalendarInvitation={acceptCalendarInvitation}
               />
             </Route>
             <Route exact path="/:link">
