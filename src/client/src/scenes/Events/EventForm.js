@@ -226,6 +226,7 @@ export default function EventForm(props) {
         startTimeValues.hour > endTimeValues.hour ||
         startTimeValues.hour === endTimeValues.hour && startTimeValues.minute >= endTimeValues.minute
       ) {
+        // TODO: use locale from app instead of navigator locale, do this everywhere in this form
         setEndTime(dt.plus({"minute": 30}).toLocaleString(DateTime.TIME_SIMPLE));
       }
     } else {
