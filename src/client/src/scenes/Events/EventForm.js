@@ -6,6 +6,7 @@ import Checkbox from "../../components/Form/Checkbox";
 import { DateTime } from "luxon";
 import Month from "../Calendars/Month";
 import { textValid, timeList, decideWhatToDisplay } from "../../services/Helpers";
+import Textarea from "../../components/Form/Textarea";
 
 export default function EventForm(props) {
   const [nameEn, setNameEn] = useState("");
@@ -188,12 +189,11 @@ export default function EventForm(props) {
         }}
         invalidFeedback={invalidNameEn ? <InvalidFeedback feedback="You must enter a name." /> : null}
       />
-      {/*TODO: description fields should be text area*/}
-      <Input
+      <Textarea
         label="English description"
-        type="text"
-        id="input-description-en"
+        id="textarea-description-en"
         placeholder={"Describe your event in English."}
+        height={100}
         info={"Describe your event in English."}
         value={descriptionEn}
         handleChange={e => setDescriptionEn(e.target.value)}
@@ -225,12 +225,11 @@ export default function EventForm(props) {
         }}
         invalidFeedback={invalidNameFr ? <InvalidFeedback feedback="You must enter a name." /> : null}
       />
-      {/*TODO: description fields should be text area*/}
-      <Input
+      <Textarea
         label="French description"
-        type="text"
-        id="input-description-fr"
+        id="textarea-description-fr"
         placeholder={"Describe your event in French."}
+        height={100}
         info={"Describe your event in French."}
         value={descriptionFr}
         handleChange={e => setDescriptionFr(e.target.value)}
