@@ -331,6 +331,7 @@ export default function EventForm(props) {
             value={startDate !== null ? startDate.toLocaleString(DateTime.DATE_HUGE) : ""}
             readOnly={true}
             onClick={() => setShowStartDateSelector(!showStartDateSelector)}
+            onBlur={() => setShowStartDateSelector(!showStartDateSelector)}
             invalidFeedback={invalidStartDate ? <InvalidFeedback feedback="You must chose a start date." /> : null}
           />
           {startDateSelector}
@@ -345,6 +346,10 @@ export default function EventForm(props) {
               info="???"
               value={startTime}
               onClick={() => setShowStartTimeSelector(!showStartTimeSelector)}
+              onBlur={() => {
+                setShowStartTimeSelector(!showStartTimeSelector);
+                console.log("validate what was typed");
+              }}
               handleChange={(e) => {
                 setStartTime(e.target.value);
                 setInvalidStartTime(false);
@@ -364,6 +369,7 @@ export default function EventForm(props) {
             value={endDate !== null ? endDate.toLocaleString(DateTime.DATE_HUGE) : ""}
             readOnly={true}
             onClick={() => setShowEndDateSelector(!showEndDateSelector)}
+            onBlur={() => setShowEndDateSelector(!showEndDateSelector)}
             invalidFeedback={invalidEndDate ? <InvalidFeedback feedback="You must chose an end date." /> : null}
           />
           {endDateSelector}
@@ -378,6 +384,10 @@ export default function EventForm(props) {
               info="???"
               value={endTime}
               onClick={() => setShowEndTimeSelector(!showEndTimeSelector)}
+              onBlur={() => {
+                setShowEndTimeSelector(!showEndTimeSelector);
+                console.log("validate what was typed");
+              }}
               handleChange={(e) => {
                 setEndTime(e.target.value);
                 setInvalidEndTime(false);

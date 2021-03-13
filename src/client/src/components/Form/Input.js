@@ -47,7 +47,7 @@ export default function Input(props) {
           readOnly={props.readOnly ? props.readOnly : null}
           placeholder={props.placeholder}
           title={props.placeholder}
-          value={props.value}
+          value={props.value === null ? "" : props.value}
           onChange={props.handleChange}
         />
         {props.invalidFeedback}
@@ -68,9 +68,10 @@ export default function Input(props) {
                 autoComplete={props.autoComplete ? props.autoComplete : null}
                 readOnly={props.readOnly ? props.readOnly : null}
                 placeholder={props.placeholder ? props.placeholder : null}
-                value={props.value}
+                value={props.value === null ? "" : props.value}
                 onChange={props.handleChange}
                 onClick={props.onClick}
+                onBlur={props.onBlur}
               />
               <label
                 htmlFor={props.id}
