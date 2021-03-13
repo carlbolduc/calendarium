@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Redirect } from "react-router-dom";
 import { DateTime } from "luxon";
-import {calendarAccessStatus, decideWhatToDisplay, encodeObject, eventStatus} from "../../services/Helpers";
+import { decideWhatToDisplay, encodeObject, eventStatus } from "../../services/Helpers";
 import CalendarForm from "./CalendarForm";
 import Button from "../../components/Form/Button";
 import EventForm from "../Events/EventForm";
@@ -10,6 +10,11 @@ import Message from "../../components/Form/Message";
 import Collaborators from "../Collaborators/Collaborators";
 import Event from "../Events/Event";
 import EventsSearch from "../../components/Form/EventsSearch";
+import EditEventButton from "../Events/EditEventButton";
+import SubmitForApprovalEventButton from "../Events/SubmitForApprovalEventButton";
+import PublishEventButton from "../Events/PublishEventButton";
+import ApproveEventButton from "../Events/ApproveEventButton";
+import DeleteEventButton from "../Events/DeleteEventButton";
 
 export default function Calendar(props) {
   let { link } = useParams();
@@ -56,6 +61,26 @@ export default function Calendar(props) {
     const el = document.getElementById("iframe-copied");
     // const toast = new Toast(el, {});
     // navigator.clipboard.writeText(iframe).then(()=> toast.show());
+  }
+
+  function submitForApproval(event) {
+    event.status = eventStatus.PENDING_APPROVAL.value;
+    props.updateEvent(event, () => {
+      getCalendarEvents();
+    });
+  }
+
+  function approveEvent(event) {
+    event.status = eventStatus.PUBLISHED.value;
+    props.updateEvent(event, () => {
+      getCalendarEvents();
+    });
+  }
+
+  function deleteEvent(event) {
+    props.deleteEvent(event.eventId, () => {
+      getCalendarEvents();
+    });
   }
 
   // TODO: validate that this is the owner of the calendar to show the calendar settings button
@@ -139,6 +164,51 @@ export default function Calendar(props) {
     />
   );
 
+  function eventActions(event) {
+    return (
+      <div>
+        <EditEventButton
+          event={event}
+          account={props.account}
+          calendar={props.calendar}
+          edit={() => setEvent(event)}
+          translate={props.translate}
+        />
+        <SubmitForApprovalEventButton
+          event={event}
+          account={props.account}
+          calendar={props.calendar}
+          submit={() => submitForApproval(event)}
+          refresh={props.getCalendarEvents}
+          translate={props.translate}
+        />
+        <ApproveEventButton
+          event={event}
+          calendar={props.calendar}
+          approve={() => approveEvent(event)}
+          refresh={props.getCalendarEvents}
+          translate={props.translate}
+        />
+        <PublishEventButton
+          event={event}
+          account={props.account}
+          calendar={props.calendar}
+          publish={() => approveEvent(event)}
+          refresh={props.getCalendarEvents}
+          translate={props.translate}
+        />
+        <DeleteEventButton
+          event={event}
+          account={props.account}
+          calendar={props.calendar}
+          delete={() => deleteEvent(event)}
+          refresh={props.getCalendarEvents}
+          translate={props.translate}
+        />
+      </div>
+    )
+  }
+
   const manageEvents = (
     <EventsSearch
       account={props.account}
@@ -158,6 +228,10 @@ export default function Calendar(props) {
       eventActions={eventActions}
     />
   );
+
+  const calendarEvents = props.calendarEvents.map(e => (
+    <Event key={e.eventId} event={e} eventActions={eventActions(e)} />
+  ));
 
   const newEventButton = showEventForm ? null : (
     <Button
@@ -194,60 +268,6 @@ export default function Calendar(props) {
       {calendarSettingsButton}
     </div>
   );
-
-  function submitForApproval(event) {
-    event.status = eventStatus.PENDING_APPROVAL.value;
-    props.updateEvent(event, () => {
-      getCalendarEvents();
-    });
-  }
-
-  function approveEvent(event) {
-    event.status = eventStatus.PUBLISHED.value;
-    props.updateEvent(event, () => {
-      getCalendarEvents();
-    });
-  }
-
-  function deleteEvent(event) {
-    props.deleteEvent(event.eventId, () => {
-      getCalendarEvents();
-    });
-  }
-
-  function eventActions(event) {
-    const editEvent = (props.account.accountId === event.accountId) || (props.calendar.access === calendarAccessStatus.OWNER) ? (
-      <button type="button" className="btn btn-info btn-sm me-1" onClick={() => setEvent(event)}>Edit</button>
-    ) : null;
-    let submitForApprovalButton = null;
-    let approveButton = null;
-    let publishButton = null;
-    let deleteButton = null;
-    if (props.calendar.access === calendarAccessStatus.OWNER) {
-      if (event.status === eventStatus.PENDING_APPROVAL.value) {
-        approveButton = <button type="button" className="btn btn-success btn-sm me-1" onClick={() => approveEvent(event)}>Approve and publish</button>;
-      } else if (props.account.accountId === event.accountId && event.status === eventStatus.DRAFT.value) {
-        publishButton = <button type="button" className="btn btn-info btn-sm me-1" onClick={() => approveEvent(event)}>Publish</button>;
-      }
-      deleteButton = <button type="button" className="btn btn-danger btn-sm" onClick={() => deleteEvent(event)}>Delete</button>;
-    } else if (props.account.accountId === event.accountId) {
-      if (props.calendar.access === calendarAccessStatus.ACTIVE) {
-        if (event.status === eventStatus.DRAFT.value) {
-          if (props.calendar.eventApprovalRequired) {
-            submitForApprovalButton = <button type="button" className="btn btn-info btn-sm me-1" onClick={() => submitForApproval(event)}>Submit for approval</button>;
-          } else {
-            publishButton = <button type="button" className="btn btn-info btn-sm me-1" onClick={() => approveEvent(event)}>Publish</button>;
-          }
-        }
-        deleteButton = <button type="button" className="btn btn-danger btn-sm" onClick={() => deleteEvent(event)}>Delete</button>;
-      }
-    }
-    return <div>{editEvent}{submitForApprovalButton}{approveButton}{publishButton}{deleteButton}</div>;
-  }
-
-  const calendarEvents = props.calendarEvents.map(e => (
-    <Event key={e.eventId} event={e} eventActions={eventActions(e)} />
-  ));
 
   function renderMain() {
     let result;

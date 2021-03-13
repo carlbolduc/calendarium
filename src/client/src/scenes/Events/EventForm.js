@@ -5,7 +5,8 @@ import Input from "../../components/Form/Input";
 import Checkbox from "../../components/Form/Checkbox";
 import { DateTime } from "luxon";
 import Month from "../Calendars/Month";
-import { textValid, timeList, decideWhatToDisplay } from "../../services/Helpers";
+import { textValid, timesList, decideWhatToDisplay } from "../../services/Helpers";
+import Textarea from "../../components/Form/Textarea";
 
 export default function EventForm(props) {
   const [nameEn, setNameEn] = useState("");
@@ -19,12 +20,14 @@ export default function EventForm(props) {
   const [startDate, setStartDate] = useState(null);
   const [invalidStartDate, setInvalidStartDate] = useState(false);
   const [showStartDateSelector, setShowStartDateSelector] = useState(false);
+  const [previousStartTime, setPreviousStartTime] = useState("");
   const [startTime, setStartTime] = useState("");
   const [invalidStartTime, setInvalidStartTime] = useState(false);
   const [showStartTimeSelector, setShowStartTimeSelector] = useState(false);
   const [endDate, setEndDate] = useState(null);
   const [invalidEndDate, setInvalidEndDate] = useState(false);
   const [showEndDateSelector, setShowEndDateSelector] = useState(false);
+  const [previousEndTime, setPreviousEndTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [invalidEndTime, setInvalidEndTime] = useState(false);
   const [showEndTimeSelector, setShowEndTimeSelector] = useState(false);
@@ -45,29 +48,31 @@ export default function EventForm(props) {
         const startAt = DateTime.fromSeconds(props.event.startAt);
         setStartDate(DateTime.fromFormat(`${startAt.year}-${startAt.month}-${startAt.day}`, "yyyy-M-d"));
         // TODO: set the time correctly
+        setPreviousStartTime(startAt.toLocaleString(DateTime.TIME_SIMPLE));
         setStartTime(startAt.toLocaleString(DateTime.TIME_SIMPLE));
         const endAt = DateTime.fromSeconds(props.event.endAt);
         setEndDate(DateTime.fromFormat(`${endAt.year}-${endAt.month}-${endAt.day}`, "yyyy-M-d"));
+        setPreviousEndTime(endAt.toLocaleString(DateTime.TIME_SIMPLE));
         setEndTime(endAt.toLocaleString(DateTime.TIME_SIMPLE));
       }
     }
   }, [props.event])
 
+  function getTimeValues(time) {
+    let hour;
+    let minute;
+    if (time.indexOf("p.m.") !== -1) {
+      hour = Number(time.split(":")[0]) + 12;
+      minute = Number(time.replace("p.m.", "").split(":")[1]);
+    } else {
+      hour = Number(time.split(":")[0]);
+      minute = Number(time.replace("a.m.", "").split(":")[1]);
+    }
+    return { hour: hour, minute: minute };
+  }
+
   useEffect(() => {
     if (requesting) {
-      function getTimeValues(time) {
-        let hour;
-        let minute;
-        if (time.indexOf("pm") !== -1) {
-          hour = Number(time.split(":")[0]) + 12;
-          minute = Number(time.replace("pm", "").split(":")[1]);
-        } else {
-          hour = Number(time.split(":")[0]);
-          minute = Number(time.replace("am", "").split(":")[1]);
-        }
-        return { hour: hour, minute: minute };
-      }
-
       const event = {
         calendarId: props.calendar.calendarId,
         nameEn: nameEn !== "" ? nameEn : null,
@@ -102,7 +107,7 @@ export default function EventForm(props) {
           }
         });
       } else {
-        event.eventId = props.eventId;
+        event["eventId"] = props.event.eventId;
         props.updateEvent(event, result => {
           setRequesting(false);
           if (result.success) {
@@ -173,6 +178,61 @@ export default function EventForm(props) {
     return valid;
   }
 
+  function processTime(time) {
+    const result = { valid: false, hour: 0, minute: 0 };
+    if (time.indexOf(":") !== -1) {
+      const timeParts = time.split(":");
+      const re = /AM|am|PM|pm/g;
+      if (timeParts[1].match(re)) {
+        // English time format
+        let hour = Number(timeParts[0]);
+        if (!isNaN(hour) && hour < 13) {
+          const minutes = Number(timeParts[1].substring(0,2));
+          if (!isNaN(minutes) && minutes < 60) {
+            const meridiem = timeParts[1].match(re)[0];
+            if (meridiem.toLowerCase() === "pm") {
+              hour += 12;
+            }
+            result.valid = true;
+            result.hour = hour;
+            result.minute = minutes;
+          }
+        }
+      } else {
+        const hour = Number(timeParts[0]);
+        const minutes = Number(timeParts[1].substring(0,2));
+        if (!isNaN(hour) && !isNaN(minutes) && hour < 24 && minutes < 60) {
+          result.valid = true;
+          result.hour = hour;
+          result.minute = minutes;
+        }
+      }
+    }
+    return result;
+  }
+
+  function processStartTime() {
+    const result = processTime(startTime);
+    if (result.valid) {
+      const dt = DateTime.fromObject({ hour: result.hour, minute: result.minute, second: 0, millisecond: 0 });
+      setPreviousStartTime(dt.toLocaleString(DateTime.TIME_SIMPLE))
+      setStartTime(dt.toLocaleString(DateTime.TIME_SIMPLE));
+    } else {
+      setStartTime(previousStartTime);
+    }
+  }
+
+  function processEndTime() {
+    const result = processTime(endTime);
+    if (result.valid) {
+      const dt = DateTime.fromObject({ hour: result.hour, minute: result.minute, second: 0, millisecond: 0 });
+      setPreviousEndTime(dt.toLocaleString(DateTime.TIME_SIMPLE));
+      setEndTime(dt.toLocaleString(DateTime.TIME_SIMPLE));
+    } else {
+      setEndTime(previousEndTime);
+    }
+  }
+
   const englishFields = props.calendar.enableEn ? (
     <div className="col-12 col-md-6">
       <Input
@@ -188,12 +248,11 @@ export default function EventForm(props) {
         }}
         invalidFeedback={invalidNameEn ? <InvalidFeedback feedback="You must enter a name." /> : null}
       />
-      {/*TODO: description fields should be text area*/}
-      <Input
+      <Textarea
         label="English description"
-        type="text"
-        id="input-description-en"
+        id="textarea-description-en"
         placeholder={"Describe your event in English."}
+        height={100}
         info={"Describe your event in English."}
         value={descriptionEn}
         handleChange={e => setDescriptionEn(e.target.value)}
@@ -225,12 +284,11 @@ export default function EventForm(props) {
         }}
         invalidFeedback={invalidNameFr ? <InvalidFeedback feedback="You must enter a name." /> : null}
       />
-      {/*TODO: description fields should be text area*/}
-      <Input
+      <Textarea
         label="French description"
-        type="text"
-        id="input-description-fr"
+        id="textarea-description-fr"
         placeholder={"Describe your event in French."}
+        height={100}
         info={"Describe your event in French."}
         value={descriptionFr}
         handleChange={e => setDescriptionFr(e.target.value)}
@@ -264,13 +322,17 @@ export default function EventForm(props) {
     </div>
   ) : null;
 
-  // TODO: pass correct locale
-  const startTimes = timeList("en-ca").map((t, index) => (
-    <div key={index} onClick={() => {
-      setStartTime(t);
-      setInvalidStartTime(false);
-      setShowStartTimeSelector(false);
-    }}>{t}</div>
+  const startTimes = timesList(navigator.language).map((t, index) => (
+    <div
+      key={index}
+      onMouseDown={() => {
+        setStartTime(t);
+        setInvalidStartTime(false);
+      }}
+      onMouseUp={() => setShowStartTimeSelector(false)}
+    >
+      {t}
+    </div>
   ));
 
   const startTimeSelector = showStartTimeSelector ? (
@@ -294,18 +356,28 @@ export default function EventForm(props) {
     </div>
   ) : null;
 
-  // TODO: pass correct locale
-  const endTimes = timeList("en-ca").map((t, index) => (
-    <div key={index} onClick={() => {
-      setEndTime(t);
-      setInvalidEndTime(false);
-      setShowEndTimeSelector(false);
-    }}>{t}</div>
-  ));
+  function endTimes() {
+    // We want a subset of the times, starting after the selected start time
+    const startTimeValues = getTimeValues(startTime);
+    const initialValue = startTimeValues.minute > 29 ? startTimeValues.hour * 2 + 2 : startTimeValues.hour * 2 + 1;
+    const availableTimesList = timesList(navigator.language).slice(initialValue);
+    return availableTimesList.map((t, index) => (
+      <div
+        key={index}
+        onMouseDown={() => {
+          setEndTime(t);
+          setInvalidEndTime(false);
+        }}
+        onMouseUp={() => setShowEndTimeSelector(false)}
+      >
+        {t}
+      </div>
+    ));
+  }
 
   const endTimeSelector = showEndTimeSelector ? (
     <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white", height: 200, overflow: "scroll" }}>
-      {endTimes}
+      {endTimes()}
     </div>
   ) : null;
 
@@ -331,7 +403,8 @@ export default function EventForm(props) {
             info="???"
             value={startDate !== null ? startDate.toLocaleString(DateTime.DATE_HUGE) : ""}
             readOnly={true}
-            onClick={() => setShowStartDateSelector(!showStartDateSelector)}
+            onClick={() => setShowStartDateSelector(true)}
+            onBlur={() => setShowStartDateSelector(!showStartDateSelector)}
             invalidFeedback={invalidStartDate ? <InvalidFeedback feedback="You must chose a start date." /> : null}
           />
           {startDateSelector}
@@ -346,6 +419,10 @@ export default function EventForm(props) {
               info="???"
               value={startTime}
               onClick={() => setShowStartTimeSelector(!showStartTimeSelector)}
+              onBlur={() => {
+                setShowStartTimeSelector(false);
+                processStartTime();
+              }}
               handleChange={(e) => {
                 setStartTime(e.target.value);
                 setInvalidStartTime(false);
@@ -365,6 +442,7 @@ export default function EventForm(props) {
             value={endDate !== null ? endDate.toLocaleString(DateTime.DATE_HUGE) : ""}
             readOnly={true}
             onClick={() => setShowEndDateSelector(!showEndDateSelector)}
+            onBlur={() => setShowEndDateSelector(!showEndDateSelector)}
             invalidFeedback={invalidEndDate ? <InvalidFeedback feedback="You must chose an end date." /> : null}
           />
           {endDateSelector}
@@ -379,6 +457,10 @@ export default function EventForm(props) {
               info="???"
               value={endTime}
               onClick={() => setShowEndTimeSelector(!showEndTimeSelector)}
+              onBlur={() => {
+                setShowEndTimeSelector(false);
+                processEndTime();
+              }}
               handleChange={(e) => {
                 setEndTime(e.target.value);
                 setInvalidEndTime(false);
