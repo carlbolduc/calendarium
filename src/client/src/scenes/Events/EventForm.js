@@ -220,6 +220,7 @@ export default function EventForm(props) {
       setPreviousStartTime(dt.toLocaleString(DateTime.TIME_SIMPLE))
       setStartTime(dt.toLocaleString(DateTime.TIME_SIMPLE));
       // Make sure end time is not before start time
+      // TODO: only do this if end date is the same as start date
       const endTimeValues = getTimeValues(endTime);
       if (
         startTimeValues.hour > endTimeValues.hour ||
