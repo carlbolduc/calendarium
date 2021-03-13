@@ -20,7 +20,7 @@ export default function Account(props) {
           : null}
         <li>{props.authenticated 
           ? <a className="dropdown-item" href="#" onClick={props.signOut}>{props.translate("Sign out")}</a> 
-          : <Link className="dropdown-item" to="sign-in">{props.translate("Sign in")}</Link>}</li>
+          : <Link className="dropdown-item" to="/sign-in">{props.translate("Sign in")}</Link>}</li>
       </ul>
     </li>
   );
