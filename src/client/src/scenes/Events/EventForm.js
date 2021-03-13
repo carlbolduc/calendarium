@@ -58,19 +58,6 @@ export default function EventForm(props) {
     }
   }, [props.event])
 
-  function getTimeValues(time) {
-    let hour;
-    let minute;
-    if (time.indexOf("p.m.") !== -1) {
-      hour = Number(time.split(":")[0]) + 12;
-      minute = Number(time.replace("p.m.", "").split(":")[1]);
-    } else {
-      hour = Number(time.split(":")[0]);
-      minute = Number(time.replace("a.m.", "").split(":")[1]);
-    }
-    return { hour: hour, minute: minute };
-  }
-
   useEffect(() => {
     if (requesting) {
       const event = {
@@ -156,6 +143,19 @@ export default function EventForm(props) {
     }
   }
 
+  function getTimeValues(time) {
+    let hour;
+    let minute;
+    if (time.indexOf("p.m.") !== -1) {
+      hour = Number(time.split(":")[0]) + 12;
+      minute = Number(time.replace("p.m.", "").split(":")[1]);
+    } else {
+      hour = Number(time.split(":")[0]);
+      minute = Number(time.replace("a.m.", "").split(":")[1]);
+    }
+    return { hour: hour, minute: minute };
+  }
+
   function validateDates() {
     let valid = false;
     if (allDay) {
@@ -182,7 +182,7 @@ export default function EventForm(props) {
     const result = { valid: false, hour: 0, minute: 0 };
     if (time.indexOf(":") !== -1) {
       const timeParts = time.split(":");
-      const re = /AM|am|PM|pm/g;
+      const re = /AM|A\.M\.|am|a\.m\.|PM|P\.M\.|pm|p\.m\./g;
       if (timeParts[1].match(re)) {
         // English time format
         let hour = Number(timeParts[0]);
@@ -190,7 +190,9 @@ export default function EventForm(props) {
           const minutes = Number(timeParts[1].substring(0,2));
           if (!isNaN(minutes) && minutes < 60) {
             const meridiem = timeParts[1].match(re)[0];
-            if (meridiem.toLowerCase() === "pm") {
+            if (hour === 12 && meridiem.toLowerCase() === "am") {
+              hour = 0;
+            } else if (hour !== 12 && meridiem.toLowerCase() === "pm") {
               hour += 12;
             }
             result.valid = true;
@@ -212,11 +214,19 @@ export default function EventForm(props) {
   }
 
   function processStartTime() {
-    const result = processTime(startTime);
-    if (result.valid) {
-      const dt = DateTime.fromObject({ hour: result.hour, minute: result.minute, second: 0, millisecond: 0 });
+    const startTimeValues = processTime(startTime);
+    if (startTimeValues.valid) {
+      const dt = DateTime.fromObject({ hour: startTimeValues.hour, minute: startTimeValues.minute, second: 0, millisecond: 0 });
       setPreviousStartTime(dt.toLocaleString(DateTime.TIME_SIMPLE))
       setStartTime(dt.toLocaleString(DateTime.TIME_SIMPLE));
+      // Make sure end time is not before start time
+      const endTimeValues = getTimeValues(endTime);
+      if (
+        startTimeValues.hour > endTimeValues.hour ||
+        startTimeValues.hour === endTimeValues.hour && startTimeValues.minute >= endTimeValues.minute
+      ) {
+        setEndTime(dt.plus({"minute": 30}).toLocaleString(DateTime.TIME_SIMPLE));
+      }
     } else {
       setStartTime(previousStartTime);
     }
