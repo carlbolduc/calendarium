@@ -5,7 +5,7 @@ import Input from "../../components/Form/Input";
 import Checkbox from "../../components/Form/Checkbox";
 import { DateTime } from "luxon";
 import Month from "../Calendars/Month";
-import { textValid, timeList, decideWhatToDisplay } from "../../services/Helpers";
+import { textValid, timesList, decideWhatToDisplay } from "../../services/Helpers";
 import Textarea from "../../components/Form/Textarea";
 
 export default function EventForm(props) {
@@ -58,21 +58,21 @@ export default function EventForm(props) {
     }
   }, [props.event])
 
+  function getTimeValues(time) {
+    let hour;
+    let minute;
+    if (time.indexOf("p.m.") !== -1) {
+      hour = Number(time.split(":")[0]) + 12;
+      minute = Number(time.replace("p.m.", "").split(":")[1]);
+    } else {
+      hour = Number(time.split(":")[0]);
+      minute = Number(time.replace("a.m.", "").split(":")[1]);
+    }
+    return { hour: hour, minute: minute };
+  }
+
   useEffect(() => {
     if (requesting) {
-      function getTimeValues(time) {
-        let hour;
-        let minute;
-        if (time.indexOf("pm") !== -1) {
-          hour = Number(time.split(":")[0]) + 12;
-          minute = Number(time.replace("pm", "").split(":")[1]);
-        } else {
-          hour = Number(time.split(":")[0]);
-          minute = Number(time.replace("am", "").split(":")[1]);
-        }
-        return { hour: hour, minute: minute };
-      }
-
       const event = {
         calendarId: props.calendar.calendarId,
         nameEn: nameEn !== "" ? nameEn : null,
@@ -107,7 +107,7 @@ export default function EventForm(props) {
           }
         });
       } else {
-        event.eventId = props.eventId;
+        event["eventId"] = props.event.eventId;
         props.updateEvent(event, result => {
           setRequesting(false);
           if (result.success) {
@@ -322,8 +322,7 @@ export default function EventForm(props) {
     </div>
   ) : null;
 
-  // TODO: pass correct locale
-  const startTimes = timeList("en-ca").map((t, index) => (
+  const startTimes = timesList(navigator.language).map((t, index) => (
     <div
       key={index}
       onMouseDown={() => {
@@ -357,23 +356,28 @@ export default function EventForm(props) {
     </div>
   ) : null;
 
-  // TODO: pass correct locale
-  const endTimes = timeList("en-ca").map((t, index) => (
-    <div
-      key={index}
-      onMouseDown={() => {
-        setEndTime(t);
-        setInvalidEndTime(false);
-      }}
-      onMouseUp={() => setShowEndTimeSelector(false)}
-    >
-      {t}
-    </div>
-  ));
+  function endTimes() {
+    // We want a subset of the times, starting after the selected start time
+    const startTimeValues = getTimeValues(startTime);
+    const initialValue = startTimeValues.minute > 29 ? startTimeValues.hour * 2 + 2 : startTimeValues.hour * 2 + 1;
+    const availableTimesList = timesList(navigator.language).slice(initialValue);
+    return availableTimesList.map((t, index) => (
+      <div
+        key={index}
+        onMouseDown={() => {
+          setEndTime(t);
+          setInvalidEndTime(false);
+        }}
+        onMouseUp={() => setShowEndTimeSelector(false)}
+      >
+        {t}
+      </div>
+    ));
+  }
 
   const endTimeSelector = showEndTimeSelector ? (
     <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white", height: 200, overflow: "scroll" }}>
-      {endTimes}
+      {endTimes()}
     </div>
   ) : null;
 
