@@ -1,5 +1,5 @@
 import {DateTime} from "luxon";
-import {eventStatus} from "../../services/Helpers";
+import {eventStatus, getLocale} from "../../services/Helpers";
 
 export default function Event(props) {
 
@@ -17,13 +17,14 @@ export default function Event(props) {
     return result;
   }
   function duration() {
+    // TODO: output dates
     let result = null;
     if (props.event.allDay) {
       result = "All day";
     } else if (props.event.startAt !== null) {
       const startAt = DateTime.fromSeconds(props.event.startAt);
       const endAt = DateTime.fromSeconds(props.event.endAt);
-      result = `${startAt.toLocaleString(DateTime.TIME_SIMPLE)} - ${endAt.toLocaleString(DateTime.TIME_SIMPLE)}`;
+      result = `${startAt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE)} - ${endAt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE)}`;
     }
     return result;
   }

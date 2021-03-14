@@ -1,11 +1,14 @@
 import {useState, useEffect} from "react";
-import {dayNumber, getLocale, nextWeekDay, uuidv4} from "../../services/Helpers";
 import {DateTime, Info} from "luxon";
+import useComponentBlur from "../../services/ComponentBlurHook";
+import {dayNumber, getLocale, nextWeekDay, uuidv4} from "../../services/Helpers";
 import Week from "./Week";
 import ArrowLeft from "../../components/Icons/ArrowLeft";
 import ArrowRight from "../../components/Icons/ArrowRight";
 
+
 export default function Month(props) {
+  const {ref} = useComponentBlur(props.hide !== undefined ? props.hide : null);
   const [date, setDate] = useState(DateTime.now());
   const [weeks, setWeeks] = useState([]);
 
@@ -82,7 +85,7 @@ export default function Month(props) {
       </tr>
       <tr className="text-muted">
         <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[dayOfWeek - 1]}</th>
-        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[dayOfWeek %7]}</th>
+        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[dayOfWeek % 7]}</th>
         <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 1) % 7]}</th>
         <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 2) % 7]}</th>
         <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 3) % 7]}</th>
@@ -94,11 +97,11 @@ export default function Month(props) {
   }
 
   const month = weeks.map(week =>(
-    <Week key={uuidv4()} days={week} currentDay={props.currentDay} selectDay={selectDay} date={date} />
+    <Week key={uuidv4()} days={week} currentDay={props.currentDay} selectDay={selectDay} hide={props.hide} date={date} />
   ));
 
   return (
-    <table className="table table-bordered text-center">
+    <table className="table table-bordered text-center" ref={ref}>
       {renderHeader()}
       <tbody>
       {month}
