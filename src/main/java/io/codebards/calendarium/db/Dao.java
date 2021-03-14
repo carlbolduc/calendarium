@@ -308,10 +308,11 @@ public interface Dao {
     @RegisterBeanMapper(CalendarAccess.class)
     List<CalendarAccess> findCalendarAccesses(@Bind("accountId") long accountId);
 
-    @SqlQuery("SELECT name, email, status, ca.created_at\n" +
+    @SqlQuery("SELECT ca.calendar_access_id, a.name, a.email, ca.status, ca.created_at\n" +
             "FROM account a\n" +
             "INNER JOIN calendar_access ca on a.account_id = ca.account_id\n" +
-            "WHERE calendar_id = :calendarId")
+            "WHERE calendar_id = :calendarId\n" +
+            "ORDER BY ca.created_at")
     @RegisterBeanMapper(CalendarCollaborator.class)
     List<CalendarCollaborator> findCalendarCollaboratorsByCalendar(@Bind("calendarId") long calendarId);
 
@@ -337,6 +338,10 @@ public interface Dao {
     @SqlQuery("SELECT account_id FROM calendar_access WHERE calendar_id = :calendarId AND status = 'owner'")
     @RegisterBeanMapper(CalendarAccess.class)
     long findCalendarOwnerAccountId(@Bind("calendarId") long calendarId);
+
+    @SqlUpdate("UPDATE calendar_access SET status = :status WHERE calendar_access_id = :calendarAccessId and calendar_id = :calendarId")
+    @RegisterBeanMapper(CalendarAccess.class)
+    void updateCalendarAccessStatus(@Bind("calendarAccessId") long calendarAccessId, @Bind("calendarId") long calendarId, @Bind("status") String status);
 
     // ******************** Email Template ********************
 

@@ -89,6 +89,22 @@ export default function Collaborators(props) {
     </div>
   )
 
+  function collaboratorActions(collaborator) {
+    let result = "";
+    switch (collaborator.status) {
+      case "active":
+        result = <Button label={props.translate("Deactivate")} id="button-deactivate" onClick={() => props.deactivateCalendarAccess(props.calendar.calendarId, collaborator.calendarAccessId)} outline={true} />;
+        break;
+      case "inactive":
+        result = <Button label={props.translate("Activate")} id="button-activate" onClick={() => props.activateCalendarAccess(props.calendar.calendarId, collaborator.calendarAccessId)} outline={true} />;
+        break;      
+      default:
+        result = <div className="my-4">&nbsp;</div>;
+        break;
+    }
+    return result;
+  }
+
   function collaborators() {
     // TODO: format nicely and add edit options
     return (
@@ -101,16 +117,18 @@ export default function Collaborators(props) {
               <th scope="col">Email</th>
               <th scope="col">Status</th>
               <th scope="col">Collaborating since</th>
+              <th scope="col">Manage</th>
             </tr>
           </thead>
           <tbody>
-            {props.collaborators.map((m, index) => (
+            {props.collaborators.map((c, index) => (
               <tr key={index}>
                 <th scope="row">{index + 1}</th>
-                <td>{m.name}</td>
-                <td>{m.email}</td>
-                <td>{m.status}</td>
-                <td>{DateTime.fromSeconds(m.createdAt).setLocale(getLocale(props.language)).toLocaleString(DateTime.DATETIME_FULL)}</td>
+                <td>{c.name}</td>
+                <td>{c.email}</td>
+                <td>{c.status}</td>
+                <td>{DateTime.fromSeconds(c.createdAt).setLocale(getLocale(props.language)).toLocaleString(DateTime.DATETIME_FULL)}</td>
+                <td>{collaboratorActions(c)}</td>
               </tr>
             ))}
           </tbody>
