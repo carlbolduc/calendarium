@@ -94,7 +94,7 @@ export default function Month(props) {
   }
 
   const month = weeks.map(week =>(
-    <Week key={uuidv4()} days={week} currentDay={props.currentDay} selectDay={selectDay} date={date} />
+    <Week key={uuidv4()} days={week} currentDay={props.currentDay} selectDay={selectDay} hide={props.hide} date={date} />
   ));
 
   return (
