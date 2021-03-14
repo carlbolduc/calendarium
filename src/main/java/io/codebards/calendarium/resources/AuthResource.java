@@ -119,6 +119,7 @@ public class AuthResource {
         return response;
     }
 
+    // TODO: centralise this function (also used in CalendarCollaboratorsResource.java)
     private String createToken(long accountId) {
         String token = null;
         try {

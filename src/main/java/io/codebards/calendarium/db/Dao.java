@@ -330,6 +330,14 @@ public interface Dao {
     @RegisterBeanMapper(CalendarAccess.class)
     Optional<CalendarAccess> findCalendarAccessByCalendarAccessIdAndCalendarId(@Bind("calendarAccessId") long calendarAccessId, @Bind("calendarId") long calendarId);
 
+    @SqlUpdate("UPDATE calendar_access SET status = 'active' WHERE calendar_access_id = :calendarAccessId and calendar_id = :calendarId")
+    @RegisterBeanMapper(CalendarAccess.class)
+    void acceptCalendarInvitation(@Bind("calendarAccessId") long calendarAccessId, @Bind("calendarId") long calendarId);
+
+    @SqlQuery("SELECT account_id FROM calendar_access WHERE calendar_id = :calendarId AND status = 'owner'")
+    @RegisterBeanMapper(CalendarAccess.class)
+    long findCalendarOwnerAccountId(@Bind("calendarId") long calendarId);
+
     // ******************** Email Template ********************
 
     @SqlQuery("SELECT email_template_id, name, title_fr, title_en, body_fr, body_en\n" +

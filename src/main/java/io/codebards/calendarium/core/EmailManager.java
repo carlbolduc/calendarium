@@ -66,8 +66,7 @@ public class EmailManager {
         emailClient.sendEmail(emailRequest);
     }
 
-    // If the account is still in the sandbox, to address must be verified.
-    public void sendCalendarCollaboratorInvitationEmail(Optional<Account> oAccount, long calendarAccessId, long calendarId, long calendarOwnerAccountId) {
+    public void sendCalendarCollaboratorInvitation(Optional<Account> oAccount, long calendarAccessId, long calendarId, long calendarOwnerAccountId) {
         // Get calendar
         Optional<Calendar> oCalendar = dao.findCalendar(calendarId);
 
@@ -118,6 +117,55 @@ public class EmailManager {
 
         SendEmailRequest emailRequest = new SendEmailRequest()
                 .withDestination(new Destination().withToAddresses(oAccount.get().getEmail()))
+                .withMessage(
+                        new Message()
+                                .withBody(new Body().withText(new Content().withCharset("UTF-8").withData(emailBody)))
+                                .withSubject(new Content().withCharset("UTF-8").withData(emailTitle)))
+                .withSource(from);
+        emailClient.sendEmail(emailRequest);
+    }
+
+    public void sendCalendarInvitationAccepted(Optional<Account> oInvitee, long calendarId, long calendarOwnerAccountId) {
+        // Get calendar
+        Optional<Calendar> oCalendar = dao.findCalendar(calendarId);
+
+        // Get calendar owner account
+        Optional<Account> oCalendarOwner = dao.findAccountById(calendarOwnerAccountId);
+
+        // Get owner account language
+        long languageId = oCalendarOwner.get().getLanguageId();
+        Language language = allLanguages.stream().filter(l -> l.getLanguageId() == languageId).findAny().orElse(null);
+        String locale = language.getLocaleId();
+
+        // Get footer template
+        String emailFooter = getFooter(oCalendarOwner, locale);
+
+        // Get email title and body template
+        Optional<EmailTemplate> emailTemplate = getEmailTemplate("Calendar invitation accepted");
+        String emailTitle = "";
+        String emailBody = "";
+        if (locale.equals("enCa")) {
+            emailTitle = emailTemplate.get().getTitleEn();
+            emailBody = emailTemplate.get().getBodyEn();
+        } else {
+            emailTitle = emailTemplate.get().getTitleFr();
+            emailBody = emailTemplate.get().getBodyFr();
+        }
+
+        // Replace template placeholders
+        emailTitle = replacePlaceholder(emailTitle, "\\[account.name\\]", oInvitee.get().getName());
+        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameEn\\]", oCalendar.get().getNameEn());
+        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameFr\\]", oCalendar.get().getNameFr());
+        emailBody = replacePlaceholder(emailBody, "\\[calendar_owner.name\\]", oCalendarOwner.get().getName());
+        emailBody = replacePlaceholder(emailBody, "\\[account.name\\]", oInvitee.get().getName());
+        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameEn\\]", oCalendar.get().getNameEn());
+        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameFr\\]", oCalendar.get().getNameFr());
+
+        // Add footer to email body
+        emailBody = emailBody + "\n\n\n" + emailFooter;
+
+        SendEmailRequest emailRequest = new SendEmailRequest()
+                .withDestination(new Destination().withToAddresses(oCalendarOwner.get().getEmail()))
                 .withMessage(
                         new Message()
                                 .withBody(new Body().withText(new Content().withCharset("UTF-8").withData(emailBody)))
