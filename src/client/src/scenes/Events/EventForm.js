@@ -36,30 +36,49 @@ export default function EventForm(props) {
 
   useEffect(() => {
     if (props.event !== null) {
+      const locale = getLocale(props.language);
+      const fm = DateTime.TIME_SIMPLE;
       setNameEn(props.event.nameEn);
       setNameFr(props.event.nameFr);
-      setDescriptionEn(props.event.descriptionEn);
-      setDescriptionFr(props.event.descriptionFr);
+      setDescriptionEn(props.event.descriptionEn !== null ? props.event.descriptionEn : "");
+      setDescriptionFr(props.event.descriptionFr !== null ? props.event.descriptionFr : "");
       setHyperlinkEn(props.event.hyperlinkEn);
       setHyperlinkFr(props.event.hyperlinkFr);
+      const startAt = DateTime.fromSeconds(props.event.startAt);
+      setStartDate(DateTime.fromFormat(`${startAt.year}-${startAt.month}-${startAt.day}`, "yyyy-M-d"));
+      const endAt = DateTime.fromSeconds(props.event.endAt);
+      setEndDate(DateTime.fromFormat(`${endAt.year}-${endAt.month}-${endAt.day}`, "yyyy-M-d"));
       if (props.event.allDay) {
         setAllDay(true);
       } else {
-        const startAt = DateTime.fromSeconds(props.event.startAt);
-        setStartDate(DateTime.fromFormat(`${startAt.year}-${startAt.month}-${startAt.day}`, "yyyy-M-d"));
-        // TODO: set the time correctly
-        setPreviousStartTime(startAt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE));
-        setStartTime(startAt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE));
-        const endAt = DateTime.fromSeconds(props.event.endAt);
-        setEndDate(DateTime.fromFormat(`${endAt.year}-${endAt.month}-${endAt.day}`, "yyyy-M-d"));
-        setPreviousEndTime(endAt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE));
-        setEndTime(endAt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE));
+        setPreviousStartTime(startAt.setLocale(locale).toLocaleString(fm));
+        setStartTime(startAt.setLocale(locale).toLocaleString(fm));
+        setPreviousEndTime(endAt.setLocale(locale).toLocaleString(fm));
+        setEndTime(endAt.setLocale(locale).toLocaleString(fm));
       }
     }
   }, [props.event]);
 
   useEffect(() => {
-    // TODO: change date format
+    const locale = getLocale(props.language);
+    const dt = DateTime.now();
+    const fm = DateTime.TIME_SIMPLE;
+    if (textValid(previousStartTime)) {
+      const previousStartTimeValues = getTimeValues(previousStartTime);
+      setPreviousStartTime(dt.set({ hour: previousStartTimeValues.hour, minute: previousStartTimeValues.minute, second: 0, millisecond: 0 }).setLocale(locale).toLocaleString(fm));
+    }
+    if (textValid(startTime)) {
+      const startTimeValues = getTimeValues(startTime);
+      setStartTime(dt.set({ hour: startTimeValues.hour, minute: startTimeValues.minute, second: 0, millisecond: 0 }).setLocale(locale).toLocaleString(fm));
+    }
+    if (textValid(previousEndTime)) {
+      const previousEndTimeValues = getTimeValues(previousEndTime);
+      setPreviousEndTime(dt.set({ hour: previousEndTimeValues.hour, minute: previousEndTimeValues.minute, second: 0, millisecond: 0 }).setLocale(locale).toLocaleString(fm));
+    }
+    if (textValid(endTime)) {
+      const endTimeValues = getTimeValues(endTime);
+      setEndTime(dt.set({ hour: endTimeValues.hour, minute: endTimeValues.minute, second: 0, millisecond: 0 }).setLocale(locale).toLocaleString(fm));
+    }
   }, [props.language]);
 
   useEffect(() => {
@@ -149,7 +168,6 @@ export default function EventForm(props) {
   }
 
   function validateDateAndTimeFields() {
-    let valid;
     const startDateValid = startDate !== null;
     let startTimeValid;
     const endDateValid = (endDate !== null && startDateValid && endDate.ts >= startDate.ts) || (endDate !== null && !startDateValid);
@@ -245,11 +263,14 @@ export default function EventForm(props) {
   }
 
   function processStartTime() {
+
     const startTimeValues = processTime(startTime);
     if (startTimeValues.valid) {
+      const locale = getLocale(props.language);
+      const fm = DateTime.TIME_SIMPLE;
       const dt = DateTime.fromObject({ hour: startTimeValues.hour, minute: startTimeValues.minute, second: 0, millisecond: 0 });
-      setPreviousStartTime(dt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE))
-      setStartTime(dt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE));
+      setPreviousStartTime(dt.setLocale(locale).toLocaleString(fm))
+      setStartTime(dt.setLocale(locale).toLocaleString(fm));
     } else {
       setStartTime(previousStartTime);
     }
@@ -258,9 +279,11 @@ export default function EventForm(props) {
   function processEndTime() {
     const result = processTime(endTime);
     if (result.valid) {
+      const locale = getLocale(props.language);
+      const fm = DateTime.TIME_SIMPLE;
       const dt = DateTime.fromObject({ hour: result.hour, minute: result.minute, second: 0, millisecond: 0 });
-      setPreviousEndTime(dt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE));
-      setEndTime(dt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE));
+      setPreviousEndTime(dt.setLocale(locale).toLocaleString(fm));
+      setEndTime(dt.setLocale(locale).toLocaleString(fm));
     } else {
       setEndTime(previousEndTime);
     }
@@ -341,13 +364,11 @@ export default function EventForm(props) {
   const startDateSelector = showStartDateSelector ? (
     <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white" }}>
       <Month
-        startWeekOn={"Monday"}
+        startWeekOn={props.calendar.startWeekOn}
         currentDay={DateTime.now()}
         selectDay={date => {
           setStartDate(DateTime.fromFormat(`${date.year}-${date.month}-${date.day}`, "yyyy-M-d"));
           setInvalidStartDate(false);
-          setEndDate(DateTime.fromFormat(`${date.year}-${date.month}-${date.day}`, "yyyy-M-d"));
-          setInvalidEndDate(false);
         }}
         hide={() => setShowStartDateSelector(false)}
         language={props.language}
@@ -377,10 +398,10 @@ export default function EventForm(props) {
   const endDateSelector = showEndDateSelector ? (
     <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white" }}>
       <Month
-        startWeekOn={"Monday"}
+        startWeekOn={props.calendar.startWeekOn}
         currentDay={DateTime.now()}
         selectDay={date => {
-          setEndDate(date);
+          setEndDate(DateTime.fromFormat(`${date.year}-${date.month}-${date.day}`, "yyyy-M-d"));
           setInvalidEndDate(false);
         }}
         hide={() => setShowEndDateSelector(false)}
@@ -428,10 +449,9 @@ export default function EventForm(props) {
             id="input-start-date"
             placeholder="Select date"
             info="???"
-            value={startDate !== null ? startDate.toLocaleString(DateTime.DATE_HUGE) : ""}
+            value={startDate !== null ? startDate.setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_HUGE) : ""}
             readOnly={true}
             onClick={() => setShowStartDateSelector(true)}
-            onBlur={() => setShowStartDateSelector(!showStartDateSelector)}
             invalidFeedback={invalidStartDate ? <InvalidFeedback feedback="You must chose a start date." /> : null}
           />
           {startDateSelector}
@@ -466,10 +486,9 @@ export default function EventForm(props) {
             id="input-end-date"
             placeholder="Select date"
             info="???"
-            value={endDate !== null ? endDate.toLocaleString(DateTime.DATE_HUGE) : ""}
+            value={endDate !== null ? endDate.setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_HUGE) : ""}
             readOnly={true}
             onClick={() => setShowEndDateSelector(!showEndDateSelector)}
-            onBlur={() => setShowEndDateSelector(!showEndDateSelector)}
             invalidFeedback={invalidEndDate ? <InvalidFeedback feedback="Your end date must be on the same day as your start date or later." /> : null}
           />
           {endDateSelector}
@@ -504,7 +523,7 @@ export default function EventForm(props) {
           handleChange={e => setAllDay(e.target.checked)}
           info="When this is checked, ???."
         />
-        <Button label={props.translate("Cancel")} id="button-cancel" onClick={props.cancel} outline={true} />
+        <Button label={props.translate("Cancel")} type="button" id="button-cancel" onClick={props.cancel} outline={true} />
         <Button label={props.translate(submitButton)} type="submit" working={requesting} id="button-save" />
       </form>
     </>

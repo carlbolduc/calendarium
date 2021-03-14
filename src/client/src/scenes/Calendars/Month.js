@@ -4,8 +4,10 @@ import {DateTime, Info} from "luxon";
 import Week from "./Week";
 import ArrowLeft from "../../components/Icons/ArrowLeft";
 import ArrowRight from "../../components/Icons/ArrowRight";
+import useComponentBlur from "../../services/ComponentBlurHook";
 
 export default function Month(props) {
+  const {ref} = useComponentBlur(props.hide !== undefined ? props.hide : null);
   const [date, setDate] = useState(DateTime.now());
   const [weeks, setWeeks] = useState([]);
 
@@ -98,7 +100,7 @@ export default function Month(props) {
   ));
 
   return (
-    <table className="table table-bordered text-center">
+    <table className="table table-bordered text-center" ref={ref}>
       {renderHeader()}
       <tbody>
       {month}
