@@ -84,7 +84,7 @@ public class App extends Application<Config> {
         final SubscriptionsResource subscriptionsResource = new SubscriptionsResource(dao, config.getThirdPartyFactory().getStripeApiKey(), config.getThirdPartyFactory().getStripeWebhookSecret());
         final CalendarsResource calendarsResource = new CalendarsResource(dao);
         final EventsResource eventsResource = new EventsResource(dao);
-        final CalendarCollaboratorsResource calendarCollaboratorsResource = new CalendarCollaboratorsResource(dao, emailManager);
+        final CalendarCollaboratorsResource calendarCollaboratorsResource = new CalendarCollaboratorsResource(dao, argon2, emailManager);
 
         if (config.getThirdPartyFactory().getEnv().equals("development")) {
             setupCors(environment);

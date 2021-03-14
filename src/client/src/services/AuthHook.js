@@ -140,5 +140,5 @@ export function useAuth() {
     setToken(token);
   }
 
-  return {token, account, authenticated, signUp, signIn, signOut, getAccount, updateAccount, createPasswordReset, resetPassword};
+  return {token, account, authenticated, signUp, signIn, signOut, getAccount, updateAccount, createPasswordReset, resetPassword, saveToken};
 }

@@ -34,13 +34,14 @@ export default function App() {
     getAccount,
     updateAccount,
     createPasswordReset,
-    resetPassword
+    resetPassword,
+    saveToken
   } = useAuth();
   const { getLocData, translate, language } = useLoc(account, languages);
   const { customerCreated, subscribed, createCustomer, createSubscription, updateSubscription } = useSubscription(token, account, getAccount);
   const { calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents } = useCalendar(token, subscribed);
   const { events, createEvent, updateEvent, deleteEvent, searchEvents } = useEvent(token);
-  const { collaborators, calendarAccess, getCalendarCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation } = useCollaborator(token);
+  const { collaborators, calendarAccess, getCalendarCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation } = useCollaborator(token, saveToken);
 
   useEffect(() => {
     getLocData();

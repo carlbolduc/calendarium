@@ -1,5 +1,8 @@
 package io.codebards.calendarium.resources;
 
+import java.lang.StackWalker.Option;
+import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,12 +11,16 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.codebards.calendarium.api.AccountToken;
 import io.codebards.calendarium.api.CalendarAccess;
 import io.codebards.calendarium.api.CalendarAccessStatus;
 import io.codebards.calendarium.api.CalendarCollaborator;
+import io.codebards.calendarium.api.InvitationResponse;
 import io.codebards.calendarium.core.EmailManager;
+import io.codebards.calendarium.core.Utils;
 import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.db.Dao;
+import de.mkammerer.argon2.Argon2;
 import io.dropwizard.auth.Auth;
 
 @Path("/calendar_collaborators")
@@ -21,10 +28,12 @@ import io.dropwizard.auth.Auth;
 @Consumes(MediaType.APPLICATION_JSON)
 public class CalendarCollaboratorsResource {
     private final Dao dao;
+    private final Argon2 argon2;
     private final EmailManager emailManager;
 
-    public CalendarCollaboratorsResource(Dao dao, EmailManager emailManager) {
+    public CalendarCollaboratorsResource(Dao dao, Argon2 argon2, EmailManager emailManager) {
         this.dao = dao;
+        this.argon2 = argon2;
         this.emailManager = emailManager;
     }
 
@@ -62,7 +71,7 @@ public class CalendarCollaboratorsResource {
         } else {
             // else create a calendar access for this collaborator, with status invited, and send the invitation email
             long calendarAccessId = dao.insertCalendarAccess(accountId, calendarId, CalendarAccessStatus.INVITED.getStatus());
-            emailManager.sendCalendarCollaboratorInvitationEmail(oAccount, calendarAccessId, calendarId, auth.getAccountId());
+            emailManager.sendCalendarCollaboratorInvitation(oAccount, calendarAccessId, calendarId, auth.getAccountId());
             response = Response.status(Response.Status.CREATED).build();
         }
         return response;
@@ -79,4 +88,46 @@ public class CalendarCollaboratorsResource {
         return response;
     }
 
+    @PUT
+    @Path("/{calendarId}/{calendarAccessId}")
+    public Response acceptCalendarInvitation(InvitationResponse invitationResponse) {
+        Response response = Response.status(Response.Status.OK).build();
+        // TODO: implement failure checks and adjust response accordingly
+        Optional<Account> oAccount = dao.findAccountById(invitationResponse.getAccountId());
+        // if password is provided, update account password and sign in
+        if (!invitationResponse.getPassword().isEmpty()) {
+            if (oAccount.isPresent()) {
+                String passwordDigest = argon2.hash(2, 65536, 1, invitationResponse.getPassword().toCharArray());
+                dao.updateAccountAndPassword(oAccount.get().getAccountId(), oAccount.get().getEmail(), oAccount.get().getName(), oAccount.get().getLanguageId(), passwordDigest);
+                String token = createToken(oAccount.get().getAccountId());
+                if (token != null) {
+                    AccountToken accountToken = new AccountToken(oAccount.get().getAccountId(), token);
+                    response = Response.status(Response.Status.OK).entity(accountToken).build();
+                } else {
+                    response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+                }
+            }
+        }
+        // change calendar access status to active
+        dao.acceptCalendarInvitation(invitationResponse.getCalendarAccessId(), invitationResponse.getCalendarId());
+        // send email that invitation is accepted to calendar owner
+        emailManager.sendCalendarInvitationAccepted(oAccount, invitationResponse.getCalendarId(), dao.findCalendarOwnerAccountId(invitationResponse.getCalendarId()));
+
+        return response;
+    }
+
+    // TODO: centralise this function (also used in AuthResource.java)
+    private String createToken(long accountId) {
+        String token = null;
+        try {
+            token = Utils.getToken();
+            String selector = token.substring(0, 16);
+            String verifier = token.substring(16);
+            String validator = Utils.getHash(verifier);
+            dao.insertAccountToken(selector, validator, Instant.now(), accountId);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return token;
+    }
 }

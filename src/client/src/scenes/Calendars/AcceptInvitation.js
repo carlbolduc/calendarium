@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useParams, Redirect } from "react-router-dom";
 import Input from "../../components/Form/Input";
 import Button from "../../components/Form/Button";
@@ -31,23 +31,25 @@ export default function AcceptInvitation(props) {
 
   useEffect(() => {
     if (requesting) {
-      // TODO: add password validations
-      props.resetPassword({
-        id: query.get("id"),
+      props.acceptCalendarInvitation({
+        calendarId: props.calendarAccess.calendarId,
+        calendarAccessId: props.calendarAccess.calendarAccessId,
+        accountId: props.calendarAccess.accountId,
         password: password
       }, result => {
         if (result.success === true) {
           setAccepted(true);
+        } else {
+          setResult(result);
+          setRequesting(false);
         }
-        setResult(result);
-        setRequesting(false);
       });
     }
   }, [requesting])
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (passwordValid(password)) {
+    if (props.account.accountId !== null || passwordValid(password)) {
       setRequesting(true);
     } else {
       setInvalidPassword(true);
@@ -58,29 +60,50 @@ export default function AcceptInvitation(props) {
   const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
   const title = `${props.translate("Invitation to collaborate to")} ${calendarName}`;
 
-  const main = (
+  {/* TODO: think about this copy, then add props.translate */ }
+  const instructions = props.account.accountId !== null ? (
     <>
-      <h1>{title}</h1>
-      <Message result={result} origin="acceptInvitation" translate={props.translate} />
-      {/* TODO: think about this copy, then add props.translate */}
+      <p>You have been invited to collaborate to a calendar. Accept the invitation to get started.</p>
+    </>
+  ) : (
+    <>
       <h5>Welcome to Calendarium.</h5>
       <p>You have been invited to collaborate to a calendar. The email associated with your account is the email at which you receive your invitation. If you want to change it, you will be able to do so later in your account profile.</p>
       <p>To complete your account creation, enter a password for your account, then accept the invitation to get started.</p>
-      {/* TODO: hide the password form if account already has a password, and adjust welcome message */}
+    </>
+  );
+
+  const passwordField = props.account.accountId !== null ? null : (
+    <Input
+      label={props.translate("Password")}
+      type="password"
+      id="input-password"
+      required={true}
+      placeholder={props.translate("Enter a password.")}
+      value={password}
+      handleChange={(e) => {
+        setPassword(e.target.value);
+        setInvalidPassword(false);
+      }}
+      invalidFeedback={invalidPassword ? <InvalidFeedback feedback="Your password must be at least 8 characters long." /> : null}
+    />
+  );
+
+  // If user is signed in on a different account, don't show invitation
+  const main = props.account.accountId !== null && props.calendarAccess.accountId !== props.account.accountId ? (
+    <>
+      <h1>Calendar invitation for someone else</h1>
+      <p>You have clicked on a calendar invitation that was sent to an email address different than the one you are currently signed in with.</p>
+      <p>If you think this is an error, <a href="mailto:grove@codebards.io">contact us in the grove</a>.</p>
+      <Link to="/my-calendars">{props.translate("Back to my calendars")}</Link>
+    </>
+  ) : (
+    <>
+      <h1>{title}</h1>
+      <Message result={result} origin="acceptInvitation" translate={props.translate} />
+      {instructions}
       <form onSubmit={handleSubmit} id="form-accept-invitation" noValidate>
-        <Input
-          label={props.translate("Password")}
-          type="password"
-          id="input-password"
-          required={true}
-          placeholder={props.translate("Enter a password.")}
-          value={password}
-          handleChange={(e) => {
-            setPassword(e.target.value);
-            setInvalidPassword(false);
-          }}
-          invalidFeedback={invalidPassword ? <InvalidFeedback feedback="Your password must be at least 8 characters long." /> : null}
-        />
+        {passwordField}
         <Button label={props.translate("Accept the invitation")} type="submit" working={requesting} id="button-accept-invitation" />
       </form>
     </>
