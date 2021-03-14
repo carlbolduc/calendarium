@@ -218,6 +218,7 @@ export default function Calendar(props) {
       updateEvent={props.updateEvent}
       deleteEvent={props.deleteEvent}
       searchEvents={props.searchEvents}
+      language={props.language}
       translate={props.translate}
       actionButtonsZone={
         <div className="mb-4">
