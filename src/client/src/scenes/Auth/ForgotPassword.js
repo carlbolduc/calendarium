@@ -68,8 +68,8 @@ export default function ForgotPassword(props) {
   return props.authenticated ? (
     <Redirect to={{ pathname: "/" }} />
   ) : (
-      <div className="p-5">
+      <article>
         {main}
-      </div>
+      </article>
     );
 }

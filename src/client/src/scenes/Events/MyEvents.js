@@ -38,7 +38,7 @@ export default function MyEvents(props) {
   ) : null;
 
   return props.authenticated ? (
-    <div className="p-5">
+    <article>
       <h1>{props.translate("My events")}</h1>
       {newEventButton}
       {events}

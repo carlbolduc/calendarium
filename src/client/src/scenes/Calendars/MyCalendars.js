@@ -57,13 +57,13 @@ export default function MyCalendars(props) {
   ) : null;
 
   return props.authenticated ? (
-    <div className="p-5">
+    <article>
       {title}
       <Message result={calendarFormResult} origin="CalendarForm" translate={props.translate} />
       {actionButtonsZone}
       {calendars()}
       {calendarForm}
-    </div>
+    </article>
   ) : (
       <Redirect
         to={{

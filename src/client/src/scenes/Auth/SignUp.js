@@ -48,7 +48,7 @@ export default function SignUp(props) {
     <Redirect to={{ pathname: "/" }} />
   ) : (
       <>
-        <div className="p-5">
+        <article>
           <h1>{props.translate("Create an account")}</h1>
           <Message result={result} origin="signUp" translate={props.translate} />
           <form onSubmit={handleSubmit} id="form-sign-up" noValidate>
@@ -113,7 +113,7 @@ export default function SignUp(props) {
             <Button label={props.translate("Sign up")} type="submit" working={requesting} id="button-sign-up" />
           </form>
           <p className="small">{props.translate("Already have an account? Sign in")} <Link to="/sign-in">{props.translate("here")}</Link>.</p>
-        </div>
+        </article>
       </>
     );
 }

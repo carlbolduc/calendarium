@@ -195,11 +195,11 @@ export default function Subscription(props) {
     return result;
   }
   return props.authenticated ? (
-    <div className="p-5">
+    <article>
       <h1>{props.translate("My subscription")}</h1>
       <Message result={result} origin="Subscription" translate={props.translate} />
       {renderMain()}
-    </div>
+    </article>
   ) : (
       <Redirect
         to={{
