@@ -231,7 +231,7 @@ export default function Calendar(props) {
   );
 
   const calendarEvents = props.calendarEvents.map(e => (
-    <Event key={e.eventId} event={e} eventActions={eventActions(e)} />
+    <Event key={e.eventId} event={e} eventActions={eventActions(e)} language={props.language} />
   ));
 
   const newEventButton = showEventForm ? null : (

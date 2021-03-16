@@ -153,3 +153,12 @@ export function encodeObject(data) {
   const string = JSON.stringify(data);
   return btoa(string);
 }
+
+// Check if two Luxon dates are on the same day
+export function sameDay(d1, d2) {
+  return (
+    d1.day === d2.day &&
+    d1.month === d2.month &&
+    d1.year === d2.year
+  );
+}
