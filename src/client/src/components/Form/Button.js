@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function Button(props) {
   const classes = props.outline 
     ? "btn btn-outline-secondary me-3 my-3"
