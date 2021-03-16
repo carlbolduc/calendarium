@@ -119,7 +119,8 @@ public interface Dao {
             "       c.event_approval_required\n" +
             "FROM calendar c\n" +
             "         INNER JOIN calendar_access ca on c.calendar_id = ca.calendar_id\n" +
-            "WHERE ca.account_id = :accountId ORDER BY c.name_en")
+            "WHERE ca.account_id = :accountId AND ca.status = 'owner'\n" +
+            "ORDER BY c.name_en")
     @RegisterBeanMapper(Calendar.class)
     List<Calendar> findCalendars(@Bind("accountId") long accountId);
 
