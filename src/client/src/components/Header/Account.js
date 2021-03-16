@@ -15,7 +15,7 @@ export default function Account(props) {
           ? <li><a className="dropdown-item" onClick={e => props.goTo(e, "/subscription")}>{props.translate("My subscription")}</a></li>
           : null}
         <li>{props.authenticated 
-          ? <a className="dropdown-item" href="#" onClick={props.signOut}>{props.translate("Sign out")}</a> 
+          ? <a className="dropdown-item" onClick={props.signOut}>{props.translate("Sign out")}</a>
           : <a className="dropdown-item" onClick={e => props.goTo(e, "/sign-in")}>{props.translate("Sign in")}</a>}</li>
       </ul>
     </li>
