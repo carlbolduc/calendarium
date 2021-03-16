@@ -149,6 +149,8 @@ export default function Calendar(props) {
       collaborators={props.collaborators}
       getCalendarCollaborators={props.getCalendarCollaborators}
       inviteCollaborator={props.inviteCollaborator}
+      deactivateCalendarAccess={props.deactivateCalendarAccess}
+      activateCalendarAccess={props.activateCalendarAccess}
 />
   );
 

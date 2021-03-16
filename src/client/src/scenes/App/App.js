@@ -41,7 +41,7 @@ export default function App() {
   const { customerCreated, subscribed, createCustomer, createSubscription, updateSubscription } = useSubscription(token, account, getAccount);
   const { calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents } = useCalendar(token, subscribed);
   const { events, createEvent, updateEvent, deleteEvent, searchEvents } = useEvent(token);
-  const { collaborators, calendarAccess, getCalendarCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation } = useCollaborator(token, saveToken);
+  const { collaborators, calendarAccess, getCalendarCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation, deactivateCalendarAccess, activateCalendarAccess } = useCollaborator(token, saveToken);
 
   useEffect(() => {
     getLocData();
@@ -190,7 +190,9 @@ export default function App() {
                 collaborators={collaborators}
                 getCalendarCollaborators={getCalendarCollaborators}
                 inviteCollaborator={inviteCollaborator}
-              />
+                deactivateCalendarAccess={deactivateCalendarAccess}
+                activateCalendarAccess={activateCalendarAccess}
+                        />
             </Route>
             <Route path="/">
               <Home

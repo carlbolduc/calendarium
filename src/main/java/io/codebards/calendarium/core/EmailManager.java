@@ -104,12 +104,12 @@ public class EmailManager {
 
         // Replace template placeholders
         emailTitle = replacePlaceholder(emailTitle, "\\[calendar_owner.name\\]", oCalendarOwner.get().getName());
-        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameEn\\]", oCalendar.get().getNameEn());
-        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameFr\\]", oCalendar.get().getNameFr());
+        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameEn\\]", oCalendar.get().getNameEn()); // TODO: Implement and use decideWhatToDisplay like Helper.js
+        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameFr\\]", oCalendar.get().getNameFr()); // TODO: Implement and use decideWhatToDisplay like Helper.js
         emailBody = replacePlaceholder(emailBody, "\\[account.name\\]", oAccount.get().getName());
         emailBody = replacePlaceholder(emailBody, "\\[calendar_owner.name\\]", oCalendarOwner.get().getName());
-        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameEn\\]", oCalendar.get().getNameEn());
-        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameFr\\]", oCalendar.get().getNameFr());
+        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameEn\\]", oCalendar.get().getNameEn()); // TODO: Implement and use decideWhatToDisplay like Helper.js
+        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameFr\\]", oCalendar.get().getNameFr()); // TODO: Implement and use decideWhatToDisplay like Helper.js
         emailBody = replacePlaceholder(emailBody, "\\[accept_calendar_invitation_link\\]", invitationLink);
 
         // Add footer to email body
@@ -154,12 +154,12 @@ public class EmailManager {
 
         // Replace template placeholders
         emailTitle = replacePlaceholder(emailTitle, "\\[account.name\\]", oInvitee.get().getName());
-        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameEn\\]", oCalendar.get().getNameEn());
-        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameFr\\]", oCalendar.get().getNameFr());
+        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameEn\\]", oCalendar.get().getNameEn()); // TODO: Implement and use decideWhatToDisplay like Helper.js
+        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameFr\\]", oCalendar.get().getNameFr()); // TODO: Implement and use decideWhatToDisplay like Helper.js
         emailBody = replacePlaceholder(emailBody, "\\[calendar_owner.name\\]", oCalendarOwner.get().getName());
         emailBody = replacePlaceholder(emailBody, "\\[account.name\\]", oInvitee.get().getName());
-        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameEn\\]", oCalendar.get().getNameEn());
-        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameFr\\]", oCalendar.get().getNameFr());
+        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameEn\\]", oCalendar.get().getNameEn()); // TODO: Implement and use decideWhatToDisplay like Helper.js
+        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameFr\\]", oCalendar.get().getNameFr()); // TODO: Implement and use decideWhatToDisplay like Helper.js
 
         // Add footer to email body
         emailBody = emailBody + "\n\n\n" + emailFooter;

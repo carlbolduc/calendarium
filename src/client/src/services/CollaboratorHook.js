@@ -72,7 +72,7 @@ export function useCollaborator(token, saveToken) {
   }
 
   function acceptCalendarInvitation(data, cb) {
-    const url = `${process.env.REACT_APP_API}/calendar_collaborators/${data.calendarId}/${data.calendarAccessId}`;
+    const url = `${process.env.REACT_APP_API}/calendar_collaborators/${data.calendarId}/accept_invitation/${data.calendarAccessId}`;
     const header = token !== null
       ? { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
       : { "Content-Type": "application/json" }
@@ -101,5 +101,43 @@ export function useCollaborator(token, saveToken) {
     });
   }
 
-  return { collaborators, calendarAccess, getCalendarCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation };
+  function deactivateCalendarAccess(calendarId, calendarAccessId) {
+    if (token !== null) {
+      axios({
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        url: `${process.env.REACT_APP_API}/calendar_collaborators/${calendarId}/${calendarAccessId}`,
+        data: "inactive"
+      }).then(res => {
+        setCollaborators(res.data);
+      }).catch(err => {
+        console.log("THIS SHOULD NEVER HAPPEN, error in 'deactivateCalendarAccess' from 'useCollaborator' hook");
+        console.log(err.response);
+      });
+    }
+  }
+
+  function activateCalendarAccess(calendarId, calendarAccessId) {
+    if (token !== null) {
+      axios({
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        url: `${process.env.REACT_APP_API}/calendar_collaborators/${calendarId}/${calendarAccessId}`,
+        data: "active"
+      }).then(res => {
+        setCollaborators(res.data);
+      }).catch(err => {
+        console.log("THIS SHOULD NEVER HAPPEN, error in 'deactivateCalendarAccess' from 'useCollaborator' hook");
+        console.log(err.response);
+      });
+    }
+  }
+
+  return { collaborators, calendarAccess, getCalendarCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation, deactivateCalendarAccess, activateCalendarAccess };
 }

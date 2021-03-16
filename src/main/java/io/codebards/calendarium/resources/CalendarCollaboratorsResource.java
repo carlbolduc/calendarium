@@ -89,7 +89,7 @@ public class CalendarCollaboratorsResource {
     }
 
     @PUT
-    @Path("/{calendarId}/{calendarAccessId}")
+    @Path("/{calendarId}/accept_invitation/{calendarAccessId}")
     public Response acceptCalendarInvitation(InvitationResponse invitationResponse) {
         Response response = Response.status(Response.Status.OK).build();
         // TODO: implement failure checks and adjust response accordingly
@@ -114,6 +114,15 @@ public class CalendarCollaboratorsResource {
         emailManager.sendCalendarInvitationAccepted(oAccount, invitationResponse.getCalendarId(), dao.findCalendarOwnerAccountId(invitationResponse.getCalendarId()));
 
         return response;
+    }
+
+    @PUT
+    @Path("/{calendarId}/{calendarAccessId}")
+    public Response putCalendarAccess(@Auth Account auth, @PathParam("calendarId") long calendarId, @PathParam("calendarAccessId") long calendarAccessId, String status) {
+        // TODO: implement failure checks and adjust response accordingly
+        dao.updateCalendarAccessStatus(calendarAccessId, calendarId, status);
+        List<CalendarCollaborator> calendarCollaborators = dao.findCalendarCollaboratorsByCalendar(calendarId);
+        return Response.status(Response.Status.OK).entity(calendarCollaborators).build();
     }
 
     // TODO: centralise this function (also used in AuthResource.java)
