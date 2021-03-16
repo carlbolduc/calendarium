@@ -20,7 +20,12 @@ h1 {
   margin-bottom: 1.5rem !important;
 }
 
-// Set the cursor to a pointer on anchors
+// Set the cursor to a pointer on anchors even when no href
 a {
   cursor: pointer;
+}
+
+// Set the main container padding
+#main-container {
+  padding: 90px 20px 20px 20px;
 }
