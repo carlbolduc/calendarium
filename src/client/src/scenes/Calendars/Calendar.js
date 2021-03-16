@@ -29,6 +29,9 @@ export default function Calendar(props) {
 
   useEffect(() => {
     props.getCalendar({ link: link });
+    return () => {
+      props.clearCalendarEvents();
+    };
   }, []);
 
   useEffect(() => {

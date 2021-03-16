@@ -163,5 +163,9 @@ export function useCalendar(token, subscribed) {
     }
   }
 
-  return { calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents };
+  function clearCalendarEvents() {
+    setCalendarEvents([]);
+  }
+
+  return { calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents, clearCalendarEvents };
 }
