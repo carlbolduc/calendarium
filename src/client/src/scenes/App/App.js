@@ -21,6 +21,7 @@ import Calendar from "../Calendars/Calendar";
 import Terms from "../Static/Terms";
 import Privacy from "../Static/Privacy";
 import AcceptInvitation from "../Calendars/AcceptInvitation";
+import Footer from '../../components/Footer/Footer';
 
 export default function App() {
   const [languages, setLanguages] = useState([]);
@@ -65,144 +66,147 @@ export default function App() {
   }
 
   return (
-    <main className="App">
-      <Router>
-        <Header
-          languages={languages}
-          languageId={account.languageId}
-          authenticated={authenticated}
-          translate={translate}
-          signOut={signOut}
-          switchLanguage={switchLanguage}
-        />
-        <div className="container">
-          <Switch>
-            <Route exact path="/sign-in">
-              <SignIn
-                signIn={signIn}
-                authenticated={authenticated}
-                translate={translate}
-              />
-            </Route>
-            <Route exact path="/sign-up">
-              <SignUp
-                signUp={signUp}
-                authenticated={authenticated}
-                translate={translate}
-              />
-            </Route>
-            <Route exact path="/forgot-password">
-              <ForgotPassword
-                createPasswordReset={createPasswordReset}
-                authenticated={authenticated}
-                translate={translate}
-              />
-            </Route>
-            <Route exact path="/password-reset">
-              <PasswordReset
-                resetPassword={resetPassword}
-                authenticated={authenticated}
-                translate={translate}
-              />
-            </Route>
-            <Route exact path="/profile">
-              <Profile
-                account={account}
-                updateAccount={updateAccount}
-                authenticated={authenticated}
-                translate={translate}
-                language={language}
-              />
-            </Route>
-            <Route exact path="/terms">
-              <Terms
-                language={language}
-              />
-            </Route>
-            <Route exact path="/privacy">
-              <Privacy
-                language={language}
-              />
-            </Route>
-            <Route exact path="/subscription">
-              <Subscription
-                account={account}
-                authenticated={authenticated}
-                translate={translate}
-                customerCreated={customerCreated}
-                subscribed={subscribed}
-                createCustomer={createCustomer}
-                createSubscription={createSubscription}
-                updateSubscription={updateSubscription}
-              />
-            </Route>
-            <Route exact path="/my-calendars">
-              <MyCalendars
-                account={account}
-                authenticated={authenticated}
-                subscribed={subscribed}
-                translate={translate}
-                language={language}
-                calendars={calendars}
-                getCalendars={getCalendars}
-                createCalendar={createCalendar}
-              />
-            </Route>
-            <Route exact path="/public-calendars">
-              <PublicCalendars
-                account={account}
-                authenticated={authenticated}
-                translate={translate}
-                language={language}
-              />
-            </Route>
-            <Route exact path="/:link/accept-invitation">
-              <AcceptInvitation
-                account={account}
-                authenticated={authenticated}
-                translate={translate}
-                language={language}
-                calendar={calendar}
-                getCalendar={getCalendar}
-                calendarAccess={calendarAccess}
-                getCalendarInvitation={getCalendarInvitation}
-                acceptCalendarInvitation={acceptCalendarInvitation}
-              />
-            </Route>
-            <Route exact path="/:link">
-              <Calendar
-                account={account}
-                authenticated={authenticated}
-                translate={translate}
-                language={language}
-                calendar={calendar}
-                getCalendar={getCalendar}
-                subscribed={subscribed}
-                updateCalendar={updateCalendar}
-                deleteCalendar={deleteCalendar}
-                calendarEvents={calendarEvents}
-                getCalendarEvents={getCalendarEvents}
-                createEvent={createEvent}
-                updateEvent={updateEvent}
-                deleteEvent={deleteEvent}
-                events={events}
-                searchEvents={searchEvents}
-                collaborators={collaborators}
-                getCalendarCollaborators={getCalendarCollaborators}
-                inviteCollaborator={inviteCollaborator}
-                deactivateCalendarAccess={deactivateCalendarAccess}
-                activateCalendarAccess={activateCalendarAccess}
-                        />
-            </Route>
-            <Route path="/">
-              <Home
-                authenticated={authenticated}
-                translate={translate}
-              />
-            </Route>
-          </Switch>
-        </div>
-      </Router>
-    </main>
+    <>
+      <main className="App flex-shrink-0">
+        <Router>
+          <Header
+            languages={languages}
+            languageId={account.languageId}
+            authenticated={authenticated}
+            translate={translate}
+            signOut={signOut}
+            switchLanguage={switchLanguage}
+          />
+          <div className="container">
+            <Switch>
+              <Route exact path="/sign-in">
+                <SignIn
+                  signIn={signIn}
+                  authenticated={authenticated}
+                  translate={translate}
+                />
+              </Route>
+              <Route exact path="/sign-up">
+                <SignUp
+                  signUp={signUp}
+                  authenticated={authenticated}
+                  translate={translate}
+                />
+              </Route>
+              <Route exact path="/forgot-password">
+                <ForgotPassword
+                  createPasswordReset={createPasswordReset}
+                  authenticated={authenticated}
+                  translate={translate}
+                />
+              </Route>
+              <Route exact path="/password-reset">
+                <PasswordReset
+                  resetPassword={resetPassword}
+                  authenticated={authenticated}
+                  translate={translate}
+                />
+              </Route>
+              <Route exact path="/profile">
+                <Profile
+                  account={account}
+                  updateAccount={updateAccount}
+                  authenticated={authenticated}
+                  translate={translate}
+                  language={language}
+                />
+              </Route>
+              <Route exact path="/terms">
+                <Terms
+                  language={language}
+                />
+              </Route>
+              <Route exact path="/privacy">
+                <Privacy
+                  language={language}
+                />
+              </Route>
+              <Route exact path="/subscription">
+                <Subscription
+                  account={account}
+                  authenticated={authenticated}
+                  translate={translate}
+                  customerCreated={customerCreated}
+                  subscribed={subscribed}
+                  createCustomer={createCustomer}
+                  createSubscription={createSubscription}
+                  updateSubscription={updateSubscription}
+                />
+              </Route>
+              <Route exact path="/my-calendars">
+                <MyCalendars
+                  account={account}
+                  authenticated={authenticated}
+                  subscribed={subscribed}
+                  translate={translate}
+                  language={language}
+                  calendars={calendars}
+                  getCalendars={getCalendars}
+                  createCalendar={createCalendar}
+                />
+              </Route>
+              <Route exact path="/public-calendars">
+                <PublicCalendars
+                  account={account}
+                  authenticated={authenticated}
+                  translate={translate}
+                  language={language}
+                />
+              </Route>
+              <Route exact path="/:link/accept-invitation">
+                <AcceptInvitation
+                  account={account}
+                  authenticated={authenticated}
+                  translate={translate}
+                  language={language}
+                  calendar={calendar}
+                  getCalendar={getCalendar}
+                  calendarAccess={calendarAccess}
+                  getCalendarInvitation={getCalendarInvitation}
+                  acceptCalendarInvitation={acceptCalendarInvitation}
+                />
+              </Route>
+              <Route exact path="/:link">
+                <Calendar
+                  account={account}
+                  authenticated={authenticated}
+                  translate={translate}
+                  language={language}
+                  calendar={calendar}
+                  getCalendar={getCalendar}
+                  subscribed={subscribed}
+                  updateCalendar={updateCalendar}
+                  deleteCalendar={deleteCalendar}
+                  calendarEvents={calendarEvents}
+                  getCalendarEvents={getCalendarEvents}
+                  createEvent={createEvent}
+                  updateEvent={updateEvent}
+                  deleteEvent={deleteEvent}
+                  events={events}
+                  searchEvents={searchEvents}
+                  collaborators={collaborators}
+                  getCalendarCollaborators={getCalendarCollaborators}
+                  inviteCollaborator={inviteCollaborator}
+                  deactivateCalendarAccess={deactivateCalendarAccess}
+                  activateCalendarAccess={activateCalendarAccess}
+                />
+              </Route>
+              <Route path="/">
+                <Home
+                  authenticated={authenticated}
+                  translate={translate}
+                />
+              </Route>
+            </Switch>
+          </div>
+        </Router>
+      </main>
+      <Footer translate={translate} />
+    </>
   );
 }
