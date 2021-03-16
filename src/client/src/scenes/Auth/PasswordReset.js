@@ -76,8 +76,8 @@ export default function PasswordReset(props) {
   return props.authenticated && !reseted ? (
     <Redirect to={{pathname: "/"}}/>
   ) : (
-    <div className="p-5">
+    <article>
       {main}
-    </div>
+    </article>
   );
 }

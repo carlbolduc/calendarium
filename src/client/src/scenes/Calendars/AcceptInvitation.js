@@ -112,8 +112,8 @@ export default function AcceptInvitation(props) {
   return accepted ? (
     <Redirect to={{ pathname: `/${link}` }} />
   ) : (
-    <div className="p-5">
+    <article>
       {main}
-    </div>
+    </article>
   );
 }

@@ -77,7 +77,7 @@ export default function App() {
             signOut={signOut}
             switchLanguage={switchLanguage}
           />
-          <div className="container">
+          <div className="container p-5">
             <Switch>
               <Route exact path="/sign-in">
                 <SignIn

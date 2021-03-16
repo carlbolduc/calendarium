@@ -79,7 +79,7 @@ export default function Profile(props) {
   ) : null;
 
   return props.authenticated ? (
-    <div className="p-5">
+    <article>
       <h1>{props.translate("My profile")}</h1>
       <Message result={result} origin="profile" translate={props.translate} />
       <form onSubmit={handleSubmit} id="form-profile" noValidate>
@@ -140,7 +140,7 @@ export default function Profile(props) {
         {/* TODO: disable button when nothing has changed in the form */}
         <Button label={props.translate("Save")} type="submit" working={requesting} id="button-save" />
       </form>
-    </div>
+    </article>
   ) : (
       <Redirect
         to={{

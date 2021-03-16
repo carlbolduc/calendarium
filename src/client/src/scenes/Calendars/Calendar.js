@@ -344,9 +344,9 @@ export default function Calendar(props) {
   }
 
   return props.authenticated ? (
-    <div className="p-5">
+    <article>
       {renderMain()}
-    </div>
+    </article>
   ) : (
       <Redirect
         to={{
