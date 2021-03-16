@@ -10,6 +10,7 @@ export default function Input(props) {
       data-bs-target={`#collapse-help-${props.id}`}
       aria-expanded="false"
       aria-controls={`collapse-help-${props.id}`}
+      tabindex="-1"
     >
       <Info />
     </button>
