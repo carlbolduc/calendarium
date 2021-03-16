@@ -288,11 +288,52 @@ public interface Dao {
     @RegisterBeanMapper(Event.class)
     List<Event> findEvents(@BindBean EventsParams eventsParams);
 
-    @SqlQuery("SELECT event_id, account_id, calendar_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr FROM event WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%'))) AND (:status = '' OR status = :status) AND calendar_id = :calendarId ORDER BY start_at")
+    @SqlQuery("SELECT event_id,\n" +
+            "       account_id,\n" +
+            "       calendar_id,\n" +
+            "       status,\n" +
+            "       name_en,\n" +
+            "       name_fr,\n" +
+            "       description_en,\n" +
+            "       description_fr,\n" +
+            "       start_at,\n" +
+            "       end_at,\n" +
+            "       all_day,\n" +
+            "       hyperlink_en,\n" +
+            "       hyperlink_fr\n" +
+            "FROM event\n" +
+            "WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR\n" +
+            "       (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%')))\n" +
+            "  AND (:status = '' OR status = :status)\n" +
+            "  AND (cast(:startAt AS date) IS NULL OR start_at >= :startAt)\n" +
+            "  AND (cast(:endAt AS date) IS NULL OR end_at <= :endAt)\n" +
+            "  AND calendar_id = :calendarId\n" +
+            "ORDER BY start_at")
     @RegisterBeanMapper(Event.class)
-    List<Event> findAllCalendarEvents(@BindBean EventsParams eventsParams);
+    List<Event> findAllCalendarEvents(@BindBean EventsParams eventsParams, @Bind("startAt2") Instant startAt2);
 
-    @SqlQuery("SELECT event_id, account_id, calendar_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr FROM event WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%'))) AND (:status = '' OR status = :status) AND calendar_id = :calendarId AND account_id = :accountId ORDER BY start_at")
+    @SqlQuery("SELECT event_id,\n" +
+            "       account_id,\n" +
+            "       calendar_id,\n" +
+            "       status,\n" +
+            "       name_en,\n" +
+            "       name_fr,\n" +
+            "       description_en,\n" +
+            "       description_fr,\n" +
+            "       start_at,\n" +
+            "       end_at,\n" +
+            "       all_day,\n" +
+            "       hyperlink_en,\n" +
+            "       hyperlink_fr\n" +
+            "FROM event\n" +
+            "WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR\n" +
+            "       (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%')))\n" +
+            "  AND (:status = '' OR status = :status)\n" +
+            "  AND (cast(:startAt AS date) IS NULL OR start_at >= :startAt)\n" +
+            "  AND (cast(:endAt AS date) IS NULL OR end_at <= :endAt)\n" +
+            "  AND calendar_id = :calendarId\n" +
+            "  AND account_id = :accountId\n" +
+            "ORDER BY start_at")
     @RegisterBeanMapper(Event.class)
     List<Event> findAccountCalendarEvents(@Bind("accountId") long accountId, @BindBean EventsParams eventsParams);
 

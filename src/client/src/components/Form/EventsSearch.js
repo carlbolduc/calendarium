@@ -57,6 +57,7 @@ export default function EventsSearch(props) {
         currentDay={DateTime.now()}
         selectDay={date => {
           setStartDate(DateTime.fromFormat(`${date.year}-${date.month}-${date.day}`, "yyyy-M-d"));
+          setCanSearch(true);
         }}
         hide={() => setShowStartDateSelector(false)}
         language={props.language}
@@ -71,6 +72,7 @@ export default function EventsSearch(props) {
         currentDay={DateTime.now()}
         selectDay={date => {
           setEndDate(DateTime.fromFormat(`${date.year}-${date.month}-${date.day}`, "yyyy-M-d"));
+          setCanSearch(true);
         }}
         hide={() => setShowEndDateSelector(false)}
         language={props.language}

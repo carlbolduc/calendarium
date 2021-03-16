@@ -25,6 +25,7 @@ dependencies {
     implementation 'io.dropwizard:dropwizard-auth:2.0.13'
     implementation 'io.dropwizard:dropwizard-assets:2.0.13'
     implementation 'io.dropwizard:dropwizard-views-freemarker:2.0.13'
+    implementation 'org.jdbi:jdbi3-postgres:3.18.0'
     implementation 'org.tuckey:urlrewritefilter:4.0.3'
     implementation 'de.mkammerer:argon2-jvm:2.7'
     implementation 'com.amazonaws:aws-java-sdk-s3:1.11.878'
