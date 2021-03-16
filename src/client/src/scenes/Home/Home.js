@@ -1,6 +1,5 @@
-import React from 'react';
-import { Link, Redirect } from "react-router-dom";
-import FeaturesList from '../../components/Content/FeaturesList';
+import { Link } from "react-router-dom";
+import FeaturesList from "../../components/Content/FeaturesList";
 
 export default function Home(props) {
   return props.authenticated ? (
