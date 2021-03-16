@@ -43,6 +43,7 @@ public class AccountsResource {
     @PUT
     @Path("/{accountId}")
     public Response putAccount(@Auth Account auth, AccountUpdate accountUpdate) {
+        // TODO: simplify all this
         Response response = Response.status(Response.Status.NOT_FOUND).build();
         Optional<Account> oAccount = dao.findAccountByEmail(accountUpdate.getEmail());
         // Check if email was changed
@@ -60,6 +61,8 @@ public class AccountsResource {
                         dao.updateAccountAndPassword(auth.getAccountId(), accountUpdate.getEmail(), accountUpdate.getName(), accountUpdate.getLanguageId(), newPasswordDigest);
                         oAccount = dao.findAccountById(auth.getAccountId());
                         if (oAccount.isPresent()) {
+                            // Set subscription information
+                            oAccount.get().setSubscription(dao.findSubscriptionByAccountId(auth.getAccountId()));
                             response = Response.status(Response.Status.OK).entity(oAccount.get()).build();
                         }
                     } else {
@@ -69,6 +72,8 @@ public class AccountsResource {
                     dao.updateAccount(auth.getAccountId(), accountUpdate.getEmail(), accountUpdate.getName(), accountUpdate.getLanguageId());
                     oAccount = dao.findAccountById(auth.getAccountId());
                     if (oAccount.isPresent()) {
+                        // Set subscription information
+                        oAccount.get().setSubscription(dao.findSubscriptionByAccountId(auth.getAccountId()));
                         response = Response.status(Response.Status.OK).entity(oAccount.get()).build();
                     }
                 }
@@ -82,6 +87,8 @@ public class AccountsResource {
                     dao.updateAccountAndPassword(auth.getAccountId(), accountUpdate.getEmail(), accountUpdate.getName(), accountUpdate.getLanguageId(), newPasswordDigest);
                     oAccount = dao.findAccountById(auth.getAccountId());
                     if (oAccount.isPresent()) {
+                        // Set subscription information
+                        oAccount.get().setSubscription(dao.findSubscriptionByAccountId(auth.getAccountId()));
                         response = Response.status(Response.Status.OK).entity(oAccount.get()).build();
                     }
                 } else {
@@ -91,6 +98,8 @@ public class AccountsResource {
                 dao.updateAccount(auth.getAccountId(), accountUpdate.getEmail(), accountUpdate.getName(), accountUpdate.getLanguageId());
                 oAccount = dao.findAccountById(auth.getAccountId());
                 if (oAccount.isPresent()) {
+                    // Set subscription information
+                    oAccount.get().setSubscription(dao.findSubscriptionByAccountId(auth.getAccountId()));
                     response = Response.status(Response.Status.OK).entity(oAccount.get()).build();
                 }
             }
