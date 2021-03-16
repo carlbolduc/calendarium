@@ -23,11 +23,11 @@ export default function MyCalendars(props) {
           ))}
         </div>
       );
-    };
+    }
     return result;
   }
 
-  const newCalendarButton = !props.subscribed ? null : (
+  const newCalendarButton = props.subscribed ? (
     <Button
       label={props.translate("New calendar")}
       id="button-new-calendar"
@@ -37,7 +37,7 @@ export default function MyCalendars(props) {
         setCalendarFormResult(null);
       }}
     />
-  );
+  ) : null;
 
   const actionButtonsZone = showCalendarForm ? null : (
     <div className="mb-4">
