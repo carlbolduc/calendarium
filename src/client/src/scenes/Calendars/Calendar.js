@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Redirect } from "react-router-dom";
 import { DateTime } from "luxon";
-import { decideWhatToDisplay, encodeObject, eventStatus } from "../../services/Helpers";
+import {calendarAccessStatus, decideWhatToDisplay, encodeObject, eventStatus} from "../../services/Helpers";
 import CalendarForm from "./CalendarForm";
 import Button from "../../components/Form/Button";
 import EventForm from "../Events/EventForm";
@@ -83,8 +83,7 @@ export default function Calendar(props) {
     });
   }
 
-  // TODO: validate that this is the owner of the calendar to show the calendar settings button
-  const calendarSettingsButton = props.subscribed ? (
+  const calendarSettingsButton = props.calendar.access === calendarAccessStatus.OWNER ? (
     <Button
       label={props.translate("Calendar settings")}
       id="button-calendar-settings"
@@ -127,8 +126,7 @@ export default function Calendar(props) {
     />
   );
 
-  // TODO: validate that this is the owner of the calendar to show the manage collaborators button
-  const manageCollaboratorsButton = props.subscribed ? (
+  const manageCollaboratorsButton = props.calendar.access === calendarAccessStatus.OWNER ? (
     <Button
       label={props.translate("Manage collaborators")}
       id="button-manage-collaborators"
@@ -154,17 +152,16 @@ export default function Calendar(props) {
 />
   );
 
-  // TODO: validate that this is the owner of the calendar to show the manage events button
-  const manageEventsButton = (
+  const manageEventsButton = [calendarAccessStatus.OWNER, calendarAccessStatus.ACTIVE].indexOf(props.calendar.access) !== -1 ? (
     <Button
-      label={props.translate(props.subscribed ? "Manage all events" : "Manage my events")}
+      label={props.translate(props.calendar.access === calendarAccessStatus.OWNER ? "Manage all events" : "Manage my events")}
       id="button-manage-events"
       outline={true}
       onClick={() => {
         setShowManageEvents(true);
       }}
     />
-  );
+  ) :null;
 
   function eventActions(event) {
     return (
