@@ -1,7 +1,3 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import 'bootstrap/dist/js/bootstrap.bundle.js';
-
 export default function Account(props) {
 
   //TODO: when signed in, we could insert a gravatar picture on the left of "Account"
@@ -13,14 +9,14 @@ export default function Account(props) {
       </a>
       <ul className="dropdown-menu" aria-labelledby="dropdown-account">
         <li>{props.authenticated 
-          ? <Link className="dropdown-item" to="/profile">{props.translate("My profile")}</Link> 
-          : <Link className="dropdown-item" to="/sign-up">{props.translate("Sign up")}</Link>}</li>
+          ? <a className="dropdown-item" onClick={e => props.goTo(e, "/profile")}>{props.translate("My profile")}</a>
+          : <a className="dropdown-item" onClick={e => props.goTo(e, "/sign-up")}>{props.translate("Sign up")}</a>}</li>
         {props.authenticated 
-          ? <li><Link className="dropdown-item" to="/subscription">{props.translate("My subscription")}</Link></li> 
+          ? <li><a className="dropdown-item" onClick={e => props.goTo(e, "/subscription")}>{props.translate("My subscription")}</a></li>
           : null}
         <li>{props.authenticated 
           ? <a className="dropdown-item" href="#" onClick={props.signOut}>{props.translate("Sign out")}</a> 
-          : <Link className="dropdown-item" to="/sign-in">{props.translate("Sign in")}</Link>}</li>
+          : <a className="dropdown-item" onClick={e => props.goTo(e, "/sign-in")}>{props.translate("Sign in")}</a>}</li>
       </ul>
     </li>
   );

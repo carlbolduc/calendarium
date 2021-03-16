@@ -1,9 +1,6 @@
-import React from 'react';
-import 'bootstrap/dist/js/bootstrap.bundle.js';
-
 export default function Language(props) {
   function selectedLanguage() {
-    let result = 'English';
+    let result = "English";
     const language = props.languages.find(l => l.languageId === props.languageId);
     if (language !== undefined) {
       result = language.name;
@@ -16,9 +13,13 @@ export default function Language(props) {
       <li key={l.languageId}>
         <a 
           className="dropdown-item" 
-          href="#" 
-          onClick={e => {e.preventDefault();props.switchLanguage(l.languageId)}}>
-            {l.name}
+          onClick={e => {
+            e.preventDefault();
+            props.switchLanguage(l.languageId);
+            props.collapseMenu();
+          }}
+        >
+          {l.name}
         </a>
       </li>
     );
