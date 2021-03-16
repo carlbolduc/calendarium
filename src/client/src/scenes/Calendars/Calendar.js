@@ -35,7 +35,9 @@ export default function Calendar(props) {
   }, []);
 
   useEffect(() => {
-    getCalendarEvents();
+    if ([props.calendar.linkEn, props.calendar.linkFr].indexOf(link) !== -1) {
+      getCalendarEvents();
+    }
   }, [props.calendar, currentDay])
 
   useEffect(() => {
