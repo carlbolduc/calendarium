@@ -1,3 +1,5 @@
+import React from "react";
+
 export default function Button(props) {
   const classes = props.outline 
     ? "btn btn-outline-secondary me-3 my-3"
@@ -9,8 +11,8 @@ export default function Button(props) {
       className={classes}
       disabled
     >
-      <span className="spinner-border spinner-border-sm mr-1"/>
-      {props.label}
+      <span className="spinner-border spinner-border-sm"/>
+      <span className="ms-1">{props.label}</span>
     </button>
   ) : (
     <button
