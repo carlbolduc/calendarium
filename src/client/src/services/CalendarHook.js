@@ -17,6 +17,7 @@ export function useCalendar(token, subscribed) {
     startWeekOn: "Sunday",
     primaryColor: "#ffffff",
     secondaryColor: "#ffffff",
+    embedCalendar: false,
     publicCalendar: false,
     eventApprovalRequired: true,
     access: ""

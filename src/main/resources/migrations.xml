@@ -409,4 +409,10 @@
         <addUniqueConstraint tableName="calendar" columnNames="link_fr"/>
     </changeSet>
 
+    <changeSet id="3" author="carl">
+        <addColumn tableName="calendar">
+            <column name="embed_calendar" type="boolean"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

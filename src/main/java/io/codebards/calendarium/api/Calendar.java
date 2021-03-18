@@ -13,9 +13,10 @@ public class Calendar {
     private String startWeekOn;
     private String primaryColor;
     private String secondaryColor;
+    private Boolean embedCalendar = false;
     private Boolean publicCalendar = false;
     private Boolean eventApprovalRequired = true;
-private String access;
+    private String access;
 
     public long getCalendarId() {
         return calendarId;
@@ -113,6 +114,14 @@ private String access;
         this.secondaryColor = secondaryColor;
     }
 
+    public Boolean getEmbedCalendar() {
+        return embedCalendar;
+    }
+
+    public void setEmbedCalendar(Boolean embedCalendar) {
+        this.embedCalendar = embedCalendar;
+    }
+
     public Boolean getPublicCalendar() {
         return publicCalendar != null && publicCalendar;
     }
@@ -136,4 +145,5 @@ private String access;
     public void setAccess(String access) {
         this.access = access;
     }
+
 }

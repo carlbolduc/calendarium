@@ -115,6 +115,7 @@ public interface Dao {
             "       c.start_week_on,\n" +
             "       c.primary_color,\n" +
             "       c.secondary_color,\n" +
+            "       c.embed_calendar,\n" +
             "       c.public_calendar,\n" +
             "       c.event_approval_required\n" +
             "FROM calendar c\n" +
@@ -136,6 +137,7 @@ public interface Dao {
             "       start_week_on,\n" +
             "       primary_color,\n" +
             "       secondary_color,\n" +
+            "       embed_calendar,\n" +
             "       public_calendar,\n" +
             "       event_approval_required\n" +
             "FROM calendar\n" +
@@ -162,6 +164,7 @@ public interface Dao {
             "       c.start_week_on,\n" +
             "       c.primary_color,\n" +
             "       c.secondary_color,\n" +
+            "       c.embed_calendar,\n" +
             "       c.public_calendar,\n" +
             "       c.event_approval_required,\n" +
             "       ca.status AS access\n" +
@@ -185,13 +188,13 @@ public interface Dao {
     Optional<Calendar> findAnonymousCalendar(@Bind("link") String link, @Bind("calendarAccessId") long calendarAccessId);
 
     @SqlUpdate("INSERT INTO calendar (enable_en, enable_fr, name_en, name_fr, description_en, description_fr, link_en, link_fr,\n" +
-            "                      start_week_on, primary_color, secondary_color, public_calendar, event_approval_required)\n" +
+            "                      start_week_on, primary_color, secondary_color, embed_calendar, public_calendar, event_approval_required)\n" +
             "VALUES (:enableEn, :enableFr, :nameEn, :nameFr, :descriptionEn, :descriptionFr, :linkEn, :linkFr,\n" +
-            "        :startWeekOn, :primaryColor, :secondaryColor, :publicCalendar, :eventApprovalRequired)")
+            "        :startWeekOn, :primaryColor, :secondaryColor, :embedCalendar, :publicCalendar, :eventApprovalRequired)")
     @GetGeneratedKeys
     long insertCalendar(@Bind("accountId") long accountId, @BindBean Calendar calendar);
 
-    @SqlUpdate("UPDATE calendar SET enable_en = :enableEn, enable_fr = :enableFr, name_en = :nameEn, name_fr = :nameFr, description_en = :descriptionEn, description_fr = :descriptionFr, link_en = :linkEn, link_fr = :linkFr, start_week_on = :startWeekOn, primary_color = :primaryColor, secondary_color = :secondaryColor, public_calendar = :publicCalendar, event_approval_required = :eventApprovalRequired WHERE calendar_id = :calendarId")
+    @SqlUpdate("UPDATE calendar SET enable_en = :enableEn, enable_fr = :enableFr, name_en = :nameEn, name_fr = :nameFr, description_en = :descriptionEn, description_fr = :descriptionFr, link_en = :linkEn, link_fr = :linkFr, start_week_on = :startWeekOn, primary_color = :primaryColor, secondary_color = :secondaryColor, embed_calendar = :embedCalendar, public_calendar = :publicCalendar, event_approval_required = :eventApprovalRequired WHERE calendar_id = :calendarId")
     void updateCalendar(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @BindBean Calendar calendar);
 
     @SqlUpdate("DELETE FROM calendar WHERE calendar_id = :calendarId")
