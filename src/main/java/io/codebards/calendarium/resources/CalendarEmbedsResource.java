@@ -33,7 +33,7 @@ public class CalendarEmbedsResource {
     public Response getCalendar(@PathParam("calendarId") long calendarId) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
         Optional<Calendar> oCalendar = dao.findCalendar(calendarId);
-        if (oCalendar.isPresent() && oCalendar.get().getPublicCalendar()) {
+        if (oCalendar.isPresent() && oCalendar.get().getEmbedCalendar()) {
             response = Response.ok(oCalendar.get()).build();
         }
         return response;
@@ -44,7 +44,7 @@ public class CalendarEmbedsResource {
     public List<Event> getCalendarEvents(@PathParam("calendarId") long calendarId, @QueryParam("q") String q) {
         List<Event> events = new ArrayList<>();
         Optional<Calendar> oCalendar = dao.findCalendar(calendarId);
-        if (oCalendar.isPresent() && oCalendar.get().getPublicCalendar()) {
+        if (oCalendar.isPresent() && oCalendar.get().getEmbedCalendar()) {
             String decodedQuery = new String(Base64.getDecoder().decode(q), StandardCharsets.UTF_8);
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());

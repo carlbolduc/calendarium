@@ -26,6 +26,7 @@ export default function CalendarForm(props) {
   const [startWeekOn, setStartWeekOn] = useState(props.calendar.startWeekOn);
   const [primaryColor, setPrimaryColor] = useState(props.calendar.primaryColor);
   const [secondaryColor, setSecondaryColor] = useState(props.calendar.secondaryColor);
+  const [embedCalendar, setEmbedCalendar] = useState(props.calendar.embedCalendar);
   const [publicCalendar, setPublicCalendar] = useState(props.calendar.publicCalendar);
   const [requesting, setRequesting] = useState(false);
   const [eventApprovalRequired, setEventApprovalRequired] = useState(props.calendar.eventApprovalRequired);
@@ -46,6 +47,7 @@ export default function CalendarForm(props) {
         startWeekOn: startWeekOn,
         primaryColor: primaryColor,
         secondaryColor: secondaryColor,
+        embedCalendar: embedCalendar,
         publicCalendar: publicCalendar,
         eventApprovalRequired: eventApprovalRequired
       }
@@ -123,7 +125,7 @@ export default function CalendarForm(props) {
 
   const englishFields = enableEn ? (
     <>
-      <ReadOnlyIframe iframe={enableEn ? `<iframe src="https://codebards.io/embed/${props.calendar.calendarId}?locale=enCa"></iframe>` : ""} />
+      {enableEn && embedCalendar ? <ReadOnlyIframe iframe={`<iframe src="https://codebards.io/embed/${props.calendar.calendarId}?locale=enCa"></iframe>`} /> : null}
       <Input
         label={"English name"}
         type="text"
@@ -169,7 +171,7 @@ export default function CalendarForm(props) {
 
   const frenchFields = enableFr ? (
     <>
-      <ReadOnlyIframe iframe={enableFr ? `<iframe src="https://codebards.io/embed/${props.calendar.calendarId}?locale=frCa"></iframe>` : ""} />
+      {enableFr && embedCalendar ? <ReadOnlyIframe iframe={`<iframe src="https://codebards.io/embed/${props.calendar.calendarId}?locale=frCa"></iframe>`} /> : null}
       <Input
         label={props.translate("French name")}
         type="text"
@@ -221,7 +223,6 @@ export default function CalendarForm(props) {
     // TODO: use {props.translate("")} for text visible in the app
     <>
       <h1>{props.translate(title)}</h1>
-      {props.calendarEmbed}
       <form onSubmit={handleSubmit} id="form-new-calendar" noValidate>
         {noLanguageEnabled ? <InvalidFeedback feedback="Enable at least one language." /> : null}
         <div className="row mb-3">
@@ -273,6 +274,14 @@ export default function CalendarForm(props) {
           handleChange={e => setSecondaryColor(e.target.value)}
           // TODO: include in the info text where the secondary color is used in the calendar (TBD when the calendar display will be done)
           info="Select a secondary color for this calendar."
+        />
+        <Checkbox
+          label="Make this calendar embeddable"
+          id="embed-calendar"
+          value={embedCalendar}
+          required={false}
+          handleChange={e => setEmbedCalendar(e.target.checked)}
+          info="When this is checked, this calendar will become embeddable in any other website. You can uncheck this at any time and the calendar will no longer be embeddable."
         />
         <Checkbox
           label="Make this calendar available publicly"
