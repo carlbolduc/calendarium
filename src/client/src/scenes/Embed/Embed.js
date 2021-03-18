@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import {useLocation, useParams} from "react-router-dom";
 import PropTypes from "prop-types";
 import { DateTime } from "luxon";
 import Month from "../Calendars/Month";
@@ -9,14 +9,27 @@ import {encodeObject} from "../../services/Helpers";
 
 export default function Embed(props) {
   let { id } = useParams();
+  function useQuery() {
+    return new URLSearchParams(useLocation().search);
+  }
+  const query = useQuery();
   const [currentDay, setCurrentDay] = useState(DateTime.now());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    props.getCalendar({id: id}, () => {
-      setLoading(false);
-    });
-  }, []);
+    if (props.languages.length > 0) {
+      props.getCalendar({id: id}, () => {
+        setLoading(false);
+      });
+      const queryLocale = query.get("locale");
+      if (queryLocale !== null) {
+        const language = props.languages.find(l => l.localeId.toLowerCase() === queryLocale.toLowerCase());
+        if (language !== undefined) {
+          props.setLanguage(language.languageId);
+        }
+      }
+    }
+  }, [props.languages]);
 
   useEffect(() => {
     if (props.calendar.calendarId !== null) {
@@ -83,6 +96,8 @@ Embed.propTypes = {
   getCalendar: PropTypes.func.isRequired,
   calendarEvents: PropTypes.array.isRequired,
   getCalendarEvents: PropTypes.func.isRequired,
+  languages: PropTypes.array.isRequired,
   language: PropTypes.string.isRequired,
+  setLanguage: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired
 };

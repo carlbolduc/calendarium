@@ -75,7 +75,9 @@ export default function App() {
             getCalendar={getCalendar}
             calendarEvents={calendarEvents}
             getCalendarEvents={getCalendarEmbedEvents}
+            languages={languages}
             language={language}
+            setLanguage={switchLanguage}
             translate={translate}
           />
         </Route>
