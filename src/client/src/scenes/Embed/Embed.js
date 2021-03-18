@@ -10,9 +10,12 @@ import {encodeObject} from "../../services/Helpers";
 export default function Embed(props) {
   let { id } = useParams();
   const [currentDay, setCurrentDay] = useState(DateTime.now());
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    props.getCalendar({id: id});
+    props.getCalendar({id: id}, () => {
+      setLoading(false);
+    });
   }, []);
 
   useEffect(() => {
@@ -33,23 +36,41 @@ export default function Embed(props) {
     <Event key={e.eventId} event={e} language={props.language} />
   ));
 
+  function main() {
+    let result;
+    if (loading) {
+      result = (
+        <div className="spinner-grow" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      );
+    } else if (props.calendar.calendarId === null) {
+      result = <div>We did not find a calendar for this URL.</div>
+    } else {
+      result = (
+        <div className="row justify-content-center">
+          <div className="col-12 col-md-auto">
+            <Month
+              startWeekOn={props.calendar.startWeekOn}
+              currentDay={currentDay}
+              selectDay={date => setCurrentDay(date)}
+              setCurrentDay={setCurrentDay}
+              language={props.language}
+            />
+          </div>
+          <div className="col-12 col-md">
+            <h2>Events</h2>
+            {calendarEvents}
+          </div>
+        </div>
+      );
+    }
+    return result;
+  }
+
   return (
     <div className="mt-4 px-0">
-      <div className="row justify-content-center">
-        <div className="col-12 col-md-auto">
-          <Month
-            startWeekOn={props.calendar.startWeekOn}
-            currentDay={currentDay}
-            selectDay={date => setCurrentDay(date)}
-            setCurrentDay={setCurrentDay}
-            language={props.language}
-          />
-        </div>
-        <div className="col-12 col-md">
-          <h2>Events</h2>
-          {calendarEvents}
-        </div>
-      </div>
+      {main()}
     </div>
   );
 

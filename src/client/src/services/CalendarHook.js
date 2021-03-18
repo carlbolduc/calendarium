@@ -71,9 +71,15 @@ export function useCalendar(token, subscribed) {
         url: url,
       }).then(res => {
         setCalendar(res.data);
+        if (cb) cb();
       }).catch(err => {
-        console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendars' from 'useCalendar' hook");
-        console.log(err.response);
+        if (err.response.status === 404) {
+          // Calendar not found, we callback
+          if (cb) cb();
+        } else {
+          console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendars' from 'useCalendar' hook");
+          console.log(err.response);
+        }
       });
     } else {
       console.log("Function getCalendar of CalendarHook called with invalid parameters.")
