@@ -84,6 +84,7 @@ public class App extends Application<Config> {
         final LocalisationsResource localisationsResource = new LocalisationsResource(dao);
         final SubscriptionsResource subscriptionsResource = new SubscriptionsResource(dao, config.getThirdPartyFactory().getStripeApiKey(), config.getThirdPartyFactory().getStripeWebhookSecret());
         final CalendarsResource calendarsResource = new CalendarsResource(dao);
+        final CalendarEmbedsResource calendarEmbedsResource = new CalendarEmbedsResource(dao);
         final EventsResource eventsResource = new EventsResource(dao);
         final CalendarCollaboratorsResource calendarCollaboratorsResource = new CalendarCollaboratorsResource(dao, argon2, emailManager);
 
@@ -106,6 +107,7 @@ public class App extends Application<Config> {
         environment.jersey().register(localisationsResource);
         environment.jersey().register(subscriptionsResource);
         environment.jersey().register(calendarsResource);
+        environment.jersey().register(calendarEmbedsResource);
         environment.jersey().register(eventsResource);
         environment.jersey().register(calendarCollaboratorsResource);
     }

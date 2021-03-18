@@ -49,22 +49,35 @@ export function useCalendar(token, subscribed) {
   }
 
   function getCalendar(data, cb) {
-    const url = data.calendarAccessId === undefined
-      ? `${process.env.REACT_APP_API}/calendars/${data.link}`
-      : `${process.env.REACT_APP_API}/calendars/anonymous/${data.link}?id=${data.calendarAccessId}`;
-    const header = token !== null
-      ? { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
-      : { "Content-Type": "application/json" }
-    axios({
-      method: "GET",
-      headers: header,
-      url: url,
-    }).then(res => {
-      setCalendar(res.data);
-    }).catch(err => {
-      console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendars' from 'useCalendar' hook");
-      console.log(err.response);
-    });
+    function buildUrl() {
+      let url;
+      if (data.hasOwnProperty("id")) {
+        url = `${process.env.REACT_APP_API}/calendar-embeds/${data.id}`
+      } else if (data.hasOwnProperty("calendarAccessId")) {
+        url = `${process.env.REACT_APP_API}/calendars/anonymous/${data.link}?id=${data.calendarAccessId}`;
+      } else if (data.hasOwnProperty("link")) {
+        url = `${process.env.REACT_APP_API}/calendars/${data.link}`;
+      }
+      return url;
+    }
+    const url = buildUrl();
+    if (url !== undefined) {
+      const header = token !== null
+        ? { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
+        : { "Content-Type": "application/json" }
+      axios({
+        method: "GET",
+        headers: header,
+        url: url,
+      }).then(res => {
+        setCalendar(res.data);
+      }).catch(err => {
+        console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendars' from 'useCalendar' hook");
+        console.log(err.response);
+      });
+    } else {
+      console.log("Function getCalendar of CalendarHook called with invalid parameters.")
+    }
   }
 
   function createCalendar(data, cb) {
@@ -163,9 +176,24 @@ export function useCalendar(token, subscribed) {
     }
   }
 
+  function getCalendarEmbedEvents(calendarId, q, cb) {
+      axios({
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        url: `${process.env.REACT_APP_API}/calendar-embeds/${calendarId}/events?q=${q}`,
+      }).then(res => {
+        setCalendarEvents(res.data);
+      }).catch(err => {
+        console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendarEvents' from 'useCalendar' hook");
+        console.log(err.response);
+      });
+  }
+
   function clearCalendarEvents() {
     setCalendarEvents([]);
   }
 
-  return { calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents, clearCalendarEvents };
+  return { calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents, getCalendarEmbedEvents, clearCalendarEvents };
 }

@@ -285,6 +285,25 @@ public interface Dao {
     @RegisterBeanMapper(Event.class)
     List<Event> findCalendarCollaboratorEvents(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @Bind("startAt") Instant startAt);
 
+    @SqlQuery("SELECT event_id,\n" +
+            "       status,\n" +
+            "       name_en,\n" +
+            "       name_fr,\n" +
+            "       description_en,\n" +
+            "       description_fr,\n" +
+            "       start_at,\n" +
+            "       end_at,\n" +
+            "       all_day,\n" +
+            "       hyperlink_en,\n" +
+            "       hyperlink_fr,\n" +
+            "       calendar_id\n" +
+            "FROM event\n" +
+            "WHERE calendar_id = :calendarId\n" +
+            "  AND status = 'published'\n" +
+            "  AND start_at >= :startAt")
+    @RegisterBeanMapper(Event.class)
+    List<Event> findCalendarEmbedEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Instant startAt);
+
     @SqlQuery("SELECT event_id, account_id, calendar_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr FROM event WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%'))) AND (:status = '' OR status = :status) ORDER BY start_at")
     @RegisterBeanMapper(Event.class)
     List<Event> findEvents(@BindBean EventsParams eventsParams);

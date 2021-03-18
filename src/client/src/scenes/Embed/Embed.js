@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { DateTime } from "luxon";
 import Month from "../Calendars/Month";
 import Event from "../Events/Event";
+import {encodeObject} from "../../services/Helpers";
 
 
 export default function Embed(props) {
@@ -11,8 +12,22 @@ export default function Embed(props) {
   const [currentDay, setCurrentDay] = useState(DateTime.now());
 
   useEffect(() => {
-    console.log(id)
+    props.getCalendar({id: id});
   }, []);
+
+  useEffect(() => {
+    if (props.calendar.calendarId !== null) {
+      getCalendarEvents();
+    }
+  }, [props.calendar, currentDay])
+
+  function getCalendarEvents() {
+    const q = encodeObject({ startAt: currentDay.toSeconds()});
+    props.getCalendarEvents(props.calendar.calendarId, q, result => {
+      // We do nothing with the result.
+      // TODO: should we display the error if there is one (there should never be one)
+    });
+  }
 
   const calendarEvents = props.calendarEvents.map(e => (
     <Event key={e.eventId} event={e} language={props.language} />
