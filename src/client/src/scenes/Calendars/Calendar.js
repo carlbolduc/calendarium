@@ -62,12 +62,6 @@ export default function Calendar(props) {
     });
   }
 
-  function copyIframe(iframe) {
-    const el = document.getElementById("iframe-copied");
-    // const toast = new Toast(el, {});
-    // navigator.clipboard.writeText(iframe).then(()=> toast.show());
-  }
-
   function submitForApproval(event) {
     event.status = eventStatus.PENDING_APPROVAL.value;
     props.updateEvent(event, () => {
@@ -100,23 +94,6 @@ export default function Calendar(props) {
     />
   ) : null;
 
-  const iframe = (`<iframe src="https://codebards.io/embed/${props.calendar.calendarId}"></iframe>`);
- 
-  const calendarEmbed = props.calendar.publicCalendar ? (
-    <article className="mb-4">
-      <h5>Embed code</h5>
-      <div className="input-group mb-3">
-        <input
-          type="text"
-          className="form-control"
-          readOnly={true}
-          value={iframe}
-        />
-          <span className="input-group-text" style={{cursor: "pointer"}} onClick={() => copyIframe(iframe)}>Copy</span>
-      </div>
-    </article>
-  ) : null;
-
   const calendarForm = (
     <CalendarForm
       new={false}
@@ -127,7 +104,6 @@ export default function Calendar(props) {
       deleteCalendar={props.deleteCalendar}
       hideForm={() => setShowCalendarForm(false)}
       setResult={setCalendarFormResult}
-      calendarEmbed={calendarEmbed}
     />
   );
 
@@ -275,22 +251,13 @@ export default function Calendar(props) {
   );
 
   function renderMain() {
+    // TODO: simplify this
     let result;
     if (showCalendarForm) {
       // We're editing the calendar settings
       result = (
         <>
           {calendarForm}
-          <div className="position-fixed bottom-0 end-0 p-3" style={{zIndex: 10}}>
-            <div id="iframe-copied" className="toast align-items-center text-white bg-secondary border-0" role="alert" aria-live="assertive" aria-atomic="true">
-              <div className="d-flex">
-                <div className="toast-body">
-                  Copied to clipboard!
-                </div>
-                <button type="button" className="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"/>
-              </div>
-            </div>
-          </div>
         </>
       );
     } else if (showEventForm) {

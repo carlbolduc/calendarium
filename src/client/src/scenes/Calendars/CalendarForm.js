@@ -6,6 +6,7 @@ import { textValid } from "../../services/Helpers";
 import Checkbox from "../../components/Form/Checkbox";
 import Select from "../../components/Form/Select";
 import Textarea from "../../components/Form/Textarea";
+import ReadOnlyIframe from "../../components/Form/ReadOnlyIframe";
 
 export default function CalendarForm(props) {
   const [enableEn, setEnableEn] = useState(props.calendar.enableEn);
@@ -122,6 +123,7 @@ export default function CalendarForm(props) {
 
   const englishFields = enableEn ? (
     <>
+      <ReadOnlyIframe iframe={enableEn ? `<iframe src="https://codebards.io/embed/${props.calendar.calendarId}?locale=enCa"></iframe>` : ""} />
       <Input
         label={"English name"}
         type="text"
@@ -167,6 +169,7 @@ export default function CalendarForm(props) {
 
   const frenchFields = enableFr ? (
     <>
+      <ReadOnlyIframe iframe={enableFr ? `<iframe src="https://codebards.io/embed/${props.calendar.calendarId}?locale=frCa"></iframe>` : ""} />
       <Input
         label={props.translate("French name")}
         type="text"
