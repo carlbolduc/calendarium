@@ -6,11 +6,13 @@ export function useLoc(account, languages) {
   const [language, setLanguage] = useState("enCa");
   
   useEffect(() => {
-    const l = languages.find(l => l.languageId === account.languageId);
-    if (l !== undefined) {
-      setLanguage(l.localeId);
+    if (languages.length > 0) {
+      const l = languages.find(l => l.languageId === account.languageId);
+      if (l !== undefined) {
+        setLanguage(l.localeId);
+      }
     }
-  },[account]);
+  },[account, languages]);
 
   function getLocData() {
     axios({

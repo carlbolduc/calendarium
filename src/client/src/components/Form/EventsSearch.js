@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import Event from "../../scenes/Events/Event";
 import Select from "./Select";
 import Input from "./Input";
@@ -19,18 +19,7 @@ export default function EventsSearch(props) {
   const [canSearch, setCanSearch] = useState(false);
   const [result, setResult] = useState(null);
 
-  useEffect(() => {
-    searchEvents();
-  }, []);
-
-  useEffect(() => {
-    if (requesting) {
-      // Build query param with currentDay
-      searchEvents();
-    }
-  }, [requesting]);
-
-  function searchEvents() {
+  const searchEvents = useCallback(() => {
     // Build query param with currentDay
     const q = encodeObject({
       search: search,
@@ -43,7 +32,19 @@ export default function EventsSearch(props) {
       setRequesting(false);
       setCanSearch(false);
     });
-  }
+  }, [props, endDate, search, startDate, status]);
+
+
+  useEffect(() => {
+    searchEvents();
+  }, [searchEvents]);
+
+  useEffect(() => {
+    if (requesting) {
+      // Build query param with currentDay
+      searchEvents();
+    }
+  }, [requesting, searchEvents]);
 
   function handleSubmit(e) {
     e.preventDefault();

@@ -57,7 +57,7 @@ export default function EventForm(props) {
         setEndTime(endAt.setLocale(locale).toLocaleString(fm));
       }
     }
-  }, [props.event]);
+  }, [props.event, props.language]);
 
   useEffect(() => {
     const locale = getLocale(props.language);
@@ -182,8 +182,8 @@ export default function EventForm(props) {
           // Events ends on the same day that it started, endTime must be later than start time
           const startTimeValues = getTimeValues(startTime);
           const endTimeValues = getTimeValues(endTime);
-          endTimeValid = endTimeValues.hour > startTimeValues.hour ||
-            endTimeValues.hour === startTimeValues.hour && endTimeValues.minute > startTimeValues.minute;
+          endTimeValid = (endTimeValues.hour > startTimeValues.hour) ||
+            (endTimeValues.hour === startTimeValues.hour && endTimeValues.minute > startTimeValues.minute);
         } else {
           // Event ends on a different day OR startTime is invalid, all end times are valid
           endTimeValid = true;

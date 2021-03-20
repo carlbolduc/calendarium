@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { errorCallback } from "./Helpers";
 
@@ -22,13 +22,6 @@ export function useCalendar(token, subscribed) {
     access: ""
   });
   const [calendarEvents, setCalendarEvents] = useState([]);
-
-  useEffect(() => {
-    if (token !== null) {
-      // TODO: move this into the MyCalendar initial mount function
-      getCalendars();
-    }
-  }, [token]);
 
   function getCalendars() {
     if (token !== null) {

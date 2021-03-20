@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Redirect } from "react-router-dom";
 import CalendarForm from "./CalendarForm";
 import Message from "../../components/Form/Message";
@@ -8,6 +8,10 @@ import CalendarPreview from "./CalendarPreview";
 export default function MyCalendars(props) {
   const [showCalendarForm, setShowCalendarForm] = useState(false);
   const [calendarFormResult, setCalendarFormResult] = useState(null);
+
+  useEffect(() =>{
+    props.getCalendars();
+  }, [props])
 
   const title = !showCalendarForm ? (
     <h1>{props.translate("My calendars")}</h1>

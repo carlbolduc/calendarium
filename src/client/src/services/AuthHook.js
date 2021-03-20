@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useCallback} from "react";
 import axios from "axios";
 import {errorCallback} from "./Helpers";
 
@@ -7,11 +7,29 @@ export function useAuth() {
   const [account, setAccount] = useState({accountId: null, name: "", email: "", languageId: 1, stripeCusId: null, createdAt: new Date().getTime() / 1000, subscription: null});
   const authenticated = token !== null;
 
+  const getAccount = useCallback(() => {
+    if (token !== null) {
+      axios({
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        url: `${process.env.REACT_APP_API}/accounts`,
+      }).then(res => {
+        setAccount(res.data);
+      }).catch(() => {
+        localStorage.removeItem("token");
+        setToken(null);
+      });
+    }
+  }, [token]);
+
   useEffect(() => {
     if (token !== null) {
       getAccount();
     }
-  }, [token]);
+  }, [token, getAccount]);
 
   function signUp(data, cb) {
     // set currently active locale as the language id for the new account
@@ -54,24 +72,6 @@ export function useAuth() {
     }
     localStorage.removeItem("token");
     setToken(null);
-  }
-
-  function getAccount() {
-    if (token !== null) {
-      axios({
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        url: `${process.env.REACT_APP_API}/accounts`,
-      }).then(res => {
-        setAccount(res.data);
-      }).catch(() => {
-        localStorage.removeItem("token");
-        setToken(null);
-      });
-    }
   }
 
   function updateAccount(data, cb) {

@@ -4,19 +4,19 @@ export default function Account(props) {
 
   return (
     <li className="nav-item dropdown">
-      <a className="nav-link dropdown-toggle" href="#" id="dropdown-account" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <button className="link-button nav-link dropdown-toggle" id="dropdown-account" data-bs-toggle="dropdown" aria-expanded="false">
         {props.translate("Account")}
-      </a>
+      </button>
       <ul className="dropdown-menu" aria-labelledby="dropdown-account">
         <li>{props.authenticated 
-          ? <a className="dropdown-item" onClick={e => props.goTo(e, "/profile")}>{props.translate("My profile")}</a>
-          : <a className="dropdown-item" onClick={e => props.goTo(e, "/sign-up")}>{props.translate("Sign up")}</a>}</li>
+          ? <button className="link-button dropdown-item" onClick={e => props.goTo(e, "/profile")}>{props.translate("My profile")}</button>
+          : <button className="link-button dropdown-item" onClick={e => props.goTo(e, "/sign-up")}>{props.translate("Sign up")}</button>}</li>
         {props.authenticated 
-          ? <li><a className="dropdown-item" onClick={e => props.goTo(e, "/subscription")}>{props.translate("My subscription")}</a></li>
+          ? <li><button className="link-button dropdown-item" onClick={e => props.goTo(e, "/subscription")}>{props.translate("My subscription")}</button></li>
           : null}
         <li>{props.authenticated 
-          ? <a className="dropdown-item" onClick={props.signOut}>{props.translate("Sign out")}</a>
-          : <a className="dropdown-item" onClick={e => props.goTo(e, "/sign-in")}>{props.translate("Sign in")}</a>}</li>
+          ? <button className="link-button dropdown-item" onClick={props.signOut}>{props.translate("Sign out")}</button>
+          : <button className="link-button dropdown-item" onClick={e => props.goTo(e, "/sign-in")}>{props.translate("Sign in")}</button>}</li>
       </ul>
     </li>
   );
