@@ -13,7 +13,7 @@ export default function DeleteEventButton(props) {
         props.refresh();
       })
     }
-  }, [working, props])
+  }, [working])
 
   function render() {
     let shouldRender = false;

@@ -25,7 +25,7 @@ export default function ForgotPassword(props) {
         setRequesting(false);
       })
     }
-  }, [email, requesting, props])
+  }, [email, requesting])
 
   function handleSubmit(e) {
     e.preventDefault();

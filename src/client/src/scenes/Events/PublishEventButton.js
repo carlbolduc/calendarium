@@ -13,7 +13,7 @@ export default function PublishEventButton(props) {
         props.refresh();
       })
     }
-  }, [working, props])
+  }, [working])
 
   function render() {
     let shouldRender = false;
