@@ -135,10 +135,10 @@ export function useAuth() {
     });
   }
 
-  function saveToken(token) {
+  const saveToken = useCallback((token) => {
     localStorage.setItem("token", token);
     setToken(token);
-  }
+  }, []);
 
   return {token, account, authenticated, signUp, signIn, signOut, getAccount, updateAccount, createPasswordReset, resetPassword, saveToken};
 }

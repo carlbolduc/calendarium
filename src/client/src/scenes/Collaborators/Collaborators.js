@@ -7,6 +7,8 @@ import InvalidFeedback from "../../components/Form/InvalidFeedback";
 import Message from "../../components/Form/Message";
 
 export default function Collaborators(props) {
+  const getCalendarCollaborators = props.getCalendarCollaborators;
+  const inviteCollaborator = props.inviteCollaborator;
   const [name, setName] = useState("");
   const [invalidName, setInvalidName] = useState(false);
   const [email, setEmail] = useState("");
@@ -15,8 +17,8 @@ export default function Collaborators(props) {
   const [result, setResult] = useState("");
 
   useEffect(() => {
-    props.getCalendarCollaborators(props.calendar.calendarId);
-  }, [])
+    getCalendarCollaborators(props.calendar.calendarId);
+  }, [props.calendar.calendarId, getCalendarCollaborators])
 
   useEffect(() => {
     if (requesting) {
@@ -26,12 +28,12 @@ export default function Collaborators(props) {
           "email": email
         }
       );
-      props.inviteCollaborator(props.calendar.calendarId, data, result => {
+      inviteCollaborator(props.calendar.calendarId, data, result => {
         setResult(result);
         setRequesting(false);
       });
     }
-  }, [requesting])
+  }, [requesting, name, email, props.calendar.calendarId, inviteCollaborator]);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -53,7 +55,7 @@ export default function Collaborators(props) {
     </div>
   );
 
-  const inviteCollaborator = (
+  const inviteCollaboratorForm = (
     <div className="collapse mb-4" id="invite-collaborator">
       <form onSubmit={handleSubmit} id="form-invite-collaborator" noValidate>
         <Input
@@ -142,7 +144,7 @@ export default function Collaborators(props) {
       <h1>{title}</h1>
       <Message result={result} origin="collaborators" translate={props.translate} />
       {actionButtonsZone}
-      {inviteCollaborator}
+      {inviteCollaboratorForm}
       {collaborators()}
     </article>
   );

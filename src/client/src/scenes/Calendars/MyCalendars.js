@@ -6,12 +6,13 @@ import Button from "../../components/Form/Button";
 import CalendarPreview from "./CalendarPreview";
 
 export default function MyCalendars(props) {
+  const getCalendars = props.getCalendars;
   const [showCalendarForm, setShowCalendarForm] = useState(false);
   const [calendarFormResult, setCalendarFormResult] = useState(null);
 
   useEffect(() =>{
-    props.getCalendars();
-  }, [props])
+    getCalendars();
+  }, [getCalendars])
 
   const title = !showCalendarForm ? (
     <h1>{props.translate("My calendars")}</h1>

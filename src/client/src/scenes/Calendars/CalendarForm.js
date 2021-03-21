@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 import Input from "../../components/Form/Input";
 import Button from "../../components/Form/Button";
@@ -9,6 +9,10 @@ import Textarea from "../../components/Form/Textarea";
 import ReadOnlyIframe from "../../components/Form/ReadOnlyIframe";
 
 export default function CalendarForm(props) {
+  const createCalendar = props.createCalendar;
+  const updateCalendar = props.updateCalendar;
+  const setResult = props.setResult;
+  const hideForm = props.hideForm;
   const [enableEn, setEnableEn] = useState(props.calendar.enableEn);
   const [nameEn, setNameEn] = useState(props.calendar.nameEn);
   const [invalidNameEn, setInvalidNameEn] = useState(false);
@@ -31,43 +35,47 @@ export default function CalendarForm(props) {
   const [eventApprovalRequired, setEventApprovalRequired] = useState(props.calendar.eventApprovalRequired);
   const [noLanguageEnabled, setNoLanguageEnabled] = useState(false);
 
+  const buildCalendar = useCallback(() => {
+    return {
+      enableEn: enableEn,
+      nameEn: nameEn === "" ? null : nameEn,
+      descriptionEn: descriptionEn,
+      linkEn: linkEn === "" ? null : linkEn,
+      enableFr: enableFr,
+      nameFr: nameFr === "" ? null : nameFr,
+      descriptionFr: descriptionFr,
+      linkFr: linkFr === "" ? null : linkFr,
+      startWeekOn: startWeekOn,
+      primaryColor: primaryColor,
+      secondaryColor: secondaryColor,
+      publicCalendar: publicCalendar,
+      eventApprovalRequired: eventApprovalRequired
+    };
+  }, [enableEn, nameEn, descriptionEn, linkEn, enableFr, nameFr, descriptionFr, linkFr, startWeekOn, primaryColor, secondaryColor, publicCalendar, eventApprovalRequired])
+
   useEffect(() => {
     if (requesting) {
       // Name and link must be unique, set them to null if they are an empty string
-      const calendar = {
-        enableEn: enableEn,
-        nameEn: nameEn === "" ? null : nameEn,
-        descriptionEn: descriptionEn,
-        linkEn: linkEn === "" ? null : linkEn,
-        enableFr: enableFr,
-        nameFr: nameFr === "" ? null : nameFr,
-        descriptionFr: descriptionFr,
-        linkFr: linkFr === "" ? null : linkFr,
-        startWeekOn: startWeekOn,
-        primaryColor: primaryColor,
-        secondaryColor: secondaryColor,
-        publicCalendar: publicCalendar,
-        eventApprovalRequired: eventApprovalRequired
-      }
+      const calendar = buildCalendar();
       if (props.new) {
-        props.createCalendar(calendar, result => {
-          props.setResult(result);
+        createCalendar(calendar, result => {
+          setResult(result);
           setRequesting(false);
           if (result.success) {
-            props.hideForm();
+            hideForm();
           }
         });
       } else {
-        props.updateCalendar(props.calendar.calendarId, calendar, result => {
-          props.setResult(result);
+        updateCalendar(props.calendar.calendarId, calendar, result => {
+          setResult(result);
           setRequesting(false);
           if (result.success) {
-            props.hideForm();
+            hideForm();
           }
         });
       }
     }
-  }, [requesting]);
+  }, [requesting, buildCalendar, props.calendar.calendarId, props.new, createCalendar, updateCalendar, setResult, hideForm]);
 
   useEffect(() => {
     if (enableEn || enableFr) {

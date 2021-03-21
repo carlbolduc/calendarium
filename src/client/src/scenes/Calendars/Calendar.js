@@ -17,6 +17,8 @@ import ApproveEventButton from "../Events/ApproveEventButton";
 import DeleteEventButton from "../Events/DeleteEventButton";
 
 export default function Calendar(props) {
+  const getCalendar = props.getCalendar;
+  const getCalendarEvents = props.getCalendarEvents;
   let { link } = useParams();
   const [currentDay, setCurrentDay] = useState(DateTime.now());
   const [showCalendarForm, setShowCalendarForm] = useState(false);
@@ -28,17 +30,18 @@ export default function Calendar(props) {
   const [showManageEvents, setShowManageEvents] = useState(false);
 
   useEffect(() => {
-    props.getCalendar({ link: link });
-    return () => {
-      props.clearCalendarEvents();
-    };
-  }, []);
+    getCalendar({ link: link });
+  }, [getCalendar, link]);
 
   useEffect(() => {
     if ([props.calendar.linkEn, props.calendar.linkFr].indexOf(link) !== -1) {
-      getCalendarEvents();
+      const q = encodeObject({ startAt: currentDay.toSeconds()});
+      getCalendarEvents(props.calendar.calendarId, q, result => {
+        // We do nothing with the result.
+        // TODO: should we display the error if there is one (there should never be one)
+      });
     }
-  }, [props.calendar, currentDay])
+  }, [props.calendar, link, currentDay, getCalendarEvents])
 
   useEffect(() => {
     if (event !== null) {
@@ -52,20 +55,16 @@ export default function Calendar(props) {
     if (!showEventForm) {
       setEvent(null);
     }
-  }, [showEventForm])
-
-  function getCalendarEvents() {
-    const q = encodeObject({ startAt: currentDay.toSeconds()});
-    props.getCalendarEvents(props.calendar.calendarId, q, result => {
-      // We do nothing with the result.
-      // TODO: should we display the error if there is one (there should never be one)
-    });
-  }
+  }, [showEventForm]);
 
   function submitForApproval(event) {
     event.status = eventStatus.PENDING_APPROVAL.value;
     props.updateEvent(event, () => {
-      getCalendarEvents();
+      const q = encodeObject({ startAt: currentDay.toSeconds()});
+      getCalendarEvents(props.calendar.calendarId, q, result => {
+        // We do nothing with the result.
+        // TODO: should we display the error if there is one (there should never be one)
+      });
     });
   }
 

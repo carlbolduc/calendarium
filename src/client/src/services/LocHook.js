@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 
 export function useLoc(account, languages) {
@@ -14,7 +14,7 @@ export function useLoc(account, languages) {
     }
   },[account, languages]);
 
-  function getLocData() {
+  const getLocData = useCallback(() => {
     axios({
       method: 'GET',
       headers: {
@@ -24,7 +24,7 @@ export function useLoc(account, languages) {
     }).then(res => {
       setLoc(res.data);
     })
-  }
+  }, []);
 
   function translate(label) {
     let locTranslated = '';

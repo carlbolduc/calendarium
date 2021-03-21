@@ -48,7 +48,7 @@ export default function App() {
   useEffect(() => {
     getLocData();
     getLanguages();
-  }, [])
+  }, [getLocData])
 
   function getLanguages() {
     axios({

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import axios from "axios";
 import { errorCallback } from "./Helpers";
 
@@ -9,9 +9,9 @@ export function useCollaborator(token, saveToken) {
     accountId: null,
     calendarId: null,
     status: ""
-  })
+  });
 
-  function getCalendarCollaborators(calendarId) {
+  const getCalendarCollaborators = useCallback((calendarId) => {
     if (token !== null) {
       axios({
         method: "GET",
@@ -27,9 +27,9 @@ export function useCollaborator(token, saveToken) {
         console.log(err.response);
       });
     }
-  }
+  }, [token]);
 
-  function inviteCollaborator(calendarId, data, cb) {
+  const inviteCollaborator = useCallback((calendarId, data, cb) => {
     if (token !== null) {
       axios({
         method: "POST",
@@ -51,9 +51,9 @@ export function useCollaborator(token, saveToken) {
         errorCallback(err, cb);
       });
     }
-  }
+  }, [token]);
 
-  function getCalendarInvitation(data) {
+  const getCalendarInvitation = useCallback((data) => {
     const url = `${process.env.REACT_APP_API}/calendar_collaborators/${data.calendarId}/${data.calendarAccessId}`;
     const header = token !== null
       ? { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
@@ -69,9 +69,9 @@ export function useCollaborator(token, saveToken) {
       console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendarInvitation' from 'useCollaborator' hook");
       console.log(err.response);
     });
-  }
+  }, [token]);
 
-  function acceptCalendarInvitation(data, cb) {
+  const acceptCalendarInvitation = useCallback((data, cb) => {
     const url = `${process.env.REACT_APP_API}/calendar_collaborators/${data.calendarId}/accept_invitation/${data.calendarAccessId}`;
     const header = token !== null
       ? { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
@@ -99,7 +99,7 @@ export function useCollaborator(token, saveToken) {
       // Let caller know that something went wrong
       errorCallback(err, cb);
     });
-  }
+  }, [token, saveToken]);
 
   function deactivateCalendarAccess(calendarId, calendarAccessId) {
     if (token !== null) {

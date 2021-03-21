@@ -8,6 +8,9 @@ import { passwordValid, decideWhatToDisplay } from "../../services/Helpers";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 
 export default function AcceptInvitation(props) {
+  const getCalendar = props.getCalendar;
+  const getCalendarInvitation = props.getCalendarInvitation;
+  const acceptCalendarInvitation = props.acceptCalendarInvitation;
   let { link } = useParams();
   function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -20,18 +23,18 @@ export default function AcceptInvitation(props) {
   const [result, setResult] = useState("");
 
   useEffect(() => {
-    props.getCalendar({ link: link, calendarAccessId: query.get("id") });
-  }, []);
+    getCalendar({ link: link, calendarAccessId: query.get("id") });
+  }, [getCalendar, link, query]);
 
   useEffect(() => {
     if (props.calendar.calendarId !== null) {
-      props.getCalendarInvitation({ calendarId: props.calendar.calendarId, calendarAccessId: query.get("id") });
+      getCalendarInvitation({ calendarId: props.calendar.calendarId, calendarAccessId: query.get("id") });
     }
-  }, [props.calendar]);
+  }, [getCalendarInvitation, props.calendar.calendarId, query]);
 
   useEffect(() => {
     if (requesting) {
-      props.acceptCalendarInvitation({
+      acceptCalendarInvitation({
         calendarId: props.calendarAccess.calendarId,
         calendarAccessId: props.calendarAccess.calendarAccessId,
         accountId: props.calendarAccess.accountId,
@@ -45,7 +48,7 @@ export default function AcceptInvitation(props) {
         }
       });
     }
-  }, [requesting])
+  }, [requesting, password, props.calendarAccess.calendarId, props.calendarAccess.calendarAccessId, props.calendarAccess.accountId, acceptCalendarInvitation]);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -60,7 +63,7 @@ export default function AcceptInvitation(props) {
   const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
   const title = `${props.translate("Invitation to collaborate to")} ${calendarName}`;
 
-  {/* TODO: think about this copy, then add props.translate */ }
+  //TODO: think about this copy, then add props.translate
   const instructions = props.account.accountId !== null ? (
     <>
       <p>You have been invited to collaborate to a calendar. Accept the invitation to get started.</p>

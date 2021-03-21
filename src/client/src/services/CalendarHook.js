@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import axios from "axios";
 import { errorCallback } from "./Helpers";
 
@@ -23,7 +23,7 @@ export function useCalendar(token, subscribed) {
   });
   const [calendarEvents, setCalendarEvents] = useState([]);
 
-  function getCalendars() {
+  const getCalendars = useCallback(() => {
     if (token !== null) {
       axios({
         method: "GET",
@@ -39,9 +39,9 @@ export function useCalendar(token, subscribed) {
         console.log(err.response);
       });
     }
-  }
+  }, [token]);
 
-  function getCalendar(data, cb) {
+  const getCalendar = useCallback((data, cb) => {
     function buildUrl() {
       let url;
       if (data.hasOwnProperty("id")) {
@@ -77,9 +77,9 @@ export function useCalendar(token, subscribed) {
     } else {
       console.log("Function getCalendar of CalendarHook called with invalid parameters.")
     }
-  }
+  }, [token]);
 
-  function createCalendar(data, cb) {
+  const createCalendar = useCallback((data, cb) => {
     if (token !== null && subscribed) {
       axios({
         method: "POST",
@@ -103,9 +103,9 @@ export function useCalendar(token, subscribed) {
         errorCallback(err, cb);
       });
     }
-  }
+  }, [token, getCalendars, subscribed]);
 
-  function updateCalendar(calendarId, data, cb) {
+  const updateCalendar = useCallback((calendarId, data, cb) => {
     if (token !== null && subscribed) {
       axios({
         method: "PUT",
@@ -130,7 +130,7 @@ export function useCalendar(token, subscribed) {
         errorCallback(err, cb);
       });
     }
-  }
+  }, [token, getCalendars, getCalendar, subscribed]);
 
   function deleteCalendar(calendarId, cb) {
     if (token !== null && subscribed) {
@@ -157,7 +157,7 @@ export function useCalendar(token, subscribed) {
     }
   }
 
-  function getCalendarEvents(calendarId, q, cb) {
+  const getCalendarEvents = useCallback((calendarId, q, cb) => {
     if (token !== null) {
       axios({
         method: "GET",
@@ -173,7 +173,7 @@ export function useCalendar(token, subscribed) {
         console.log(err.response);
       });
     }
-  }
+  }, [token]);
 
   function getCalendarEmbedEvents(calendarId, q, cb) {
       axios({

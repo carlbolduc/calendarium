@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Button from "../../components/Form/Button";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 import Input from "../../components/Form/Input";
@@ -9,6 +9,11 @@ import {textValid, timesList, decideWhatToDisplay, getLocale} from "../../servic
 import Textarea from "../../components/Form/Textarea";
 
 export default function EventForm(props) {
+  const getCalendarEvents = props.getCalendarEvents;
+  const createEvent = props.createEvent;
+  const updateEvent = props.updateEvent;
+  const setResult = props.setResult;
+  const hideForm = props.hideForm;
   const [nameEn, setNameEn] = useState("");
   const [invalidNameEn, setInvalidNameEn] = useState(false);
   const [nameFr, setNameFr] = useState("");
@@ -79,22 +84,26 @@ export default function EventForm(props) {
       const endTimeValues = getTimeValues(endTime);
       setEndTime(dt.set({ hour: endTimeValues.hour, minute: endTimeValues.minute, second: 0, millisecond: 0 }).setLocale(locale).toLocaleString(fm));
     }
-  }, [props.language]);
+  }, [props.language, previousEndTime, endTime, previousStartTime, startTime]);
+
+  const buildEvent = useCallback(() => {
+    return {
+      calendarId: props.calendar.calendarId,
+      nameEn: nameEn !== "" ? nameEn : null,
+      nameFr: nameFr !== "" ? nameFr : null,
+      descriptionEn: descriptionEn !== "" ? descriptionEn : null,
+      descriptionFr: descriptionFr !== "" ? descriptionFr : null,
+      hyperlinkEn: hyperlinkEn !== "" ? hyperlinkEn : null,
+      hyperlinkFr: hyperlinkFr !== "" ? hyperlinkFr : null,
+      startAt: null,
+      endAt: null,
+      allDay: allDay
+    };
+  }, [nameEn, nameFr, descriptionEn, descriptionFr, hyperlinkEn, hyperlinkFr, allDay, props.calendar.calendarId]);
 
   useEffect(() => {
     if (requesting) {
-      const event = {
-        calendarId: props.calendar.calendarId,
-        nameEn: nameEn !== "" ? nameEn : null,
-        nameFr: nameFr !== "" ? nameFr : null,
-        descriptionEn: descriptionEn !== "" ? descriptionEn : null,
-        descriptionFr: descriptionFr !== "" ? descriptionFr : null,
-        hyperlinkEn: hyperlinkEn !== "" ? hyperlinkEn : null,
-        hyperlinkFr: hyperlinkFr !== "" ? hyperlinkFr : null,
-        startAt: null,
-        endAt: null,
-        allDay: allDay
-      };
+      const event = buildEvent();
 
       if (allDay) {
         event.startAt = startDate.startOf("day").toSeconds();
@@ -107,31 +116,29 @@ export default function EventForm(props) {
       }
 
       if (props.event === null) {
-        props.createEvent(event, result => {
+        createEvent(event, result => {
           setRequesting(false);
           if (result.success) {
-            props.getCalendarEvents();
-            props.hideForm();
+            getCalendarEvents();
+            hideForm();
           } else {
-            props.setResult(result);
+            setResult(result);
           }
         });
       } else {
         event["eventId"] = props.event.eventId;
-        props.updateEvent(event, result => {
+        updateEvent(event, result => {
           setRequesting(false);
           if (result.success) {
-            props.getCalendarEvents();
-            props.hideForm();
+            getCalendarEvents();
+            hideForm();
           } else {
-            props.setResult(result);
+            setResult(result);
           }
         });
       }
-
-
     }
-  }, [requesting]);
+  }, [requesting, props.event, allDay, startDate, startTime, endDate, endTime, getCalendarEvents, createEvent, updateEvent, setResult, hideForm, buildEvent]);
 
   function handleSubmit(e) {
     e.preventDefault();
