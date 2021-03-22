@@ -7,6 +7,7 @@ import { emailValid, passwordValid } from "../../services/Helpers";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 
 export default function SignIn(props) {
+  const signIn = props.signIn;
   const [email, setEmail] = useState("");
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [password, setPassword] = useState("");
@@ -16,7 +17,7 @@ export default function SignIn(props) {
 
   useEffect(() => {
     if (requesting) {
-      props.signIn({
+      signIn({
         "email": email,
         "password": password
       }, result => {
@@ -27,7 +28,7 @@ export default function SignIn(props) {
         // Signed in user gets immediately redirected to home page
       });
     }
-  }, [requesting, email, password])
+  }, [requesting, email, password, signIn])
 
   function handleSubmit(e) {
     e.preventDefault();

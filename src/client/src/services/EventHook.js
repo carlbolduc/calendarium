@@ -72,7 +72,7 @@ export function useEvent(token) {
     }
   }, [token]);
 
-  function deleteEvent(eventId, cb) {
+  const deleteEvent = useCallback((eventId, cb) => {
     if (token !== null) {
       axios({
         method: "DELETE",
@@ -94,7 +94,7 @@ export function useEvent(token) {
         errorCallback(err, cb);
       });
     }
-  }
+  }, [token]);
 
   function searchEvents(q, cb) {
     if (token !== null) {

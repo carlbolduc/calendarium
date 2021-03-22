@@ -4,16 +4,18 @@ import Button from "../../components/Form/Button";
 import {calendarAccessStatus, eventStatus} from "../../services/Helpers";
 
 export default function SubmitForApprovalEventButton(props) {
+  const submit = props.submit;
+  const refresh = props.refresh;
   const [working, setWorking] = useState(false);
 
   useEffect(() => {
     if (working) {
-      props.submit(props.event, () => {
+      submit(props.event, () => {
         setWorking(false);
-        props.refresh();
+        refresh();
       })
     }
-  }, [working])
+  }, [working, props.event, submit, refresh])
 
   function render() {
     let shouldRender = false;

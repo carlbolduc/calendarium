@@ -4,16 +4,18 @@ import Button from "../../components/Form/Button";
 import {calendarAccessStatus, eventStatus} from "../../services/Helpers";
 
 export default function PublishEventButton(props) {
+  const publish = props.publish;
+  const refresh = props.refresh;
   const [working, setWorking] = useState(false);
 
   useEffect(() => {
     if (working) {
-      props.publish(props.event, () => {
+      publish(props.event, () => {
         setWorking(false);
-        props.refresh();
+        refresh();
       })
     }
-  }, [working])
+  }, [working, props.event, publish, refresh])
 
   function render() {
     let shouldRender = false;

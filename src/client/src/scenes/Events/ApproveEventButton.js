@@ -4,16 +4,18 @@ import Button from "../../components/Form/Button";
 import {calendarAccessStatus, eventStatus} from "../../services/Helpers";
 
 export default function ApproveEventButton(props) {
+  const approve = props.approve;
+  const refresh = props.refresh;
   const [working, setWorking] = useState(false);
 
   useEffect(() => {
     if (working) {
-      props.approve(props.event, () => {
+      approve(props.event, () => {
         setWorking(false);
-        props.refresh();
+        refresh();
       })
     }
-  }, [working])
+  }, [working, props.event, approve, refresh])
 
   function render() {
     let shouldRender = false;

@@ -8,6 +8,7 @@ import Message from "../../components/Form/Message";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 
 export default function SignUp(props) {
+  const signUp = props.signUp;
   const [name, setName] = useState("")
   const [invalidName, setInvalidName] = useState(false);
   const [email, setEmail] = useState("");
@@ -21,7 +22,7 @@ export default function SignUp(props) {
 
   useEffect(() => {
     if (requesting) {
-      props.signUp({
+      signUp({
         "name": name,
         "email": email,
         "password": password
@@ -30,7 +31,7 @@ export default function SignUp(props) {
         setRequesting(false);
       });
     }
-  }, [requesting, name, email, password])
+  }, [requesting, name, email, password, signUp])
 
   function handleSubmit(e) {
     e.preventDefault();

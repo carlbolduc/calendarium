@@ -4,16 +4,18 @@ import Button from "../../components/Form/Button";
 import {calendarAccessStatus} from "../../services/Helpers";
 
 export default function DeleteEventButton(props) {
+  const deleteEvent = props.delete;
+  const refresh = props.refresh;
   const [working, setWorking] = useState(false);
 
   useEffect(() => {
     if (working) {
-      props.delete(props.event, () => {
+      deleteEvent(props.event, () => {
         setWorking(false);
-        props.refresh();
+        refresh();
       })
     }
-  }, [working])
+  }, [working, props.event, deleteEvent, refresh])
 
   function render() {
     let shouldRender = false;

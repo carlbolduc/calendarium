@@ -7,6 +7,11 @@ export function useAuth() {
   const [account, setAccount] = useState({accountId: null, name: "", email: "", languageId: 1, stripeCusId: null, createdAt: new Date().getTime() / 1000, subscription: null});
   const authenticated = token !== null;
 
+  const saveToken = useCallback((token) => {
+    localStorage.setItem("token", token);
+    setToken(token);
+  }, []);
+
   const getAccount = useCallback(() => {
     if (token !== null) {
       axios({
@@ -31,7 +36,7 @@ export function useAuth() {
     }
   }, [token, getAccount]);
 
-  function signUp(data, cb) {
+  const signUp = useCallback((data, cb) => {
     // set currently active locale as the language id for the new account
     data["languageId"] = account.languageId;
     axios.post(`${process.env.REACT_APP_API}/auth/sign-up`, data).then(res => {
@@ -45,9 +50,9 @@ export function useAuth() {
     }).catch(err => {
       errorCallback(err, cb);
     });
-  }
+  }, [account.languageId, saveToken]);
 
-  function signIn(data, cb) {
+  const signIn = useCallback((data, cb) => {
     const base64StringOfUserColonPassword = btoa(`${data.email}:${data.password}`);
     axios({
       method: 'get',
@@ -64,7 +69,7 @@ export function useAuth() {
       }).catch(err => {
         errorCallback(err, cb);
       });
-  }
+  }, [saveToken]);
 
   function signOut(e) {
     if (e) {
@@ -135,10 +140,7 @@ export function useAuth() {
     });
   }
 
-  const saveToken = useCallback((token) => {
-    localStorage.setItem("token", token);
-    setToken(token);
-  }, []);
+
 
   return {token, account, authenticated, signUp, signIn, signOut, getAccount, updateAccount, createPasswordReset, resetPassword, saveToken};
 }
