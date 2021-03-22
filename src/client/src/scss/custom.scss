@@ -29,3 +29,16 @@ a {
 #main-container {
   padding: 90px 20px 20px 20px;
 }
+
+// This allows to use buttons that look like links for when there is no href
+.link-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline;
+}
+
+.link-button:hover,
+.link-button:focus {
+  text-decoration: none;
+}

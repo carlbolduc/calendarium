@@ -27,7 +27,7 @@ export default function SignIn(props) {
         // Signed in user gets immediately redirected to home page
       });
     }
-  }, [requesting])
+  }, [requesting, email, password])
 
   function handleSubmit(e) {
     e.preventDefault();

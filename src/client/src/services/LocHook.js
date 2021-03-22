@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 
 export function useLoc(account, languages) {
@@ -6,13 +6,15 @@ export function useLoc(account, languages) {
   const [language, setLanguage] = useState("enCa");
   
   useEffect(() => {
-    const l = languages.find(l => l.languageId === account.languageId);
-    if (l !== undefined) {
-      setLanguage(l.localeId);
+    if (languages.length > 0) {
+      const l = languages.find(l => l.languageId === account.languageId);
+      if (l !== undefined) {
+        setLanguage(l.localeId);
+      }
     }
-  },[account]);
+  },[account, languages]);
 
-  function getLocData() {
+  const getLocData = useCallback(() => {
     axios({
       method: 'GET',
       headers: {
@@ -22,7 +24,7 @@ export function useLoc(account, languages) {
     }).then(res => {
       setLoc(res.data);
     })
-  }
+  }, []);
 
   function translate(label) {
     let locTranslated = '';

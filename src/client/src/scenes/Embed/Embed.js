@@ -29,21 +29,17 @@ export default function Embed(props) {
         }
       }
     }
-  }, [props.languages]);
+  }, [props, id, query]);
 
   useEffect(() => {
     if (props.calendar.calendarId !== null) {
-      getCalendarEvents();
+      const q = encodeObject({ startAt: currentDay.toSeconds()});
+      props.getCalendarEvents(props.calendar.calendarId, q, result => {
+        // We do nothing with the result.
+        // TODO: should we display the error if there is one (there should never be one)
+      });
     }
-  }, [props.calendar, currentDay])
-
-  function getCalendarEvents() {
-    const q = encodeObject({ startAt: currentDay.toSeconds()});
-    props.getCalendarEvents(props.calendar.calendarId, q, result => {
-      // We do nothing with the result.
-      // TODO: should we display the error if there is one (there should never be one)
-    });
-  }
+  }, [props, currentDay])
 
   const calendarEvents = props.calendarEvents.map(e => (
     <Event key={e.eventId} event={e} language={props.language} />

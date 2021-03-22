@@ -30,7 +30,7 @@ export default function SignUp(props) {
         setRequesting(false);
       });
     }
-  }, [requesting])
+  }, [requesting, name, email, password])
 
   function handleSubmit(e) {
     e.preventDefault();

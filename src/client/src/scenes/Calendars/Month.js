@@ -37,7 +37,7 @@ export default function Month(props) {
       }
       setWeeks(result);
     }
-  }, [date]);
+  }, [date, props.startWeekOn]);
 
   function selectDay(d) {
     const selectedDate = date.set({day: d});

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import axios from "axios";
 import {errorCallback} from "./Helpers";
 
@@ -23,7 +23,7 @@ export function useEvent(token) {
     }
   }
 
-  function createEvent(data, cb) {
+  const createEvent = useCallback((data, cb) => {
     if (token !== null) {
       axios({
         method: "POST",
@@ -45,9 +45,9 @@ export function useEvent(token) {
         errorCallback(err, cb);
       });
     }
-  }
+  }, [token]);
 
-  function updateEvent(event, cb) {
+  const updateEvent = useCallback((event, cb) => {
     if (token !== null) {
       axios({
         method: "PUT",
@@ -70,7 +70,7 @@ export function useEvent(token) {
         errorCallback(err, cb);
       });
     }
-  }
+  }, [token]);
 
   function deleteEvent(eventId, cb) {
     if (token !== null) {

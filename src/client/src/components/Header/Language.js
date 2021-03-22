@@ -11,8 +11,8 @@ export default function Language(props) {
   const languageOptions = props.languages.map(l => {
     return (
       <li key={l.languageId}>
-        <a 
-          className="dropdown-item" 
+        <button 
+          className="link-button dropdown-item" 
           onClick={e => {
             e.preventDefault();
             props.switchLanguage(l.languageId);
@@ -20,16 +20,16 @@ export default function Language(props) {
           }}
         >
           {l.name}
-        </a>
+        </button>
       </li>
     );
   });
 
   return (
     <li className="nav-item dropdown">
-      <a className="nav-link dropdown-toggle" href="#" id="dropdown-language" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <button className="link-button nav-link dropdown-toggle" id="dropdown-language" data-bs-toggle="dropdown" aria-expanded="false">
         {selectedLanguage()}
-      </a>
+      </button>
       <ul className="dropdown-menu" aria-labelledby="dropdown-language">
         {languageOptions}
       </ul>

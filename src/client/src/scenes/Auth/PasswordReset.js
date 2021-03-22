@@ -32,7 +32,7 @@ export default function PasswordReset(props) {
         setRequesting(false);
       });
     }
-  }, [requesting])
+  }, [requesting, newPassword, query])
 
   function handleSubmit(e) {
     e.preventDefault();

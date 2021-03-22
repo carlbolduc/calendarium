@@ -46,7 +46,7 @@ export default function Profile(props) {
         setRequesting(false);
       });
     }
-  }, [requesting])
+  }, [requesting, name, email, currentPassword, newPassword])
 
   function handleSubmit(e) {
     e.preventDefault();
