@@ -7,12 +7,17 @@ import CalendarPreview from "./CalendarPreview";
 
 export default function MyCalendars(props) {
   const getCalendars = props.getCalendars;
+  const clearCalendars = props.clearCalendars;
   const [showCalendarForm, setShowCalendarForm] = useState(false);
   const [calendarFormResult, setCalendarFormResult] = useState(null);
 
   useEffect(() =>{
     getCalendars();
-  }, [getCalendars])
+  }, [getCalendars]);
+
+  useEffect(() => {
+    return () => clearCalendars();
+  }, [clearCalendars]);
 
   const title = !showCalendarForm ? (
     <h1>{props.translate("My calendars")}</h1>
