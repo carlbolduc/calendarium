@@ -20,7 +20,7 @@ export default function Select(props) {
       data-bs-target={`#collapse-help-${props.id}`}
       aria-expanded="false"
       aria-controls={`collapse-help-${props.id}`}
-      tabindex="-1"
+      tabIndex="-1"
     >
       <Info />
     </button>
