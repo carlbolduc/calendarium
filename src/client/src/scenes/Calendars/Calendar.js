@@ -71,13 +71,21 @@ export default function Calendar(props) {
   function approveEvent(event) {
     event.status = eventStatus.PUBLISHED.value;
     props.updateEvent(event, () => {
-      getCalendarEvents();
+      const q = encodeObject({ startAt: currentDay.toSeconds()});
+      getCalendarEvents(props.calendar.calendarId, q, result => {
+        // We do nothing with the result.
+        // TODO: should we display the error if there is one (there should never be one)
+      });
     });
   }
 
   function deleteEvent(event) {
     props.deleteEvent(event.eventId, () => {
-      getCalendarEvents();
+      const q = encodeObject({ startAt: currentDay.toSeconds()});
+      getCalendarEvents(props.calendar.calendarId, q, result => {
+        // We do nothing with the result.
+        // TODO: should we display the error if there is one (there should never be one)
+      });
     });
   }
 
