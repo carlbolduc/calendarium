@@ -42,6 +42,26 @@ export function useCalendar(token, subscribed) {
     }
   }, [token]);
 
+  const getPublicCalendars = useCallback(() => {
+   console.log("get public calendar");
+    // axios({
+   //   method: "GET",
+   //   headers: {
+   //     "Content-Type": "application/json"
+   //   },
+   //   url: `${process.env.REACT_APP_API}/calendars`,
+   // }).then(res => {
+   //   setCalendars(res.data);
+   // }).catch(err => {
+   //   console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendars' from 'useCalendar' hook");
+   //   console.log(err.response);
+   // });
+  }, []);
+
+  const clearCalendars = useCallback(() => {
+    setCalendars([]);
+  }, []);
+
   const getCalendar = useCallback((data, cb) => {
     function buildUrl() {
       let url;
@@ -195,5 +215,5 @@ export function useCalendar(token, subscribed) {
     setCalendarEvents([]);
   }
 
-  return { calendars, calendar, getCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents, getCalendarEmbedEvents, clearCalendarEvents };
+  return { calendars, calendar, getCalendars, getPublicCalendars, clearCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents, getCalendarEmbedEvents, clearCalendarEvents };
 }
