@@ -1,3 +1,4 @@
+import React from "react";
 import Info from "../Icons/Info";
 
 export default function Select(props) {
@@ -20,7 +21,7 @@ export default function Select(props) {
       data-bs-target={`#collapse-help-${props.id}`}
       aria-expanded="false"
       aria-controls={`collapse-help-${props.id}`}
-      tabIndex="-1"
+      tabIndex={-1}
     >
       <Info />
     </button>

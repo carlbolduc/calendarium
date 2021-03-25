@@ -133,7 +133,13 @@ export default function CalendarForm(props) {
 
   const englishFields = enableEn ? (
     <>
-      {enableEn && embedCalendar ? <ReadOnlyIframe iframe={`<iframe src="https://codebards.io/embed/${props.calendar.calendarId}?locale=enCa"></iframe>`} /> : null}
+      {embedCalendar ? 
+        <ReadOnlyIframe 
+          id="read-only-iframe-en"
+          label="English embeddable iframe"
+          iframe={`<iframe src="https://calendarium.ca/embed/${props.calendar.calendarId}?locale=enCa"></iframe>`} 
+          info="Click on Copy to copy the embeddable iframe code to your clipboard, then paste it in your website."
+        /> : null}
       <Input
         label={"English name"}
         type="text"
@@ -179,7 +185,13 @@ export default function CalendarForm(props) {
 
   const frenchFields = enableFr ? (
     <>
-      {enableFr && embedCalendar ? <ReadOnlyIframe iframe={`<iframe src="https://codebards.io/embed/${props.calendar.calendarId}?locale=frCa"></iframe>`} /> : null}
+      {embedCalendar ? 
+        <ReadOnlyIframe 
+          id="read-only-iframe-fr"
+          label="French embeddable iframe"
+          iframe={`<iframe src="https://calendarium.ca/embed/${props.calendar.calendarId}?locale=frCa"></iframe>`}
+          info="Click on Copy to copy the embeddable iframe code to your clipboard, then paste it in your website."
+        /> : null}
       <Input
         label={props.translate("French name")}
         type="text"
@@ -292,7 +304,7 @@ export default function CalendarForm(props) {
           info="When this is checked, this calendar will become embeddable in any other website. You can uncheck this at any time and the calendar will no longer be embeddable."
         />
         <Checkbox
-          label="Make this calendar available publicly"
+          label="Make this calendar publicly available"
           id="public-calendar"
           value={publicCalendar}
           required={false}
