@@ -93,9 +93,9 @@ export default function SignUp(props) {
               invalidFeedback={invalidPassword ? <InvalidFeedback feedback="Your password must be at least 8 characters long."/> : null}
             />
             <div className="row">
-              <div className="col-auto">
+              <div className="col-sm-auto col-12 pe-sm-0">
                 <Checkbox
-                  label={props.translate("I agree to the terms and conditions.")}
+                  label={props.translate("I agree to the terms of service.")}
                   id="terms-conditions"
                   value={termsConditions}
                   required={true}
@@ -106,9 +106,9 @@ export default function SignUp(props) {
                   invalidFeedback={invalidTermsAndConditions ? <InvalidFeedback feedback="You must agree before submitting."/> : null}
                 />
               </div>
-              <div className="col">
+              <div className="col-sm col-12 ps-sm-0">
                 {/* TODO: create the page /terms-conditions */}
-                <p className="small">{props.translate("You can read them ")} <Link to="/terms-conditions">{props.translate("here")}</Link>.</p>
+                <p>{props.translate("They can be read ")} <a href="http://codebards.io/policies/terms/" target="_blank">{props.translate("here")}</a>.</p>
               </div>
             </div>
             <Button label={props.translate("Sign up")} type="submit" working={requesting} id="button-sign-up" />
