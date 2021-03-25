@@ -138,9 +138,10 @@ public interface Dao {
             "       link_fr,\n" +
             "       start_week_on,\n" +
             "       primary_color,\n" +
-            "       secondary_color,\n" +
+            "       secondary_color\n" +
+            "FROM calendar\n" +
             "WHERE public_calendar IS TRUE\n" +
-            "ORDER BY c.name_en")
+            "ORDER BY name_en")
     @RegisterBeanMapper(Calendar.class)
     List<Calendar> findPublicCalendars();
 
