@@ -35,6 +35,17 @@ public class PublicResource {
     }
 
     @GET
+    @Path("/calendars/{link}")
+    public Response getCalendar(@PathParam("link") String link) {
+        Response response = Response.status(Response.Status.NOT_FOUND).build();
+        Optional<Calendar> oCalendar = dao.findPublicCalendarByLink(link);
+        if (oCalendar.isPresent()) {
+            response = Response.ok(oCalendar.get()).build();
+        }
+        return response;
+    }
+
+    @GET
     @Path("/calendar-embeds/{calendarId}")
     public Response getCalendar(@PathParam("calendarId") long calendarId) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();

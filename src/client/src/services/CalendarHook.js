@@ -18,7 +18,7 @@ export function useCalendar(token, subscribed) {
     primaryColor: "#ffffff",
     secondaryColor: "#ffffff",
     embedCalendar: false,
-    publicCalendar: false,
+    publicCalendar: true,
     eventApprovalRequired: true,
     access: ""
   });
@@ -66,11 +66,15 @@ export function useCalendar(token, subscribed) {
     function buildUrl() {
       let url;
       if (data.hasOwnProperty("id")) {
+        // id is only used to get the embed calendar data
         url = `${process.env.REACT_APP_API}/public/calendar-embeds/${data.id}`
       } else if (data.hasOwnProperty("calendarAccessId")) {
+        // calendarAccessId is used to get information for the calendar invitation
         url = `${process.env.REACT_APP_API}/calendars/anonymous/${data.link}?id=${data.calendarAccessId}`;
       } else if (data.hasOwnProperty("link")) {
-        url = `${process.env.REACT_APP_API}/calendars/${data.link}`;
+        // this is the canonical site link used to show any calendar inside calendarium.ca
+        const route = token !== null ? `/calendars/${data.link}` : `/public/calendars/${data.link}`;
+        url = `${process.env.REACT_APP_API}${route}`;
       }
       return url;
     }

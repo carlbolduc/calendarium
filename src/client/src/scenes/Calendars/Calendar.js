@@ -319,7 +319,7 @@ export default function Calendar(props) {
     return result;
   }
 
-  return props.authenticated ? (
+  return props.calendar.publicCalendar || props.authenticated ? (
     <article>
       {renderMain()}
     </article>

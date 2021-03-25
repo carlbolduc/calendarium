@@ -195,6 +195,27 @@ public interface Dao {
     @RegisterBeanMapper(Calendar.class)
     Optional<Calendar> findCalendarByLink(@Bind("accountId") long accountId, @Bind("link") String link);
 
+    @SqlQuery("SELECT calendar_id,\n" +
+            "       enable_en,\n" +
+            "       enable_fr,\n" +
+            "       name_en,\n" +
+            "       name_fr,\n" +
+            "       description_en,\n" +
+            "       description_fr,\n" +
+            "       link_en,\n" +
+            "       link_fr,\n" +
+            "       start_week_on,\n" +
+            "       primary_color,\n" +
+            "       secondary_color,\n" +
+            "       embed_calendar,\n" +
+            "       public_calendar,\n" +
+            "       event_approval_required,\n" +
+            "       '' AS access\n" +
+            "FROM calendar\n" +
+            "WHERE (link_en = :link OR link_fr = :link)")
+    @RegisterBeanMapper(Calendar.class)
+	Optional<Calendar> findPublicCalendarByLink(@Bind("link") String link);
+
     @SqlQuery("SELECT c.calendar_id,\n" +
             "       c.enable_en,\n" +
             "       c.enable_fr,\n" +
@@ -434,6 +455,5 @@ public interface Dao {
             "WHERE name = :name")
     @RegisterBeanMapper(EmailTemplate.class)
     Optional<EmailTemplate> findEmailTemplateByName(@Bind("name") String name);
-
 
 }
