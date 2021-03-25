@@ -91,7 +91,7 @@ export default function Subscription(props) {
     </div>
   );
 
-
+  // TODO: show in user locale
   const endAt = props.account.subscription ? DateTime.fromSeconds(props.account.subscription.endAt).toLocaleString(DateTime.DATE_FULL) : null;
 
   function renderSubscriptionEndAt() {
@@ -129,6 +129,7 @@ export default function Subscription(props) {
     return result;
   }
 
+  // TODO: translate user visible text
   function renderMain() {
     let result = null;
     if (props.authenticated) {

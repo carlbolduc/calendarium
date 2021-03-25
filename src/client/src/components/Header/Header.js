@@ -2,6 +2,7 @@ import { useLocation, useHistory } from "react-router-dom";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle.js"
 import Account from "./Account";
 import Language from "./Language";
+import React from "react";
 
 export default function Header(props) {
   let location = useLocation();
@@ -27,7 +28,9 @@ export default function Header(props) {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
       <div className="container-fluid">
-        <button className="link-button navbar-brand" onClick={e => goTo(e, "/")}>Calendarium</button>
+        <button className="link-button navbar-brand" onClick={e => goTo(e, "/")}>
+          <img src="/img/logo.png" alt="Calendarium logo" height="24" className="d-inline-block align-text-top"/> Calendarium
+        </button>
         <button className="navbar-toggler shadow-none" data-bs-toggle="collapse" data-bs-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon" />
         </button>
@@ -46,7 +49,7 @@ export default function Header(props) {
           </ul>
           <ul className="navbar-nav mb-2 mb-lg-0">
             <li className="nav-item">
-              <a className="nav-link" href="mailto:grove@codebards.io">Help</a>
+              <a className="nav-link" href="mailto:grove@codebards.io">{props.translate("Help")}</a>
             </li>
             <Account
               authenticated={props.authenticated}
