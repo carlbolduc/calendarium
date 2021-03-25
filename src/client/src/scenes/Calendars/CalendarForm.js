@@ -27,7 +27,7 @@ export default function CalendarForm(props) {
   const [invalidDescriptionFr, setInvalidDescriptionFr] = useState(false);
   const [linkFr, setLinkFr] = useState(props.calendar.linkFr);
   const [invalidLinkFr, setInvalidLinkFr] = useState(false);
-  const [startWeekOn, setStartWeekOn] = useState(props.calendar.startWeekOn);
+  const [startWeekOn, setStartWeekOn] = useState(props.calendar.startWeekOn === null ? "Sunday" : props.calendar.startWeekOn);
   const [primaryColor, setPrimaryColor] = useState(props.calendar.primaryColor);
   const [secondaryColor, setSecondaryColor] = useState(props.calendar.secondaryColor);
   const [embedCalendar, setEmbedCalendar] = useState(props.calendar.embedCalendar);
@@ -136,49 +136,50 @@ export default function CalendarForm(props) {
       {embedCalendar ? 
         <ReadOnlyIframe 
           id="read-only-iframe-en"
-          label="English embeddable iframe"
+          label={props.translate("English embeddable iframe")}
           iframe={`<iframe src="https://calendarium.ca/embed/${props.calendar.calendarId}?locale=enCa"></iframe>`} 
-          info="Click on Copy to copy the embeddable iframe code to your clipboard, then paste it in your website."
+          info={props.translate("Click on Copy to copy the embeddable iframe code to your clipboard, then paste it in your website.")}
+          translate={props.translate}
         /> : null}
       <Input
-        label={"English name"}
+        label={props.translate("English name")}
         type="text"
         id="input-name-en"
-        placeholder={"Enter the English calendar name."}
-        info={"Enter the English calendar name."}
+        placeholder={props.translate("Enter the English calendar name.")}
+        info={props.translate("Enter the English calendar name.")}
         value={nameEn}
         handleChange={e => {
           setNameEn(e.target.value);
           setInvalidNameEn(false);
         }}
-        invalidFeedback={invalidNameEn ? <InvalidFeedback feedback="You must enter a name." /> : null}
+        invalidFeedback={invalidNameEn ? <InvalidFeedback feedback={props.translate("You must enter a name.")} /> : null}
       />
       <Textarea
-        label="English description"
+        label={props.translate("English description")}
         type="text"
         id="input-description-en"
-        placeholder={"Describe your calendar in English."}
-        info={"Describe your calendar in English."}
+        placeholder={props.translate("Describe your calendar in English.")}
+        info={props.translate("Describe your calendar in English.")}
         height="100"
         value={descriptionEn}
         handleChange={e => {
           setDescriptionEn(e.target.value);
           setInvalidDescriptionEn(false);
         }}
-        invalidFeedback={invalidDescriptionEn ? <InvalidFeedback feedback="You must enter a description." /> : null}
+        invalidFeedback={invalidDescriptionEn ? <InvalidFeedback feedback={props.translate("You must enter a description.")} /> : null}
       />
       <Input
-        label="English customised link"
+        label={props.translate("English customised link")}
         type="text"
         id="input-link-en"
-        placeholder="Enter the English customised link."
-        info={"Enter the customised name that you would like to appear in the browser url when accessing the English version of your calendar."}
+        placeholder={props.translate("Enter the English customised link.")}
+        info={props.translate("Enter the customised name that you would like to appear in the browser url when accessing the English version of your calendar.")}
         value={linkEn}
         handleChange={e => {
           setLinkEn(e.target.value);
           setInvalidLinkEn(false);
         }}
-        invalidFeedback={invalidLinkEn ? <InvalidFeedback feedback="You must enter a link." /> : null}
+        invalidFeedback={invalidLinkEn ? <InvalidFeedback feedback={props.translate("You must enter a link.")} /> : null}
       />
     </>
   ) : null;
@@ -188,136 +189,136 @@ export default function CalendarForm(props) {
       {embedCalendar ? 
         <ReadOnlyIframe 
           id="read-only-iframe-fr"
-          label="French embeddable iframe"
+          label={props.translate("French embeddable iframe")}
           iframe={`<iframe src="https://calendarium.ca/embed/${props.calendar.calendarId}?locale=frCa"></iframe>`}
-          info="Click on Copy to copy the embeddable iframe code to your clipboard, then paste it in your website."
+          info={props.translate("Click on Copy to copy the embeddable iframe code to your clipboard, then paste it in your website.")}
+          translate={props.translate}
         /> : null}
       <Input
         label={props.translate("French name")}
         type="text"
         id="input-name-fr"
-        placeholder="Enter the French calendar name."
-        info="Enter the French calendar name."
+        placeholder={props.translate("Enter the French calendar name.")}
+        info={props.translate("Enter the French calendar name.")}
         value={nameFr}
         handleChange={e => {
           setNameFr(e.target.value);
           setInvalidNameFr(false);
         }}
-        invalidFeedback={invalidNameFr ? <InvalidFeedback feedback="You must enter a name." /> : null}
+        invalidFeedback={invalidNameFr ? <InvalidFeedback feedback={props.translate("You must enter a name.")} /> : null}
       />
       <Textarea
-        label="French description"
+        label={props.translate("French description")}
         type="text"
         id="input-description-fr"
-        placeholder={"Describe your calendar in French."}
-        info={"Describe your calendar in French."}
+        placeholder={props.translate("Describe your calendar in French.")}
+        info={props.translate("Describe your calendar in French.")}
         height="100"
         value={descriptionFr}
         handleChange={e => {
           setDescriptionFr(e.target.value);
           setInvalidDescriptionFr(false);
         }}
-        invalidFeedback={invalidDescriptionFr ? <InvalidFeedback feedback="You must enter a description." /> : null}
+        invalidFeedback={invalidDescriptionFr ? <InvalidFeedback feedback={props.translate("You must enter a description.")} /> : null}
       />
       <Input
-        label="French customised link"
+        label={props.translate("French customised link")}
         type="text"
         id="input-link-fr"
-        placeholder="Enter the French customised link."
-        info={"Enter the customised name that you would like to appear in the browser url when accessing the French version of your calendar."}
+        placeholder={props.translate("Enter the French customised link.")}
+        info={props.translate("Enter the customised name that you would like to appear in the browser url when accessing the French version of your calendar.")}
         value={linkFr}
         handleChange={e => {
           setLinkFr(e.target.value);
           setInvalidLinkFr(false);
         }}
-        invalidFeedback={invalidLinkFr ? <InvalidFeedback feedback="You must enter a link." /> : null}
+        invalidFeedback={invalidLinkFr ? <InvalidFeedback feedback={props.translate("You must enter a link.")} /> : null}
       />
     </>
   ) : null;
 
-  const title = props.new ? "New calendar" : "Calendar settings";
+  const title = props.new ? "New calendar" : "Calendar settings"; // this is translated where the const is used
 
-  const submitButton = props.new ? "Create this calendar" : "Save changes";
+  const submitButton = props.new ? "Create this calendar" : "Save changes"; // this is translated where the const is used
 
   return (
-    // TODO: use {props.translate("")} for text visible in the app
     <>
       <h1>{props.translate(title)}</h1>
       <form onSubmit={handleSubmit} id="form-new-calendar" noValidate>
-        {noLanguageEnabled ? <InvalidFeedback feedback="Enable at least one language." /> : null}
+        {noLanguageEnabled ? <InvalidFeedback feedback={props.translate("Enable at least one language.")} /> : null}
         <div className="row mb-3">
           <div className="col-12 col-md-6">
             <Checkbox
-              label="Enable English content for this calendar"
+              label={props.translate("Enable English content for this calendar")}
               id="enable-en"
               value={enableEn}
               handleChange={e => setEnableEn(e.target.checked)}
-              info="When this is checked, you will be able to provide English versions of content for this calendar and for its events."
+              info={props.translate("When this is checked, you will be able to provide English versions of content for this calendar and for its events.")}
             />
             {englishFields}
           </div>
           <div className="col-12 col-md-6">
             <Checkbox
-              label="Enable French content for this calendar"
+              label={props.translate("Enable French content for this calendar")}
               id="enable-fr"
               value={enableFr}
               handleChange={e => setEnableFr(e.target.checked)}
-              info="When this is checked, you will be able to provide French versions of content for this calendar and for its events."
+              info={props.translate("When this is checked, you will be able to provide French versions of content for this calendar and for its events.")}
             />
             {frenchFields}
           </div>
         </div>
         <Select
-          label="Start week on"
+          label={props.translate("Start week on")}
           id="select-start-week-on"
-          options={[{ label: "Monday", value: "Monday" }, { label: "Tuesday", value: "Tuesday" }, { label: "Wednesday", value: "Wednesday" }, { label: "Thursday", value: "Thursday" }, { label: "Friday", value: "Friday" }, { label: "Saturday", value: "Saturday" }, { label: "Sunday", value: "Sunday" }]}
+          options={[{ label: props.translate("Monday"), value: "Monday" }, { label: props.translate("Tuesday"), value: "Tuesday" }, { label: props.translate("Wednesday"), value: "Wednesday" }, { label: props.translate("Thursday"), value: "Thursday" }, { label: props.translate("Friday"), value: "Friday" }, { label: props.translate("Saturday"), value: "Saturday" }, { label: props.translate("Sunday"), value: "Sunday" }]}
           value={startWeekOn}
           handleChange={e => setStartWeekOn(e.target.value)}
-          info="Select which day of the week will be the first day displayed on the left in this calendar."
+          info={props.translate("Select which day of the week will be the first day displayed on the left in this calendar.")}
         />
         <Input
-          label="Primary color"
+          label={props.translate("Primary color")}
           type="color"
           id="input-primary-color"
-          placeholder={"Primary color"}
+          placeholder={props.translate("Primary color")}
           value={primaryColor}
           handleChange={e => setPrimaryColor(e.target.value)}
           // TODO: include in the info text where the primary color is used in the calendar (TBD when the calendar display will be done)
-          info="Select a primary color for this calendar."
+          info={props.translate("Select a primary color for this calendar.")}
         />
         <Input
-          label="Secondary color"
+          label={props.translate("Secondary color")}
           type="color"
           id="input-secondary-color"
-          placeholder={"Secondary color"}
+          placeholder={props.translate("Secondary color")}
           value={secondaryColor}
           handleChange={e => setSecondaryColor(e.target.value)}
           // TODO: include in the info text where the secondary color is used in the calendar (TBD when the calendar display will be done)
-          info="Select a secondary color for this calendar."
+          info={props.translate("Select a secondary color for this calendar.")}
         />
         <Checkbox
-          label="Make this calendar embeddable"
+          label={props.translate("Make this calendar embeddable")}
           id="embed-calendar"
           value={embedCalendar}
           required={false}
           handleChange={e => setEmbedCalendar(e.target.checked)}
-          info="When this is checked, this calendar will become embeddable in any other website. You can uncheck this at any time and the calendar will no longer be embeddable."
+          info={props.translate("When this is checked, this calendar will become embeddable in any other website. You can uncheck this at any time and the calendar will no longer be embeddable.")}
         />
         <Checkbox
-          label="Make this calendar publicly available"
+          label={props.translate("Make this calendar publicly available")}
           id="public-calendar"
           value={publicCalendar}
           required={false}
           handleChange={e => setPublicCalendar(e.target.checked)}
-          info="When this is checked, this calendar will appear in the section Public calendars, anyone will be able to view its events, and it will be indexed by search engines. You can uncheck this at any time and the calendar will no longer be included in Public calendars, but a cache may remain in search engines."
+          info={props.translate("When this is checked, this calendar will appear in the section Public calendars, anyone will be able to view its events, and it will be indexed by search engines. You can uncheck this at any time and the calendar will no longer be included in Public calendars, but a cache may remain in search engines.")}
         />
         <Checkbox
-          label="Require my approval to publish other users' events"
+          label={props.translate("Require my approval to publish collaborators' events")}
           id="event-approval-required"
           value={eventApprovalRequired}
           required={false}
           handleChange={e => setEventApprovalRequired(e.target.checked)}
-          info="When this is checked, you will need to approve all events created by other users that you have invited to this calendar. You can uncheck this at any time to remove the restriction and instantly approve any pending events."
+          info={props.translate("When this is checked, you will need to approve all events created by collaborators that you have invited to this calendar. You can uncheck this at any time to remove the restriction.")}
         />
         <Button label={props.translate("Cancel")} id="button-cancel" onClick={props.cancel} outline={true} />
         <Button label={props.translate(submitButton)} type="submit" working={requesting} id="button-save" />

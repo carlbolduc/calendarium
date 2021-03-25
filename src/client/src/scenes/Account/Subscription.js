@@ -83,7 +83,7 @@ export default function Subscription(props) {
       {/* TODO: create a header image for this subscription product */}
       <svg className="card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"/><text x="26%" y="50%" fill="#dee2e6" dy=".3em">Image placeholder</text></svg>
       <div className="card-body">
-        <h5 className="card-title">{props.translate("Calendarium Unlimited")}</h5>
+        <h5 className="card-title">{props.translate("Calendarium unlimited")}</h5>
         <h6 className="card-subtitle mb-2 text-muted">{props.translate("$600 CAD per year")}</h6>
         <p className="card-text">{props.translate("Includes unlimited calendars and unlimited additional users.")}</p>
         <Button label={props.translate("Subscribe")} type="button" id="button-subscribe" onClick={e => wantToSubscribe(e)} />
@@ -109,7 +109,7 @@ export default function Subscription(props) {
   const subscriptionDetails = (
     <div>
       <p>{props.translate("Here are the details about your subscription.")}</p>
-      <h5 className="mt-4">{props.translate("Calendarium Unlimited")}</h5>
+      <h5 className="mt-4">{props.translate("Calendarium unlimited")}</h5>
       <p>{props.translate("$600 CAD per year")}</p>
       {renderSubscriptionEndAt()}
     </div>

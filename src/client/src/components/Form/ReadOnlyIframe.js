@@ -57,7 +57,7 @@ export default function ReadOnlyIframe(props) {
               style={copied ? {} : { cursor: "pointer" }}
               onClick={copied ? null : copy}
             >
-              {copied ? "Copied" : "Copy"}
+              {copied ? props.translate("Copied") : props.translate("Copy")}
             </span>
             <label
               htmlFor={props.id}
