@@ -66,7 +66,7 @@ export function useCalendar(token, subscribed) {
     function buildUrl() {
       let url;
       if (data.hasOwnProperty("id")) {
-        url = `${process.env.REACT_APP_API}/calendar-embeds/${data.id}`
+        url = `${process.env.REACT_APP_API}/public/calendar-embeds/${data.id}`
       } else if (data.hasOwnProperty("calendarAccessId")) {
         url = `${process.env.REACT_APP_API}/calendars/anonymous/${data.link}?id=${data.calendarAccessId}`;
       } else if (data.hasOwnProperty("link")) {
@@ -202,7 +202,7 @@ export function useCalendar(token, subscribed) {
         headers: {
           "Content-Type": "application/json",
         },
-        url: `${process.env.REACT_APP_API}/calendar-embeds/${calendarId}/events?q=${q}`,
+        url: `${process.env.REACT_APP_API}/public/calendar-embeds/${calendarId}/events?q=${q}`,
       }).then(res => {
         setCalendarEvents(res.data);
       }).catch(err => {

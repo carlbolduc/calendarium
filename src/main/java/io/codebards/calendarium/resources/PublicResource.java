@@ -17,19 +17,19 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
-@Path("/calendar-embeds")
+@Path("/public")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class CalendarEmbedsResource {
+public class PublicResource {
 
     private final Dao dao;
 
-    public CalendarEmbedsResource(Dao dao) {
+    public PublicResource(Dao dao) {
         this.dao = dao;
     }
 
     @GET
-    @Path("/{calendarId}")
+    @Path("/calendar-embeds/{calendarId}")
     public Response getCalendar(@PathParam("calendarId") long calendarId) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
         Optional<Calendar> oCalendar = dao.findCalendar(calendarId);
@@ -40,7 +40,7 @@ public class CalendarEmbedsResource {
     }
 
     @GET
-    @Path("/{calendarId}/events")
+    @Path("/calendar-embeds/{calendarId}/events")
     public List<Event> getCalendarEvents(@PathParam("calendarId") long calendarId, @QueryParam("q") String q) {
         List<Event> events = new ArrayList<>();
         Optional<Calendar> oCalendar = dao.findCalendar(calendarId);
