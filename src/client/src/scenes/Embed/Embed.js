@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {useLocation, useParams} from "react-router-dom";
 import PropTypes from "prop-types";
 import { DateTime } from "luxon";
@@ -9,37 +9,43 @@ import {encodeObject} from "../../services/Helpers";
 
 export default function Embed(props) {
   let { id } = useParams();
-  function useQuery() {
-    return new URLSearchParams(useLocation().search);
-  }
-  const query = useQuery();
+  const location = useLocation();
+  const updateAccountLanguageId = props.updateAccountLanguageId;
+  const getCalendar = props.getCalendar;
+  const getCalendarEvents = props.getCalendarEvents;
   const [currentDay, setCurrentDay] = useState(DateTime.now());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (props.languages.length > 0) {
-      props.getCalendar({id: id}, () => {
+      getCalendar({id: id}, () => {
         setLoading(false);
       });
+    }
+  }, [props.languages, id, getCalendar]);
+
+  useEffect(() => {
+    if (props.languages.length > 0) {
+      const query = new URLSearchParams(location.search);
       const queryLocale = query.get("locale");
       if (queryLocale !== null) {
         const language = props.languages.find(l => l.localeId.toLowerCase() === queryLocale.toLowerCase());
         if (language !== undefined) {
-          props.setLanguage(language.languageId);
+          updateAccountLanguageId(language.languageId);
         }
       }
     }
-  }, [props, id, query]);
+  }, [props.languages, location, updateAccountLanguageId]);
 
   useEffect(() => {
     if (props.calendar.calendarId !== null) {
       const q = encodeObject({ startAt: currentDay.toSeconds()});
-      props.getCalendarEvents(props.calendar.calendarId, q, result => {
+      getCalendarEvents(props.calendar.calendarId, q, result => {
         // We do nothing with the result.
         // TODO: should we display the error if there is one (there should never be one)
       });
     }
-  }, [props, currentDay])
+  }, [props.calendar.calendarId, currentDay, getCalendarEvents])
 
   const calendarEvents = props.calendarEvents.map(e => (
     <Event key={e.eventId} event={e} language={props.language} />
@@ -94,6 +100,6 @@ Embed.propTypes = {
   getCalendarEvents: PropTypes.func.isRequired,
   languages: PropTypes.array.isRequired,
   language: PropTypes.string.isRequired,
-  setLanguage: PropTypes.func.isRequired,
+  updateAccountLanguageId: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired
 };

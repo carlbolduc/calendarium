@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import axios from "axios";
 import { useLoc } from "../../services/LocHook";
 import { useAuth } from "../../services/AuthHook";
 import { useSubscription } from "../../services/SubscriptionHook";
@@ -23,7 +22,6 @@ import Footer from "../../components/Footer/Footer";
 import Embed from "../Embed/Embed";
 
 export default function App() {
-  const [languages, setLanguages] = useState([]);
   const {
     token,
     account,
@@ -33,36 +31,20 @@ export default function App() {
     signOut,
     getAccount,
     updateAccount,
+    updateAccountLanguageId,
     createPasswordReset,
     resetPassword,
     saveToken
   } = useAuth();
-  const { getLocData, translate, language } = useLoc(account, languages);
+  const { languages, language, translate } = useLoc(account);
   const { customerCreated, subscribed, createCustomer, createSubscription, updateSubscription } = useSubscription(token, account, getAccount);
   const { calendars, calendar, getCalendars, getPublicCalendars, clearCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents, clearCalendarEvents } = useCalendar(token, subscribed);
   const { events, createEvent, updateEvent, deleteEvent, searchEvents } = useEvent(token);
   const { collaborators, calendarAccess, getCalendarCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation, deactivateCalendarAccess, activateCalendarAccess } = useCollaborator(token, saveToken);
 
-  useEffect(() => {
-    getLocData();
-    getLanguages();
-  }, [getLocData])
-
-  function getLanguages() {
-    axios({
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      url: `${process.env.REACT_APP_API}/loc/languages`,
-    }).then(res => {
-      setLanguages(res.data);
-    })
-  }
-
-  function switchLanguage(languageId) {
+  const switchLanguage = useCallback((languageId) => {
     updateAccount({ languageId: languageId });
-  }
+  }, [updateAccount]);
 
   return (
     <Router>
@@ -75,7 +57,7 @@ export default function App() {
             getCalendarEvents={getCalendarEvents}
             languages={languages}
             language={language}
-            setLanguage={switchLanguage}
+            updateAccountLanguageId={updateAccountLanguageId}
             translate={translate}
           />
         </Route>

@@ -55,10 +55,10 @@ export function useAuth() {
   const signIn = useCallback((data, cb) => {
     const base64StringOfUserColonPassword = btoa(`${data.email}:${data.password}`);
     axios({
-      method: 'get',
+      method: "get",
       url: `${process.env.REACT_APP_API}/auth/sign-in`,
       headers: {
-        Authorization: 'Basic ' + base64StringOfUserColonPassword,
+        Authorization: "Basic " + base64StringOfUserColonPassword,
       },
     }).then(res => {
         if (res.status === 200) {
@@ -79,12 +79,17 @@ export function useAuth() {
     setToken(null);
   }
 
-  function updateAccount(data, cb) {
-    const updatedAccount = {...account};
-    const keys = Object.keys(data);
-    for (let key of keys) {
-      updatedAccount[key] = data[key];
-    }
+  const updateAccount = useCallback((data, cb) => {
+    // TODO: check usage of this function, it can cause loops since it updates accout and is triggered by account
+    const updatedAccount = {
+      accountId: account.accountId,
+      name: data["name"] === undefined ? account.name : data["name"],
+      email: data["email"] === undefined ? account.email : data["email"],
+      languageId: data["languageId"] === undefined ? account.languageId : data["languageId"],
+      stripeCusId: account.stripeCusId,
+      createdAt: account.createdAt,
+      subscription: account.subscription
+    };
     if (token !== null) {
       axios({
         method: "PUT",
@@ -108,7 +113,41 @@ export function useAuth() {
     } else {
       setAccount(updatedAccount);
     }
-  }
+  }, [token, account.accountId, account.name, account.email, account.languageId, account.stripeCusId, account.createdAt, account.subscription]);
+
+  const updateAccountLanguageId = useCallback((languageId, cb) => {
+      if (languageId !== account.languageId) {
+        const updatedAccount = { ...account };
+        updatedAccount.languageId = languageId;
+        if (token !== null) {
+          axios({
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            url: `${process.env.REACT_APP_API}/accounts/${account.accountId}`,
+            data: updatedAccount,
+          })
+            .then((res) => {
+              setAccount(res.data);
+              if (cb) {
+                const result = {
+                  success: true,
+                };
+                cb(result);
+              }
+            })
+            .catch((err) => {
+              errorCallback(err, cb);
+            });
+        } else {
+          setAccount(updatedAccount);
+        }
+      }
+    },
+    [token, account]
+  );
 
   function createPasswordReset(data, cb) {
     axios.post(`${process.env.REACT_APP_API}/auth/password-resets`, data).then(() => {
@@ -142,5 +181,5 @@ export function useAuth() {
 
 
 
-  return {token, account, authenticated, signUp, signIn, signOut, getAccount, updateAccount, createPasswordReset, resetPassword, saveToken};
+  return {token, account, authenticated, signUp, signIn, signOut, getAccount, updateAccount, updateAccountLanguageId, createPasswordReset, resetPassword, saveToken};
 }

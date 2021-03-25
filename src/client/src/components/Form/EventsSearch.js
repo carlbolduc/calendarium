@@ -32,7 +32,7 @@ export default function EventsSearch(props) {
       setRequesting(false);
       setCanSearch(false);
     });
-  }, [props, endDate, search, startDate, status]);
+  }, [endDate, search, startDate, status]);
 
 
   useEffect(() => {

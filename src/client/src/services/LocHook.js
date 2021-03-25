@@ -1,36 +1,50 @@
-import { useEffect, useState, useCallback } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import usePrevious from "./UsePreviousHook";
 
-export function useLoc(account, languages) {
+export function useLoc(account) {
+  const prevLanguageId = usePrevious(account.languageId);
   const [loc, setLoc] = useState([]);
+  const [languages, setLanguages] = useState([]);
   const [language, setLanguage] = useState("enCa");
-  
+
+  // Load languages when the app boots
   useEffect(() => {
-    if (languages.length > 0) {
+    const languagesPromise = axios({
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      url: `${process.env.REACT_APP_API}/loc/languages`,
+    });
+    const locPromise = axios({
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      url: `${process.env.REACT_APP_API}/loc`,
+    });
+    Promise.all([languagesPromise, locPromise]).then(results => {
+      setLanguages(results[0].data);
+      setLoc(results[1].data);
+    });
+  }, []);
+  
+  // Change the language of the app according to the account language
+  useEffect(() => {
+    if (languages.length > 0 && account.languageId !== prevLanguageId) {
       const l = languages.find(l => l.languageId === account.languageId);
       if (l !== undefined) {
         setLanguage(l.localeId);
       }
     }
-  },[account, languages]);
-
-  const getLocData = useCallback(() => {
-    axios({
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      url: `${process.env.REACT_APP_API}/loc`,
-    }).then(res => {
-      setLoc(res.data);
-    })
-  }, []);
+  }, [prevLanguageId, account.languageId, languages]);
 
   function translate(label) {
-    let locTranslated = '';
+    let locTranslated = "";
     // if loc is ready and the label to translate is not empty, translate it
-    if (loc.length > 0 && languages.length > 0 && ![null, undefined, 0, ''].includes(label)) {
-      const defaultLanguage = languages.find(l => l.localeId === 'enCa');
+    if (loc.length > 0 && languages.length > 0 && ![null, undefined, 0, ""].includes(label)) {
+      const defaultLanguage = languages.find(l => l.localeId === "enCa");
       // if user language is en_ca, return the label as is
       if (defaultLanguage.languageId === account.languageId) {
         locTranslated = label;
@@ -59,5 +73,5 @@ export function useLoc(account, languages) {
     return locTranslated;
   }
 
-  return { getLocData, translate, language };
+  return { languages, language, translate };
 }
