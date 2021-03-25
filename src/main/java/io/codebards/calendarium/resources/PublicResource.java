@@ -57,7 +57,7 @@ public class PublicResource {
     }
 
     @GET
-    @Path("/calendar-embeds/{calendarId}/events")
+    @Path("/calendars/{calendarId}/events")
     public List<Event> getCalendarEvents(@PathParam("calendarId") long calendarId, @QueryParam("q") String q) {
         List<Event> events = new ArrayList<>();
         Optional<Calendar> oCalendar = dao.findCalendar(calendarId);

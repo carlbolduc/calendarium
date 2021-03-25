@@ -221,7 +221,7 @@ export default function Calendar(props) {
     <Event key={e.eventId} event={e} eventActions={eventActions(e)} language={props.language} />
   ));
 
-  const newEventButton = showEventForm ? null : (
+  const newEventButton = !showEventForm && [calendarAccessStatus.OWNER, calendarAccessStatus.ACTIVE].indexOf(props.calendar.access) !== -1 ? (
     <Button
       label={props.translate("New event")}
       id="button-new-event"
@@ -231,7 +231,7 @@ export default function Calendar(props) {
         setEventFormResult(null);
       }}
     />
-  );
+  ) :null;
 
   const eventForm = (
     <EventForm

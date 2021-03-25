@@ -19,7 +19,7 @@ import PublicCalendars from "../Calendars/PublicCalendars";
 import PasswordReset from "../Auth/PasswordReset";
 import Calendar from "../Calendars/Calendar";
 import AcceptInvitation from "../Calendars/AcceptInvitation";
-import Footer from '../../components/Footer/Footer';
+import Footer from "../../components/Footer/Footer";
 import Embed from "../Embed/Embed";
 
 export default function App() {
@@ -39,7 +39,7 @@ export default function App() {
   } = useAuth();
   const { getLocData, translate, language } = useLoc(account, languages);
   const { customerCreated, subscribed, createCustomer, createSubscription, updateSubscription } = useSubscription(token, account, getAccount);
-  const { calendars, calendar, getCalendars, getPublicCalendars, clearCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents, getCalendarEmbedEvents, clearCalendarEvents } = useCalendar(token, subscribed);
+  const { calendars, calendar, getCalendars, getPublicCalendars, clearCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents, clearCalendarEvents } = useCalendar(token, subscribed);
   const { events, createEvent, updateEvent, deleteEvent, searchEvents } = useEvent(token);
   const { collaborators, calendarAccess, getCalendarCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation, deactivateCalendarAccess, activateCalendarAccess } = useCollaborator(token, saveToken);
 
@@ -72,7 +72,7 @@ export default function App() {
             calendar={calendar}
             getCalendar={getCalendar}
             calendarEvents={calendarEvents}
-            getCalendarEvents={getCalendarEmbedEvents}
+            getCalendarEvents={getCalendarEvents}
             languages={languages}
             language={language}
             setLanguage={switchLanguage}
