@@ -44,18 +44,18 @@ export function useCalendar(token, subscribed) {
 
   const getPublicCalendars = useCallback(() => {
    console.log("get public calendar");
-    // axios({
-   //   method: "GET",
-   //   headers: {
-   //     "Content-Type": "application/json"
-   //   },
-   //   url: `${process.env.REACT_APP_API}/calendars`,
-   // }).then(res => {
-   //   setCalendars(res.data);
-   // }).catch(err => {
-   //   console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendars' from 'useCalendar' hook");
-   //   console.log(err.response);
-   // });
+   axios({
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      url: `${process.env.REACT_APP_API}/public/calendars`,
+    }).then(res => {
+      setCalendars(res.data);
+    }).catch(err => {
+      console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendars' from 'useCalendar' hook");
+      console.log(err.response);
+    });
   }, []);
 
   const clearCalendars = useCallback(() => {

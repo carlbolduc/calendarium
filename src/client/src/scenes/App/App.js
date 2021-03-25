@@ -18,8 +18,6 @@ import MyCalendars from "../Calendars/MyCalendars";
 import PublicCalendars from "../Calendars/PublicCalendars";
 import PasswordReset from "../Auth/PasswordReset";
 import Calendar from "../Calendars/Calendar";
-import Terms from "../Static/Terms";
-import Privacy from "../Static/Privacy";
 import AcceptInvitation from "../Calendars/AcceptInvitation";
 import Footer from '../../components/Footer/Footer';
 import Embed from "../Embed/Embed";
@@ -128,16 +126,6 @@ export default function App() {
                   updateAccount={updateAccount}
                   authenticated={authenticated}
                   translate={translate}
-                  language={language}
-                />
-              </Route>
-              <Route exact path="/terms">
-                <Terms
-                  language={language}
-                />
-              </Route>
-              <Route exact path="/privacy">
-                <Privacy
                   language={language}
                 />
               </Route>
