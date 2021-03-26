@@ -131,6 +131,7 @@ export default function App() {
                   translate={translate}
                   language={language}
                   calendars={calendars}
+                  calendar={calendar}
                   getCalendars={getCalendars}
                   clearCalendars={clearCalendars}
                   createCalendar={createCalendar}
