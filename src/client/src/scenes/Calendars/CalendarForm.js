@@ -320,7 +320,7 @@ export default function CalendarForm(props) {
           handleChange={e => setEventApprovalRequired(e.target.checked)}
           info={props.translate("When this is checked, you will need to approve all events created by collaborators that you have invited to this calendar. You can uncheck this at any time to remove the restriction.")}
         />
-        <Button label={props.translate("Cancel")} id="button-cancel" onClick={props.cancel} outline={true} />
+        <Button label={props.translate("Cancel")} id="button-cancel" onClick={() => setShowCalendarForm(false)} outline={true} />
         <Button label={props.translate(submitButton)} type="submit" working={requesting} id="button-save" />
       </form>
     </>
