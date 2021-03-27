@@ -1,21 +1,17 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Button from "../../components/Form/Button";
 import {calendarAccessStatus} from "../../services/Helpers";
 
 export default function DeleteEventButton(props) {
-  const deleteEvent = props.delete;
-  const refresh = props.refresh;
+  const deleteEvent = props.deleteEvent;
   const [working, setWorking] = useState(false);
 
   useEffect(() => {
     if (working) {
-      deleteEvent(props.event, () => {
-        setWorking(false);
-        refresh();
-      })
+      deleteEvent(props.event);
     }
-  }, [working, props.event, deleteEvent, refresh])
+  }, [props.event, working, deleteEvent]);
 
   function render() {
     let shouldRender = false;
@@ -37,7 +33,6 @@ DeleteEventButton.propTypes = {
   event: PropTypes.object.isRequired,
   account: PropTypes.object.isRequired,
   calendar: PropTypes.object.isRequired,
-  delete: PropTypes.func.isRequired,
-  refresh: PropTypes.func.isRequired,
+  deleteEvent: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
 };

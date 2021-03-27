@@ -1,21 +1,17 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Button from "../../components/Form/Button";
 import {calendarAccessStatus, eventStatus} from "../../services/Helpers";
 
 export default function SubmitForApprovalEventButton(props) {
-  const submit = props.submit;
-  const refresh = props.refresh;
+  const submitForApproval = props.submitForApproval;
   const [working, setWorking] = useState(false);
 
   useEffect(() => {
-    if (working) {
-      submit(props.event, () => {
-        setWorking(false);
-        refresh();
-      })
+    if (working && props.event.status === eventStatus.DRAFT.value) {
+      submitForApproval(props.event);
     }
-  }, [working, props.event, submit, refresh])
+  }, [props.event, working, submitForApproval]);
 
   function render() {
     let shouldRender = false;
@@ -37,7 +33,6 @@ SubmitForApprovalEventButton.propTypes = {
   event: PropTypes.object.isRequired,
   account: PropTypes.object.isRequired,
   calendar: PropTypes.object.isRequired,
-  submit: PropTypes.func.isRequired,
-  refresh: PropTypes.func.isRequired,
+  submitForApproval: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
 };

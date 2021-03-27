@@ -10,7 +10,7 @@ import { textValid, timesList, decideWhatToDisplay, getLocale } from "../../serv
 import Textarea from "../../components/Form/Textarea";
 
 export default function EventForm(props) {
-  const getCalendarEvents = props.getCalendarEvents;
+  const refreshEvents = props.refreshEvents;
   const createEvent = props.createEvent;
   const updateEvent = props.updateEvent;
   const setResult = props.setResult;
@@ -120,7 +120,7 @@ export default function EventForm(props) {
         createEvent(event, result => {
           setRequesting(false);
           if (result.success) {
-            getCalendarEvents();
+            refreshEvents();
             hideForm();
           } else {
             setResult(result);
@@ -131,7 +131,7 @@ export default function EventForm(props) {
         updateEvent(event, result => {
           setRequesting(false);
           if (result.success) {
-            getCalendarEvents();
+            refreshEvents();
             hideForm();
           } else {
             setResult(result);
@@ -139,7 +139,7 @@ export default function EventForm(props) {
         });
       }
     }
-  }, [requesting, props.event, allDay, startDate, startTime, endDate, endTime, getCalendarEvents, createEvent, updateEvent, setResult, hideForm, buildEvent]);
+  }, [requesting, props.event, allDay, startDate, startTime, endDate, endTime, refreshEvents, createEvent, updateEvent, setResult, hideForm, buildEvent]);
 
   function handleSubmit(e) {
     e.preventDefault();
