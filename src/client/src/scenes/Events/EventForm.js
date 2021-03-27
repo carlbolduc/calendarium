@@ -6,7 +6,7 @@ import Input from "../../components/Form/Input";
 import Checkbox from "../../components/Form/Checkbox";
 import { DateTime } from "luxon";
 import Month from "../Calendars/Month";
-import {textValid, timesList, decideWhatToDisplay, getLocale} from "../../services/Helpers";
+import { textValid, timesList, decideWhatToDisplay, getLocale } from "../../services/Helpers";
 import Textarea from "../../components/Form/Textarea";
 
 export default function EventForm(props) {
@@ -148,7 +148,7 @@ export default function EventForm(props) {
     const frValid = validateFrenchFields();
     // Dates validations
     const datesAndTimesValid = validateDateAndTimeFields();
-    if ( enValid && frValid && datesAndTimesValid) {
+    if (enValid && frValid && datesAndTimesValid) {
       setRequesting(true);
     }
   }
@@ -244,7 +244,7 @@ export default function EventForm(props) {
         // English time format
         let hour = Number(timeParts[0]);
         if (!isNaN(hour) && hour < 13) {
-          const minutes = Number(timeParts[1].substring(0,2));
+          const minutes = Number(timeParts[1].substring(0, 2));
           if (!isNaN(minutes) && minutes < 60) {
             const meridiem = timeParts[1].match(re)[0];
             if (hour === 12 && ["am", "a.m."].indexOf(meridiem.toLowerCase()) !== -1) {
@@ -259,7 +259,7 @@ export default function EventForm(props) {
         }
       } else {
         const hour = Number(timeParts[0]);
-        const minutes = Number(timeParts[1].substring(0,2));
+        const minutes = Number(timeParts[1].substring(0, 2));
         if (!isNaN(hour) && !isNaN(minutes) && hour < 24 && minutes < 60) {
           result.valid = true;
           result.hour = hour;
@@ -457,80 +457,86 @@ export default function EventForm(props) {
           handleChange={e => setAllDay(e.target.checked)}
           info="When this is checked, ???."
         />
-        <div style={{ position: "relative" }}>
-          <Input
-            label="Start date"
-            type="text"
-            id="input-start-date"
-            placeholder="Select date"
-            info="???"
-            value={startDate !== null ? startDate.setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_HUGE) : ""}
-            readOnly={true}
-            onClick={() => setShowStartDateSelector(true)}
-            invalidFeedback={invalidStartDate ? <InvalidFeedback feedback="You must chose a start date." /> : null}
-          />
-          {startDateSelector}
-        </div>
-        {allDay ? null : (
-          <div style={{ position: "relative" }}>
-            <Input
-              label="Start time"
-              type="text"
-              id="input-start-time"
-              placeholder="Select time"
-              info="???"
-              value={startTime}
-              onClick={() => setShowStartTimeSelector(!showStartTimeSelector)}
-              onBlur={() => {
-                setShowStartTimeSelector(false);
-                processStartTime();
-              }}
-              handleChange={(e) => {
-                setStartTime(e.target.value);
-                setInvalidStartTime(false);
-              }}
-              invalidFeedback={invalidStartTime ? <InvalidFeedback feedback="You must chose a start time." /> : null}
-            />
-            {startTimeSelector}
+        <div className="row mb-3">
+          <div className="col-12 col-md-6">
+            <div style={{ position: "relative" }}>
+              <Input
+                label="Start date"
+                type="text"
+                id="input-start-date"
+                placeholder="Select date"
+                info="???"
+                value={startDate !== null ? startDate.setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_HUGE) : ""}
+                readOnly={true}
+                onClick={() => setShowStartDateSelector(true)}
+                invalidFeedback={invalidStartDate ? <InvalidFeedback feedback="You must chose a start date." /> : null}
+              />
+              {startDateSelector}
+            </div>
+            {allDay ? null : (
+              <div style={{ position: "relative" }}>
+                <Input
+                  label="Start time"
+                  type="text"
+                  id="input-start-time"
+                  placeholder="Select time"
+                  info="???"
+                  value={startTime}
+                  onClick={() => setShowStartTimeSelector(!showStartTimeSelector)}
+                  onBlur={() => {
+                    setShowStartTimeSelector(false);
+                    processStartTime();
+                  }}
+                  handleChange={(e) => {
+                    setStartTime(e.target.value);
+                    setInvalidStartTime(false);
+                  }}
+                  invalidFeedback={invalidStartTime ? <InvalidFeedback feedback="You must chose a start time." /> : null}
+                />
+                {startTimeSelector}
+              </div>
+            )}
           </div>
-        )}
-        <div style={{ position: "relative" }}>
-          <Input
-            label="End date"
-            type="text"
-            id="input-end-date"
-            placeholder="Select date"
-            info="???"
-            value={endDate !== null ? endDate.setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_HUGE) : ""}
-            readOnly={true}
-            onClick={() => setShowEndDateSelector(!showEndDateSelector)}
-            invalidFeedback={invalidEndDate ? <InvalidFeedback feedback="Your end date must be on the same day as your start date or later." /> : null}
-          />
-          {endDateSelector}
-        </div>
-        {allDay ? null : (
-          <div style={{ position: "relative" }}>
-            <Input
-              label="End time"
-              type="text"
-              id="input-end-time"
-              placeholder="Select time"
-              info="???"
-              value={endTime}
-              onClick={() => setShowEndTimeSelector(!showEndTimeSelector)}
-              onBlur={() => {
-                setShowEndTimeSelector(false);
-                processEndTime();
-              }}
-              handleChange={(e) => {
-                setEndTime(e.target.value);
-                setInvalidEndTime(false);
-              }}
-              invalidFeedback={invalidEndTime ? <InvalidFeedback feedback="Your end time must be valid and later than your start time." /> : null}
-            />
-            {endTimeSelector}
+          <div className="col-12 col-md-6">
+            <div style={{ position: "relative" }}>
+              <Input
+                label="End date"
+                type="text"
+                id="input-end-date"
+                placeholder="Select date"
+                info="???"
+                value={endDate !== null ? endDate.setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_HUGE) : ""}
+                readOnly={true}
+                onClick={() => setShowEndDateSelector(!showEndDateSelector)}
+                invalidFeedback={invalidEndDate ? <InvalidFeedback feedback="Your end date must be on the same day as your start date or later." /> : null}
+              />
+              {endDateSelector}
+            </div>
+            {allDay ? null : (
+              <div style={{ position: "relative" }}>
+                <Input
+                  label="End time"
+                  type="text"
+                  id="input-end-time"
+                  placeholder="Select time"
+                  info="???"
+                  value={endTime}
+                  onClick={() => setShowEndTimeSelector(!showEndTimeSelector)}
+                  onBlur={() => {
+                    setShowEndTimeSelector(false);
+                    processEndTime();
+                  }}
+                  handleChange={(e) => {
+                    setEndTime(e.target.value);
+                    setInvalidEndTime(false);
+                  }}
+                  invalidFeedback={invalidEndTime ? <InvalidFeedback feedback="Your end time must be valid and later than your start time." /> : null}
+                />
+                {endTimeSelector}
+              </div>
+            )}
           </div>
-        )}
+        </div>
         <Button label={props.translate("Cancel")} type="button" id="button-cancel" onClick={props.cancel} outline={true} />
         <Button label={props.translate(submitButton)} type="submit" working={requesting} id="button-save" />
       </form>
