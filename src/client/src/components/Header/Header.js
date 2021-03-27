@@ -36,10 +36,6 @@ export default function Header(props) {
         </button>
         <div className="collapse navbar-collapse" id="main-navbar">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            {/* TODO: reenable My events section at a later dev phase */}
-            {/* {props.authenticated
-              ? <li className="nav-item"><Link className="nav-link" to="/my-events">{props.translate("My events")}</Link></li>
-              : null} */}
             {props.authenticated
               ? <li className="nav-item"><button className={navClassName("/my-calendars")} onClick={e => goTo(e, "/my-calendars")}>{props.translate("My calendars")}</button></li>
               : null}
