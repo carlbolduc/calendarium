@@ -1,6 +1,6 @@
 import React from "react";
-import {DateTime} from "luxon";
-import {eventStatus, getLocale, sameDay} from "../../services/Helpers";
+import { DateTime } from "luxon";
+import { eventStatus, getLocale, sameDay, decideWhatToDisplay } from "../../services/Helpers";
 
 export default function Event(props) {
 
@@ -8,11 +8,11 @@ export default function Event(props) {
     let result = null;
     if (props.showStatus) {
       if (props.event.status === eventStatus.DRAFT.value) {
-        result = <span className="badge  bg-secondary">{eventStatus.DRAFT.label}</span>
+        result = <span className="badge bg-secondary">{props.translate(eventStatus.DRAFT.label)}</span>;
       } else if (props.event.status === eventStatus.PENDING_APPROVAL.value) {
-        result = <span className="badge bg-warning">{eventStatus.PENDING_APPROVAL.label}</span>
+        result = <span className="badge bg-warning">{props.translate(eventStatus.PENDING_APPROVAL.label)}</span>;
       } else if (props.event.status === eventStatus.PUBLISHED.value) {
-        result = <span className="badge bg-dark">{eventStatus.PUBLISHED.label}</span>
+        result = <span className="badge bg-success">{props.translate(eventStatus.PUBLISHED.label)}</span>;
       }
     }
     return result;
@@ -37,6 +37,14 @@ export default function Event(props) {
     }
     return result;
   }
+  function hyperlink() {
+    let result = null;
+    const hyperlinkToDisplay = decideWhatToDisplay(props.language, props.enableEn, props.enableFr, props.event.hyperlinkEn, props.event.hyperlinkFr);
+    if (hyperlinkToDisplay !== null) {
+      result = <a href={hyperlinkToDisplay}>{hyperlinkToDisplay}</a>;
+    }
+    return result;
+  }
   function classNames() {
     const classNames = ["card", "mb-3"];
     switch (props.event.status) {
@@ -44,32 +52,40 @@ export default function Event(props) {
         classNames.push("bg-light");
         break;
       case eventStatus.PENDING_APPROVAL.value:
-        classNames.push("bg-info");
+        classNames.push("border-warning");
         break;
       default:
         break;
     }
     return classNames.join(" ");
   }
-  const borderStyle = props.primaryColor === undefined || props.primaryColor === "#ffffff" ? null : { borderColor: props.primaryColor };
+  const borderStyle = props.primaryColor === undefined || props.primaryColor === "#ffffff"
+    ? null
+    : { borderColor: props.primaryColor };
 
   return (
     <article className={classNames()} style={borderStyle}>
-      <div className="row g-0">
-        <div className="col-auto">
-          <div className="card-body">
-            <h5 className="card-title">{props.event.nameEn}</h5>
-            <h6 className="card-subtitle mb-2 text-muted">{duration()}</h6>
-            {props.eventActions}
-          </div>
-        </div>
+      <div className="row">
         <div className="col">
           <div className="card-body">
+            <h5 className="card-title">{decideWhatToDisplay(props.language, props.enableEn, props.enableFr, props.event.nameEn, props.event.nameFr)}</h5>
+            <h6 className="card-subtitle mb-2 text-muted">{duration()}</h6>
+            <p className="card-text">{decideWhatToDisplay(props.language, props.enableEn, props.enableFr, props.event.descriptionEn, props.event.descriptionFr)}</p>
+            {hyperlink()}
+          </div>
+        </div>
+        <div className="col-auto">
+          <div className="card-body">
             {status()}
-            <p className="card-text">{props.event.descriptionEn}</p>
           </div>
         </div>
       </div>
+      <div className="row">
+        <div className="col ms-3">
+          {props.eventActions}
+        </div>
+      </div>
+
     </article>
   );
 }

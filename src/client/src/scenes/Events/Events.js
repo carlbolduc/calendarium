@@ -14,7 +14,7 @@ export default function Events(props) {
   );
 
   const events = props.events.map(e => (
-    <Event key={e.eventId} event={e} />
+    <Event key={e.eventId} event={e} translate={props.translate} />
   ));
 
   return (

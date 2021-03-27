@@ -213,8 +213,11 @@ export default function Calendar(props) {
       event={e} 
       eventActions={eventActions(e)} 
       language={props.language} 
+      translate={props.translate}
       primaryColor={props.calendar.primaryColor}
       secondaryColor={props.calendar.secondaryColor}
+      enableEn={props.calendar.enableEn}
+      enableFr={props.calendar.enableFr}
     />
   ));
 

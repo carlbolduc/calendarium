@@ -82,7 +82,7 @@ export default function EventsSearch(props) {
   ) : null;
 
   const events = props.events.map(e => (
-    <Event key={e.eventId} event={e} showStatus={true} eventActions={props.eventActions(e)} language={props.language}/>
+    <Event key={e.eventId} event={e} showStatus={true} eventActions={props.eventActions(e)} language={props.language} translate={props.translate}/>
   ));
 
   const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);

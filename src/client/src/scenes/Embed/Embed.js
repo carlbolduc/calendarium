@@ -52,6 +52,7 @@ export default function Embed(props) {
       key={e.eventId} 
       event={e} 
       language={props.language} 
+      translate={props.translate}
       primaryColor={props.calendar.primaryColor}
       secondaryColor={props.calendar.secondaryColor}
     />
