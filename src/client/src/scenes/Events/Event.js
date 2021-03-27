@@ -1,3 +1,4 @@
+import React from "react";
 import {DateTime} from "luxon";
 import {eventStatus, getLocale, sameDay} from "../../services/Helpers";
 
@@ -50,9 +51,10 @@ export default function Event(props) {
     }
     return classNames.join(" ");
   }
+  const borderStyle = props.primaryColor === undefined || props.primaryColor === "#ffffff" ? null : { borderColor: props.primaryColor };
 
   return (
-    <article className={classNames()}>
+    <article className={classNames()} style={borderStyle}>
       <div className="row g-0">
         <div className="col-auto">
           <div className="card-body">

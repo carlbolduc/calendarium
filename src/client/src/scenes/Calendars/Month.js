@@ -1,14 +1,14 @@
-import {useState, useEffect} from "react";
-import {DateTime, Info} from "luxon";
+import React from "react";
+import { useState, useEffect } from "react";
+import { DateTime, Info } from "luxon";
 import useComponentBlur from "../../services/ComponentBlurHook";
-import {dayNumber, getLocale, nextWeekDay, uuidv4} from "../../services/Helpers";
+import { dayNumber, getLocale, nextWeekDay, uuidv4, textColor } from "../../services/Helpers";
 import Week from "./Week";
 import ArrowLeft from "../../components/Icons/ArrowLeft";
 import ArrowRight from "../../components/Icons/ArrowRight";
 
-
 export default function Month(props) {
-  const {ref} = useComponentBlur(props.hide !== undefined ? props.hide : null);
+  const { ref } = useComponentBlur(props.hide !== undefined ? props.hide : null);
   const [date, setDate] = useState(DateTime.now());
   const [weeks, setWeeks] = useState([]);
 
@@ -40,7 +40,7 @@ export default function Month(props) {
   }, [date, props.startWeekOn]);
 
   function selectDay(d) {
-    const selectedDate = date.set({day: d});
+    const selectedDate = date.set({ day: d });
     setDate(selectedDate);
     props.selectDay(selectedDate);
   }
@@ -58,53 +58,74 @@ export default function Month(props) {
   function renderHeader() {
     const dayOfWeek = dayNumber(props.startWeekOn);
     const locale = getLocale(props.language);
+    const weekdayRowClassName = props.secondaryColor === undefined || props.secondaryColor === "#ffffff" 
+      ? "text-muted" 
+      : `${textColor(props.secondaryColor)}`;
+    const weekdayRowStyle = props.secondaryColor === undefined 
+      ? null 
+      : { backgroundColor: props.secondaryColor };
+    const monthRowTextColor = props.primaryColor === undefined 
+      ? null 
+      : textColor(props.primaryColor);
+    const monthRowStyle = props.primaryColor === undefined 
+      ? null 
+      : { backgroundColor: props.primaryColor };
     return (
       <thead>
-      <tr>
-        <th className="border-0 p-1">
-          <button
-            className="btn text-secondary btn-icon p-0"
-            type="button"
-            id="button-arrow-left"
-            onClick={() => changeMonth("minus")}
-          >
-            <ArrowLeft />
-          </button>
-        </th>
-        <th className="border-0 p-1" colSpan="5">{date.setLocale(getLocale(props.language)).monthLong} {date.year}</th>
-        <th className="border-0 p-1">
-          <button
-            className="btn text-secondary btn-icon p-0"
-            type="button"
-            id="button-arrow-left"
-            onClick={() => changeMonth("plus")}
-          >
-            <ArrowRight />
-          </button>
-        </th>
-      </tr>
-      <tr className="text-muted">
-        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[dayOfWeek - 1]}</th>
-        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[dayOfWeek % 7]}</th>
-        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 1) % 7]}</th>
-        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 2) % 7]}</th>
-        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 3) % 7]}</th>
-        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 4) % 7]}</th>
-        <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 5) % 7]}</th>
-      </tr>
+        <tr className={monthRowTextColor} style={monthRowStyle}>
+          <th className="border-0 p-1">
+            <button
+              className={`btn ${monthRowTextColor} btn-icon p-0`}
+              type="button"
+              id="button-arrow-left"
+              onClick={() => changeMonth("minus")}
+            >
+              <ArrowLeft />
+            </button>
+          </th>
+          <th className="border-0 p-1" colSpan={5}>{date.setLocale(getLocale(props.language)).monthLong} {date.year}</th>
+          <th className="border-0 p-1">
+            <button
+              className={`btn ${monthRowTextColor} btn-icon p-0`}
+              type="button"
+              id="button-arrow-left"
+              onClick={() => changeMonth("plus")}
+            >
+              <ArrowRight />
+            </button>
+          </th>
+        </tr>
+        <tr className={weekdayRowClassName} style={weekdayRowStyle}>
+          <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[dayOfWeek - 1]}</th>
+          <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[dayOfWeek % 7]}</th>
+          <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 1) % 7]}</th>
+          <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 2) % 7]}</th>
+          <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 3) % 7]}</th>
+          <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 4) % 7]}</th>
+          <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 5) % 7]}</th>
+        </tr>
       </thead>
     );
   }
 
-  const month = weeks.map(week =>(
-    <Week key={uuidv4()} days={week} currentDay={props.currentDay} selectDay={selectDay} hide={props.hide} date={date} />
+  const month = weeks.map(week => (
+    <Week
+      key={uuidv4()}
+      days={week}
+      currentDay={props.currentDay}
+      selectDay={selectDay}
+      hide={props.hide}
+      date={date}
+      primaryColor={props.primaryColor}
+      secondaryColor={props.secondaryColor}
+    />
   ));
 
   return (
     <table className="table table-bordered text-center" ref={ref}>
       {renderHeader()}
       <tbody>
-      {month}
+        {month}
       </tbody>
     </table>
   );
