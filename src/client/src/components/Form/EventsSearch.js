@@ -9,46 +9,57 @@ import {DateTime} from "luxon";
 import Month from "../../scenes/Calendars/Month";
 
 export default function EventsSearch(props) {
+  const searchEvents = props.searchEvents;
   const [search, setSearch] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [showStartDateSelector, setShowStartDateSelector] = useState(false);
   const [endDate, setEndDate] = useState(null);
   const [showEndDateSelector, setShowEndDateSelector] = useState(false);
   const [status, setStatus] = useState("");
-  const [requesting, setRequesting] = useState(false);
-  const [canSearch, setCanSearch] = useState(false);
   const [result, setResult] = useState(null);
+  const [initialLoad, setInitialLoad] = useState(true);
+  const [working, setWorking] = useState(false);
+  const [canSearch, setCanSearch] = useState(false);
 
-  const searchEvents = useCallback(() => {
-    // Build query param with currentDay
-    const q = encodeObject({
+  const buildQuery = useCallback(() => {
+    return encodeObject({
       search: search,
       startAt: startDate !== null ? startDate.startOf("day").toSeconds() : null,
       endAt: endDate !== null ? endDate.endOf("day").toSeconds() : null,
       status: status,
       calendarId: props.calendar.calendarId
     });
-    props.searchEvents(q, () => {
-      setRequesting(false);
-      setCanSearch(false);
-    });
-  }, [endDate, search, startDate, status]);
+  }, [props.calendar.calendarId, endDate, search, startDate, status]);
 
-
+  // Perform search immidiately when the search form is shown
   useEffect(() => {
-    searchEvents();
-  }, [searchEvents]);
-
-  useEffect(() => {
-    if (requesting) {
-      // Build query param with currentDay
-      searchEvents();
+    if (initialLoad) {
+      setInitialLoad(false);
+      const q = buildQuery();
+      searchEvents(q);
     }
-  }, [requesting, searchEvents]);
+  }, [initialLoad, buildQuery, searchEvents]);
+  
+  const executeSearch = useCallback(() => {
+    if (working) {
+      const q = buildQuery();
+      searchEvents(q, () => {
+        setWorking(false);
+        setCanSearch(false);
+      });
+    }
+  }, [working, buildQuery, searchEvents]);
+
+  useEffect(() => {
+    if (working) {
+      // Build query param with currentDay
+      executeSearch();
+    }
+  }, [working, executeSearch]);
 
   function handleSubmit(e) {
     e.preventDefault();
-    setRequesting(true);
+    setWorking(true);
   }
 
   const startDateSelector = showStartDateSelector ? (
@@ -88,9 +99,9 @@ export default function EventsSearch(props) {
   const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
   const title = `${props.translate("Events of")} ${calendarName}`;
   const searchButton = canSearch ? (
-    <Button label="Search" type="submit" working={requesting} id="button-search" />
+    <Button label="Search" type="submit" working={working} id="button-search" />
   ) : (
-    <Button label="Search" type="submit" working={requesting} id="button-search" disabled={true} />
+    <Button label="Search" type="submit" working={working} id="button-search" disabled={true} />
   );
 
   return (

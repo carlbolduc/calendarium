@@ -96,7 +96,7 @@ export function useEvent(token) {
     }
   }, [token]);
 
-  function searchEvents(q, cb) {
+  const searchEvents = useCallback((q, cb) => {
     if (token !== null) {
       axios({
         method: "GET",
@@ -113,7 +113,7 @@ export function useEvent(token) {
         console.log(err.response);
       });
     }
-  }
+  }, [token]);
 
   return { events, getEvents, createEvent, updateEvent, deleteEvent, searchEvents };
 }
