@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect, useCallback } from "react";
 import Button from "../../components/Form/Button";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
@@ -449,6 +450,13 @@ export default function EventForm(props) {
           {englishFields}
           {frenchFields}
         </div>
+        <Checkbox
+          label="All day"
+          id="all-day"
+          value={allDay}
+          handleChange={e => setAllDay(e.target.checked)}
+          info="When this is checked, ???."
+        />
         <div style={{ position: "relative" }}>
           <Input
             label="Start date"
@@ -523,13 +531,6 @@ export default function EventForm(props) {
             {endTimeSelector}
           </div>
         )}
-        <Checkbox
-          label="All day"
-          id="all-day"
-          value={allDay}
-          handleChange={e => setAllDay(e.target.checked)}
-          info="When this is checked, ???."
-        />
         <Button label={props.translate("Cancel")} type="button" id="button-cancel" onClick={props.cancel} outline={true} />
         <Button label={props.translate(submitButton)} type="submit" working={requesting} id="button-save" />
       </form>

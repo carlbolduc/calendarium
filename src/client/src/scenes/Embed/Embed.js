@@ -48,7 +48,13 @@ export default function Embed(props) {
   }, [props.calendar.calendarId, currentDay, getCalendarEvents])
 
   const calendarEvents = props.calendarEvents.map(e => (
-    <Event key={e.eventId} event={e} language={props.language} />
+    <Event 
+      key={e.eventId} 
+      event={e} 
+      language={props.language} 
+      primaryColor={props.calendar.primaryColor}
+      secondaryColor={props.calendar.secondaryColor}
+    />
   ));
 
   function main() {
@@ -73,6 +79,8 @@ export default function Embed(props) {
               selectDay={date => setCurrentDay(date)}
               setCurrentDay={setCurrentDay}
               language={props.language}
+              primaryColor={props.calendar.primaryColor}
+              secondaryColor={props.calendar.secondaryColor}
             />
           </div>
           <div className="col-12 col-md">

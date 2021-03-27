@@ -208,7 +208,14 @@ export default function Calendar(props) {
   );
 
   const calendarEvents = props.calendarEvents.map(e => (
-    <Event key={e.eventId} event={e} eventActions={eventActions(e)} language={props.language} />
+    <Event 
+      key={e.eventId} 
+      event={e} 
+      eventActions={eventActions(e)} 
+      language={props.language} 
+      primaryColor={props.calendar.primaryColor}
+      secondaryColor={props.calendar.secondaryColor}
+    />
   ));
 
   const newEventButton = !showEventForm && [calendarAccessStatus.OWNER, calendarAccessStatus.ACTIVE].indexOf(props.calendar.access) !== -1 ? (
@@ -295,6 +302,8 @@ export default function Calendar(props) {
                   selectDay={date => setCurrentDay(date)}
                   setCurrentDay={setCurrentDay}
                   language={props.language}
+                  primaryColor={props.calendar.primaryColor}
+                  secondaryColor={props.calendar.secondaryColor}
                 />
               </div>
               <div className="col-12 col-md">
