@@ -94,7 +94,7 @@ export default function Embed(props) {
   }
 
   return (
-    <div className="mt-4 px-0">
+    <div className="container mt-4 px-0">
       {main()}
     </div>
   );
