@@ -1,21 +1,17 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Button from "../../components/Form/Button";
 import {calendarAccessStatus, eventStatus} from "../../services/Helpers";
 
 export default function PublishEventButton(props) {
-  const publish = props.publish;
-  const refresh = props.refresh;
+  const approveEvent = props.approveEvent;
   const [working, setWorking] = useState(false);
 
   useEffect(() => {
-    if (working) {
-      publish(props.event, () => {
-        setWorking(false);
-        refresh();
-      })
+    if (working && props.event.status === eventStatus.DRAFT.value) {
+      approveEvent(props.event);
     }
-  }, [working, props.event, publish, refresh])
+  }, [working, props.event, approveEvent])
 
   function render() {
     let shouldRender = false;
@@ -40,7 +36,6 @@ PublishEventButton.propTypes = {
   event: PropTypes.object.isRequired,
   account: PropTypes.object.isRequired,
   calendar: PropTypes.object.isRequired,
-  publish: PropTypes.func.isRequired,
-  refresh: PropTypes.func.isRequired,
+  approveEvent: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
 };

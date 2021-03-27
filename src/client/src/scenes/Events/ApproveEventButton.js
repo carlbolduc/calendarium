@@ -1,21 +1,17 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Button from "../../components/Form/Button";
 import {calendarAccessStatus, eventStatus} from "../../services/Helpers";
 
 export default function ApproveEventButton(props) {
-  const approve = props.approve;
-  const refresh = props.refresh;
+  const approveEvent = props.approveEvent;
   const [working, setWorking] = useState(false);
 
   useEffect(() => {
-    if (working) {
-      approve(props.event, () => {
-        setWorking(false);
-        refresh();
-      })
+    if (working && props.event.status === eventStatus.PENDING_APPROVAL.value) {
+      approveEvent(props.event);
     }
-  }, [working, props.event, approve, refresh])
+  }, [props.event, working, approveEvent])
 
   function render() {
     let shouldRender = false;
@@ -31,7 +27,6 @@ export default function ApproveEventButton(props) {
 ApproveEventButton.propTypes = {
   event: PropTypes.object.isRequired,
   calendar: PropTypes.object.isRequired,
-  approve: PropTypes.func.isRequired,
-  refresh: PropTypes.func.isRequired,
+  approveEvent: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
 };

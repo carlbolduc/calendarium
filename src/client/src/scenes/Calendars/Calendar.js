@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, Redirect } from "react-router-dom";
 import { DateTime } from "luxon";
 import {calendarAccessStatus, decideWhatToDisplay, encodeObject, eventStatus} from "../../services/Helpers";
@@ -19,6 +19,8 @@ import DeleteEventButton from "../Events/DeleteEventButton";
 export default function Calendar(props) {
   const getCalendar = props.getCalendar;
   const getCalendarEvents = props.getCalendarEvents;
+  const updateEvent = props.updateEvent;
+  const deleteEvent = props.deleteEvent;
   let { link } = useParams();
   const [currentDay, setCurrentDay] = useState(DateTime.now());
   const [showCalendarForm, setShowCalendarForm] = useState(false);
@@ -33,15 +35,19 @@ export default function Calendar(props) {
     getCalendar({ link: link });
   }, [getCalendar, link]);
 
+  const refreshEvents = useCallback(() => {
+    const q = encodeObject({ startAt: currentDay.toSeconds()});
+    getCalendarEvents(props.calendar.calendarId, q, result => {
+      // We do nothing with the result.
+      // TODO: should we display the error if there is one (there should never be one)
+    });
+  }, [props.calendar.calendarId, currentDay, getCalendarEvents]);
+
   useEffect(() => {
     if ([props.calendar.linkEn, props.calendar.linkFr].indexOf(link) !== -1) {
-      const q = encodeObject({ startAt: currentDay.toSeconds()});
-      getCalendarEvents(props.calendar.calendarId, q, result => {
-        // We do nothing with the result.
-        // TODO: should we display the error if there is one (there should never be one)
-      });
+      refreshEvents();
     }
-  }, [props.calendar, link, currentDay, getCalendarEvents])
+  }, [props.calendar, link, refreshEvents]);
 
   useEffect(() => {
     if (event !== null) {
@@ -57,37 +63,25 @@ export default function Calendar(props) {
     }
   }, [showEventForm]);
 
-  function submitForApproval(event) {
+  const submitForApproval = useCallback((event) => {
     event.status = eventStatus.PENDING_APPROVAL.value;
-    props.updateEvent(event, () => {
-      const q = encodeObject({ startAt: currentDay.toSeconds()});
-      getCalendarEvents(props.calendar.calendarId, q, result => {
-        // We do nothing with the result.
-        // TODO: should we display the error if there is one (there should never be one)
-      });
+    updateEvent(event, () => {
+      refreshEvents();
     });
-  }
+  }, [updateEvent, refreshEvents]);
 
-  function approveEvent(event) {
+  const approveEvent = useCallback((event) => {
     event.status = eventStatus.PUBLISHED.value;
-    props.updateEvent(event, () => {
-      const q = encodeObject({ startAt: currentDay.toSeconds()});
-      getCalendarEvents(props.calendar.calendarId, q, result => {
-        // We do nothing with the result.
-        // TODO: should we display the error if there is one (there should never be one)
-      });
+    updateEvent(event, () => {
+      refreshEvents();
     });
-  }
+  }, [updateEvent, refreshEvents]);
 
-  function deleteEvent(event) {
-    props.deleteEvent(event.eventId, () => {
-      const q = encodeObject({ startAt: currentDay.toSeconds()});
-      getCalendarEvents(props.calendar.calendarId, q, result => {
-        // We do nothing with the result.
-        // TODO: should we display the error if there is one (there should never be one)
-      });
+  const deleteThisEvent = useCallback((event) => {
+    deleteEvent(event.eventId, () => {
+      refreshEvents();
     });
-  }
+  }, [deleteEvent, refreshEvents]);
 
   const calendarSettingsButton = props.calendar.access === calendarAccessStatus.OWNER ? (
     <Button
@@ -165,31 +159,27 @@ export default function Calendar(props) {
           event={event}
           account={props.account}
           calendar={props.calendar}
-          submit={() => submitForApproval(event)}
-          refresh={props.getCalendarEvents}
+          submitForApproval={submitForApproval}
           translate={props.translate}
         />
         <ApproveEventButton
           event={event}
           calendar={props.calendar}
-          approve={() => approveEvent(event)}
-          refresh={props.getCalendarEvents}
+          approveEvent={approveEvent}
           translate={props.translate}
         />
         <PublishEventButton
           event={event}
           account={props.account}
           calendar={props.calendar}
-          publish={() => approveEvent(event)}
-          refresh={props.getCalendarEvents}
+          approveEvent={approveEvent}
           translate={props.translate}
         />
         <DeleteEventButton
           event={event}
           account={props.account}
           calendar={props.calendar}
-          delete={() => deleteEvent(event)}
-          refresh={props.getCalendarEvents}
+          deleteEvent={deleteThisEvent}
           translate={props.translate}
         />
       </div>
@@ -244,7 +234,7 @@ export default function Calendar(props) {
       hideForm={() => setShowEventForm(false)}
       setResult={setEventFormResult}
       calendar={props.calendar}
-      getCalendarEvents={getCalendarEvents}
+      refreshEvents={refreshEvents}
     />
   );
 
