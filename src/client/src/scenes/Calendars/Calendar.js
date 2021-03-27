@@ -100,10 +100,9 @@ export default function Calendar(props) {
       new={false}
       calendar={props.calendar}
       translate={props.translate}
-      cancel={() => setShowCalendarForm(false)}
       updateCalendar={props.updateCalendar}
       deleteCalendar={props.deleteCalendar}
-      hideForm={() => setShowCalendarForm(false)}
+      setShowCalendarForm={setShowCalendarForm}
       setResult={setCalendarFormResult}
     />
   );
