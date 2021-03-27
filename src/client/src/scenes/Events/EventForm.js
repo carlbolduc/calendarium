@@ -128,6 +128,7 @@ export default function EventForm(props) {
         });
       } else {
         event["eventId"] = props.event.eventId;
+        event["status"] = props.event.status;
         updateEvent(event, result => {
           setRequesting(false);
           if (result.success) {
