@@ -105,6 +105,7 @@ export function useCalendar(token, subscribed) {
   }, [token]);
 
   const createCalendar = useCallback((data, cb) => {
+    debugger
     if (token !== null && subscribed) {
       axios({
         method: "POST",

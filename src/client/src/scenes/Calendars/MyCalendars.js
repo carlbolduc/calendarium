@@ -62,7 +62,7 @@ export default function MyCalendars(props) {
       translate={props.translate}
       cancel={() => setShowCalendarForm(false)}
       createCalendar={props.createCalendar}
-      hideForm={() => setShowCalendarForm(false)}
+      setShowCalendarForm={setShowCalendarForm}
       setResult={setCalendarFormResult}
     />
   ) : null;

@@ -12,7 +12,7 @@ export default function CalendarForm(props) {
   const createCalendar = props.createCalendar;
   const updateCalendar = props.updateCalendar;
   const setResult = props.setResult;
-  const hideForm = props.hideForm;
+  const setShowCalendarForm = props.setShowCalendarForm;
   const [enableEn, setEnableEn] = useState(props.calendar.enableEn);
   const [nameEn, setNameEn] = useState(props.calendar.nameEn);
   const [invalidNameEn, setInvalidNameEn] = useState(false);
@@ -64,7 +64,7 @@ export default function CalendarForm(props) {
           setResult(result);
           setRequesting(false);
           if (result.success) {
-            hideForm();
+            setShowCalendarForm(false);
           }
         });
       } else {
@@ -72,12 +72,12 @@ export default function CalendarForm(props) {
           setResult(result);
           setRequesting(false);
           if (result.success) {
-            hideForm();
+            setShowCalendarForm(false);
           }
         });
       }
     }
-  }, [requesting, buildCalendar, props.calendar.calendarId, props.new, createCalendar, updateCalendar, setResult, hideForm]);
+  }, [requesting, buildCalendar, props.calendar.calendarId, props.new, createCalendar, updateCalendar, setResult, setShowCalendarForm]);
 
   useEffect(() => {
     if (enableEn || enableFr) {
