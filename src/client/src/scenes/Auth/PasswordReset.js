@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {Redirect} from "react-router-dom";
 import Input from "../../components/Form/Input";
@@ -8,10 +8,8 @@ import { passwordValid } from "../../services/Helpers";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 
 export default function PasswordReset(props) {
-  function useQuery() {
-      return new URLSearchParams(useLocation().search);
-    }
-  const query = useQuery();
+  const resetPassword = props.resetPassword;
+  const location = useLocation();
   const [newPassword, setNewPassword] = useState("");
   const [invalidNewPassword, setInvalidNewPassword] = useState(false);
   const [requesting, setRequesting] = useState(false);
@@ -21,7 +19,8 @@ export default function PasswordReset(props) {
   useEffect(() => {
     if (requesting) {
       // TODO: add password validations
-      props.resetPassword({
+      const query = new URLSearchParams(location.search);
+      resetPassword({
         id: query.get("id"),
         password: newPassword
       }, result => {
@@ -32,7 +31,7 @@ export default function PasswordReset(props) {
         setRequesting(false);
       });
     }
-  }, [requesting, newPassword, query])
+  }, [requesting, newPassword, location.search, resetPassword])
 
   function handleSubmit(e) {
     e.preventDefault();

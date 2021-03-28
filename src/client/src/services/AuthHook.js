@@ -162,7 +162,7 @@ export function useAuth() {
     });
   }, []);
 
-  function resetPassword(data, cb) {
+  const resetPassword = useCallback((data, cb) => {
     axios.put(`${process.env.REACT_APP_API}/auth/password-resets/${data.id}`, {
       id: data.id,
       password: data.password
@@ -177,7 +177,7 @@ export function useAuth() {
     }).catch(err => {
       errorCallback(err, cb);
     });
-  }
+  }, [saveToken]);
 
 
 

@@ -61,7 +61,6 @@ export default function CalendarForm(props) {
 
   // Clean calendar when unmounting the component
   useEffect(() => {
-    debugger
     return () => clearCalendar();
   }, [clearCalendar]);
 
