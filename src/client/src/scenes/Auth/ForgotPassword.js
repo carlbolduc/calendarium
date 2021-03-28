@@ -7,6 +7,7 @@ import {emailValid} from "../../services/Helpers";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 
 export default function ForgotPassword(props) {
+  const createPasswordReset = props.createPasswordReset;
   const [email, setEmail] = useState("");
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [requesting, setRequesting] = useState(false);
@@ -15,7 +16,7 @@ export default function ForgotPassword(props) {
 
   useEffect(() => {
     if (requesting) {
-      props.createPasswordReset({
+      createPasswordReset({
         email: email
       }, result => {
         if (result.success === true) {
@@ -23,9 +24,9 @@ export default function ForgotPassword(props) {
         }
         setResult(result);
         setRequesting(false);
-      })
+      });
     }
-  }, [email, requesting])
+  }, [email, requesting, createPasswordReset]);
 
   function handleSubmit(e) {
     e.preventDefault();

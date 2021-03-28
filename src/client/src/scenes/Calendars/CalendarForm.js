@@ -13,30 +13,29 @@ import { DateTime } from "luxon";
 export default function CalendarForm(props) {
   const createCalendar = props.createCalendar;
   const updateCalendar = props.updateCalendar;
-  const clearCalendar = props.clearCalendar;
   const setResult = props.setResult;
   const setShowCalendarForm = props.setShowCalendarForm;
-  const [enableEn, setEnableEn] = useState(props.calendar.enableEn);
-  const [nameEn, setNameEn] = useState(props.calendar.nameEn);
+  const [enableEn, setEnableEn] = useState(props.new ? false : props.calendar.enableEn);
+  const [nameEn, setNameEn] = useState(props.new ? "" : props.calendar.nameEn);
   const [invalidNameEn, setInvalidNameEn] = useState(false);
-  const [descriptionEn, setDescriptionEn] = useState(props.calendar.descriptionEn);
+  const [descriptionEn, setDescriptionEn] = useState(props.new ? "" : props.calendar.descriptionEn);
   const [invalidDescriptionEn, setInvalidDescriptionEn] = useState(false);
-  const [linkEn, setLinkEn] = useState(props.calendar.linkEn);
+  const [linkEn, setLinkEn] = useState(props.new ? "" : props.calendar.linkEn);
   const [invalidLinkEn, setInvalidLinkEn] = useState(false);
-  const [enableFr, setEnableFr] = useState(props.calendar.enableFr);
-  const [nameFr, setNameFr] = useState(props.calendar.nameFr);
+  const [enableFr, setEnableFr] = useState(props.new ? false : props.calendar.enableFr);
+  const [nameFr, setNameFr] = useState(props.new ? "" : props.calendar.nameFr);
   const [invalidNameFr, setInvalidNameFr] = useState(false);
-  const [descriptionFr, setDescriptionFr] = useState(props.calendar.descriptionFr);
+  const [descriptionFr, setDescriptionFr] = useState(props.new ? "" : props.calendar.descriptionFr);
   const [invalidDescriptionFr, setInvalidDescriptionFr] = useState(false);
-  const [linkFr, setLinkFr] = useState(props.calendar.linkFr);
+  const [linkFr, setLinkFr] = useState(props.new ? "" : props.calendar.linkFr);
   const [invalidLinkFr, setInvalidLinkFr] = useState(false);
-  const [startWeekOn, setStartWeekOn] = useState(props.calendar.startWeekOn === null ? "Sunday" : props.calendar.startWeekOn);
-  const [primaryColor, setPrimaryColor] = useState(props.calendar.primaryColor);
-  const [secondaryColor, setSecondaryColor] = useState(props.calendar.secondaryColor);
-  const [embedCalendar, setEmbedCalendar] = useState(props.calendar.embedCalendar);
-  const [publicCalendar, setPublicCalendar] = useState(props.calendar.publicCalendar);
+  const [startWeekOn, setStartWeekOn] = useState(props.new ? "Sunday" : props.calendar.startWeekOn);
+  const [primaryColor, setPrimaryColor] = useState(props.new ? "#ffffff" : props.calendar.primaryColor);
+  const [secondaryColor, setSecondaryColor] = useState(props.new ? "#ffffff" : props.calendar.secondaryColor);
+  const [embedCalendar, setEmbedCalendar] = useState(props.new ? false : props.calendar.embedCalendar);
+  const [publicCalendar, setPublicCalendar] = useState(props.new ? false : props.calendar.publicCalendar);
   const [requesting, setRequesting] = useState(false);
-  const [eventApprovalRequired, setEventApprovalRequired] = useState(props.calendar.eventApprovalRequired);
+  const [eventApprovalRequired, setEventApprovalRequired] = useState(props.new ? true : props.calendar.eventApprovalRequired);
   const [noLanguageEnabled, setNoLanguageEnabled] = useState(false);
   const [currentDay, setCurrentDay] = useState(DateTime.now());
 
@@ -58,12 +57,6 @@ export default function CalendarForm(props) {
       eventApprovalRequired: eventApprovalRequired
     };
   }, [enableEn, nameEn, descriptionEn, linkEn, enableFr, nameFr, descriptionFr, linkFr, startWeekOn, primaryColor, secondaryColor, embedCalendar, publicCalendar, eventApprovalRequired])
-
-  // Clean calendar when unmounting the component
-  useEffect(() => {
-    debugger
-    return () => clearCalendar();
-  }, [clearCalendar]);
 
   useEffect(() => {
     if (requesting) {

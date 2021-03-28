@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Redirect } from "react-router-dom";
 import { DateTime } from "luxon";
 import Input from "../../components/Form/Input";
@@ -8,6 +8,7 @@ import { emailValid, passwordValid, textValid, getLocale } from "../../services/
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 
 export default function Profile(props) {
+  const updateAccount = props.updateAccount;
   const [name, setName] = useState(props.account.name);
   const [invalidName, setInvalidName] = useState(false);
   const [email, setEmail] = useState(props.account.email);
@@ -25,28 +26,41 @@ export default function Profile(props) {
   }, [props.account]);
 
   useEffect(() => {
-    if (requesting) {
-      const data = newPassword !== "" ? (
-        {
-          "name": name,
-          "email": email,
-          "currentPassword": currentPassword,
-          "newPassword": newPassword
-        }
-      ) : (
-          {
-            "name": name,
-            "email": email
-          }
-        );
-      props.updateAccount(data, result => {
+    if (
+      requesting &&
+      (name !== props.account.name ||
+        email !== props.account.email ||
+        newPassword !== "")
+    ) {
+      const data =
+        newPassword !== ""
+          ? {
+              name: name,
+              email: email,
+              currentPassword: currentPassword,
+              newPassword: newPassword,
+            }
+          : {
+              name: name,
+              email: email,
+            };
+      updateAccount(data, (result) => {
         setCurrentPassword("");
         setNewPassword("");
         setResult(result);
         setRequesting(false);
       });
     }
-  }, [requesting, name, email, currentPassword, newPassword])
+  }, [
+    props.account.email,
+    props.account.name,
+    requesting,
+    name,
+    email,
+    currentPassword,
+    newPassword,
+    updateAccount,
+  ]);
 
   function handleSubmit(e) {
     e.preventDefault();
