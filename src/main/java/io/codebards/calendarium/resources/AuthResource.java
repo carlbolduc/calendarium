@@ -82,14 +82,13 @@ public class AuthResource {
     @POST
     @Path("/password-resets")
     public Response createPasswordReset(Account account) {
-        Response response = Response.status(Response.Status.NOT_FOUND).build();
+        Response response = Response.status(Response.Status.CREATED).build();
         Optional<Account> oAccount = dao.findAccountByEmail(account.getEmail());
         if (oAccount.isPresent()) {
             try {
                 String passwordResetDigest = Utils.createDigest();
                 dao.updatePasswordResetDigest(oAccount.get().getAccountId(), passwordResetDigest, Instant.now());
                 emailManager.sendResetPasswordEmail(oAccount, passwordResetDigest);
-                response = Response.status(Response.Status.CREATED).build();
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
                 response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
