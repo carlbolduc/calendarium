@@ -38,7 +38,21 @@ export default function App() {
   } = useAuth();
   const { languages, language, translate } = useLoc(account);
   const { customerCreated, subscribed, createCustomer, createSubscription, updateSubscription } = useSubscription(token, account, getAccount);
-  const { calendars, calendar, getCalendars, getPublicCalendars, clearCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents, clearCalendarEvents } = useCalendar(token, subscribed);
+  const {
+    calendars,
+    calendar,
+    getCalendars,
+    getPublicCalendars,
+    clearCalendars,
+    getCalendar,
+    createCalendar,
+    updateCalendar,
+    deleteCalendar,
+    clearCalendar,
+    calendarEvents,
+    getCalendarEvents,
+    clearCalendarEvents,
+  } = useCalendar(token, subscribed);
   const { events, createEvent, updateEvent, deleteEvent, searchEvents } = useEvent(token);
   const { collaborators, calendarAccess, getCalendarCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation, deactivateCalendarAccess, activateCalendarAccess } = useCollaborator(token, saveToken);
 
@@ -135,6 +149,7 @@ export default function App() {
                   getCalendars={getCalendars}
                   clearCalendars={clearCalendars}
                   createCalendar={createCalendar}
+                  clearCalendar={clearCalendar}
                 />
               </Route>
               <Route exact path="/public-calendars">
@@ -171,6 +186,7 @@ export default function App() {
                   subscribed={subscribed}
                   updateCalendar={updateCalendar}
                   deleteCalendar={deleteCalendar}
+                  clearCalendar={clearCalendar}
                   calendarEvents={calendarEvents}
                   getCalendarEvents={getCalendarEvents}
                   clearCalendarEvents={clearCalendarEvents}

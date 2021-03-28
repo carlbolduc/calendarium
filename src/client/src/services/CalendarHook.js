@@ -4,25 +4,29 @@ import { errorCallback } from "./Helpers";
 
 export function useCalendar(token, subscribed) {
   const [calendars, setCalendars] = useState([]);
-  const [calendar, setCalendar] = useState({
-    calendarId: null,
-    enableEn: false,
-    enableFr: false,
-    nameEn: "",
-    nameFr: "",
-    descriptionEn: "",
-    descriptionFr: "",
-    linkEn: "",
-    linkFr: "",
-    startWeekOn: "Sunday",
-    primaryColor: "#ffffff",
-    secondaryColor: "#ffffff",
-    embedCalendar: false,
-    publicCalendar: true,
-    eventApprovalRequired: true,
-    access: ""
-  });
+  const [calendar, setCalendar] = useState(emptyCalendar());
   const [calendarEvents, setCalendarEvents] = useState([]);
+
+  function emptyCalendar() {
+    return {
+      calendarId: null,
+      enableEn: false,
+      enableFr: false,
+      nameEn: "",
+      nameFr: "",
+      descriptionEn: "",
+      descriptionFr: "",
+      linkEn: "",
+      linkFr: "",
+      startWeekOn: "Sunday",
+      primaryColor: "#ffffff",
+      secondaryColor: "#ffffff",
+      embedCalendar: false,
+      publicCalendar: true,
+      eventApprovalRequired: true,
+      access: ""
+    };
+  }
 
   const getCalendars = useCallback(() => {
     if (token !== null) {
@@ -182,6 +186,10 @@ export function useCalendar(token, subscribed) {
     }
   }
 
+  const clearCalendar = useCallback(() => {
+    setCalendar(emptyCalendar());
+  }, []);
+
   const getCalendarEvents = useCallback((calendarId, q, cb) => {
     const route = token !== null ? `/calendars/${calendarId}` : `/public/calendars/${calendarId}`;
     const headers = token !== null
@@ -203,5 +211,5 @@ export function useCalendar(token, subscribed) {
     setCalendarEvents([]);
   }
 
-  return { calendars, calendar, getCalendars, getPublicCalendars, clearCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents, clearCalendarEvents };
+  return { calendars, calendar, getCalendars, getPublicCalendars, clearCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, clearCalendar, calendarEvents, getCalendarEvents, clearCalendarEvents };
 }

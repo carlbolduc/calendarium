@@ -57,11 +57,11 @@ export default function MyCalendars(props) {
 
   const calendarForm = showCalendarForm ? (
     <CalendarForm
-      calendar={props.calendar}
       new={true}
+      calendar={props.calendar}
       translate={props.translate}
-      cancel={() => setShowCalendarForm(false)}
       createCalendar={props.createCalendar}
+      clearCalendar={props.clearCalendar}
       setShowCalendarForm={setShowCalendarForm}
       setResult={setCalendarFormResult}
     />

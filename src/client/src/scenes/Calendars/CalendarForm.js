@@ -11,6 +11,7 @@ import ReadOnlyIframe from "../../components/Form/ReadOnlyIframe";
 export default function CalendarForm(props) {
   const createCalendar = props.createCalendar;
   const updateCalendar = props.updateCalendar;
+  const clearCalendar = props.clearCalendar;
   const setResult = props.setResult;
   const setShowCalendarForm = props.setShowCalendarForm;
   const [enableEn, setEnableEn] = useState(props.calendar.enableEn);
@@ -54,6 +55,12 @@ export default function CalendarForm(props) {
       eventApprovalRequired: eventApprovalRequired
     };
   }, [enableEn, nameEn, descriptionEn, linkEn, enableFr, nameFr, descriptionFr, linkFr, startWeekOn, primaryColor, secondaryColor, embedCalendar, publicCalendar, eventApprovalRequired])
+
+  // Clean calendar when unmounting the component
+  useEffect(() => {
+    debugger
+    return () => clearCalendar();
+  }, [clearCalendar]);
 
   useEffect(() => {
     if (requesting) {
