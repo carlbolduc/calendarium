@@ -7,6 +7,8 @@ import Checkbox from "../../components/Form/Checkbox";
 import Select from "../../components/Form/Select";
 import Textarea from "../../components/Form/Textarea";
 import ReadOnlyIframe from "../../components/Form/ReadOnlyIframe";
+import Month from "./Month";
+import { DateTime } from "luxon";
 
 export default function CalendarForm(props) {
   const createCalendar = props.createCalendar;
@@ -36,6 +38,7 @@ export default function CalendarForm(props) {
   const [requesting, setRequesting] = useState(false);
   const [eventApprovalRequired, setEventApprovalRequired] = useState(props.calendar.eventApprovalRequired);
   const [noLanguageEnabled, setNoLanguageEnabled] = useState(false);
+  const [currentDay, setCurrentDay] = useState(DateTime.now());
 
   const buildCalendar = useCallback(() => {
     return {
@@ -140,11 +143,11 @@ export default function CalendarForm(props) {
 
   const englishFields = enableEn ? (
     <>
-      {embedCalendar ? 
-        <ReadOnlyIframe 
+      {embedCalendar ?
+        <ReadOnlyIframe
           id="read-only-iframe-en"
           label={props.translate("English embeddable iframe")}
-          iframe={`<iframe src="https://calendarium.ca/embed/${props.calendar.calendarId}?locale=enCa"></iframe>`} 
+          iframe={`<iframe src="https://calendarium.ca/embed/${props.calendar.calendarId}?locale=enCa"></iframe>`}
           info={props.translate("Click on Copy to copy the embeddable iframe code to your clipboard, then paste it in your website.")}
           translate={props.translate}
         /> : null}
@@ -193,8 +196,8 @@ export default function CalendarForm(props) {
 
   const frenchFields = enableFr ? (
     <>
-      {embedCalendar ? 
-        <ReadOnlyIframe 
+      {embedCalendar ?
+        <ReadOnlyIframe
           id="read-only-iframe-fr"
           label={props.translate("French embeddable iframe")}
           iframe={`<iframe src="https://calendarium.ca/embed/${props.calendar.calendarId}?locale=frCa"></iframe>`}
@@ -275,34 +278,50 @@ export default function CalendarForm(props) {
             {frenchFields}
           </div>
         </div>
-        <Select
-          label={props.translate("Start week on")}
-          id="select-start-week-on"
-          options={[{ label: props.translate("Monday"), value: "Monday" }, { label: props.translate("Tuesday"), value: "Tuesday" }, { label: props.translate("Wednesday"), value: "Wednesday" }, { label: props.translate("Thursday"), value: "Thursday" }, { label: props.translate("Friday"), value: "Friday" }, { label: props.translate("Saturday"), value: "Saturday" }, { label: props.translate("Sunday"), value: "Sunday" }]}
-          value={startWeekOn}
-          handleChange={e => setStartWeekOn(e.target.value)}
-          info={props.translate("Select which day of the week will be the first day displayed on the left in this calendar.")}
-        />
-        <Input
-          label={props.translate("Primary color")}
-          type="color"
-          id="input-primary-color"
-          placeholder={props.translate("Primary color")}
-          value={primaryColor}
-          handleChange={e => setPrimaryColor(e.target.value)}
-          // TODO: include in the info text where the primary color is used in the calendar (TBD when the calendar display will be done)
-          info={props.translate("Select a primary color for this calendar.")}
-        />
-        <Input
-          label={props.translate("Secondary color")}
-          type="color"
-          id="input-secondary-color"
-          placeholder={props.translate("Secondary color")}
-          value={secondaryColor}
-          handleChange={e => setSecondaryColor(e.target.value)}
-          // TODO: include in the info text where the secondary color is used in the calendar (TBD when the calendar display will be done)
-          info={props.translate("Select a secondary color for this calendar.")}
-        />
+        <div className="row mb-3">
+          <div className="col-12 col-md-6">
+            <Select
+              label={props.translate("Start week on")}
+              id="select-start-week-on"
+              options={[{ label: props.translate("Monday"), value: "Monday" }, { label: props.translate("Tuesday"), value: "Tuesday" }, { label: props.translate("Wednesday"), value: "Wednesday" }, { label: props.translate("Thursday"), value: "Thursday" }, { label: props.translate("Friday"), value: "Friday" }, { label: props.translate("Saturday"), value: "Saturday" }, { label: props.translate("Sunday"), value: "Sunday" }]}
+              value={startWeekOn}
+              handleChange={e => setStartWeekOn(e.target.value)}
+              info={props.translate("Select which day of the week will be the first day displayed on the left in this calendar.")}
+            />
+            <Input
+              label={props.translate("Primary color")}
+              type="color"
+              id="input-primary-color"
+              placeholder={props.translate("Primary color")}
+              value={primaryColor}
+              handleChange={e => setPrimaryColor(e.target.value)}
+              // TODO: include in the info text where the primary color is used in the calendar (TBD when the calendar display will be done)
+              info={props.translate("Select a primary color for this calendar.")}
+            />
+            <Input
+              label={props.translate("Secondary color")}
+              type="color"
+              id="input-secondary-color"
+              placeholder={props.translate("Secondary color")}
+              value={secondaryColor}
+              handleChange={e => setSecondaryColor(e.target.value)}
+              // TODO: include in the info text where the secondary color is used in the calendar (TBD when the calendar display will be done)
+              info={props.translate("Select a secondary color for this calendar.")}
+            />
+          </div>
+          <div className="col-12 col-md-auto">
+            <div className="mb-2">{props.translate("Calendar preview")}</div>
+            <Month
+              startWeekOn={startWeekOn}
+              currentDay={currentDay}
+              selectDay={date => setCurrentDay(date)}
+              setCurrentDay={setCurrentDay}
+              language={props.language}
+              primaryColor={primaryColor}
+              secondaryColor={secondaryColor}
+            />
+          </div>
+        </div>
         <Checkbox
           label={props.translate("Make this calendar embeddable")}
           id="embed-calendar"
