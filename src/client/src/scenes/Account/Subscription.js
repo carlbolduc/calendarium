@@ -7,7 +7,7 @@ import SubscribeForm from "./SubscribeForm";
 import Button from "../../components/Form/Button";
 import FeaturesList from "../../components/Content/FeaturesList";
 import Message from "../../components/Form/Message";
-import {subscriptionStatus} from "../../services/Helpers";
+import { getLocale, subscriptionStatus } from "../../services/Helpers";
 
 const wantToOptions = {
   SUBSCRIBE: "subscribe",
@@ -41,7 +41,7 @@ export default function Subscription(props) {
 
   function cancel(e) {
     e.preventDefault();
-    props.updateSubscription({ cancelAtPeriodEnd: true}, result => {
+    props.updateSubscription({ cancelAtPeriodEnd: true }, result => {
       if (result.success) {
         setWantTo("");
       }
@@ -56,7 +56,7 @@ export default function Subscription(props) {
 
   function reactivate(e) {
     e.preventDefault();
-    props.updateSubscription({ cancelAtPeriodEnd: false}, result => {
+    props.updateSubscription({ cancelAtPeriodEnd: false }, result => {
       if (result.success) {
         setWantTo("");
       }
@@ -80,19 +80,25 @@ export default function Subscription(props) {
 
   const pricing = (
     <div className="card mt-4" style={{ width: "18rem" }}>
-      {/* TODO: create a header image for this subscription product */}
-      <svg className="card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Image cap" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#868e96"/><text x="26%" y="50%" fill="#dee2e6" dy=".3em">Image placeholder</text></svg>
+      <img
+        src="/img/logo.png"
+        alt="Calendarium logo"
+        width="100%"
+        height="180"
+        className="card-img-top"
+        role="img"
+      />
       <div className="card-body">
         <h5 className="card-title">{props.translate("Calendarium unlimited")}</h5>
         <h6 className="card-subtitle mb-2 text-muted">{props.translate("$600 CAD per year")}</h6>
-        <p className="card-text">{props.translate("Includes unlimited calendars and unlimited additional users.")}</p>
+        <p className="card-text">{props.translate("Includes unlimited calendars and unlimited collaborators.")}</p>
         <Button label={props.translate("Subscribe")} type="button" id="button-subscribe" onClick={e => wantToSubscribe(e)} />
       </div>
     </div>
   );
 
   // TODO: show in user locale
-  const endAt = props.account.subscription ? DateTime.fromSeconds(props.account.subscription.endAt).toLocaleString(DateTime.DATE_FULL) : null;
+  const endAt = props.account.subscription ? DateTime.fromSeconds(props.account.subscription.endAt).setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_FULL) : null;
 
   function renderSubscriptionEndAt() {
     let result = null;
@@ -120,10 +126,10 @@ export default function Subscription(props) {
     if (props.account.subscription !== null) {
       if (props.account.subscription.status === subscriptionStatus.ACTIVE) {
         result =
-          <Button label={props.translate("Cancel subscription")} type="button" id="button-cancel-subscription" onClick={e => wantToCancel(e)}/>;
+          <Button label={props.translate("Cancel subscription")} type="button" id="button-cancel-subscription" onClick={e => wantToCancel(e)} />;
       } else if (props.account.subscription.status === subscriptionStatus.CANCELED) {
         result =
-          <Button label={props.translate("Reactivate subscription")} type="button" id="button-reactivate-subscription" onClick={e => wantToReactivate(e)}/>;
+          <Button label={props.translate("Reactivate subscription")} type="button" id="button-reactivate-subscription" onClick={e => wantToReactivate(e)} />;
       }
     }
     return result;
@@ -147,18 +153,18 @@ export default function Subscription(props) {
           </div>
         );
       } else if (wantTo === wantToOptions.REACTIVATE) {
-          result = (
-            <div>
-              <h5>Are you sure you want reactivate your subscription?</h5>
-              <p>When you reactivate...</p>
-              <ul>
-                <li>You will be charged at the end of your current subscription cycle.</li>
-              </ul>
-              <Button label={props.translate("Never mind")} type="button" id="button-never-mind" onClick={() => setWantTo("")} outline={true} />
-              <Button label={props.translate("Reactivate my subscription")} type="button" id="button-confirm-cancel" onClick={e => reactivate(e)} />
-            </div>
-          );
-        } else if (props.subscribed) {
+        result = (
+          <div>
+            <h5>Are you sure you want to reactivate your subscription?</h5>
+            <p>When you reactivate...</p>
+            <ul>
+              <li>You will be charged at the end of your current subscription cycle.</li>
+            </ul>
+            <Button label={props.translate("Never mind")} type="button" id="button-never-mind" onClick={() => setWantTo("")} outline={true} />
+            <Button label={props.translate("Reactivate my subscription")} type="button" id="button-confirm-cancel" onClick={e => reactivate(e)} />
+          </div>
+        );
+      } else if (props.subscribed) {
         // Show subscription details
         // TODO: show subscription details only if subscription end date is in the future
         result = (
@@ -182,7 +188,7 @@ export default function Subscription(props) {
               </Elements>
             </>
           );
-        } else  {
+        } else {
           // Show pricing options
           result = (
             <>
@@ -198,15 +204,15 @@ export default function Subscription(props) {
   return props.authenticated ? (
     <article>
       <h1>{props.translate("My subscription")}</h1>
-      <Message result={result} origin="Subscription" translate={props.translate} />
+      <Message result={result} origin="createSubscription" translate={props.translate} />
       {renderMain()}
     </article>
   ) : (
-      <Redirect
-        to={{
-          pathname: "/sign-in",
-          state: { from: "/subscription" }
-        }}
-      />
-    );
+    <Redirect
+      to={{
+        pathname: "/sign-in",
+        state: { from: "/subscription" }
+      }}
+    />
+  );
 }

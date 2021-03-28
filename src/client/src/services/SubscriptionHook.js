@@ -43,6 +43,12 @@ export function useSubscription(token, account, getAccount) {
       }).then(() => {
         // Success, fetch account to retrieve the subscription
         getAccount();
+        if (cb) {
+          const result = {
+            success: true
+          }
+          cb(result);
+        }
       }).catch(err => {
         // Let caller know that something went wrong
         errorCallback(err, cb);

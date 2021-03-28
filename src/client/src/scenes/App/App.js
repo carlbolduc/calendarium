@@ -130,6 +130,7 @@ export default function App() {
                   account={account}
                   authenticated={authenticated}
                   translate={translate}
+                  language={language}
                   customerCreated={customerCreated}
                   subscribed={subscribed}
                   createCustomer={createCustomer}

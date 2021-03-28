@@ -1,3 +1,4 @@
+import React from "react";
 import {useState, useEffect} from "react";
 
 export default function Message(props) {
@@ -17,6 +18,9 @@ export default function Message(props) {
       messages.set("forgotPassword","We have received your password reset request. Instructions are on their way, check your email!");
       messages.set("passwordReset","Your password has been reset successfully. You're good to go!");
       messages.set("profile","Your profile changes have been saved successfully.");
+      messages.set("createSubscription","Thank you for your purchase! Your Calendarium subscription has now started.")
+      messages.set("cancelSubscription","Your Calendarium subscription has now been cancelled. We hope you had fun here!")
+      messages.set("reactivateSubscription","Thank you! Your Calendarium subscription has now been reactivated.")
 
       // manage the unexpected successes
       let message = messages.get(props.origin);
@@ -45,6 +49,7 @@ export default function Message(props) {
       messages.set("profile404","We couldn't find your profile. Try saving your changes again, and if this error keeps popping, contact us in the grove");
       messages.set("profile409","We already have someone else registered with the new email you've entered, so we cannot update your profile to this email. Choose a different one, or make sure it is entered correctly, then try saving your changes again.");
       messages.set("profile401","We didn't recognise your current password. Make sure it is entered correctly and try again.")
+      messages.set("subscription","")
 
       // manage the unexpected errors
       let message = messages.get(props.origin + props.result.errorCode);
