@@ -1,4 +1,5 @@
 import React, {useEffect} from "react";
+import { sortedCalendars } from "../../services/Helpers";
 import CalendarPreview from "./CalendarPreview";
 
 export default function PublicCalendars(props) {
@@ -8,7 +9,7 @@ export default function PublicCalendars(props) {
     getCalendars();
   }, [getCalendars])
 
-  const calendars = props.calendars.map(c => (
+  const calendars = sortedCalendars(props.calendars, props.language).map(c => (
     <CalendarPreview key={c.calendarId} calendar={c} language={props.language} translate={props.translate} />
   ));
   return (

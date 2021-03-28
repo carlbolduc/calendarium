@@ -4,6 +4,7 @@ import CalendarForm from "./CalendarForm";
 import Message from "../../components/Form/Message";
 import Button from "../../components/Form/Button";
 import CalendarPreview from "./CalendarPreview";
+import { sortedCalendars } from "../../services/Helpers";
 
 export default function MyCalendars(props) {
   const getCalendars = props.getCalendars;
@@ -28,7 +29,7 @@ export default function MyCalendars(props) {
     if (!showCalendarForm) {
       result = (
         <div className="row">
-          {props.calendars.map(c => (
+          {sortedCalendars(props.calendars, props.language).map(c => (
             <CalendarPreview key={c.calendarId} calendar={c} language={props.language} translate={props.translate} />
           ))}
         </div>

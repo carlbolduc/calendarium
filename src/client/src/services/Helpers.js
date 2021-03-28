@@ -162,3 +162,12 @@ export function sameDay(d1, d2) {
     d1.year === d2.year
   );
 }
+
+  // Try to sort calendars according to the current language, fallback to alternative language when sorting if current language isn't enabled
+  export function sortedCalendars(calendars, language) {
+    if (language === "frCa") {
+      return calendars.sort((a, b) => (a.enableFr ? a.nameFr : a.nameEn).localeCompare((b.enableFr ? b.nameFr : b.nameEn)));
+    } else {
+      return calendars.sort((a, b) => (a.enableEn ? a.nameEn : a.nameFr).localeCompare((b.enableEn ? b.nameEn : b.nameFr)));
+    }
+  }

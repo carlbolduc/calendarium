@@ -26,7 +26,6 @@ export function useCalendar(token, subscribed) {
   }, [token]);
 
   const getPublicCalendars = useCallback(() => {
-   console.log("get public calendar");
    axios({
       method: "GET",
       headers: {
