@@ -306,7 +306,7 @@ public interface Dao {
     @SqlQuery("SELECT event_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, account_id, calendar_id\n" +
             "FROM event\n" +
             "WHERE calendar_id = :calendarId\n" +
-            "  AND start_at >= :startAt\n" +
+            "  AND end_at >= :startAt\n" +
             "ORDER BY start_at\n" +
             "LIMIT 20")
     @RegisterBeanMapper(Event.class)
@@ -316,13 +316,13 @@ public interface Dao {
             "FROM event\n" +
             "WHERE account_id = :accountId\n" +
             "  AND calendar_id = :calendarId\n" +
-            "  AND start_at >= :startAt\n" +
+            "  AND end_at >= :startAt\n" +
             "UNION\n" +
             "SELECT event_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, account_id, calendar_id\n" +
             "FROM event\n" +
             "WHERE account_id != :accountId\n" +
             "  AND calendar_id = :calendarId\n" +
-            "  AND start_at >= :startAt\n" +
+            "  AND end_at >= :startAt\n" +
             "  AND status = 'published'\n" +
             "ORDER BY start_at\n" +
             "LIMIT 20")
@@ -344,7 +344,7 @@ public interface Dao {
             "FROM event\n" +
             "WHERE calendar_id = :calendarId\n" +
             "  AND status = 'published'\n" +
-            "  AND start_at >= :startAt")
+            "  AND end_at >= :startAt")
     @RegisterBeanMapper(Event.class)
     List<Event> findCalendarEmbedEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Instant startAt);
 
@@ -369,7 +369,7 @@ public interface Dao {
             "WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR\n" +
             "       (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%')))\n" +
             "  AND (:status = '' OR status = :status)\n" +
-            "  AND (cast(:startAt AS date) IS NULL OR start_at >= :startAt)\n" +
+            "  AND (cast(:startAt AS date) IS NULL OR end_at >= :startAt)\n" +
             "  AND (cast(:endAt AS date) IS NULL OR end_at <= :endAt)\n" +
             "  AND calendar_id = :calendarId\n" +
             "ORDER BY start_at")
@@ -393,7 +393,7 @@ public interface Dao {
             "WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR\n" +
             "       (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%')))\n" +
             "  AND (:status = '' OR status = :status)\n" +
-            "  AND (cast(:startAt AS date) IS NULL OR start_at >= :startAt)\n" +
+            "  AND (cast(:startAt AS date) IS NULL OR end_at >= :startAt)\n" +
             "  AND (cast(:endAt AS date) IS NULL OR end_at <= :endAt)\n" +
             "  AND calendar_id = :calendarId\n" +
             "  AND account_id = :accountId\n" +
