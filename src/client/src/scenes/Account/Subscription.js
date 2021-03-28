@@ -19,6 +19,7 @@ export default function Subscription(props) {
   const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
   const [wantTo, setWantTo] = useState("");
   const [result, setResult] = useState("");
+  const [messageOrigin, setMessageOrigin] = useState("");
 
   function wantToSubscribe(e) {
     e.preventDefault();
@@ -39,8 +40,14 @@ export default function Subscription(props) {
     setWantTo(wantToOptions.CANCEL)
   }
 
+  function createSubscription() {
+    setMessageOrigin("createSubscription");
+    props.createSubscription();
+  }
+
   function cancel(e) {
     e.preventDefault();
+    setMessageOrigin("cancelSubscription");
     props.cancelSubscription(result => {
       if (result.success) {
         setWantTo("");
@@ -56,6 +63,7 @@ export default function Subscription(props) {
 
   function reactivate(e) {
     e.preventDefault();
+    setMessageOrigin("reactivateSubscription");
     props.reactivateSubscription(result => {
       if (result.success) {
         setWantTo("");
@@ -181,7 +189,7 @@ export default function Subscription(props) {
               {productPresentation}
               <Elements stripe={stripePromise}>
                 <SubscribeForm
-                  createSubscription={props.createSubscription}
+                  createSubscription={createSubscription}
                   cancel={() => setWantTo("")}
                   translate={props.translate}
                 />
@@ -204,7 +212,7 @@ export default function Subscription(props) {
   return props.authenticated ? (
     <article>
       <h1>{props.translate("My subscription")}</h1>
-      <Message result={result} origin="createSubscription" translate={props.translate} />
+      <Message result={result} origin={messageOrigin} translate={props.translate} />
       {renderMain()}
     </article>
   ) : (

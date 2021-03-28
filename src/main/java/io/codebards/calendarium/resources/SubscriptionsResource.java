@@ -24,6 +24,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class SubscriptionsResource {
             response = Response.ok().build();
         } catch (StripeException e) {
             // Stripe failed to create the customer, client should ask the customer to retry
-	    System.out.println(e.getMessage());
+	        System.out.println(e.getMessage());
             response = Response.serverError().build();
         }
         return response;
@@ -100,9 +101,11 @@ public class SubscriptionsResource {
                 }
                 response = Response.ok().build();
             } catch (CardException e) {
-                response = Response.serverError().entity(e.getLocalizedMessage()).build();
+                // Returns a 402 Payment Required
+                response = Response.status(Response.Status.PAYMENT_REQUIRED).entity(e.getLocalizedMessage()).build();
             }
         } catch (StripeException e) {
+            // Returns a 500 Internal Server Error
             response = Response.serverError().entity(e.getLocalizedMessage()).build();
         }
         return response;
@@ -127,9 +130,11 @@ public class SubscriptionsResource {
                     }
                 } catch (StripeException e) {
                     e.printStackTrace();
+                    // Returns a 500 Internal Server Error
                     response = Response.serverError().build();
                 }
             } else {
+                // Returns a 404 Not Found
                 response = Response.status(Response.Status.NOT_FOUND).build();
             }
         }
