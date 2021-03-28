@@ -15,8 +15,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @RolesAllowed({"USER"})
 @Path("/events")

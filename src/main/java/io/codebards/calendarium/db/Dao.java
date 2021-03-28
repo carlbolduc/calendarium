@@ -13,8 +13,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ws.rs.core.Response;
-
 public interface Dao {
 
     @SqlQuery("SELECT 'bidu'")

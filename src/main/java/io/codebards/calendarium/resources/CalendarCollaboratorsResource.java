@@ -1,6 +1,5 @@
 package io.codebards.calendarium.resources;
 
-import java.lang.StackWalker.Option;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.List;
