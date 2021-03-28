@@ -108,7 +108,7 @@ export default function SignUp(props) {
               </div>
               <div className="col-sm col-12 ps-sm-0">
                 {/* TODO: create the page /terms-conditions */}
-                <p>{props.translate("They can be read ")} <a href="http://codebards.io/policies/terms/" target="_blank">{props.translate("here")}</a>.</p>
+                <p>{props.translate("They can be read ")} <a href="http://codebards.io/policies/terms/" target="_blank" rel="noreferrer">{props.translate("here")}</a>.</p>
               </div>
             </div>
             <Button label={props.translate("Sign up")} type="submit" working={requesting} id="button-sign-up" />
