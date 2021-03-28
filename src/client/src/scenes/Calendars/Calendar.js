@@ -36,7 +36,7 @@ export default function Calendar(props) {
   }, [getCalendar, link]);
 
   const refreshEvents = useCallback(() => {
-    const q = encodeObject({ startAt: currentDay.toSeconds()});
+    const q = encodeObject({ startAt: currentDay.startOf("day").toSeconds()});
     getCalendarEvents(props.calendar.calendarId, q, result => {
       // We do nothing with the result.
       // TODO: should we display the error if there is one (there should never be one)
