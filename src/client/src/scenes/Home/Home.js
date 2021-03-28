@@ -1,11 +1,15 @@
-import { Link } from "react-router-dom";
+import React from "react";
+import { Link, Redirect } from "react-router-dom";
 import FeaturesList from "../../components/Content/FeaturesList";
 
 export default function Home(props) {
   return props.authenticated ? (
-    <article>
-      <h1>{props.translate("Home")}</h1>
-    </article>
+    <Redirect
+      to={{
+        pathname: "/my-calendars",
+        state: { from: "/" }
+      }}
+    />
   ) : (
     <article>
       <h1 className="mb-4">{props.translate("Welcome to Calendarium")}</h1>

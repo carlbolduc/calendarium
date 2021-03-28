@@ -29,7 +29,7 @@ export default function Subscription(props) {
         if (result.success) {
           console.log("Customer created, show stripe form.");
         } else {
-          // TODO: manage error creating customer
+          setMessageOrigin("createCustomer");
         }
       });
     }
