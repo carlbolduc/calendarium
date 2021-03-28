@@ -57,30 +57,40 @@ export function useSubscription(token, account, getAccount) {
   }
 
   function updateSubscription(data, cb) {
-    if (token !== null && account.subscription !== null) {
-      axios({
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        url: `${process.env.REACT_APP_API}/subscriptions/${account.subscription.subscriptionId}`,
-        data: data
-      }).then(() => {
-        // Success, fetch account to retrieve the updated subscription
-        getAccount();
-        if (cb) {
-          const result = {
-            success: true
-          }
-          cb(result);
+    axios({
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      url: `${process.env.REACT_APP_API}/subscriptions/${account.subscription.subscriptionId}`,
+      data: data
+    }).then(() => {
+      // Success, fetch account to retrieve the updated subscription
+      getAccount();
+      if (cb) {
+        const result = {
+          success: true
         }
-      }).catch(err => {
-        // Let caller know that something went wrong
-        errorCallback(err, cb);
-      });
+        cb(result);
+      }
+    }).catch(err => {
+      // Let caller know that something went wrong
+      errorCallback(err, cb);
+    });
+  }
+
+  function cancelSubscription(cb) {
+    if (token !== null && account.subscription !== null) {
+      updateSubscription({ cancelAtPeriodEnd: true }, cb);
     }
   }
 
-  return {customerCreated, subscribed, createCustomer, createSubscription, updateSubscription};
+  function reactivateSubscription(cb) {
+    if (token !== null && account.subscription !== null) {
+      updateSubscription({ cancelAtPeriodEnd: false }, cb);
+    }
+  }
+
+  return {customerCreated, subscribed, createCustomer, createSubscription, cancelSubscription, reactivateSubscription};
 }

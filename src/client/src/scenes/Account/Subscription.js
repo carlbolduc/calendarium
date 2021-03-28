@@ -41,7 +41,7 @@ export default function Subscription(props) {
 
   function cancel(e) {
     e.preventDefault();
-    props.updateSubscription({ cancelAtPeriodEnd: true }, result => {
+    props.cancelSubscription(result => {
       if (result.success) {
         setWantTo("");
       }
@@ -56,7 +56,7 @@ export default function Subscription(props) {
 
   function reactivate(e) {
     e.preventDefault();
-    props.updateSubscription({ cancelAtPeriodEnd: false }, result => {
+    props.reactivateSubscription(result => {
       if (result.success) {
         setWantTo("");
       }
