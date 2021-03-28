@@ -149,7 +149,7 @@ export function useAuth() {
     [token, account]
   );
 
-  function createPasswordReset(data, cb) {
+  const createPasswordReset = useCallback((data, cb) => {
     axios.post(`${process.env.REACT_APP_API}/auth/password-resets`, data).then(() => {
       if (cb) {
         const result = {
@@ -160,7 +160,7 @@ export function useAuth() {
     }).catch(err => {
       errorCallback(err, cb);
     });
-  }
+  }, []);
 
   function resetPassword(data, cb) {
     axios.put(`${process.env.REACT_APP_API}/auth/password-resets/${data.id}`, {
