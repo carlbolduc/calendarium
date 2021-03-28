@@ -55,6 +55,8 @@ export default function Embed(props) {
       translate={props.translate}
       primaryColor={props.calendar.primaryColor}
       secondaryColor={props.calendar.secondaryColor}
+      enableEn={props.calendar.enableEn}
+      enableFr={props.calendar.enableFr}
     />
   ));
 
