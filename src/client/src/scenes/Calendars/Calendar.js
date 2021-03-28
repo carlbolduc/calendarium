@@ -99,6 +99,7 @@ export default function Calendar(props) {
     <CalendarForm
       new={false}
       calendar={props.calendar}
+      language={props.language}
       translate={props.translate}
       updateCalendar={props.updateCalendar}
       deleteCalendar={props.deleteCalendar}
