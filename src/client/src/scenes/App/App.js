@@ -48,7 +48,6 @@ export default function App() {
     createCalendar,
     updateCalendar,
     deleteCalendar,
-    clearCalendar,
     calendarEvents,
     getCalendarEvents,
     clearCalendarEvents,
@@ -149,7 +148,6 @@ export default function App() {
                   getCalendars={getCalendars}
                   clearCalendars={clearCalendars}
                   createCalendar={createCalendar}
-                  clearCalendar={clearCalendar}
                 />
               </Route>
               <Route exact path="/public-calendars">
@@ -186,7 +184,6 @@ export default function App() {
                   subscribed={subscribed}
                   updateCalendar={updateCalendar}
                   deleteCalendar={deleteCalendar}
-                  clearCalendar={clearCalendar}
                   calendarEvents={calendarEvents}
                   getCalendarEvents={getCalendarEvents}
                   clearCalendarEvents={clearCalendarEvents}
