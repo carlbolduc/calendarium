@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { decideWhatToDisplay, getLocale, textValid, emailValid } from "../../services/Helpers";
 import { DateTime } from "luxon";

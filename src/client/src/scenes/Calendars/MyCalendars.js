@@ -71,7 +71,7 @@ export default function MyCalendars(props) {
   return props.authenticated ? (
     <article>
       {title}
-      <Message result={calendarFormResult} origin="CalendarForm" translate={props.translate} />
+      {/* <Message result={calendarFormResult} origin="createCalendar" translate={props.translate} /> */}
       {actionButtonsZone}
       {calendars()}
       {calendarForm}

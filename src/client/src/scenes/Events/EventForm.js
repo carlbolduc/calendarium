@@ -119,6 +119,7 @@ export default function EventForm(props) {
       if (props.event === null) {
         createEvent(event, result => {
           setRequesting(false);
+          props.setMessageOrigin("createEvent");
           if (result.success) {
             refreshEvents();
             hideForm();
@@ -131,6 +132,7 @@ export default function EventForm(props) {
         event["status"] = props.event.status;
         updateEvent(event, result => {
           setRequesting(false);
+          props.setMessageOrigin("updateEvent");
           if (result.success) {
             refreshEvents();
             hideForm();
