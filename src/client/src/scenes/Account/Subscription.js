@@ -16,7 +16,7 @@ const wantToOptions = {
 }
 
 export default function Subscription(props) {
-  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
+  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK, { locale: props.language === "frCa" ? "fr-CA" : "en"});
   const [wantTo, setWantTo] = useState("");
   const [result, setResult] = useState("");
   const [messageOrigin, setMessageOrigin] = useState("");
@@ -40,9 +40,9 @@ export default function Subscription(props) {
     setWantTo(wantToOptions.CANCEL)
   }
 
-  function createSubscription() {
+  function createSubscription(paymentMethod, cb) {
     setMessageOrigin("createSubscription");
-    props.createSubscription();
+    props.createSubscription(paymentMethod, cb);
   }
 
   function cancel(e) {
@@ -190,6 +190,7 @@ export default function Subscription(props) {
                 <SubscribeForm
                   createSubscription={createSubscription}
                   cancel={() => setWantTo("")}
+                  language={props.language}
                   translate={props.translate}
                 />
               </Elements>

@@ -26,9 +26,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RolesAllowed({"USER"})
 @Path("/subscriptions")
@@ -85,14 +88,34 @@ public class SubscriptionsResource {
                 customer.update(customerUpdateParams);
                 // Get price id from database
                 Price price = dao.findPrice();
-                // Create the subscription
-                // TODO: obtain tax rates based on billing info found in paymentMethod
-                SubscriptionCreateParams subCreateParams = SubscriptionCreateParams
+                SubscriptionCreateParams subCreateParams;
+                if (pm.getCard().getCountry().equals("CA")) {
+                    List<TaxRate> taxesToCharge = new ArrayList<>();
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("limit", 4);
+                    TaxRateCollection taxRates = TaxRate.list(params);
+                    List<TaxRate> taxes = taxRates.getData();
+                    String postalCode = pm.getBillingDetails().getAddress().getPostalCode();
+                    if (postalCode != null) {
+                        List<String> taxRateDescriptions = getTaxRateDescriptions(postalCode);
+                        taxesToCharge = taxes.stream().filter(t -> taxRateDescriptions.contains(t.getDescription())).collect(Collectors.toList());
+                    }
+                    subCreateParams = SubscriptionCreateParams
                         .builder()
                         .addItem(SubscriptionCreateParams.Item.builder().setPrice(price.getStripePriceId()).build())
                         .setCustomer(customer.getId())
                         .addAllExpand(Collections.singletonList("latest_invoice.payment_intent"))
+                        .addAllDefaultTaxRate(taxesToCharge.stream().map(TaxRate::getId).collect(Collectors.toList()))
                         .build();
+                } else {
+                    subCreateParams = SubscriptionCreateParams
+                            .builder()
+                            .addItem(SubscriptionCreateParams.Item.builder().setPrice(price.getStripePriceId()).build())
+                            .setCustomer(customer.getId())
+                            .addAllExpand(Collections.singletonList("latest_invoice.payment_intent"))
+                            .build();
+                }
+                // Create the subscription
                 Subscription subscription = Subscription.create(subCreateParams);
                 dao.insertSubscription(auth.getAccountId(), subscription.getId(), price.getPriceId(), Instant.ofEpochSecond(subscription.getCurrentPeriodStart()), Instant.ofEpochSecond(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus());
                 if (subscription.getLatestInvoiceObject().getPaymentIntentObject().getStatus().equals(PaymentIntentStatus.SUCCEEDED.getStatus())) {
@@ -179,5 +202,31 @@ public class SubscriptionsResource {
         }
 
         return Response.ok().build();
+    }
+
+    private List<String> getTaxRateDescriptions(String postalCode) {
+        List<String> taxRateDescriptions = new ArrayList<>();
+        switch (postalCode.toLowerCase().charAt(0)) {
+            case 'a': case 'b': case 'c': case 'e':
+                // NL, NS, PE, NB
+                taxRateDescriptions.add("HST15");
+                break;
+            case 'g': case 'h': case 'j':
+                // QC
+                taxRateDescriptions.add("GST");
+                taxRateDescriptions.add("TVQ");
+                break;
+            case 'k': case 'l': case 'm': case 'n': case 'p':
+                // ON
+                taxRateDescriptions.add("HST13");
+                break;
+            case 'r': case 's': case 't': case 'v': case 'x': case 'y':
+                // MP, SK, AB, BC, NUNT, YT
+                taxRateDescriptions.add("HST15");
+                break;
+            default:
+                break;
+        }
+        return taxRateDescriptions;
     }
 }
