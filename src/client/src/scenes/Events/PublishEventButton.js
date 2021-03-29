@@ -4,16 +4,16 @@ import Button from "../../components/Form/Button";
 import {calendarAccessStatus, eventStatus} from "../../services/Helpers";
 
 export default function PublishEventButton(props) {
-  const approveEvent = props.approveEvent;
+  const publishEvent = props.publishEvent;
   const [working, setWorking] = useState(false);
 
   useEffect(() => {
     if (working && props.event.status === eventStatus.DRAFT.value) {
-      approveEvent(props.event);
+      publishEvent(props.event);
     } else {
       setWorking(false);
     }
-  }, [working, props.event, approveEvent])
+  }, [working, props.event, publishEvent])
 
   function render() {
     let shouldRender = false;
@@ -38,6 +38,6 @@ PublishEventButton.propTypes = {
   event: PropTypes.object.isRequired,
   account: PropTypes.object.isRequired,
   calendar: PropTypes.object.isRequired,
-  approveEvent: PropTypes.func.isRequired,
+  publishEvent: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
 };

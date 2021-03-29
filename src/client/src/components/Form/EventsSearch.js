@@ -8,7 +8,7 @@ import Message from "./Message";
 import {DateTime} from "luxon";
 import Month from "../../scenes/Calendars/Month";
 import EditEventButton from "../../scenes/Events/EditEventButton";
-import SubmitForApprovalEventButton from "../../scenes/Events/SubmitForApprovalEventButton";
+import SendForApprovalEventButton from "../../scenes/Events/SendForApprovalEventButton";
 import ApproveEventButton from "../../scenes/Events/ApproveEventButton";
 import PublishEventButton from "../../scenes/Events/PublishEventButton";
 import UnpublishEventButton from "../../scenes/Events/UnpublishEventButton";
@@ -137,7 +137,7 @@ export default function EventsSearch(props) {
           edit={() => props.setEvent(event)}
           translate={props.translate}
         />
-        <SubmitForApprovalEventButton
+        <SendForApprovalEventButton
           event={event}
           account={props.account}
           calendar={props.calendar}

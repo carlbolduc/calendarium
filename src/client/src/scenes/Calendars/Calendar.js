@@ -12,7 +12,7 @@ import Collaborators from "../Collaborators/Collaborators";
 import Event from "../Events/Event";
 import EventsSearch from "../../components/Form/EventsSearch";
 import EditEventButton from "../Events/EditEventButton";
-import SubmitForApprovalEventButton from "../Events/SubmitForApprovalEventButton";
+import SendForApprovalEventButton from "../Events/SendForApprovalEventButton";
 import PublishEventButton from "../Events/PublishEventButton";
 import ApproveEventButton from "../Events/ApproveEventButton";
 import DeleteEventButton from "../Events/DeleteEventButton";
@@ -87,29 +87,45 @@ export default function Calendar(props) {
 
   const submitForApproval = useCallback((event) => {
     event.status = eventStatus.PENDING_APPROVAL.value;
-    updateEvent(event, () => {
+    updateEvent(event, result => {
+      setFormResult(result);
+      setMessageOrigin("submitForApproval");
       refreshEvents();
     });
   }, [updateEvent, refreshEvents]);
 
   const approveEvent = useCallback((event) => {
     event.status = eventStatus.PUBLISHED.value;
-    updateEvent(event, () => {
+    updateEvent(event, result => {
+      setFormResult(result);
+      setMessageOrigin("approveEvent");
+      refreshEvents();
+    });
+  }, [updateEvent, refreshEvents]);
+
+  const publishEvent = useCallback((event) => {
+    event.status = eventStatus.PUBLISHED.value;
+    updateEvent(event, result => {
+      setFormResult(result);
+      setMessageOrigin("publishEvent");
       refreshEvents();
     });
   }, [updateEvent, refreshEvents]);
 
   const unpublishEvent = useCallback((event) => {
     event.status = eventStatus.DRAFT.value;
-    updateEvent(event, () => {
+    updateEvent(event, result => {
+      setFormResult(result);
+      setMessageOrigin("unpublishEvent");
       refreshEvents();
-      setMessageOrigin("deleteEvent");
     });
   }, [updateEvent, refreshEvents]);
 
   function confirmEventDeletion() {
     setEventToDelete({eventId: null});    
-    deleteEvent(eventToDelete.eventId, () => {
+    deleteEvent(eventToDelete.eventId, result => {
+      setFormResult(result);
+      setMessageOrigin("deleteEvent");
       refreshEvents();
     });
   }
@@ -187,7 +203,7 @@ export default function Calendar(props) {
           edit={() => setEvent(event)}
           translate={props.translate}
         />
-        <SubmitForApprovalEventButton
+        <SendForApprovalEventButton
           event={event}
           account={props.account}
           calendar={props.calendar}
@@ -204,7 +220,7 @@ export default function Calendar(props) {
           event={event}
           account={props.account}
           calendar={props.calendar}
-          approveEvent={approveEvent}
+          publishEvent={publishEvent}
           translate={props.translate}
         />
         <UnpublishEventButton
