@@ -8,7 +8,7 @@ import InvalidFeedback from "../../components/Form/InvalidFeedback";
 import Message from "../../components/Form/Message";
 
 export default function Collaborators(props) {
-  const getCalendarCollaborators = props.getCalendarCollaborators;
+  const getCollaborators = props.getCollaborators;
   const inviteCollaborator = props.inviteCollaborator;
   const [name, setName] = useState("");
   const [invalidName, setInvalidName] = useState(false);
@@ -16,10 +16,11 @@ export default function Collaborators(props) {
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [requesting, setRequesting] = useState(false);
   const [result, setResult] = useState("");
+  const [messageOrigin, setMessageOrigin] = useState("");
 
   useEffect(() => {
-    getCalendarCollaborators(props.calendar.calendarId);
-  }, [props.calendar.calendarId, getCalendarCollaborators])
+    getCollaborators(props.calendar.calendarId);
+  }, [props.calendar.calendarId, getCollaborators])
 
   useEffect(() => {
     if (requesting) {
@@ -31,6 +32,7 @@ export default function Collaborators(props) {
       );
       inviteCollaborator(props.calendar.calendarId, data, result => {
         setResult(result);
+        setMessageOrigin("inviteCollaborator");
         setRequesting(false);
       });
     }
@@ -93,7 +95,7 @@ export default function Collaborators(props) {
   )
 
   function collaboratorActions(collaborator) {
-    let result = "";
+    let result = null;
     switch (collaborator.status) {
       case "active":
         result = <Button label={props.translate("Deactivate")} id="button-deactivate" onClick={() => props.deactivateCalendarAccess(props.calendar.calendarId, collaborator.calendarAccessId)} outline={true} />;
@@ -143,7 +145,7 @@ export default function Collaborators(props) {
   return (
     <article>
       <h1>{title}</h1>
-      <Message result={result} origin="collaborators" translate={props.translate} />
+      <Message result={result} origin={messageOrigin} translate={props.translate} />
       {actionButtonsZone}
       {inviteCollaboratorForm}
       {collaborators()}

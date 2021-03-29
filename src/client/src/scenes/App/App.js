@@ -53,7 +53,7 @@ export default function App() {
     clearCalendarEvents,
   } = useCalendar(token, subscribed);
   const { events, createEvent, updateEvent, deleteEvent, searchEvents } = useEvent(token);
-  const { collaborators, calendarAccess, getCalendarCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation, deactivateCalendarAccess, activateCalendarAccess } = useCollaborator(token, saveToken);
+  const { collaborators, calendarAccess, getCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation, deactivateCalendarAccess, activateCalendarAccess } = useCollaborator(token, saveToken);
 
   const switchLanguage = useCallback((languageId) => {
     updateAccount({ languageId: languageId });
@@ -195,7 +195,7 @@ export default function App() {
                   events={events}
                   searchEvents={searchEvents}
                   collaborators={collaborators}
-                  getCalendarCollaborators={getCalendarCollaborators}
+                  getCollaborators={getCollaborators}
                   inviteCollaborator={inviteCollaborator}
                   deactivateCalendarAccess={deactivateCalendarAccess}
                   activateCalendarAccess={activateCalendarAccess}

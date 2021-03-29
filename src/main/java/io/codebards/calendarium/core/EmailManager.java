@@ -66,7 +66,7 @@ public class EmailManager {
         emailClient.sendEmail(emailRequest);
     }
 
-    public void sendCalendarCollaboratorInvitation(Optional<Account> oAccount, long calendarAccessId, long calendarId, long calendarOwnerAccountId) {
+    public void sendCollaboratorInvitation(Optional<Account> oAccount, long calendarAccessId, long calendarId, long calendarOwnerAccountId) {
         // Get calendar
         Optional<Calendar> oCalendar = dao.findCalendar(calendarId);
 
@@ -104,12 +104,12 @@ public class EmailManager {
 
         // Replace template placeholders
         emailTitle = replacePlaceholder(emailTitle, "\\[calendar_owner.name\\]", oCalendarOwner.get().getName());
-        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameEn\\]", oCalendar.get().getNameEn()); // TODO: Implement and use decideWhatToDisplay like Helper.js
-        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameFr\\]", oCalendar.get().getNameFr()); // TODO: Implement and use decideWhatToDisplay like Helper.js
+        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameEn\\]", decideWhatToDisplay("enCa", oCalendar.get().getEnableEn(), oCalendar.get().getEnableFr(), oCalendar.get().getNameEn(), oCalendar.get().getNameFr()));
+        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameFr\\]", decideWhatToDisplay("frCa", oCalendar.get().getEnableEn(), oCalendar.get().getEnableFr(), oCalendar.get().getNameEn(), oCalendar.get().getNameFr()));
         emailBody = replacePlaceholder(emailBody, "\\[account.name\\]", oAccount.get().getName());
         emailBody = replacePlaceholder(emailBody, "\\[calendar_owner.name\\]", oCalendarOwner.get().getName());
-        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameEn\\]", oCalendar.get().getNameEn()); // TODO: Implement and use decideWhatToDisplay like Helper.js
-        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameFr\\]", oCalendar.get().getNameFr()); // TODO: Implement and use decideWhatToDisplay like Helper.js
+        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameEn\\]", decideWhatToDisplay("enCa", oCalendar.get().getEnableEn(), oCalendar.get().getEnableFr(), oCalendar.get().getNameEn(), oCalendar.get().getNameFr()));
+        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameFr\\]", decideWhatToDisplay("frCa", oCalendar.get().getEnableEn(), oCalendar.get().getEnableFr(), oCalendar.get().getNameEn(), oCalendar.get().getNameFr()));
         emailBody = replacePlaceholder(emailBody, "\\[accept_calendar_invitation_link\\]", invitationLink);
 
         // Add footer to email body
@@ -154,12 +154,12 @@ public class EmailManager {
 
         // Replace template placeholders
         emailTitle = replacePlaceholder(emailTitle, "\\[account.name\\]", oInvitee.get().getName());
-        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameEn\\]", oCalendar.get().getNameEn()); // TODO: Implement and use decideWhatToDisplay like Helper.js
-        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameFr\\]", oCalendar.get().getNameFr()); // TODO: Implement and use decideWhatToDisplay like Helper.js
+        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameEn\\]", decideWhatToDisplay("enCa", oCalendar.get().getEnableEn(), oCalendar.get().getEnableFr(), oCalendar.get().getNameEn(), oCalendar.get().getNameFr()));
+        emailTitle = replacePlaceholder(emailTitle, "\\[calendar.nameFr\\]", decideWhatToDisplay("frCa", oCalendar.get().getEnableEn(), oCalendar.get().getEnableFr(), oCalendar.get().getNameEn(), oCalendar.get().getNameFr()));
         emailBody = replacePlaceholder(emailBody, "\\[calendar_owner.name\\]", oCalendarOwner.get().getName());
         emailBody = replacePlaceholder(emailBody, "\\[account.name\\]", oInvitee.get().getName());
-        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameEn\\]", oCalendar.get().getNameEn()); // TODO: Implement and use decideWhatToDisplay like Helper.js
-        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameFr\\]", oCalendar.get().getNameFr()); // TODO: Implement and use decideWhatToDisplay like Helper.js
+        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameEn\\]", decideWhatToDisplay("enCa", oCalendar.get().getEnableEn(), oCalendar.get().getEnableFr(), oCalendar.get().getNameEn(), oCalendar.get().getNameFr()));
+        emailBody = replacePlaceholder(emailBody, "\\[calendar.nameFr\\]", decideWhatToDisplay("frCa", oCalendar.get().getEnableEn(), oCalendar.get().getEnableFr(), oCalendar.get().getNameEn(), oCalendar.get().getNameFr()));
 
         // Add footer to email body
         emailBody = emailBody + "\n\n\n" + emailFooter;
@@ -201,6 +201,20 @@ public class EmailManager {
 
     private String replacePlaceholder(String sourceText, String placeholder, String replacement) {
         return sourceText.replaceAll(placeholder, replacement);
+    }
+
+    private String decideWhatToDisplay(String language, Boolean enableEn, Boolean enableFr, String textEn, String textFr) {
+        String result;
+        if (language.equals("enCa") && enableEn) { // we're in English and the calendar has English enabled
+            result = textEn;
+        } else if (language.equals("frCa") && enableFr) { // we're in French and the calendar has French enabled
+            result = textFr;
+        } else if (enableEn && !textEn.isEmpty()) { // none of the above, the calendar has English enabled and text isn't empty
+            result = textEn;
+        } else { // none of the above, we must use the French text
+            result = textFr;
+        }
+        return result;      
     }
 
 }

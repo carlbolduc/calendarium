@@ -86,7 +86,7 @@ public class App extends Application<Config> {
         final CalendarsResource calendarsResource = new CalendarsResource(dao);
         final PublicResource publicResource = new PublicResource(dao);
         final EventsResource eventsResource = new EventsResource(dao);
-        final CalendarCollaboratorsResource calendarCollaboratorsResource = new CalendarCollaboratorsResource(dao, argon2, emailManager);
+        final CollaboratorsResource collaboratorsResource = new CollaboratorsResource(dao, argon2, emailManager);
 
         if (config.getThirdPartyFactory().getEnv().equals("development")) {
             setupCors(environment);
@@ -109,7 +109,7 @@ public class App extends Application<Config> {
         environment.jersey().register(calendarsResource);
         environment.jersey().register(publicResource);
         environment.jersey().register(eventsResource);
-        environment.jersey().register(calendarCollaboratorsResource);
+        environment.jersey().register(collaboratorsResource);
     }
 
     private void setupCors(Environment environment) {

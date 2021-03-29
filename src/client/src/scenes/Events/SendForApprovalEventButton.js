@@ -3,17 +3,17 @@ import PropTypes from "prop-types";
 import Button from "../../components/Form/Button";
 import {calendarAccessStatus, eventStatus} from "../../services/Helpers";
 
-export default function SubmitForApprovalEventButton(props) {
-  const submitForApproval = props.submitForApproval;
+export default function SendForApprovalEventButton(props) {
+  const sendForApproval = props.sendForApproval;
   const [working, setWorking] = useState(false);
 
   useEffect(() => {
     if (working && props.event.status === eventStatus.DRAFT.value) {
-      submitForApproval(props.event);
+      sendForApproval(props.event);
     } else {
       setWorking(false);
     }
-  }, [props.event, working, submitForApproval]);
+  }, [props.event, working, sendForApproval]);
 
   function render() {
     let shouldRender = false;
@@ -25,16 +25,16 @@ export default function SubmitForApprovalEventButton(props) {
     ) {
       shouldRender = true;
     }
-    return shouldRender ? <Button label={props.translate("Submit for approval")} id="button-submit-event" onClick={() => setWorking(true)} /> : null;
+    return shouldRender ? <Button label={props.translate("Send for approval")} id="button-submit-event" onClick={() => setWorking(true)} /> : null;
   }
 
   return render();
 }
 
-SubmitForApprovalEventButton.propTypes = {
+SendForApprovalEventButton.propTypes = {
   event: PropTypes.object.isRequired,
   account: PropTypes.object.isRequired,
   calendar: PropTypes.object.isRequired,
-  submitForApproval: PropTypes.func.isRequired,
+  sendForApproval: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired,
 };
