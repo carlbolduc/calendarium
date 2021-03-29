@@ -21,6 +21,7 @@ export default function Message(props) {
       messages.set("createSubscription","Thank you for your purchase! Your Calendarium subscription has now started.");
       messages.set("cancelSubscription","Your Calendarium subscription has now been cancelled. Thank you for the time you spent with us, and we hope you had fun here!");
       messages.set("reactivateSubscription","Your Calendarium subscription has now been reactivated. Thank you for being back with us!");
+      messages.set("inviteCollaborator","An invitation email has been sent to your future collaborator.");
 
       // get the message that needs to be displayed, or undefined if we defined no success message for the action
       let message = messages.get(props.origin);
@@ -69,6 +70,7 @@ export default function Message(props) {
       messages.set("unpublishEvent404","We couldn't find the event you are trying to unpublish. It may have already been deleted by someone else. If you think this is wrong, contact us in the grove.");
       messages.set("publishEvent401","You are not authorised to publish this event. If you think this is wrong, contact us and we'll fix the situation.");
       messages.set("publishEvent404","We couldn't find the event you are trying to publish. It may have already been deleted by someone else. If you think this is wrong, contact us in the grove.");
+      messages.set("inviteCollaborator409","This person is already a collaborator on the calendar, we cannot invite them again.");
 
       // manage the unexpected errors
       let message = messages.get(props.origin + props.result.errorCode);

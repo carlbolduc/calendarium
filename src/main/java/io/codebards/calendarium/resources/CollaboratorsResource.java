@@ -65,13 +65,17 @@ public class CollaboratorsResource {
         // check if account already is a collaborator on that calendar
         Optional<Collaborator> oCollaborator = dao.findCollaboratorByAccountId(calendarId, accountId);
         if (oCollaborator.isPresent()) {
-            // if it is already there, return an error
+            // if it is already there, return 409 Conflict
             response = Response.status(Response.Status.CONFLICT).build();
         } else {
             // else create a calendar access for this collaborator, with status invited, and send the invitation email
             long calendarAccessId = dao.insertCalendarAccess(accountId, calendarId, CalendarAccessStatus.INVITED.getStatus());
             emailManager.sendCollaboratorInvitation(oAccount, calendarAccessId, calendarId, auth.getAccountId());
-            response = Response.status(Response.Status.CREATED).build();
+            // TODO: implement email sending error in emailManager and return a response accordingly
+
+            // invitation is sent, return 201 Created
+            List<Collaborator> collaborators = dao.findCollaboratorsByCalendar(calendarId);
+            response = Response.status(Response.Status.CREATED).entity(collaborators).build();
         }
         return response;
     }

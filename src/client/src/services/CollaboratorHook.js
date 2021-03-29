@@ -39,7 +39,8 @@ export function useCollaborator(token, saveToken) {
         },
         url: `${process.env.REACT_APP_API}/collaborators/${calendarId}`,
         data: data
-      }).then(() => {
+      }).then(res => {
+        setCollaborators(res.data);
         if (cb) {
           const result = {
             success: true
@@ -133,7 +134,7 @@ export function useCollaborator(token, saveToken) {
       }).then(res => {
         setCollaborators(res.data);
       }).catch(err => {
-        console.log("THIS SHOULD NEVER HAPPEN, error in 'deactivateCalendarAccess' from 'useCollaborator' hook");
+        console.log("THIS SHOULD NEVER HAPPEN, error in 'activateCalendarAccess' from 'useCollaborator' hook");
         console.log(err.response);
       });
     }

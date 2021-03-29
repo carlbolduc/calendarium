@@ -16,6 +16,7 @@ export default function Collaborators(props) {
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [requesting, setRequesting] = useState(false);
   const [result, setResult] = useState("");
+  const [messageOrigin, setMessageOrigin] = useState("");
 
   useEffect(() => {
     getCollaborators(props.calendar.calendarId);
@@ -31,6 +32,7 @@ export default function Collaborators(props) {
       );
       inviteCollaborator(props.calendar.calendarId, data, result => {
         setResult(result);
+        setMessageOrigin("inviteCollaborator");
         setRequesting(false);
       });
     }
@@ -143,7 +145,7 @@ export default function Collaborators(props) {
   return (
     <article>
       <h1>{title}</h1>
-      <Message result={result} origin="collaborators" translate={props.translate} />
+      <Message result={result} origin={messageOrigin} translate={props.translate} />
       {actionButtonsZone}
       {inviteCollaboratorForm}
       {collaborators()}
