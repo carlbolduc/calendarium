@@ -8,7 +8,7 @@ export default function UnpublishEventButton(props) {
   const [working, setWorking] = useState(false);
 
   useEffect(() => {
-    if (working && props.event.status === eventStatus.PUBLISHED.value) {
+    if (working && [eventStatus.PUBLISHED.value, eventStatus.PENDING_APPROVAL.value].indexOf(props.event.status) !== -1) {
       unpublishEvent(props.event);
     } else {
       setWorking(false);
@@ -17,7 +17,7 @@ export default function UnpublishEventButton(props) {
 
   function render() {
     let shouldRender = false;
-    if (props.event.status === eventStatus.PUBLISHED.value) {
+    if ([eventStatus.PUBLISHED.value, eventStatus.PENDING_APPROVAL.value].indexOf(props.event.status) !== -1) {
       // Calendar owner can always unpublish
       if (props.calendar.access === calendarAccessStatus.OWNER) {
         shouldRender = true;

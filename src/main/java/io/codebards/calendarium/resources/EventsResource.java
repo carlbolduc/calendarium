@@ -157,11 +157,6 @@ public class EventsResource {
             // event updated, return 200 OK
             response = Response.ok().build();
         } else if (calendarAccess.getStatus().equals(CalendarAccessStatus.ACTIVE.getStatus())) {
-            Optional<Calendar> oCalendar = dao.findCalendar(calendarAccess.getCalendarId());
-            if (oCalendar.get().getEventApprovalRequired()) {
-                // We can update the event after we changed its status
-                event.setStatus(EventStatus.PENDING_APPROVAL.getStatus());
-            }
             dao.updateEvent(event);
             // event updated, return 200 OK
             response = Response.ok().build();

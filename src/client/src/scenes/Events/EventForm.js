@@ -134,7 +134,7 @@ export default function EventForm(props) {
       });
     } else {
       event["eventId"] = props.event.eventId;
-      event["status"] = props.event.status;
+      event["status"] = status;
       updateEvent(event, result => {
         if (result.success) {
           refreshEvents();
@@ -170,8 +170,11 @@ export default function EventForm(props) {
     const datesAndTimesValid = validateDateAndTimeFields();
     if (enValid && frValid && datesAndTimesValid) {
       setSendingForApprovalOrPublishing(true);
-      // TODO: pass the correct status
-      createOrUpdateEvent(eventStatus.PUBLISHED.value);
+      if (props.calendar.access === calendarAccessStatus.OWNER || !props.calendar.eventApprovalRequired) {
+        createOrUpdateEvent(eventStatus.PUBLISHED.value);
+      } else {
+        createOrUpdateEvent(eventStatus.PENDING_APPROVAL.value);
+      }
     }
   }
 
@@ -462,7 +465,7 @@ export default function EventForm(props) {
   const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
   const title = props.event === null ? `${props.translate("New event in")} ${calendarName}` : `${props.translate("Edit event in")} ${calendarName}`;
 
-  function submitOrPublishButtonText() {
+  function sendForApprovalOrPublishButtonText() {
     let result = "";
     if (props.calendar.access === calendarAccessStatus.OWNER || !props.calendar.eventApprovalRequired) {
       result = props.event === null ? props.translate("Publish this event") : props.translate("Save changes");
@@ -568,8 +571,8 @@ export default function EventForm(props) {
           </div>
         </div>
         <Button label={props.translate("Cancel")} type="button" id="button-cancel" onClick={props.cancel} outline={true} />
-        {props.event === null ? <Button label={props.translate("Save as draft")} type="button" id="button-save-as-draft" onClick={saveAsDraft} working={savingAsDraft} /> : null}
-        <Button label={submitOrPublishButtonText()} type="button" id="button-send-for-approval-or-publish" onClick={sendForApprovalOrPublish} working={sendingForApprovalOrPublishing} />
+        {props.event === null || props.event.status === eventStatus.DRAFT.value ? <Button label={props.translate("Save as draft")} type="button" id="button-save-as-draft" onClick={saveAsDraft} working={savingAsDraft} /> : null}
+        <Button label={sendForApprovalOrPublishButtonText()} type="button" id="button-send-for-approval-or-publish" onClick={sendForApprovalOrPublish} working={sendingForApprovalOrPublishing} />
       </form>
     </>
   );

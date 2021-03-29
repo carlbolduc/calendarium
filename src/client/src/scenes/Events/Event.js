@@ -59,9 +59,9 @@ export default function Event(props) {
     }
     return classNames.join(" ");
   }
-  const borderStyle = props.primaryColor === undefined || props.primaryColor === "#ffffff"
-    ? null
-    : { borderColor: props.primaryColor };
+  const borderStyle = props.event.status === eventStatus.PUBLISHED.value && props.primaryColor !== undefined && props.primaryColor !== "#ffffff"
+    ? { borderColor: props.primaryColor }
+    : null;
 
   return (
     <article className={classNames()} style={borderStyle}>
