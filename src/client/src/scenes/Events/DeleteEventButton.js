@@ -1,18 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import Button from "../../components/Form/Button";
 import {calendarAccessStatus} from "../../services/Helpers";
 
 export default function DeleteEventButton(props) {
-  const deleteEvent = props.deleteEvent;
-  const [working, setWorking] = useState(false);
-
-  useEffect(() => {
-    if (working) {
-      deleteEvent(props.event);
-    }
-  }, [props.event, working, deleteEvent]);
-
   function render() {
     let shouldRender = false;
     if (props.calendar.access === calendarAccessStatus.OWNER) {
@@ -23,7 +14,7 @@ export default function DeleteEventButton(props) {
     ) {
       shouldRender = true;
     }
-    return shouldRender ? <Button label={props.translate("Delete")} id="button-delete-event" onClick={() => setWorking(true)} /> : null;
+    return shouldRender ? <Button label={props.translate("Delete")} id="button-delete-event" onClick={props.deleteEvent} /> : null;
   }
 
   return render();

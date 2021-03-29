@@ -7,9 +7,17 @@ import {decideWhatToDisplay, encodeObject, eventStatus, getLocale} from "../../s
 import Message from "./Message";
 import {DateTime} from "luxon";
 import Month from "../../scenes/Calendars/Month";
+import EditEventButton from "../../scenes/Events/EditEventButton";
+import SubmitForApprovalEventButton from "../../scenes/Events/SubmitForApprovalEventButton";
+import ApproveEventButton from "../../scenes/Events/ApproveEventButton";
+import PublishEventButton from "../../scenes/Events/PublishEventButton";
+import UnpublishEventButton from "../../scenes/Events/UnpublishEventButton";
+import DeleteEventButton from "../../scenes/Events/DeleteEventButton";
 
 export default function EventsSearch(props) {
   const searchEvents = props.searchEvents;
+  const updateEvent = props.updateEvent;
+  const deleteEvent = props.deleteEvent;
   const [search, setSearch] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [showStartDateSelector, setShowStartDateSelector] = useState(false);
@@ -62,6 +70,33 @@ export default function EventsSearch(props) {
     setWorking(true);
   }
 
+  const submitForApproval = useCallback((event) => {
+    event.status = eventStatus.PENDING_APPROVAL.value;
+    updateEvent(event, () => {
+      setWorking(true);
+    });
+  }, [updateEvent]);
+
+  const approveEvent = useCallback((event) => {
+    event.status = eventStatus.PUBLISHED.value;
+    updateEvent(event, () => {
+      setWorking(true);
+    });
+  }, [updateEvent]);
+
+  const unpublishEvent = useCallback((event) => {
+    event.status = eventStatus.DRAFT.value;
+    updateEvent(event, () => {
+      setWorking(true);
+    });
+  }, [updateEvent]);
+
+  const deleteThisEvent = useCallback((event) => {
+    deleteEvent(event.eventId, () => {
+      setWorking(true);
+    });
+  }, [deleteEvent]);
+
   const startDateSelector = showStartDateSelector ? (
     <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white" }}>
       <Month
@@ -92,12 +127,60 @@ export default function EventsSearch(props) {
     </div>
   ) : null;
 
+  function eventActions(event) {
+    return (
+      <div>
+        <EditEventButton
+          event={event}
+          account={props.account}
+          calendar={props.calendar}
+          edit={() => props.setEvent(event)}
+          translate={props.translate}
+        />
+        <SubmitForApprovalEventButton
+          event={event}
+          account={props.account}
+          calendar={props.calendar}
+          submitForApproval={submitForApproval}
+          translate={props.translate}
+        />
+        <ApproveEventButton
+          event={event}
+          calendar={props.calendar}
+          approveEvent={approveEvent}
+          translate={props.translate}
+        />
+        <PublishEventButton
+          event={event}
+          account={props.account}
+          calendar={props.calendar}
+          approveEvent={approveEvent}
+          translate={props.translate}
+        />
+        <UnpublishEventButton
+          event={event}
+          account={props.account}
+          calendar={props.calendar}
+          unpublishEvent={unpublishEvent}
+          translate={props.translate}
+        />
+        <DeleteEventButton
+          event={event}
+          account={props.account}
+          calendar={props.calendar}
+          deleteEvent={deleteThisEvent}
+          translate={props.translate}
+        />
+      </div>
+    )
+  }
+
   const events = props.events.map(e => (
     <Event 
       key={e.eventId} 
       event={e} 
       showStatus={true} 
-      eventActions={props.eventActions(e)} 
+      eventActions={eventActions(e)} 
       language={props.language} 
       translate={props.translate}
       enableEn={props.calendar.enableEn}
