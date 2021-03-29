@@ -25,10 +25,10 @@ export default function DeleteEventModal(props) {
               className="btn btn-outline-secondary "
               onClick={props.cancel}
             >
-              Cancel
+              {props.translate("Cancel")}
             </button>
             <button type="button" className="btn btn-danger" onClick={props.delete}>
-              Delete
+              {props.translate("Delete")}
             </button>
           </div>
         </div>
