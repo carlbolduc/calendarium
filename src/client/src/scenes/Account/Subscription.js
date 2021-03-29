@@ -86,7 +86,6 @@ export default function Subscription(props) {
         width="100%"
         height="180"
         className="card-img-top"
-        role="img"
       />
       <div className="card-body">
         <h5 className="card-title">{props.translate("Calendarium unlimited")}</h5>

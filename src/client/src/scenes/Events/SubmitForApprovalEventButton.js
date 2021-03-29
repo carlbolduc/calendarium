@@ -10,6 +10,8 @@ export default function SubmitForApprovalEventButton(props) {
   useEffect(() => {
     if (working && props.event.status === eventStatus.DRAFT.value) {
       submitForApproval(props.event);
+    } else {
+      setWorking(false);
     }
   }, [props.event, working, submitForApproval]);
 

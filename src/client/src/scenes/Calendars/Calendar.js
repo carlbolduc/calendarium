@@ -15,6 +15,7 @@ import SubmitForApprovalEventButton from "../Events/SubmitForApprovalEventButton
 import PublishEventButton from "../Events/PublishEventButton";
 import ApproveEventButton from "../Events/ApproveEventButton";
 import DeleteEventButton from "../Events/DeleteEventButton";
+import UnpublishEventButton from "../Events/UnpublishEventButton";
 
 export default function Calendar(props) {
   const getCalendar = props.getCalendar;
@@ -72,6 +73,13 @@ export default function Calendar(props) {
 
   const approveEvent = useCallback((event) => {
     event.status = eventStatus.PUBLISHED.value;
+    updateEvent(event, () => {
+      refreshEvents();
+    });
+  }, [updateEvent, refreshEvents]);
+
+  const unpublishEvent = useCallback((event) => {
+    event.status = eventStatus.DRAFT.value;
     updateEvent(event, () => {
       refreshEvents();
     });
@@ -175,6 +183,13 @@ export default function Calendar(props) {
           approveEvent={approveEvent}
           translate={props.translate}
         />
+        <UnpublishEventButton
+          event={event}
+          account={props.account}
+          calendar={props.calendar}
+          unpublishEvent={unpublishEvent}
+          translate={props.translate}
+        />
         <DeleteEventButton
           event={event}
           account={props.account}
@@ -203,7 +218,6 @@ export default function Calendar(props) {
                   onClick={() => setShowManageEvents(false)} outline={true}/>
         </div>
       }
-      eventActions={eventActions}
     />
   );
 

@@ -10,6 +10,8 @@ export default function ApproveEventButton(props) {
   useEffect(() => {
     if (working && props.event.status === eventStatus.PENDING_APPROVAL.value) {
       approveEvent(props.event);
+    } else {
+      setWorking(false);
     }
   }, [props.event, working, approveEvent])
 
