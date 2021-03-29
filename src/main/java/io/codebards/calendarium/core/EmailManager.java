@@ -66,7 +66,7 @@ public class EmailManager {
         emailClient.sendEmail(emailRequest);
     }
 
-    public void sendCalendarCollaboratorInvitation(Optional<Account> oAccount, long calendarAccessId, long calendarId, long calendarOwnerAccountId) {
+    public void sendCollaboratorInvitation(Optional<Account> oAccount, long calendarAccessId, long calendarId, long calendarOwnerAccountId) {
         // Get calendar
         Optional<Calendar> oCalendar = dao.findCalendar(calendarId);
 

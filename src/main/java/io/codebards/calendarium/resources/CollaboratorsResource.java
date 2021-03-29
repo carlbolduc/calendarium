@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 import io.codebards.calendarium.api.AccountToken;
 import io.codebards.calendarium.api.CalendarAccess;
 import io.codebards.calendarium.api.CalendarAccessStatus;
-import io.codebards.calendarium.api.CalendarCollaborator;
+import io.codebards.calendarium.api.Collaborator;
 import io.codebards.calendarium.api.InvitationResponse;
 import io.codebards.calendarium.core.EmailManager;
 import io.codebards.calendarium.core.Utils;
@@ -22,15 +22,15 @@ import io.codebards.calendarium.db.Dao;
 import de.mkammerer.argon2.Argon2;
 import io.dropwizard.auth.Auth;
 
-@Path("/calendar_collaborators")
+@Path("/collaborators")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class CalendarCollaboratorsResource {
+public class CollaboratorsResource {
     private final Dao dao;
     private final Argon2 argon2;
     private final EmailManager emailManager;
 
-    public CalendarCollaboratorsResource(Dao dao, Argon2 argon2, EmailManager emailManager) {
+    public CollaboratorsResource(Dao dao, Argon2 argon2, EmailManager emailManager) {
         this.dao = dao;
         this.argon2 = argon2;
         this.emailManager = emailManager;
@@ -39,19 +39,19 @@ public class CalendarCollaboratorsResource {
     @GET
     @RolesAllowed({ "SUBSCRIBER" })
     @Path("/{calendarId}")
-    public List<CalendarCollaborator> getCalendarCollaborators(@Auth Account auth, @PathParam("calendarId") long calendarId) {
+    public List<Collaborator> getCollaborators(@Auth Account auth, @PathParam("calendarId") long calendarId) {
         // TODO: check user has the right to see the collaborators of this calendar
-        return dao.findCalendarCollaboratorsByCalendar(calendarId);
+        return dao.findCollaboratorsByCalendar(calendarId);
     }
 
     @POST
     @RolesAllowed({ "SUBSCRIBER" })
     @Path("/{calendarId}")
-    public Response inviteCalendarCollaborator(@Auth Account auth, @PathParam("calendarId") long calendarId, CalendarCollaborator calendarCollaborator) {
+    public Response inviteCollaborator(@Auth Account auth, @PathParam("calendarId") long calendarId, Collaborator collaborator) {
         Response response;
 
         // check if account already exists
-        Optional<Account> oAccount = dao.findAccountByEmail(calendarCollaborator.getEmail());
+        Optional<Account> oAccount = dao.findAccountByEmail(collaborator.getEmail());
         long accountId;
         if (oAccount.isPresent()) {
             // if account exists, get its account id
@@ -59,18 +59,18 @@ public class CalendarCollaboratorsResource {
         } else {
             // if account doesn't exist, create it, with the language of the account that is
             // inviting and a null password
-            accountId = dao.insertAccount(calendarCollaborator.getEmail(), calendarCollaborator.getName(), auth.getLanguageId(), null);
+            accountId = dao.insertAccount(collaborator.getEmail(), collaborator.getName(), auth.getLanguageId(), null);
         }
 
         // check if account already is a collaborator on that calendar
-        Optional<CalendarCollaborator> oCalendarCollaborator = dao.findCalendarCollaboratorByAccountId(calendarId, accountId);
-        if (oCalendarCollaborator.isPresent()) {
+        Optional<Collaborator> oCollaborator = dao.findCollaboratorByAccountId(calendarId, accountId);
+        if (oCollaborator.isPresent()) {
             // if it is already there, return an error
             response = Response.status(Response.Status.CONFLICT).build();
         } else {
             // else create a calendar access for this collaborator, with status invited, and send the invitation email
             long calendarAccessId = dao.insertCalendarAccess(accountId, calendarId, CalendarAccessStatus.INVITED.getStatus());
-            emailManager.sendCalendarCollaboratorInvitation(oAccount, calendarAccessId, calendarId, auth.getAccountId());
+            emailManager.sendCollaboratorInvitation(oAccount, calendarAccessId, calendarId, auth.getAccountId());
             response = Response.status(Response.Status.CREATED).build();
         }
         return response;
@@ -120,8 +120,8 @@ public class CalendarCollaboratorsResource {
     public Response putCalendarAccess(@Auth Account auth, @PathParam("calendarId") long calendarId, @PathParam("calendarAccessId") long calendarAccessId, String status) {
         // TODO: implement failure checks and adjust response accordingly
         dao.updateCalendarAccessStatus(calendarAccessId, calendarId, status);
-        List<CalendarCollaborator> calendarCollaborators = dao.findCalendarCollaboratorsByCalendar(calendarId);
-        return Response.status(Response.Status.OK).entity(calendarCollaborators).build();
+        List<Collaborator> collaborators = dao.findCollaboratorsByCalendar(calendarId);
+        return Response.status(Response.Status.OK).entity(collaborators).build();
     }
 
     // TODO: centralise this function (also used in AuthResource.java)

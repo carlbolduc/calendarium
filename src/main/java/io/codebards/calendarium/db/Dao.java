@@ -323,7 +323,7 @@ public interface Dao {
             "ORDER BY start_at\n" +
             "LIMIT 20")
     @RegisterBeanMapper(Event.class)
-    List<Event> findCalendarCollaboratorEvents(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @Bind("startAt") Instant startAt);
+    List<Event> findCollaboratorEvents(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @Bind("startAt") Instant startAt);
 
     @SqlQuery("SELECT event_id,\n" +
             "       status,\n" +
@@ -421,16 +421,16 @@ public interface Dao {
             "INNER JOIN calendar_access ca on a.account_id = ca.account_id\n" +
             "WHERE calendar_id = :calendarId\n" +
             "ORDER BY ca.created_at")
-    @RegisterBeanMapper(CalendarCollaborator.class)
-    List<CalendarCollaborator> findCalendarCollaboratorsByCalendar(@Bind("calendarId") long calendarId);
+    @RegisterBeanMapper(Collaborator.class)
+    List<Collaborator> findCollaboratorsByCalendar(@Bind("calendarId") long calendarId);
 
     @SqlQuery("SELECT name, email, status, ca.created_at\n" +
             "FROM account a\n" +
             "INNER JOIN calendar_access ca on a.account_id = ca.account_id\n" +
             "WHERE calendar_id = :calendarId\n" +
             "AND a.account_id = :accountId")
-    @RegisterBeanMapper(CalendarCollaborator.class)
-    Optional<CalendarCollaborator> findCalendarCollaboratorByAccountId(@Bind("calendarId") long calendarId, @Bind("accountId") long accountId);
+    @RegisterBeanMapper(Collaborator.class)
+    Optional<Collaborator> findCollaboratorByAccountId(@Bind("calendarId") long calendarId, @Bind("accountId") long accountId);
 
     @SqlQuery("SELECT calendar_access_id, account_id, calendar_id, status\n" +
             "FROM calendar_access\n" +

@@ -11,7 +11,7 @@ export function useCollaborator(token, saveToken) {
     status: ""
   });
 
-  const getCalendarCollaborators = useCallback((calendarId) => {
+  const getCollaborators = useCallback((calendarId) => {
     if (token !== null) {
       axios({
         method: "GET",
@@ -19,11 +19,11 @@ export function useCollaborator(token, saveToken) {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        url: `${process.env.REACT_APP_API}/calendar_collaborators/${calendarId}`,
+        url: `${process.env.REACT_APP_API}/collaborators/${calendarId}`,
       }).then(res => {
         setCollaborators(res.data);
       }).catch(err => {
-        console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendarCollaborators' from 'useCollaborator' hook");
+        console.log("THIS SHOULD NEVER HAPPEN, error in 'getCollaborators' from 'useCollaborator' hook");
         console.log(err.response);
       });
     }
@@ -37,7 +37,7 @@ export function useCollaborator(token, saveToken) {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        url: `${process.env.REACT_APP_API}/calendar_collaborators/${calendarId}`,
+        url: `${process.env.REACT_APP_API}/collaborators/${calendarId}`,
         data: data
       }).then(() => {
         if (cb) {
@@ -54,7 +54,7 @@ export function useCollaborator(token, saveToken) {
   }, [token]);
 
   const getCalendarInvitation = useCallback((data) => {
-    const url = `${process.env.REACT_APP_API}/calendar_collaborators/${data.calendarId}/${data.calendarAccessId}`;
+    const url = `${process.env.REACT_APP_API}/collaborators/${data.calendarId}/${data.calendarAccessId}`;
     const header = token !== null
       ? { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
       : { "Content-Type": "application/json" }
@@ -72,7 +72,7 @@ export function useCollaborator(token, saveToken) {
   }, [token]);
 
   const acceptCalendarInvitation = useCallback((data, cb) => {
-    const url = `${process.env.REACT_APP_API}/calendar_collaborators/${data.calendarId}/accept_invitation/${data.calendarAccessId}`;
+    const url = `${process.env.REACT_APP_API}/collaborators/${data.calendarId}/accept_invitation/${data.calendarAccessId}`;
     const header = token !== null
       ? { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
       : { "Content-Type": "application/json" }
@@ -109,7 +109,7 @@ export function useCollaborator(token, saveToken) {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        url: `${process.env.REACT_APP_API}/calendar_collaborators/${calendarId}/${calendarAccessId}`,
+        url: `${process.env.REACT_APP_API}/collaborators/${calendarId}/${calendarAccessId}`,
         data: "inactive"
       }).then(res => {
         setCollaborators(res.data);
@@ -128,7 +128,7 @@ export function useCollaborator(token, saveToken) {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        url: `${process.env.REACT_APP_API}/calendar_collaborators/${calendarId}/${calendarAccessId}`,
+        url: `${process.env.REACT_APP_API}/collaborators/${calendarId}/${calendarAccessId}`,
         data: "active"
       }).then(res => {
         setCollaborators(res.data);
@@ -139,5 +139,5 @@ export function useCollaborator(token, saveToken) {
     }
   }
 
-  return { collaborators, calendarAccess, getCalendarCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation, deactivateCalendarAccess, activateCalendarAccess };
+  return { collaborators, calendarAccess, getCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation, deactivateCalendarAccess, activateCalendarAccess };
 }

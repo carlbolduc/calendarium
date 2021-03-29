@@ -119,7 +119,7 @@ public class CalendarsResource {
                 if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.OWNER.getStatus())) {
                     events = dao.findCalendarOwnerEvents(calendarId, calendarEventsParams.getStartAt());
                 } else if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.ACTIVE.getStatus())) {
-                    events = dao.findCalendarCollaboratorEvents(auth.getAccountId(), calendarId, calendarEventsParams.getStartAt());
+                    events = dao.findCollaboratorEvents(auth.getAccountId(), calendarId, calendarEventsParams.getStartAt());
                 }
             } catch (JsonProcessingException e) {
                 e.printStackTrace();

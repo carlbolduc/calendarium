@@ -177,7 +177,7 @@ export default function Calendar(props) {
       cancel={() => setShowManageCollaborators(false)}
       hideForm={() => setShowManageCollaborators(false)}
       collaborators={props.collaborators}
-      getCalendarCollaborators={props.getCalendarCollaborators}
+      getCollaborators={props.getCollaborators}
       inviteCollaborator={props.inviteCollaborator}
       deactivateCalendarAccess={props.deactivateCalendarAccess}
       activateCalendarAccess={props.activateCalendarAccess}

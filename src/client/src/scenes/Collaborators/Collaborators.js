@@ -8,7 +8,7 @@ import InvalidFeedback from "../../components/Form/InvalidFeedback";
 import Message from "../../components/Form/Message";
 
 export default function Collaborators(props) {
-  const getCalendarCollaborators = props.getCalendarCollaborators;
+  const getCollaborators = props.getCollaborators;
   const inviteCollaborator = props.inviteCollaborator;
   const [name, setName] = useState("");
   const [invalidName, setInvalidName] = useState(false);
@@ -18,8 +18,8 @@ export default function Collaborators(props) {
   const [result, setResult] = useState("");
 
   useEffect(() => {
-    getCalendarCollaborators(props.calendar.calendarId);
-  }, [props.calendar.calendarId, getCalendarCollaborators])
+    getCollaborators(props.calendar.calendarId);
+  }, [props.calendar.calendarId, getCollaborators])
 
   useEffect(() => {
     if (requesting) {
@@ -93,7 +93,7 @@ export default function Collaborators(props) {
   )
 
   function collaboratorActions(collaborator) {
-    let result = "";
+    let result = null;
     switch (collaborator.status) {
       case "active":
         result = <Button label={props.translate("Deactivate")} id="button-deactivate" onClick={() => props.deactivateCalendarAccess(props.calendar.calendarId, collaborator.calendarAccessId)} outline={true} />;
