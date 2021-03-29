@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
 import { DateTime } from "luxon";
-import SubscribeForm from "./SubscribeForm";
 import Button from "../../components/Form/Button";
 import FeaturesList from "../../components/Content/FeaturesList";
 import Message from "../../components/Form/Message";
 import { getLocale, subscriptionStatus } from "../../services/Helpers";
+import StripeWrapper from "./StripeWrapper";
 
 const wantToOptions = {
   SUBSCRIBE: "subscribe",
@@ -16,7 +14,6 @@ const wantToOptions = {
 }
 
 export default function Subscription(props) {
-  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
   const [wantTo, setWantTo] = useState("");
   const [result, setResult] = useState("");
   const [messageOrigin, setMessageOrigin] = useState("");
@@ -40,9 +37,9 @@ export default function Subscription(props) {
     setWantTo(wantToOptions.CANCEL)
   }
 
-  function createSubscription() {
+  function createSubscription(paymentMethod, cb) {
     setMessageOrigin("createSubscription");
-    props.createSubscription();
+    props.createSubscription(paymentMethod, cb);
   }
 
   function cancel(e) {
@@ -186,13 +183,12 @@ export default function Subscription(props) {
           result = (
             <>
               {productPresentation}
-              <Elements stripe={stripePromise}>
-                <SubscribeForm
-                  createSubscription={createSubscription}
-                  cancel={() => setWantTo("")}
-                  translate={props.translate}
-                />
-              </Elements>
+              <StripeWrapper
+                createSubscription={createSubscription}
+                cancel={() => setWantTo("")}
+                language={props.language}
+                translate={props.translate}
+              />
             </>
           );
         } else {
