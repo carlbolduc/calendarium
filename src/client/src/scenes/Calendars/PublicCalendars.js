@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { sortedCalendars } from "../../services/Helpers";
 import CalendarPreview from "./CalendarPreview";
 
@@ -15,7 +15,9 @@ export default function PublicCalendars(props) {
   return (
     <article>
       <h1>{props.translate("Public calendars")}</h1>
-      {calendars}
+      <div className="row">
+        {calendars}
+      </div>
     </article>
   );
 }
