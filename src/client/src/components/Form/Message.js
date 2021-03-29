@@ -55,6 +55,13 @@ export default function Message(props) {
       messages.set("cancelSubscription404","Our payment processing platform could not find the subscription you want to cancel, which is very unusual. Could you drop us an email so we can get you sorted?");
       messages.set("reactivateSubscription500","Our payment processing platform returned an error. You may want to try reactivating again, and if that error keeps popping, contact us in the grove.");
       messages.set("reactivateSubscription404","Our payment processing platform could not find the subscription you want to reactivate, which is very unusual. Could you drop us an email so we can get you sorted?");
+      messages.set("updateCalendar404","Something didn't work according to plan when we tried saving your changes to this calendar. Try again, and if this error keeps popping, contact us in the grove.");
+      messages.set("updateCalendar401","You are not authorised to update this calendar. If you are the calendar owner, something isn't right on our side. Contact us and we'll fix the situation.");
+      messages.set("createEvent401","You are not authorised to create events in this calendar. If you think this is wrong, contact us and we'll fix the situation.");
+      messages.set("updateEvent401","You are not authorised to update this event. If you think this is wrong, contact us and we'll fix the situation.");
+      messages.set("updateEvent404","Something didn't work according to plan when we tried saving your changes to this event. Try again, and if this error keeps popping, contact us in the grove.");
+      messages.set("deleteEvent401","You are not authorised to delete this event. If you think this is wrong, contact us and we'll fix the situation.");
+      messages.set("deleteEvent404","Something didn't work according to plan when we tried deleting this event. Try again, and if this error keeps popping, contact us in the grove.");
 
       // manage the unexpected errors
       let message = messages.get(props.origin + props.result.errorCode);

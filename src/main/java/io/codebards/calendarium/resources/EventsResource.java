@@ -34,14 +34,18 @@ public class EventsResource {
 
     @POST
     public Response createEvent(@Auth Account auth, Event event) {
-        Response response = Response.status(Response.Status.UNAUTHORIZED).build();
-        // Make sure the account can create events in this calendar
-        List<CalendarAccess> calendarAccesses = dao.findCalendarAccesses(auth.getAccountId());
+        Response response;
+        // Validate that only owner and active accesses on the calendar can create events
+        List<CalendarAccess> calendarAccesses = dao.findActiveCalendarAccesses(auth.getAccountId());
         Optional<CalendarAccess> oCalendarAccess = calendarAccesses.stream().filter(ca -> ca.getCalendarId() == event.getCalendarId()).findAny();
         if (oCalendarAccess.isPresent()) {
             event.setAccountId(auth.getAccountId());
             dao.insertEvent(event);
-            response = Response.noContent().build();
+            // event created, return 200 OK
+            response = Response.ok().build();
+        } else {
+            // the account isn't owner or active on the calendar, return 401 Unauthorized
+            response = Response.status(Response.Status.UNAUTHORIZED).build();
         }
         return response;
     }
@@ -49,6 +53,7 @@ public class EventsResource {
     @PUT
     @Path("/{eventId}")
     public Response updateEvent(@Auth Account auth, Event event) {
+        // default response to return is 401 Unauthorized
         Response response = Response.status(Response.Status.UNAUTHORIZED).build();
         Optional<Event> oEvent = dao.findEvent(event.getEventId());
         if (oEvent.isPresent()) {
@@ -58,6 +63,7 @@ public class EventsResource {
             if (oEvent.get().getCalendarId() == event.getCalendarId()) {
                 if (oCalendarAccess.isPresent()) {
                     // Account has access to the original event's calendar and the calendar was not modified
+                    // may return 200 OK or 401 Unauthorized
                     response = updateEventIfPossible(oCalendarAccess.get(), event);
                 }
             } else if (oCalendarAccess.isPresent()) {
@@ -68,12 +74,13 @@ public class EventsResource {
                     oCalendarAccess = calendarAccesses.stream().filter(ca -> ca.getCalendarId() == event.getCalendarId()).findFirst();
                     if (oCalendarAccess.isPresent()) {
                         // Account has access to the new event's calendar
+                        // may return 200 OK or 401 Unauthorized
                         response = updateEventIfPossible(oCalendarAccess.get(), event);
                     }
                 }
             }
         } else {
-            // Event does not exist
+            // event does not exist, return 404 Not Found
             response = Response.status(Response.Status.NOT_FOUND).build();
         }
         return response;
@@ -82,24 +89,28 @@ public class EventsResource {
     @DELETE
     @Path("/{eventId}")
     public Response deleteEvent(@Auth Account auth, @PathParam("eventId") long eventId) {
+        // default response to return is 401 Unauthorized
         Response response = Response.status(Response.Status.UNAUTHORIZED).build();
         Optional<Event> oEvent = dao.findEvent(eventId);
         if (oEvent.isPresent()) {
             // Event exists
             if (oEvent.get().getAccountId() == auth.getAccountId()) {
-                // Event owner can delete its own events
+                // Event owner can delete their own events
                 dao.deleteEvent(eventId);
-                response = Response.noContent().build();
+                // event deleted, return 200 OK
+                response = Response.ok().build();
             } else {
                 List<CalendarAccess> calendarAccesses = dao.findCalendarAccesses(auth.getAccountId());
                 Optional<CalendarAccess> oCalendarAccess = calendarAccesses.stream().filter(ca -> ca.getCalendarId() == oEvent.get().getCalendarId()).findFirst();
                 if (oCalendarAccess.isPresent() && oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.OWNER.getStatus())) {
-                    // Calendar owner can delete any event in its calendar
+                    // Calendar owner can delete any event in their calendar
                     dao.deleteEvent(eventId);
-                    response = Response.noContent().build();
+                    // event deleted, return 200 OK
+                    response = Response.ok().build();
                 }
             }
         } else {
+            // event does not exist, return 404 Not Found
             response = Response.status(Response.Status.NOT_FOUND).build();
         }
         return response;
@@ -138,11 +149,13 @@ public class EventsResource {
     }
 
     private Response updateEventIfPossible(CalendarAccess calendarAccess, Event event) {
+        // default response to return is 401 Unauthorized
         Response response = Response.status(Response.Status.UNAUTHORIZED).build();
         if (calendarAccess.getStatus().equals(CalendarAccessStatus.OWNER.getStatus())) {
             // We can update the event
             dao.updateEvent(event);
-            response = Response.noContent().build();
+            // event updated, return 200 OK
+            response = Response.ok().build();
         } else if (calendarAccess.getStatus().equals(CalendarAccessStatus.ACTIVE.getStatus())) {
             Optional<Calendar> oCalendar = dao.findCalendar(calendarAccess.getCalendarId());
             if (oCalendar.get().getEventApprovalRequired()) {
@@ -150,7 +163,8 @@ public class EventsResource {
                 event.setStatus(EventStatus.PENDING_APPROVAL.getStatus());
             }
             dao.updateEvent(event);
-            response = Response.noContent().build();
+            // event updated, return 200 OK
+            response = Response.ok().build();
         }
         return response;
     }

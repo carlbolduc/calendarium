@@ -61,6 +61,8 @@ public class CalendarsResource {
 
     @POST
     @RolesAllowed({ "SUBSCRIBER" })
+    // TODO: add validation if calendar created correctly, and return a response that matches this result
+    // TODO: when above todo is done, add appropriate messages in Message.js and show it in MyCalendars.js
     public Response createCalendar(@Auth Account auth, Calendar calendar) {
         long calendarId = dao.insertCalendar(auth.getAccountId(), calendar);
         dao.insertCalendarAccess(auth.getAccountId(), calendarId, CalendarAccessStatus.OWNER.getStatus());
@@ -70,13 +72,22 @@ public class CalendarsResource {
     @PUT
     @RolesAllowed({ "SUBSCRIBER" })
     @Path("/{calendarId}")
-    // TODO: do this only if the account is calendar owner
     public Response updateCalendar(@Auth Account auth, @PathParam("calendarId") long calendarId, Calendar calendar) {
-        Response response = Response.status(Response.Status.NOT_FOUND).build();
-        dao.updateCalendar(auth.getAccountId(), calendarId, calendar);
-        Optional<Calendar> oCalendar = dao.findCalendarByLink(auth.getAccountId(), calendar.getLinkEn());
-        if (oCalendar.isPresent()) {
-            response = Response.ok(oCalendar.get()).build();
+        Response response;
+        if (auth.getAccountId() == dao.findCalendarOwnerAccountId(calendarId)) {
+            // the calendar owner is doing the action
+            dao.updateCalendar(auth.getAccountId(), calendarId, calendar);
+            Optional<Calendar> oCalendar = dao.findCalendarByLink(auth.getAccountId(), calendar.getLinkEn());
+            if (oCalendar.isPresent()) {
+                // the update went according to plan, return 200 OK
+                response = Response.ok(oCalendar.get()).build();
+            } else {
+                // the calendar cannot be found after update, return 404 Not Found
+                response = Response.status(Response.Status.NOT_FOUND).build();
+            }
+        } else {
+            // it's not the calendar owner, return 401 Unauthorized
+            response = Response.status(Response.Status.UNAUTHORIZED).build();
         }
         return response;
     }

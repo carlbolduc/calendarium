@@ -35,7 +35,7 @@ export function useCalendar(token, subscribed) {
     }).then(res => {
       setCalendars(res.data);
     }).catch(err => {
-      console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendars' from 'useCalendar' hook");
+      console.log("THIS SHOULD NEVER HAPPEN, error in 'getPublicCalendars' from 'useCalendar' hook");
       console.log(err.response);
     });
   }, []);
@@ -77,7 +77,7 @@ export function useCalendar(token, subscribed) {
           // Calendar not found, we callback
           if (cb) cb();
         } else {
-          console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendars' from 'useCalendar' hook");
+          console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendar' from 'useCalendar' hook");
           console.log(err.response);
         }
       });

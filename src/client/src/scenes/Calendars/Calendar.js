@@ -27,12 +27,12 @@ export default function Calendar(props) {
   let { link } = useParams();
   const [currentDay, setCurrentDay] = useState(DateTime.now());
   const [showCalendarForm, setShowCalendarForm] = useState(false);
-  const [calendarFormResult, setCalendarFormResult] = useState(null);
   const [event, setEvent] = useState(null);
   const [showEventForm, setShowEventForm] = useState(false);
-  const [eventFormResult, setEventFormResult] = useState(null);
+  const [formResult, setFormResult] = useState(null);
   const [showManageCollaborators, setShowManageCollaborators] = useState(false);
   const [showManageEvents, setShowManageEvents] = useState(false);
+  const [messageOrigin, setMessageOrigin] = useState("");
   const [eventToDelete, setEventToDelete] = useState({eventId: null});
 
   useEffect(() => {
@@ -103,6 +103,7 @@ export default function Calendar(props) {
     event.status = eventStatus.DRAFT.value;
     updateEvent(event, () => {
       refreshEvents();
+      setMessageOrigin("deleteEvent");
     });
   }, [updateEvent, refreshEvents]);
 
@@ -120,7 +121,8 @@ export default function Calendar(props) {
       outline={true}
       onClick={() => {
         setShowCalendarForm(true);
-        setCalendarFormResult(null);
+        setFormResult(null);
+        setMessageOrigin("updateCalendar");
       }}
     />
   ) : null;
@@ -134,7 +136,7 @@ export default function Calendar(props) {
       updateCalendar={props.updateCalendar}
       deleteCalendar={props.deleteCalendar}
       setShowCalendarForm={setShowCalendarForm}
-      setResult={setCalendarFormResult}
+      setResult={setFormResult}
     />
   );
 
@@ -265,7 +267,7 @@ export default function Calendar(props) {
       outline={true}
       onClick={() => {
         setShowEventForm(true);
-        setEventFormResult(null);
+        setFormResult(null);
       }}
     />
   ) :null;
@@ -279,7 +281,8 @@ export default function Calendar(props) {
       createEvent={props.createEvent}
       updateEvent={props.updateEvent}
       hideForm={() => setShowEventForm(false)}
-      setResult={setEventFormResult}
+      setResult={setFormResult}
+      setMessageOrigin={setMessageOrigin}
       calendar={props.calendar}
       refreshEvents={refreshEvents}
     />
@@ -338,11 +341,7 @@ export default function Calendar(props) {
               props.calendar.nameFr
             )}
           </h1>
-          <Message
-            result={eventFormResult}
-            origin="EventForm"
-            translate={props.translate}
-          />
+          <Message result={formResult} origin={messageOrigin} translate={props.translate} />
           {actionButtonsZone}
           <div>
             {decideWhatToDisplay(
