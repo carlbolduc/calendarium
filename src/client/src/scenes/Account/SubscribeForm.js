@@ -1,5 +1,5 @@
 import React from "react";
-import { useStripe, useElements, CardElement, Elements } from "@stripe/react-stripe-js";
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import Button from "../../components/Form/Button";
 
 export default function SubscribeForm(props) {
@@ -41,7 +41,7 @@ export default function SubscribeForm(props) {
         color: "#212529",
         fontWeight: 400,
         fontFamily: "sans-serif",
-        fontSize: "1rem",
+        fontSize: "16px",
         fontSmoothing: "antialiased",
         ":-webkit-autofill": {
           color: "#212529"
@@ -61,7 +61,9 @@ export default function SubscribeForm(props) {
       <div className="row">
         <div className="col">
           <div className="card-element my-3">
-            <CardElement options={CARD_OPTIONS}/>
+            <CardElement 
+              // @ts-ignore
+              options={CARD_OPTIONS}/>
           </div>
         </div>
       </div>

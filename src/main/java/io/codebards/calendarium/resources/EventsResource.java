@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.codebards.calendarium.api.*;
-import io.codebards.calendarium.api.Calendar;
 import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
