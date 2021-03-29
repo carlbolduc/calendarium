@@ -10,7 +10,7 @@ import Month from "./Month";
 import Message from "../../components/Form/Message";
 import Collaborators from "../Collaborators/Collaborators";
 import Event from "../Events/Event";
-import EventsSearch from "../../components/Form/EventsSearch";
+import EventsSearch from "../Events/EventsSearch";
 import EditEventButton from "../Events/EditEventButton";
 import SendForApprovalEventButton from "../Events/SendForApprovalEventButton";
 import PublishEventButton from "../Events/PublishEventButton";
@@ -29,7 +29,7 @@ export default function Calendar(props) {
   const [showCalendarForm, setShowCalendarForm] = useState(false);
   const [event, setEvent] = useState(null);
   const [showEventForm, setShowEventForm] = useState(false);
-  const [formResult, setFormResult] = useState(null);
+  const [result, setResult] = useState(null);
   const [showManageCollaborators, setShowManageCollaborators] = useState(false);
   const [showManageEvents, setShowManageEvents] = useState(false);
   const [messageOrigin, setMessageOrigin] = useState("");
@@ -56,6 +56,8 @@ export default function Calendar(props) {
   useEffect(() => {
     if (event !== null) {
       setShowEventForm(true);
+      setResult(null);
+      setMessageOrigin("updateEvent");
     } else {
       setShowEventForm(false);
     }
@@ -85,11 +87,11 @@ export default function Calendar(props) {
     }
   }, [eventToDelete]);
 
-  const submitForApproval = useCallback((event) => {
+  const sendForApproval = useCallback((event) => {
     event.status = eventStatus.PENDING_APPROVAL.value;
     updateEvent(event, result => {
-      setFormResult(result);
-      setMessageOrigin("submitForApproval");
+      setResult(result);
+      setMessageOrigin("sendForApproval");
       refreshEvents();
     });
   }, [updateEvent, refreshEvents]);
@@ -97,7 +99,7 @@ export default function Calendar(props) {
   const approveEvent = useCallback((event) => {
     event.status = eventStatus.PUBLISHED.value;
     updateEvent(event, result => {
-      setFormResult(result);
+      setResult(result);
       setMessageOrigin("approveEvent");
       refreshEvents();
     });
@@ -106,7 +108,7 @@ export default function Calendar(props) {
   const publishEvent = useCallback((event) => {
     event.status = eventStatus.PUBLISHED.value;
     updateEvent(event, result => {
-      setFormResult(result);
+      setResult(result);
       setMessageOrigin("publishEvent");
       refreshEvents();
     });
@@ -115,7 +117,7 @@ export default function Calendar(props) {
   const unpublishEvent = useCallback((event) => {
     event.status = eventStatus.DRAFT.value;
     updateEvent(event, result => {
-      setFormResult(result);
+      setResult(result);
       setMessageOrigin("unpublishEvent");
       refreshEvents();
     });
@@ -124,7 +126,7 @@ export default function Calendar(props) {
   function confirmEventDeletion() {
     setEventToDelete({eventId: null});    
     deleteEvent(eventToDelete.eventId, result => {
-      setFormResult(result);
+      setResult(result);
       setMessageOrigin("deleteEvent");
       refreshEvents();
     });
@@ -137,7 +139,7 @@ export default function Calendar(props) {
       outline={true}
       onClick={() => {
         setShowCalendarForm(true);
-        setFormResult(null);
+        setResult(null);
         setMessageOrigin("updateCalendar");
       }}
     />
@@ -152,7 +154,7 @@ export default function Calendar(props) {
       updateCalendar={props.updateCalendar}
       deleteCalendar={props.deleteCalendar}
       setShowCalendarForm={setShowCalendarForm}
-      setResult={setFormResult}
+      setResult={setResult}
     />
   );
 
@@ -207,7 +209,7 @@ export default function Calendar(props) {
           event={event}
           account={props.account}
           calendar={props.calendar}
-          submitForApproval={submitForApproval}
+          sendForApproval={sendForApproval}
           translate={props.translate}
         />
         <ApproveEventButton
@@ -252,6 +254,8 @@ export default function Calendar(props) {
       searchEvents={props.searchEvents}
       language={props.language}
       translate={props.translate}
+      result={result}
+      messageOrigin={messageOrigin}
       actionButtonsZone={
         <div className="mb-4">
           <Button label={props.translate("Back to calendar")} id="button-cancel"
@@ -283,7 +287,8 @@ export default function Calendar(props) {
       outline={true}
       onClick={() => {
         setShowEventForm(true);
-        setFormResult(null);
+        setResult(null);
+        setMessageOrigin("createEvent");
       }}
     />
   ) :null;
@@ -297,8 +302,7 @@ export default function Calendar(props) {
       createEvent={props.createEvent}
       updateEvent={props.updateEvent}
       hideForm={() => setShowEventForm(false)}
-      setResult={setFormResult}
-      setMessageOrigin={setMessageOrigin}
+      setResult={setResult}
       calendar={props.calendar}
       refreshEvents={refreshEvents}
     />
@@ -357,7 +361,7 @@ export default function Calendar(props) {
               props.calendar.nameFr
             )}
           </h1>
-          <Message result={formResult} origin={messageOrigin} translate={props.translate} />
+          <Message result={result} origin={messageOrigin} translate={props.translate} />
           {actionButtonsZone}
           <div>
             {decideWhatToDisplay(

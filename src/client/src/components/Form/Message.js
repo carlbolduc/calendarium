@@ -61,8 +61,8 @@ export default function Message(props) {
       messages.set("updateEvent404","We couldn't find the event you are trying to update. It may have already been deleted by someone else. If you think this is wrong, contact us in the grove.");
       messages.set("deleteEvent401","You are not authorised to delete this event. If you think this is wrong, contact us and we'll fix the situation.");
       messages.set("deleteEvent404","We couldn't find the event you are trying to delete. It may have already been deleted by someone else. If you think this is wrong, contact us in the grove.");
-      messages.set("submitForApproval401","You are not authorised to send this event for approval. If you think this is wrong, contact us and we'll fix the situation.");
-      messages.set("submitForApproval404","We couldn't find the event you are trying to send for approval. It may have already been deleted by someone else. If you think this is wrong, contact us in the grove.");
+      messages.set("sendForApproval401","You are not authorised to send this event for approval. If you think this is wrong, contact us and we'll fix the situation.");
+      messages.set("sendForApproval404","We couldn't find the event you are trying to send for approval. It may have already been deleted by someone else. If you think this is wrong, contact us in the grove.");
       messages.set("approveEvent401","You are not authorised to approve this event. If you think this is wrong, contact us and we'll fix the situation.");
       messages.set("approveEvent404","We couldn't find the event you are trying to approve. It may have already been deleted by someone else. If you think this is wrong, contact us in the grove.");
       messages.set("unpublishEvent401","You are not authorised to unpublish this event. If you think this is wrong, contact us and we'll fix the situation.");

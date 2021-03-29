@@ -1,18 +1,18 @@
 import React, {useState, useEffect, useCallback} from "react";
-import Event from "../../scenes/Events/Event";
-import Select from "./Select";
-import Input from "./Input";
-import Button from "./Button";
+import Event from "./Event";
+import Select from "../../components/Form/Select";
+import Input from "../../components/Form/Input";
+import Button from "../../components/Form/Button";
 import {decideWhatToDisplay, encodeObject, eventStatus, getLocale} from "../../services/Helpers";
-import Message from "./Message";
+import Message from "../../components/Form/Message";
 import {DateTime} from "luxon";
-import Month from "../../scenes/Calendars/Month";
-import EditEventButton from "../../scenes/Events/EditEventButton";
-import SendForApprovalEventButton from "../../scenes/Events/SendForApprovalEventButton";
-import ApproveEventButton from "../../scenes/Events/ApproveEventButton";
-import PublishEventButton from "../../scenes/Events/PublishEventButton";
-import UnpublishEventButton from "../../scenes/Events/UnpublishEventButton";
-import DeleteEventButton from "../../scenes/Events/DeleteEventButton";
+import Month from "../Calendars/Month";
+import EditEventButton from "./EditEventButton";
+import SendForApprovalEventButton from "./SendForApprovalEventButton";
+import ApproveEventButton from "./ApproveEventButton";
+import PublishEventButton from "./PublishEventButton";
+import UnpublishEventButton from "./UnpublishEventButton";
+import DeleteEventButton from "./DeleteEventButton";
 
 export default function EventsSearch(props) {
   const searchEvents = props.searchEvents;
@@ -24,10 +24,11 @@ export default function EventsSearch(props) {
   const [endDate, setEndDate] = useState(null);
   const [showEndDateSelector, setShowEndDateSelector] = useState(false);
   const [status, setStatus] = useState("");
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState(props.result);
   const [initialLoad, setInitialLoad] = useState(true);
   const [working, setWorking] = useState(false);
   const [canSearch, setCanSearch] = useState(false);
+  const [messageOrigin, setMessageOrigin] = useState(props.messageOrigin);
 
   const buildQuery = useCallback(() => {
     return encodeObject({
@@ -70,29 +71,46 @@ export default function EventsSearch(props) {
     setWorking(true);
   }
 
-  const submitForApproval = useCallback((event) => {
+  const sendForApproval = useCallback((event) => {
     event.status = eventStatus.PENDING_APPROVAL.value;
-    updateEvent(event, () => {
+    updateEvent(event, result => {
+      setResult(result);
+      setMessageOrigin("sendForApproval");
       setWorking(true);
     });
   }, [updateEvent]);
 
   const approveEvent = useCallback((event) => {
     event.status = eventStatus.PUBLISHED.value;
-    updateEvent(event, () => {
+    updateEvent(event, result => {
+      setResult(result);
+      setMessageOrigin("approveEvent");
+      setWorking(true);
+    });
+  }, [updateEvent]);
+
+  const publishEvent = useCallback((event) => {
+    event.status = eventStatus.PUBLISHED.value;
+    updateEvent(event, result => {
+      setResult(result);
+      setMessageOrigin("publishEvent");
       setWorking(true);
     });
   }, [updateEvent]);
 
   const unpublishEvent = useCallback((event) => {
     event.status = eventStatus.DRAFT.value;
-    updateEvent(event, () => {
+    updateEvent(event, result => {
+      setResult(result);
+      setMessageOrigin("unpublishEvent");
       setWorking(true);
     });
   }, [updateEvent]);
 
   const deleteThisEvent = useCallback((event) => {
-    deleteEvent(event.eventId, () => {
+    deleteEvent(event.eventId, result => {
+      setResult(result);
+      setMessageOrigin("deleteEvent");
       setWorking(true);
     });
   }, [deleteEvent]);
@@ -141,7 +159,7 @@ export default function EventsSearch(props) {
           event={event}
           account={props.account}
           calendar={props.calendar}
-          submitForApproval={submitForApproval}
+          sendForApproval={sendForApproval}
           translate={props.translate}
         />
         <ApproveEventButton
@@ -154,7 +172,7 @@ export default function EventsSearch(props) {
           event={event}
           account={props.account}
           calendar={props.calendar}
-          approveEvent={approveEvent}
+          publishEvent={publishEvent}
           translate={props.translate}
         />
         <UnpublishEventButton
@@ -199,7 +217,7 @@ export default function EventsSearch(props) {
   return (
     <article>
       <h1>{title}</h1>
-      <Message result={result} origin="EventSearch" translate={props.translate} />
+      <Message result={result} origin={messageOrigin} translate={props.translate} />
       {props.actionButtonsZone}
       <form onSubmit={handleSubmit}>
         <div className="row">
