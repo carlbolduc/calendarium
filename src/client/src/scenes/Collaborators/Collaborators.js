@@ -116,7 +116,7 @@ export default function Collaborators(props) {
       <div className="table-responsive">
         <table className="table">
           <thead>
-            <tr>
+            <tr className="text-nowrap">
               <th scope="col">#</th>
               <th scope="col">Name</th>
               <th scope="col">Email</th>

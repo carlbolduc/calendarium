@@ -7,13 +7,21 @@ export default function Event(props) {
   function status() {
     let result = null;
     if (props.showStatus) {
+      let status = null;
       if (props.event.status === eventStatus.DRAFT.value) {
-        result = <span className="badge bg-secondary">{props.translate(eventStatus.DRAFT.label)}</span>;
+        status = <span className="badge bg-secondary">{props.translate(eventStatus.DRAFT.label)}</span>;
       } else if (props.event.status === eventStatus.PENDING_APPROVAL.value) {
-        result = <span className="badge bg-warning">{props.translate(eventStatus.PENDING_APPROVAL.label)}</span>;
+        status = <span className="badge bg-warning">{props.translate(eventStatus.PENDING_APPROVAL.label)}</span>;
       } else if (props.event.status === eventStatus.PUBLISHED.value) {
-        result = <span className="badge bg-success">{props.translate(eventStatus.PUBLISHED.label)}</span>;
+        status = <span className="badge bg-success">{props.translate(eventStatus.PUBLISHED.label)}</span>;
       }
+      result = (
+        <div className="col-auto">
+          <div className="card-body">
+            {status}
+          </div>
+        </div>
+      );
     }
     return result;
   }
@@ -74,11 +82,7 @@ export default function Event(props) {
             {hyperlink()}
           </div>
         </div>
-        <div className="col-auto">
-          <div className="card-body">
-            {status()}
-          </div>
-        </div>
+        {status()}
       </div>
       <div className="row">
         <div className="col ms-3">
