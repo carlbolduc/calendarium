@@ -151,8 +151,7 @@ export default function Profile(props) {
           invalidFeedback={invalidNewPassword ? <InvalidFeedback feedback="Your new password must be at least 8 characters long." /> : null}
         />
         {memberSince}
-        {/* TODO: disable button when nothing has changed in the form */}
-        <Button label={props.translate("Save")} type="submit" working={requesting} id="button-save" />
+        <Button label={props.translate("Save")} type="submit" disabled={name === props.account.name && email === props.account.email && newPassword === ""} working={requesting} id="button-save" />
       </form>
     </article>
   ) : (
