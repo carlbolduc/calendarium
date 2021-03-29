@@ -218,6 +218,7 @@ export default function Calendar(props) {
                   onClick={() => setShowManageEvents(false)} outline={true}/>
         </div>
       }
+      setEvent={setEvent}
     />
   );
 
