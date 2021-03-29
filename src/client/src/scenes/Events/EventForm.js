@@ -6,7 +6,7 @@ import Input from "../../components/Form/Input";
 import Checkbox from "../../components/Form/Checkbox";
 import { DateTime } from "luxon";
 import Month from "../Calendars/Month";
-import { textValid, timesList, decideWhatToDisplay, getLocale } from "../../services/Helpers";
+import { textValid, timesList, decideWhatToDisplay, getLocale, eventStatus, calendarAccessStatus } from "../../services/Helpers";
 import Textarea from "../../components/Form/Textarea";
 
 export default function EventForm(props) {
@@ -38,7 +38,8 @@ export default function EventForm(props) {
   const [invalidEndTime, setInvalidEndTime] = useState(false);
   const [showEndTimeSelector, setShowEndTimeSelector] = useState(false);
   const [allDay, setAllDay] = useState(false);
-  const [requesting, setRequesting] = useState(false);
+  const [savingAsDraft, setSavingAsDraft] = useState(false);
+  const [sendingForApprovalOrPublishing, setSendingForApprovalOrPublishing] = useState(false);
 
   useEffect(() => {
     if (props.event !== null) {
@@ -87,7 +88,7 @@ export default function EventForm(props) {
     }
   }, [props.language, previousEndTime, endTime, previousStartTime, startTime]);
 
-  const buildEvent = useCallback(() => {
+  const buildEvent = useCallback((status) => {
     return {
       calendarId: props.calendar.calendarId,
       nameEn: nameEn !== "" ? nameEn : null,
@@ -98,51 +99,56 @@ export default function EventForm(props) {
       hyperlinkFr: hyperlinkFr !== "" ? hyperlinkFr : null,
       startAt: null,
       endAt: null,
-      allDay: allDay
+      allDay: allDay,
+      status: status
     };
   }, [nameEn, nameFr, descriptionEn, descriptionFr, hyperlinkEn, hyperlinkFr, allDay, props.calendar.calendarId]);
 
-  useEffect(() => {
-    if (requesting) {
-      const event = buildEvent();
+  function stopWorking() {
+    setSavingAsDraft(false);
+    setSendingForApprovalOrPublishing(false);
+  }
 
-      if (allDay) {
-        event.startAt = startDate.startOf("day").toSeconds();
-        event.endAt = endDate.endOf("day").toSeconds();
-      } else {
-        const startTimeValues = getTimeValues(startTime);
-        const endTimeValues = getTimeValues(endTime);
-        event.startAt = startDate.set({ hour: startTimeValues.hour, minute: startTimeValues.minute, second: 0, millisecond: 0 }).toSeconds();
-        event.endAt = endDate.set({ hour: endTimeValues.hour, minute: endTimeValues.minute, second: 0, millisecond: 0 }).toSeconds();
-      }
+  function createOrUpdateEvent(status) {
+    const event = buildEvent(status);
 
-      if (props.event === null) {
-        createEvent(event, result => {
-          setRequesting(false);
-          if (result.success) {
-            refreshEvents();
-            hideForm();
-          } else {
-            setResult(result);
-          }
-        });
-      } else {
-        event["eventId"] = props.event.eventId;
-        event["status"] = props.event.status;
-        updateEvent(event, result => {
-          setRequesting(false);
-          if (result.success) {
-            refreshEvents();
-            hideForm();
-          } else {
-            setResult(result);
-          }
-        });
-      }
+    if (allDay) {
+      event.startAt = startDate.startOf("day").toSeconds();
+      event.endAt = endDate.endOf("day").toSeconds();
+    } else {
+      const startTimeValues = getTimeValues(startTime);
+      const endTimeValues = getTimeValues(endTime);
+      event.startAt = startDate.set({ hour: startTimeValues.hour, minute: startTimeValues.minute, second: 0, millisecond: 0 }).toSeconds();
+      event.endAt = endDate.set({ hour: endTimeValues.hour, minute: endTimeValues.minute, second: 0, millisecond: 0 }).toSeconds();
     }
-  }, [requesting, props.event, allDay, startDate, startTime, endDate, endTime, refreshEvents, createEvent, updateEvent, setResult, hideForm, buildEvent]);
 
-  function handleSubmit(e) {
+    if (props.event === null) {
+      createEvent(event, result => {
+        if (result.success) {
+          refreshEvents();
+          hideForm();
+        } else {
+          setResult(result);
+        }
+        stopWorking();
+      });
+    } else {
+      event["eventId"] = props.event.eventId;
+      event["status"] = props.event.status;
+      updateEvent(event, result => {
+        if (result.success) {
+          refreshEvents();
+          hideForm();
+        } else {
+          setResult(result);
+        }
+        stopWorking();
+      });
+    }
+
+  }
+
+  function saveAsDraft(e) {
     e.preventDefault();
     // Text validations
     const enValid = validateEnglishFields();
@@ -150,7 +156,22 @@ export default function EventForm(props) {
     // Dates validations
     const datesAndTimesValid = validateDateAndTimeFields();
     if (enValid && frValid && datesAndTimesValid) {
-      setRequesting(true);
+      setSavingAsDraft(true);
+      createOrUpdateEvent(eventStatus.DRAFT.value);
+    }
+  }
+
+  function sendForApprovalOrPublish(e) {
+    e.preventDefault();
+    // Text validations
+    const enValid = validateEnglishFields();
+    const frValid = validateFrenchFields();
+    // Dates validations
+    const datesAndTimesValid = validateDateAndTimeFields();
+    if (enValid && frValid && datesAndTimesValid) {
+      setSendingForApprovalOrPublishing(true);
+      // TODO: pass the correct status
+      createOrUpdateEvent(eventStatus.PUBLISHED.value);
     }
   }
 
@@ -441,12 +462,20 @@ export default function EventForm(props) {
   const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
   const title = props.event === null ? `${props.translate("New event in")} ${calendarName}` : `${props.translate("Edit event in")} ${calendarName}`;
 
-  const submitButton = props.event === null ? props.translate("Create this event") : props.translate("Save changes");
+  function submitOrPublishButtonText() {
+    let result = "";
+    if (props.calendar.access === calendarAccessStatus.OWNER || !props.calendar.eventApprovalRequired) {
+      result = props.event === null ? props.translate("Publish this event") : props.translate("Save changes");
+    } else {
+      result = props.translate("Send for approval");
+    }
+    return result;
+  }
 
   return (
     <>
       <h1>{title}</h1>
-      <form onSubmit={handleSubmit} id="form-event" noValidate>
+      <form id="form-event" noValidate>
         <div className="row mb-3">
           {englishFields}
           {frenchFields}
@@ -539,7 +568,8 @@ export default function EventForm(props) {
           </div>
         </div>
         <Button label={props.translate("Cancel")} type="button" id="button-cancel" onClick={props.cancel} outline={true} />
-        <Button label={props.translate(submitButton)} type="submit" working={requesting} id="button-save" />
+        {props.event === null ? <Button label={props.translate("Save as draft")} type="button" id="button-save-as-draft" onClick={saveAsDraft} working={savingAsDraft} /> : null}
+        <Button label={submitOrPublishButtonText()} type="button" id="button-send-for-approval-or-publish" onClick={sendForApprovalOrPublish} working={sendingForApprovalOrPublishing} />
       </form>
     </>
   );

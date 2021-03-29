@@ -48,7 +48,6 @@ export function useLoc(account) {
       // if user language is en_ca, return the label as is
       if (defaultLanguage.languageId === account.languageId) {
         locTranslated = label;
-
         // TODO: do this only when in DEV if label doesn't exist in loc, insert it
         const locToTranslate = loc.find(l => l.enCa === label);
         if (locToTranslate === undefined) {

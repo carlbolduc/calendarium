@@ -4,7 +4,7 @@ import { errorCallback } from "./Helpers";
 
 export function useCalendar(token, subscribed) {
   const [calendars, setCalendars] = useState([]);
-  const [calendar, setCalendar] = useState({ calendarId: null, enableEn: false, enableFr: false });
+  const [calendar, setCalendar] = useState({ calendarId: null, enableEn: false, enableFr: false, eventApprovalRequired: true });
   const [calendarEvents, setCalendarEvents] = useState([]);
 
   const getCalendars = useCallback(() => {

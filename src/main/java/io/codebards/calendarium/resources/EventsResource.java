@@ -39,7 +39,6 @@ public class EventsResource {
         List<CalendarAccess> calendarAccesses = dao.findCalendarAccesses(auth.getAccountId());
         Optional<CalendarAccess> oCalendarAccess = calendarAccesses.stream().filter(ca -> ca.getCalendarId() == event.getCalendarId()).findAny();
         if (oCalendarAccess.isPresent()) {
-            event.setStatus(EventStatus.DRAFT.getStatus());
             event.setAccountId(auth.getAccountId());
             dao.insertEvent(event);
             response = Response.noContent().build();
