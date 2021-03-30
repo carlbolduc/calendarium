@@ -17,7 +17,7 @@ export default function Profile(props) {
   const [invalidCurrentPassword, setInvalidCurrentPassword] = useState(false);
   const [newPassword, setNewPassword] = useState("")
   const [invalidNewPassword, setInvalidNewPassword] = useState(false);
-  const [requesting, setRequesting] = useState(false);
+  const [working, setWorking] = useState(false);
   const [result, setResult] = useState("");
 
   useEffect(() => {
@@ -25,14 +25,25 @@ export default function Profile(props) {
     setEmail(props.account.email);
   }, [props.account]);
 
-  useEffect(() => {
-    if (
-      requesting &&
-      (name !== props.account.name ||
-        email !== props.account.email ||
-        newPassword !== "")
-    ) {
-      const data =
+  function handleSubmit(e) {
+    e.preventDefault();
+    let canSubmit = false;
+    if (textValid(name) && emailValid(email)) {
+      if (newPassword === "") {
+        // No new password is provided, we can submit the change
+        canSubmit = true;
+      } else {
+        // New password is provided, current password must be submitted
+        if (passwordValid(currentPassword) && passwordValid(newPassword)) {
+          canSubmit = true;
+        } else {
+          if (!passwordValid(currentPassword)) setInvalidCurrentPassword(true);
+          if (!passwordValid(newPassword)) setInvalidNewPassword(true);
+        }
+      }
+      if (canSubmit) {
+        setWorking(true);
+        const data =
         newPassword !== ""
           ? {
               name: name,
@@ -44,38 +55,12 @@ export default function Profile(props) {
               name: name,
               email: email,
             };
-      updateAccount(data, (result) => {
-        setCurrentPassword("");
-        setNewPassword("");
-        setResult(result);
-        setRequesting(false);
-      });
-    }
-  }, [
-    props.account.email,
-    props.account.name,
-    requesting,
-    name,
-    email,
-    currentPassword,
-    newPassword,
-    updateAccount,
-  ]);
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (textValid(name) && emailValid(email)) {
-      if (newPassword === "") {
-        // No new password is provided, we can submit the change
-        setRequesting(true);
-      } else {
-        // New password is provided, current password must be submitted
-        if (passwordValid(currentPassword) && passwordValid(newPassword)) {
-          setRequesting(true);
-        } else {
-          if (!passwordValid(currentPassword)) setInvalidCurrentPassword(true);
-          if (!passwordValid(newPassword)) setInvalidNewPassword(true);
-        }
+        updateAccount(data, (result) => {
+          setCurrentPassword("");
+          setNewPassword("");
+          setResult(result);
+          setWorking(false);
+        });
       }
     } else {
       if (!textValid(name)) setInvalidName(true);
@@ -151,7 +136,7 @@ export default function Profile(props) {
           invalidFeedback={invalidNewPassword ? <InvalidFeedback feedback="Your new password must be at least 8 characters long." /> : null}
         />
         {memberSince}
-        <Button label={props.translate("Save")} type="submit" disabled={name === props.account.name && email === props.account.email && newPassword === ""} working={requesting} id="button-save" />
+        <Button label={props.translate("Save")} type="submit" disabled={name === props.account.name && email === props.account.email && newPassword === ""} id="button-save" working={working} />
       </form>
     </article>
   ) : (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import Input from '../../components/Form/Input';
 import Button from '../../components/Form/Button';
@@ -12,28 +12,23 @@ export default function SignIn(props) {
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [password, setPassword] = useState("");
   const [invalidPassword, setInvalidPassword] = useState(false);
-  const [requesting, setRequesting] = useState(false);
+  const [working, setWorking] = useState(false);
   const [result, setResult] = useState("");
 
-  useEffect(() => {
-    if (requesting) {
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (emailValid(email) && passwordValid(password)) {
+      setWorking(true);
       signIn({
         "email": email,
         "password": password
       }, result => {
         if (!result.success) {
           setResult(result);
-          setRequesting(false);
+          setWorking(false);
         }
         // Signed in user gets immediately redirected to home page
       });
-    }
-  }, [requesting, email, password, signIn])
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (emailValid(email) && passwordValid(password)) {
-      setRequesting(true);
     } else {
       if (!emailValid(email)) setInvalidEmail(true);
       if (!passwordValid(password)) setInvalidPassword(true);
@@ -73,7 +68,7 @@ export default function SignIn(props) {
           }}
           invalidFeedback={invalidPassword ? <InvalidFeedback feedback="Your password must be at least 8 characters long." /> : null}
         />
-        <Button label={props.translate("Sign in")} type="submit" id="button-sign-in" />
+        <Button label={props.translate("Sign in")} type="submit" id="button-sign-in" working={working} />
       </form>
       <p className="small">
         {props.translate("Need an account? Sign up")} <Link to="/sign-up">{props.translate("here")}</Link>. |&nbsp;

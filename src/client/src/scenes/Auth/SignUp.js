@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import {textValid, emailValid, passwordValid} from "../../services/Helpers";
 import Input from "../../components/Form/Input";
@@ -17,26 +17,24 @@ export default function SignUp(props) {
   const [invalidPassword, setInvalidPassword] = useState(false);
   const [termsConditions, setTermsConditions] = useState(false);
   const [invalidTermsAndConditions, setInvalidTermsAndConditions] = useState(false);
-  const [requesting, setRequesting] = useState(false);
+  const [working, setWorking] = useState(false);
   const [result, setResult] = useState("");
 
-  useEffect(() => {
-    if (requesting) {
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (textValid(name) && emailValid(email) && passwordValid(password) && termsConditions) {
+      setWorking(true);
       signUp({
         "name": name,
         "email": email,
         "password": password
       }, result => {
-        setResult(result);
-        setRequesting(false);
+        if (!result.success) {
+          setResult(result);
+          setWorking(false);
+        }
+        // Signed in user gets immediately redirected to home page
       });
-    }
-  }, [requesting, name, email, password, signUp])
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (textValid(name) && emailValid(email) && passwordValid(password) && termsConditions) {
-      setRequesting(true);
     } else {
       if (!textValid(name)) setInvalidName(true);
       if (!emailValid(email)) setInvalidEmail(true);
@@ -111,7 +109,7 @@ export default function SignUp(props) {
                 <p>{props.translate("They can be read ")} <a href="http://codebards.io/policies/terms/" target="_blank" rel="noreferrer">{props.translate("here")}</a>.</p>
               </div>
             </div>
-            <Button label={props.translate("Sign up")} type="submit" working={requesting} id="button-sign-up" />
+            <Button label={props.translate("Sign up")} type="submit" id="button-sign-up" working={working} />
           </form>
           <p className="small">{props.translate("Already have an account? Sign in")} <Link to="/sign-in">{props.translate("here")}</Link>.</p>
         </article>

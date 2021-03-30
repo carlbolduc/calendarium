@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
-import Input from '../../components/Form/Input';
-import Button from '../../components/Form/Button';
+import React, { useState } from "react";
+import { Redirect } from "react-router-dom";
+import Input from "../../components/Form/Input";
+import Button from "../../components/Form/Button";
 import Message from "../../components/Form/Message";
 import {emailValid} from "../../services/Helpers";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
@@ -10,12 +10,14 @@ export default function ForgotPassword(props) {
   const createPasswordReset = props.createPasswordReset;
   const [email, setEmail] = useState("");
   const [invalidEmail, setInvalidEmail] = useState(false);
-  const [requesting, setRequesting] = useState(false);
+  const [working, setWorking] = useState(false);
   const [requested, setRequested] = useState(false);
   const [result, setResult] = useState("");
 
-  useEffect(() => {
-    if (requesting) {
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (emailValid(email)) {
+      setWorking(true);
       createPasswordReset({
         email: email
       }, result => {
@@ -23,15 +25,8 @@ export default function ForgotPassword(props) {
           setRequested(true);
         }
         setResult(result);
-        setRequesting(false);
+        setWorking(false);
       });
-    }
-  }, [email, requesting, createPasswordReset]);
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (emailValid(email)) {
-      setRequesting(true);
     } else {
       setInvalidEmail(true);
     }
@@ -61,7 +56,7 @@ export default function ForgotPassword(props) {
             }}
             invalidFeedback={invalidEmail ? <InvalidFeedback feedback="You must enter a valid email address."/> : null}
           />
-          <Button label={props.translate("Email me reset instructions")} type="submit" working={requesting} id="button-forgot-password" />
+          <Button label={props.translate("Email me reset instructions")} type="submit" id="button-forgot-password" working={working} />
         </form>
       </>
     );

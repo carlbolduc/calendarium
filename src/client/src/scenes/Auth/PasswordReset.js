@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import {Redirect} from "react-router-dom";
 import Input from "../../components/Form/Input";
@@ -12,13 +12,14 @@ export default function PasswordReset(props) {
   const location = useLocation();
   const [newPassword, setNewPassword] = useState("");
   const [invalidNewPassword, setInvalidNewPassword] = useState(false);
-  const [requesting, setRequesting] = useState(false);
+  const [working, setWorking] = useState(false);
   const [reseted, setReseted] = useState(false);
   const [result, setResult] = useState("");
 
-  useEffect(() => {
-    if (requesting) {
-      // TODO: add password validations
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (passwordValid(newPassword)) {
+      setWorking(true);
       const query = new URLSearchParams(location.search);
       resetPassword({
         id: query.get("id"),
@@ -28,19 +29,11 @@ export default function PasswordReset(props) {
           setReseted(true);
         }
         setResult(result);
-        setRequesting(false);
+        setWorking(false);
       });
-    }
-  }, [requesting, newPassword, location.search, resetPassword])
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (passwordValid(newPassword)) {
-      setRequesting(true);
     } else {
       setInvalidNewPassword(true);
     }
-
   }
 
   const main = reseted ? (
@@ -66,13 +59,13 @@ export default function PasswordReset(props) {
           }}
           invalidFeedback={invalidNewPassword ? <InvalidFeedback feedback="Your password must be at least 8 characters long."/> : null}
         />
-        <Button label={props.translate("Reset my password")} type="submit" working={requesting} id="button-reset-password"/>
+        <Button label={props.translate("Reset my password")} type="submit" id="button-reset-password" working={working} />
       </form>
     </>
   );
 
-  // TODO: authenticated comes in as "true" before reseted becomes true, find another way to stay on the page after the reset
-  return props.authenticated && !reseted ? (
+  // Authenticated use should not see this page unless they weren't autenticated when they interracted with the form
+  return props.authenticated && newPassword === "" ? (
     <Redirect to={{pathname: "/"}}/>
   ) : (
     <article>

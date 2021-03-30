@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { useParams, Redirect } from "react-router-dom";
 import Input from "../../components/Form/Input";
@@ -12,28 +12,29 @@ export default function AcceptInvitation(props) {
   const getCalendarInvitation = props.getCalendarInvitation;
   const acceptCalendarInvitation = props.acceptCalendarInvitation;
   let { link } = useParams();
-  function useQuery() {
-    return new URLSearchParams(useLocation().search);
-  }
-  const query = useQuery();
+  const location = useLocation();
   const [password, setPassword] = useState("");
   const [invalidPassword, setInvalidPassword] = useState(false);
-  const [requesting, setRequesting] = useState(false);
+  const [working, setWorking] = useState(false);
   const [accepted, setAccepted] = useState(false);
   const [result, setResult] = useState("");
 
   useEffect(() => {
+    const query = new URLSearchParams(location.search);
     getCalendar({ link: link, calendarAccessId: query.get("id") });
-  }, [getCalendar, link, query]);
+  }, [getCalendar, link, location.search]);
 
   useEffect(() => {
     if (props.calendar.calendarId !== null) {
+      const query = new URLSearchParams(location.search);
       getCalendarInvitation({ calendarId: props.calendar.calendarId, calendarAccessId: query.get("id") });
     }
-  }, [getCalendarInvitation, props.calendar.calendarId, query]);
+  }, [getCalendarInvitation, props.calendar.calendarId, location.search]);
 
-  useEffect(() => {
-    if (requesting) {
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (props.account.accountId !== null || passwordValid(password)) {
+      setWorking(true);
       acceptCalendarInvitation({
         calendarId: props.calendarAccess.calendarId,
         calendarAccessId: props.calendarAccess.calendarAccessId,
@@ -44,16 +45,9 @@ export default function AcceptInvitation(props) {
           setAccepted(true);
         } else {
           setResult(result);
-          setRequesting(false);
+          setWorking(false);
         }
       });
-    }
-  }, [requesting, password, props.calendarAccess.calendarId, props.calendarAccess.calendarAccessId, props.calendarAccess.accountId, acceptCalendarInvitation]);
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (props.account.accountId !== null || passwordValid(password)) {
-      setRequesting(true);
     } else {
       setInvalidPassword(true);
     }
@@ -107,7 +101,7 @@ export default function AcceptInvitation(props) {
       {instructions}
       <form onSubmit={handleSubmit} id="form-accept-invitation" noValidate>
         {passwordField}
-        <Button label={props.translate("Accept the invitation")} type="submit" working={requesting} id="button-accept-invitation" />
+        <Button label={props.translate("Accept the invitation")} type="submit" id="button-accept-invitation" working={working} />
       </form>
     </>
   );

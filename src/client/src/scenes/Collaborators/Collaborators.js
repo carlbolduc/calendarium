@@ -14,7 +14,7 @@ export default function Collaborators(props) {
   const [invalidName, setInvalidName] = useState(false);
   const [email, setEmail] = useState("");
   const [invalidEmail, setInvalidEmail] = useState(false);
-  const [requesting, setRequesting] = useState(false);
+  const [working, setWorking] = useState(false);
   const [result, setResult] = useState("");
   const [messageOrigin, setMessageOrigin] = useState("");
 
@@ -22,8 +22,10 @@ export default function Collaborators(props) {
     getCollaborators(props.calendar.calendarId);
   }, [props.calendar.calendarId, getCollaborators])
 
-  useEffect(() => {
-    if (requesting) {
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (textValid(name) && emailValid(email)) {
+      setWorking(true);
       const data = (
         {
           "name": name,
@@ -33,15 +35,8 @@ export default function Collaborators(props) {
       inviteCollaborator(props.calendar.calendarId, data, result => {
         setResult(result);
         setMessageOrigin("inviteCollaborator");
-        setRequesting(false);
+        setWorking(false);
       });
-    }
-  }, [requesting, name, email, props.calendar.calendarId, inviteCollaborator]);
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (textValid(name) && emailValid(email)) {
-      setRequesting(true);
     } else {
       if (!textValid(name)) setInvalidName(true);
       if (!emailValid(email)) setInvalidEmail(true);
@@ -89,7 +84,7 @@ export default function Collaborators(props) {
         />
         <Button label={props.translate("Cancel")} id="button-cancel-invite-collaborator" type="button" dataBsToggle="collapse" dataBsTarget="#invite-collaborator" ariaExpanded="false" ariaControls="invite-collaborator" outline={true} />
         {/* TODO: disable button when nothing is entered in the form */}
-        <Button label={props.translate("Send invitation")} type="submit" working={requesting} id="button-invite" />
+        <Button label={props.translate("Send invitation")} type="submit" id="button-invite" working={working} />
       </form>
     </div>
   )
