@@ -216,7 +216,7 @@ export default function EventForm(props) {
       startTimeValid = textValid(startTime);
       if (textValid(endTime)) {
         if (startDate.day === endDate.day && startTimeValid) {
-          // Events ends on the same day that it started, endTime must be later than start time
+          // Event ends on the same day that it started, endTime must be later than start time
           const startTimeValues = getTimeValues(startTime);
           const endTimeValues = getTimeValues(endTime);
           endTimeValid = (endTimeValues.hour > startTimeValues.hour) ||
@@ -302,7 +302,6 @@ export default function EventForm(props) {
   }
 
   function processStartTime() {
-
     const startTimeValues = processTime(startTime);
     if (startTimeValues.valid) {
       const locale = getLocale(props.language);
