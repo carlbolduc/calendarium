@@ -214,7 +214,7 @@ public class SubscriptionsResource {
             case 'g': case 'h': case 'j':
                 // QC
                 taxRateDescriptions.add("GST");
-                taxRateDescriptions.add("TVQ");
+                taxRateDescriptions.add("QST");
                 break;
             case 'k': case 'l': case 'm': case 'n': case 'p':
                 // ON
