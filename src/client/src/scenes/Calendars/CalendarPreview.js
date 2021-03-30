@@ -8,8 +8,8 @@ export default function CalendarPreview(props) {
   const description = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.descriptionEn, props.calendar.descriptionFr);
 
   return (
-    <div className="col-auto">
-      <div className={`card mb-4 ${textColor(props.calendar.primaryColor)}`} style={{ width: "18rem", height: "18rem", backgroundColor: props.calendar.primaryColor }}>
+    <div className="col-12 col-md-6 col-xl-4 col-xxl-3">
+      <div className={`calendar-preview card mb-4 ${textColor(props.calendar.primaryColor)}`} style={{ backgroundColor: props.calendar.primaryColor }}>
         <h5 className="card-header">{name}</h5>
         <div className="card-body overflow-auto">
           <p className="card-text">{description}</p>
