@@ -104,7 +104,6 @@ export default function Collaborators(props) {
   }
 
   function collaborators() {
-    // TODO: format nicely and add edit options
     return (
       <div className="table-responsive">
         <table className="table">

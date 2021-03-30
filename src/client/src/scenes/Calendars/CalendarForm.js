@@ -249,7 +249,7 @@ export default function CalendarForm(props) {
               id="enable-en"
               value={enableEn}
               handleChange={e => setEnableEn(e.target.checked)}
-              info={props.translate("When this is checked, you will be able to provide English versions of content for this calendar and for its events.")}
+              info={props.translate("When this box is checked, you will be able to provide English versions of content for this calendar and for its events.")}
             />
             {englishFields}
           </div>
@@ -259,7 +259,7 @@ export default function CalendarForm(props) {
               id="enable-fr"
               value={enableFr}
               handleChange={e => setEnableFr(e.target.checked)}
-              info={props.translate("When this is checked, you will be able to provide French versions of content for this calendar and for its events.")}
+              info={props.translate("When this box is checked, you will be able to provide French versions of content for this calendar and for its events.")}
             />
             {frenchFields}
           </div>
@@ -280,7 +280,6 @@ export default function CalendarForm(props) {
               id="input-primary-color"
               value={primaryColor}
               handleChange={e => setPrimaryColor(e.target.value)}
-              // TODO: include in the info text where the primary color is used in the calendar (TBD when the calendar display will be done)
               info={props.translate("Select a primary color for this calendar.")}
             />
             <Input
@@ -289,7 +288,6 @@ export default function CalendarForm(props) {
               id="input-secondary-color"
               value={secondaryColor}
               handleChange={e => setSecondaryColor(e.target.value)}
-              // TODO: include in the info text where the secondary color is used in the calendar (TBD when the calendar display will be done)
               info={props.translate("Select a secondary color for this calendar.")}
             />
           </div>
@@ -312,7 +310,7 @@ export default function CalendarForm(props) {
           value={embedCalendar}
           required={false}
           handleChange={e => setEmbedCalendar(e.target.checked)}
-          info={props.translate("When this is checked, this calendar will become embeddable in any other website. You can uncheck this at any time and the calendar will no longer be embeddable.")}
+          info={props.translate("When this box is checked, this calendar will become embeddable in any other website. You can uncheck this at any time and the calendar will no longer be embeddable.")}
         />
         <Checkbox
           label={props.translate("Make this calendar publicly available")}
@@ -320,7 +318,7 @@ export default function CalendarForm(props) {
           value={publicCalendar}
           required={false}
           handleChange={e => setPublicCalendar(e.target.checked)}
-          info={props.translate("When this is checked, this calendar will appear in the section Public calendars, anyone will be able to view its events, and it will be indexed by search engines. You can uncheck this at any time and the calendar will no longer be included in Public calendars, but a cache may remain in search engines.")}
+          info={props.translate("When this box is checked, this calendar will appear in the section Public calendars, anyone will be able to view its events, and it will be indexed by search engines. You can uncheck this at any time and the calendar will no longer be included in Public calendars, but a cache may remain in search engines.")}
         />
         <Checkbox
           label={props.translate("Require my approval to publish collaborators' events")}
@@ -328,7 +326,7 @@ export default function CalendarForm(props) {
           value={eventApprovalRequired}
           required={false}
           handleChange={e => setEventApprovalRequired(e.target.checked)}
-          info={props.translate("When this is checked, you will need to approve all events created by collaborators that you have invited to this calendar. You can uncheck this at any time to remove the restriction.")}
+          info={props.translate("When this box is checked, you will need to approve all events created by collaborators that you have invited to this calendar. You can uncheck this at any time to remove the restriction.")}
         />
         <Button label={props.translate("Cancel")} id="button-cancel" onClick={() => setShowCalendarForm(false)} outline={true} />
         <Button label={props.translate(submitButton)} type="submit" id="button-save" working={working} />
