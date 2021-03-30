@@ -68,7 +68,7 @@ export default function Event(props) {
   function classNames() {
     const classNames = ["card", "mb-3"];
     if (wantToDelete) {
-      classNames.push("border-danger");
+      classNames.push("border-danger border-2");
     } else {
       switch (props.event.status) {
         case eventStatus.DRAFT.value:
