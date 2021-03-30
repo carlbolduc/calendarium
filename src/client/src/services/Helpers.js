@@ -4,6 +4,11 @@ export function textValid(text) {
   return text !== "";
 }
 
+export function linkValid(text) {
+  const re = /^[a-z0-9-]+$/i;
+  return text.match(re);
+}
+
 export function emailValid(email) {
   const re = /^\S+@\S+[.][0-9a-z]+$/;
   return re.test(email);

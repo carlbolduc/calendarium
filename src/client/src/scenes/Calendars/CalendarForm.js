@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 import Input from "../../components/Form/Input";
 import Button from "../../components/Form/Button";
-import { textValid } from "../../services/Helpers";
+import { textValid, linkValid } from "../../services/Helpers";
 import Checkbox from "../../components/Form/Checkbox";
 import Select from "../../components/Form/Select";
 import Textarea from "../../components/Form/Textarea";
@@ -45,11 +45,11 @@ export default function CalendarForm(props) {
       enableEn: enableEn,
       nameEn: nameEn === "" ? null : nameEn,
       descriptionEn: descriptionEn,
-      linkEn: linkEn === "" ? null : linkEn,
+      linkEn: linkEn === "" || linkEn === null ? null : linkEn.replace(/-*$/, "").toLowerCase(),
       enableFr: enableFr,
       nameFr: nameFr === "" ? null : nameFr,
       descriptionFr: descriptionFr,
-      linkFr: linkFr === "" ? null : linkFr,
+      linkFr: linkFr === "" || linkFr === null ? null : linkFr.replace(/-*$/, "").toLowerCase(),
       startWeekOn: startWeekOn,
       primaryColor: primaryColor,
       secondaryColor: secondaryColor,
@@ -78,18 +78,18 @@ export default function CalendarForm(props) {
   function handleSubmit(e) {
     e.preventDefault();
     let canSubmit = false;
-    const enValid = textValid(nameEn) && textValid(descriptionEn) && textValid(linkEn);
-    const frValid = textValid(nameFr) && textValid(descriptionFr) && textValid(linkFr);
+    const enValid = textValid(nameEn) && textValid(descriptionEn) && linkValid(linkEn);
+    const frValid = textValid(nameFr) && textValid(descriptionFr) && linkValid(linkFr);
     if (enableEn && enableFr) {
       if (enValid && frValid) {
         canSubmit = true;
       } else {
         if (!textValid(nameEn)) setInvalidNameEn(true);
         if (!textValid(descriptionEn)) setInvalidDescriptionEn(true);
-        if (!textValid(linkEn)) setInvalidLinkEn(true);
+        if (!linkValid(linkEn)) setInvalidLinkEn(true);
         if (!textValid(nameFr)) setInvalidNameFr(true);
         if (!textValid(descriptionFr)) setInvalidDescriptionFr(true);
-        if (!textValid(linkFr)) setInvalidLinkFr(true);
+        if (!linkValid(linkFr)) setInvalidLinkFr(true);
       }
     } else if (enableEn) {
       if (enValid) {
@@ -97,7 +97,7 @@ export default function CalendarForm(props) {
       } else {
         if (!textValid(nameEn)) setInvalidNameEn(true);
         if (!textValid(descriptionEn)) setInvalidDescriptionEn(true);
-        if (!textValid(linkEn)) setInvalidLinkEn(true);
+        if (!linkValid(linkEn)) setInvalidLinkEn(true);
       }
     } else if (enableFr) {
       if (frValid) {
@@ -105,7 +105,7 @@ export default function CalendarForm(props) {
       } else {
         if (!textValid(nameFr)) setInvalidNameFr(true);
         if (!textValid(descriptionFr)) setInvalidDescriptionFr(true);
-        if (!textValid(linkFr)) setInvalidLinkFr(true);
+        if (!linkValid(linkFr)) setInvalidLinkFr(true);
       }
     } else {
       setNoLanguageEnabled(true);
@@ -179,7 +179,7 @@ export default function CalendarForm(props) {
           setLinkEn(e.target.value);
           setInvalidLinkEn(false);
         }}
-        invalidFeedback={invalidLinkEn ? <InvalidFeedback feedback={props.translate("You must enter a link.")} /> : null}
+        invalidFeedback={invalidLinkEn ? <InvalidFeedback feedback={props.translate("You must enter a valid link (only letters, numbers, or dashes).")} /> : null}
       />
     </>
   ) : null;
