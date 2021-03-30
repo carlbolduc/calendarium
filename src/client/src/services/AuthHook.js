@@ -71,10 +71,7 @@ export function useAuth() {
       });
   }, [saveToken]);
 
-  function signOut(e) {
-    if (e) {
-      e.preventDefault();
-    }
+  function signOut() {
     localStorage.removeItem("token");
     setToken(null);
   }

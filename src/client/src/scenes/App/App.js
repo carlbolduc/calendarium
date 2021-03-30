@@ -38,6 +38,7 @@ export default function App() {
   } = useAuth();
   const { languages, language, translate } = useLoc(account);
   const { customerCreated, subscribed, createCustomer, createSubscription, cancelSubscription, reactivateSubscription } = useSubscription(token, account, getAccount);
+  const { events, setEvents, createEvent, updateEvent, deleteEvent, searchEvents, clearEvents } = useEvent(token);
   const {
     calendars,
     calendar,
@@ -48,16 +49,22 @@ export default function App() {
     createCalendar,
     updateCalendar,
     deleteCalendar,
-    calendarEvents,
     getCalendarEvents,
-    clearCalendarEvents,
-  } = useCalendar(token, subscribed);
-  const { events, createEvent, updateEvent, deleteEvent, searchEvents } = useEvent(token);
+    clearCalendar
+  } = useCalendar(token, subscribed, setEvents);
   const { collaborators, calendarAccess, getCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation, deactivateCalendarAccess, activateCalendarAccess } = useCollaborator(token, saveToken);
 
   const switchLanguage = useCallback((languageId) => {
     updateAccount({ languageId: languageId });
   }, [updateAccount]);
+
+  function signOutAndClearData(cb) {
+    signOut();
+    clearCalendars();
+    clearCalendar();
+    clearEvents();
+    cb();
+  }
 
   return (
     <Router>
@@ -66,7 +73,7 @@ export default function App() {
           <Embed
             calendar={calendar}
             getCalendar={getCalendar}
-            calendarEvents={calendarEvents}
+            events={events}
             getCalendarEvents={getCalendarEvents}
             languages={languages}
             language={language}
@@ -81,7 +88,7 @@ export default function App() {
               languageId={account.languageId}
               authenticated={authenticated}
               translate={translate}
-              signOut={signOut}
+              signOut={signOutAndClearData}
               switchLanguage={switchLanguage}
             />
           </header>
@@ -186,9 +193,7 @@ export default function App() {
                   subscribed={subscribed}
                   updateCalendar={updateCalendar}
                   deleteCalendar={deleteCalendar}
-                  calendarEvents={calendarEvents}
                   getCalendarEvents={getCalendarEvents}
-                  clearCalendarEvents={clearCalendarEvents}
                   createEvent={createEvent}
                   updateEvent={updateEvent}
                   deleteEvent={deleteEvent}

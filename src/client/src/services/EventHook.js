@@ -115,5 +115,9 @@ export function useEvent(token) {
     }
   }, [token]);
 
-  return { events, getEvents, createEvent, updateEvent, deleteEvent, searchEvents };
+  function clearEvents() {
+    setEvents([]);
+  }
+
+  return { events, setEvents, getEvents, createEvent, updateEvent, deleteEvent, searchEvents, clearEvents };
 }

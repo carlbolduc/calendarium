@@ -2,10 +2,13 @@ import { useCallback, useState } from "react";
 import axios from "axios";
 import { errorCallback } from "./Helpers";
 
-export function useCalendar(token, subscribed) {
+export function useCalendar(token, subscribed, setEvents) {
   const [calendars, setCalendars] = useState([]);
-  const [calendar, setCalendar] = useState({ calendarId: null, enableEn: false, enableFr: false, eventApprovalRequired: true });
-  const [calendarEvents, setCalendarEvents] = useState([]);
+  const [calendar, setCalendar] = useState(emptyCalendar());
+
+  function emptyCalendar() {
+    return { calendarId: null, enableEn: false, enableFr: false, eventApprovalRequired: true };
+  }
 
   const getCalendars = useCallback(() => {
     if (token !== null) {
@@ -174,16 +177,16 @@ export function useCalendar(token, subscribed) {
       headers: headers,
       url: `${process.env.REACT_APP_API}${route}/events?q=${q}`,
     }).then(res => {
-      setCalendarEvents(res.data);
+      setEvents(res.data);
     }).catch(err => {
       console.log("THIS SHOULD NEVER HAPPEN, error in 'getCalendarEvents' from 'useCalendar' hook");
       console.log(err.response);
     });
-  }, [token]);
+  }, [token, setEvents]);
 
-  function clearCalendarEvents() {
-    setCalendarEvents([]);
+  function clearCalendar() {
+    setCalendar(emptyCalendar());
   }
 
-  return { calendars, calendar, getCalendars, getPublicCalendars, clearCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, calendarEvents, getCalendarEvents, clearCalendarEvents };
+  return { calendars, calendar, getCalendars, getPublicCalendars, clearCalendars, getCalendar, createCalendar, updateCalendar, deleteCalendar, getCalendarEvents, clearCalendar };
 }

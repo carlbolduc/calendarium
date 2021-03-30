@@ -75,7 +75,7 @@ export default function Embed(props) {
           </div>
           <div className="col-12 col-md">
             <EventsList
-              events={props.calendarEvents}
+              events={props.events}
               noEventsMessage={props.translate("There are no events on or after the selected date.")}
               account={props.account}
               calendar={props.calendar}
@@ -102,7 +102,7 @@ export default function Embed(props) {
 Embed.propTypes = {
   calendar: PropTypes.object.isRequired,
   getCalendar: PropTypes.func.isRequired,
-  calendarEvents: PropTypes.array.isRequired,
+  events: PropTypes.array.isRequired,
   getCalendarEvents: PropTypes.func.isRequired,
   languages: PropTypes.array.isRequired,
   language: PropTypes.string.isRequired,
