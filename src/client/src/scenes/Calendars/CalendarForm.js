@@ -34,7 +34,7 @@ export default function CalendarForm(props) {
   const [secondaryColor, setSecondaryColor] = useState(props.new ? "#ffffff" : props.calendar.secondaryColor);
   const [embedCalendar, setEmbedCalendar] = useState(props.new ? false : props.calendar.embedCalendar);
   const [publicCalendar, setPublicCalendar] = useState(props.new ? false : props.calendar.publicCalendar);
-  const [requesting, setRequesting] = useState(false);
+  const [working, setWorking] = useState(false);
   const [eventApprovalRequired, setEventApprovalRequired] = useState(props.new ? true : props.calendar.eventApprovalRequired);
   const [noLanguageEnabled, setNoLanguageEnabled] = useState(false);
   const [currentDay, setCurrentDay] = useState(DateTime.now());
@@ -59,30 +59,6 @@ export default function CalendarForm(props) {
   }, [enableEn, nameEn, descriptionEn, linkEn, enableFr, nameFr, descriptionFr, linkFr, startWeekOn, primaryColor, secondaryColor, embedCalendar, publicCalendar, eventApprovalRequired])
 
   useEffect(() => {
-    if (requesting) {
-      // Name and link must be unique, set them to null if they are an empty string
-      const calendar = buildCalendar();
-      if (props.new) {
-        createCalendar(calendar, result => {
-          setResult(result);
-          setRequesting(false);
-          if (result.success) {
-            setShowCalendarForm(false);
-          }
-        });
-      } else {
-        updateCalendar(props.calendar.calendarId, calendar, result => {
-          setResult(result);
-          setRequesting(false);
-          if (result.success) {
-            setShowCalendarForm(false);
-          }
-        });
-      }
-    }
-  }, [requesting, buildCalendar, props.calendar.calendarId, props.new, createCalendar, updateCalendar, setResult, setShowCalendarForm]);
-
-  useEffect(() => {
     if (enableEn || enableFr) {
       setNoLanguageEnabled(false);
     }
@@ -100,11 +76,12 @@ export default function CalendarForm(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
+    let canSubmit = false;
     const enValid = textValid(nameEn) && textValid(descriptionEn) && textValid(linkEn);
     const frValid = textValid(nameFr) && textValid(descriptionFr) && textValid(linkFr);
     if (enableEn && enableFr) {
       if (enValid && frValid) {
-        setRequesting(true);
+        canSubmit = true;
       } else {
         if (!textValid(nameEn)) setInvalidNameEn(true);
         if (!textValid(descriptionEn)) setInvalidDescriptionEn(true);
@@ -115,7 +92,7 @@ export default function CalendarForm(props) {
       }
     } else if (enableEn) {
       if (enValid) {
-        setRequesting(true);
+        canSubmit = true;
       } else {
         if (!textValid(nameEn)) setInvalidNameEn(true);
         if (!textValid(descriptionEn)) setInvalidDescriptionEn(true);
@@ -123,7 +100,7 @@ export default function CalendarForm(props) {
       }
     } else if (enableFr) {
       if (frValid) {
-        setRequesting(true);
+        canSubmit = true;
       } else {
         if (!textValid(nameFr)) setInvalidNameFr(true);
         if (!textValid(descriptionFr)) setInvalidDescriptionFr(true);
@@ -131,6 +108,28 @@ export default function CalendarForm(props) {
       }
     } else {
       setNoLanguageEnabled(true);
+    }
+    if (canSubmit) {
+      setWorking(true);
+      // Name and link must be unique, set them to null if they are an empty string
+      const calendar = buildCalendar();
+      if (props.new) {
+        createCalendar(calendar, result => {
+          setResult(result);
+          setWorking(false);
+          if (result.success) {
+            setShowCalendarForm(false);
+          }
+        });
+      } else {
+        updateCalendar(props.calendar.calendarId, calendar, result => {
+          setResult(result);
+          setWorking(false);
+          if (result.success) {
+            setShowCalendarForm(false);
+          }
+        });
+      }
     }
   }
 
@@ -340,7 +339,7 @@ export default function CalendarForm(props) {
           info={props.translate("When this is checked, you will need to approve all events created by collaborators that you have invited to this calendar. You can uncheck this at any time to remove the restriction.")}
         />
         <Button label={props.translate("Cancel")} id="button-cancel" onClick={() => setShowCalendarForm(false)} outline={true} />
-        <Button label={props.translate(submitButton)} type="submit" working={requesting} id="button-save" />
+        <Button label={props.translate(submitButton)} type="submit" id="button-save" working={working} />
       </form>
     </>
   );

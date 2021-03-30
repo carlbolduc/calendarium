@@ -48,27 +48,15 @@ export default function EventsSearch(props) {
       searchEvents(q);
     }
   }, [initialLoad, buildQuery, searchEvents]);
-  
-  const executeSearch = useCallback(() => {
-    if (working) {
-      const q = buildQuery();
-      searchEvents(q, () => {
-        setWorking(false);
-        setCanSearch(false);
-      });
-    }
-  }, [working, buildQuery, searchEvents]);
-
-  useEffect(() => {
-    if (working) {
-      // Build query param with currentDay
-      executeSearch();
-    }
-  }, [working, executeSearch]);
 
   function handleSubmit(e) {
     e.preventDefault();
     setWorking(true);
+    const q = buildQuery();
+    searchEvents(q, () => {
+      setWorking(false);
+      setCanSearch(false);
+    });
   }
 
   const sendForApproval = useCallback((event) => {
@@ -209,9 +197,9 @@ export default function EventsSearch(props) {
   const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
   const title = `${props.translate("Events of")} ${calendarName}`;
   const searchButton = canSearch ? (
-    <Button label="Search" type="submit" working={working} id="button-search" />
+    <Button label="Search" type="submit" id="button-search" working={working} />
   ) : (
-    <Button label="Search" type="submit" working={working} id="button-search" disabled={true} />
+    <Button label="Search" type="submit" id="button-search" working={working} disabled={true} />
   );
 
   return (
