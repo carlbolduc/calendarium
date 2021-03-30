@@ -34,13 +34,13 @@ export default function Event(props) {
       if (props.event.allDay) {
         result = startAt.setLocale(locale).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY);
       } else {
-        result = `${startAt.setLocale(locale).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}, ${startAt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE)} - ${endAt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE)}`;
+        result = `${startAt.setLocale(locale).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}, ${startAt.setLocale(locale).toLocaleString(DateTime.TIME_SIMPLE)} - ${endAt.setLocale(locale).toLocaleString(DateTime.TIME_SIMPLE)}`;
       }
     } else {
       if (props.event.allDay) {
         result = `${startAt.setLocale(locale).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)} - ${endAt.setLocale(locale).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}`;
       } else {
-        result = `${startAt.setLocale(locale).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)} ${startAt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE)} - ${endAt.setLocale(locale).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)} ${endAt.setLocale(getLocale(props.language)).toLocaleString(DateTime.TIME_SIMPLE)}`;
+        result = `${startAt.setLocale(locale).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}, ${startAt.setLocale(locale).toLocaleString(DateTime.TIME_SIMPLE)} - ${endAt.setLocale(locale).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)}, ${endAt.setLocale(locale).toLocaleString(DateTime.TIME_SIMPLE)}`;
       }
     }
     return result;
