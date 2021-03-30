@@ -363,7 +363,7 @@ export default function Calendar(props) {
           </h1>
           <Message result={result} origin={messageOrigin} translate={props.translate} />
           {actionButtonsZone}
-          <div>
+          <div id="calendar-description">
             {decideWhatToDisplay(
               props.language,
               props.calendar.enableEn,
@@ -386,8 +386,7 @@ export default function Calendar(props) {
                 />
               </div>
               <div className="col-12 col-md">
-                <h2>Events</h2>
-                {calendarEvents}
+                {calendarEvents.length === 0 ? props.translate("There are no events on or after the selected date.") : calendarEvents}
               </div>
             </div>
           </div>

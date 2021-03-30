@@ -87,8 +87,7 @@ export default function Embed(props) {
             />
           </div>
           <div className="col-12 col-md">
-            <h2>Events</h2>
-            {calendarEvents}
+            {calendarEvents.length === 0 ? props.translate("There are no events on or after the selected date.") : calendarEvents}
           </div>
         </div>
       );

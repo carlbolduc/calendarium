@@ -24,6 +24,11 @@ h1 {
   margin-bottom: 1.5rem !important;
 }
 
+// Use bold for headers
+h1, h2, h5 {
+  font-weight: 700;
+}
+
 // Set the cursor to a pointer on anchors even when no href
 a {
   cursor: pointer;
@@ -41,12 +46,12 @@ a {
   cursor: pointer;
   display: inline;
 }
-
 .link-button:hover,
 .link-button:focus {
   text-decoration: none;
 }
 
+// Set the calendar preview card height to the same regardless of browser width
 .calendar-preview {
   height: 18rem;
 }
@@ -57,4 +62,9 @@ a {
   border: 1px solid #ced4da;
   border-radius: 0.25rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+// This makes the calendar description bigger in the calendar details page
+#calendar-description {
+  font-size: larger;
 }
