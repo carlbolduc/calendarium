@@ -4,6 +4,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +17,7 @@ import io.dropwizard.auth.Auth;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -81,9 +83,21 @@ public class CalendarsResource {
     // TODO: add validation if calendar created correctly, and return a response that matches this result
     // TODO: when above todo is done, add appropriate messages in Message.js and show it in MyCalendars.js
     public Response createCalendar(@Auth Account auth, Calendar calendar) {
-        long calendarId = dao.insertCalendar(auth.getAccountId(), calendar);
-        dao.insertCalendarAccess(auth.getAccountId(), calendarId, CalendarAccessStatus.OWNER.getStatus());
-        return Response.noContent().build();
+        Response response = Response.status(Status.CONFLICT).build();
+        List<String> reservedWords = Arrays.asList("embed", "sign-in", "sign-up", "forgot-password", "password-reset", "profile", "subscription", "my-calendars", "public-calendars");
+        if (
+            (calendar.getEnableEn() != null && !reservedWords.contains(calendar.getLinkEn())) &&
+            (calendar.getEnableFr() != null && !reservedWords.contains(calendar.getLinkFr()))
+        ) {
+            try {
+                long calendarId = dao.insertCalendar(auth.getAccountId(), calendar);
+                dao.insertCalendarAccess(auth.getAccountId(), calendarId, CalendarAccessStatus.OWNER.getStatus());
+                response = Response.noContent().build();
+            } catch (Exception e) {
+                // Unique constraint will cause insert to fail
+            }
+        }
+        return response;
     }
 
     @PUT

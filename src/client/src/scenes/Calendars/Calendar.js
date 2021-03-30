@@ -87,7 +87,6 @@ export default function Calendar(props) {
       updateCalendar={props.updateCalendar}
       deleteCalendar={props.deleteCalendar}
       setShowCalendarForm={setShowCalendarForm}
-      setResult={setResult}
     />
   );
 

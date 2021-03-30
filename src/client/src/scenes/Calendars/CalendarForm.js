@@ -9,11 +9,11 @@ import Textarea from "../../components/Form/Textarea";
 import ReadOnlyIframe from "../../components/Form/ReadOnlyIframe";
 import Month from "./Month";
 import { DateTime } from "luxon";
+import Message from "../../components/Form/Message";
 
 export default function CalendarForm(props) {
   const createCalendar = props.createCalendar;
   const updateCalendar = props.updateCalendar;
-  const setResult = props.setResult;
   const setShowCalendarForm = props.setShowCalendarForm;
   const [enableEn, setEnableEn] = useState(props.new ? false : props.calendar.enableEn);
   const [nameEn, setNameEn] = useState(props.new ? "" : props.calendar.nameEn);
@@ -38,6 +38,7 @@ export default function CalendarForm(props) {
   const [eventApprovalRequired, setEventApprovalRequired] = useState(props.new ? true : props.calendar.eventApprovalRequired);
   const [noLanguageEnabled, setNoLanguageEnabled] = useState(false);
   const [currentDay, setCurrentDay] = useState(DateTime.now());
+  const [result, setResult] = useState("");
 
   const buildCalendar = useCallback(() => {
     return {
@@ -240,6 +241,7 @@ export default function CalendarForm(props) {
   return (
     <article>
       <h1>{props.translate(title)}</h1>
+      <Message result={result} origin={"calendarForm"} translate={props.translate} />
       <form onSubmit={handleSubmit} id="form-new-calendar" noValidate>
         {noLanguageEnabled ? <InvalidFeedback feedback={props.translate("You must enable at least one language.")} /> : null}
         <div className="row mb-3">
