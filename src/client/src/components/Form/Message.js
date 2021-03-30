@@ -71,6 +71,7 @@ export default function Message(props) {
       messages.set("publishEvent401","You are not authorised to publish this event. If you think this is wrong, contact us and we'll fix the situation.");
       messages.set("publishEvent404","We couldn't find the event you are trying to publish. It may have already been deleted by someone else. If you think this is wrong, contact us in the grove.");
       messages.set("inviteCollaborator409","This person is already a collaborator on the calendar, we cannot invite them again.");
+      messages.set("calendarForm409","The customised link you've entered cannot be saved. It may be already used by another calendar, or it is a reserved word. Enter another customised link and try saving again.");
 
       // manage the unexpected errors
       let message = messages.get(props.origin + props.result.errorCode);
