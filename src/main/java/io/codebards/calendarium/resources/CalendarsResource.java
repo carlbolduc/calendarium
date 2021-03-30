@@ -80,8 +80,6 @@ public class CalendarsResource {
 
     @POST
     @RolesAllowed({ "SUBSCRIBER" })
-    // TODO: add validation if calendar created correctly, and return a response that matches this result
-    // TODO: when above todo is done, add appropriate messages in Message.js and show it in MyCalendars.js
     public Response createCalendar(@Auth Account auth, Calendar calendar) {
         Response response = Response.status(Status.CONFLICT).build();
         List<String> reservedWords = Arrays.asList("embed", "sign-in", "sign-up", "forgot-password", "password-reset", "profile", "subscription", "my-calendars", "public-calendars");
