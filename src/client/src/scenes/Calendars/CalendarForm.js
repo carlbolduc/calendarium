@@ -247,7 +247,7 @@ export default function CalendarForm(props) {
     <>
       <h1>{props.translate(title)}</h1>
       <form onSubmit={handleSubmit} id="form-new-calendar" noValidate>
-        {noLanguageEnabled ? <InvalidFeedback feedback={props.translate("Enable at least one language.")} /> : null}
+        {noLanguageEnabled ? <InvalidFeedback feedback={props.translate("You must enable at least one language.")} /> : null}
         <div className="row mb-3">
           <div className="col-12 col-md-6">
             <Checkbox

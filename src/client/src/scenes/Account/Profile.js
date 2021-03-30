@@ -93,7 +93,7 @@ export default function Profile(props) {
             setName(e.target.value);
             setInvalidName(false);
           }}
-          invalidFeedback={invalidName ? <InvalidFeedback feedback="You must enter a name." /> : null}
+          invalidFeedback={invalidName ? <InvalidFeedback feedback={props.translate("You must enter a name.")} /> : null}
         />
         <Input
           label={props.translate("Email")}
@@ -106,7 +106,7 @@ export default function Profile(props) {
             setEmail(e.target.value);
             setInvalidEmail(false);
           }}
-          invalidFeedback={invalidEmail ? <InvalidFeedback feedback="You must enter a valid email address." /> : null}
+          invalidFeedback={invalidEmail ? <InvalidFeedback feedback={props.translate("You must enter a valid email address.")} /> : null}
         />
         <Input
           label={props.translate("Current password")}
@@ -120,7 +120,7 @@ export default function Profile(props) {
             setCurrentPassword(e.target.value);
             setInvalidCurrentPassword(false);
           }}
-          invalidFeedback={invalidCurrentPassword ? <InvalidFeedback feedback="Your existing password must be provided when you want to update it." /> : null}
+          invalidFeedback={invalidCurrentPassword ? <InvalidFeedback feedback={props.translate("Your existing password must be provided when you want to update it.")} /> : null}
         />
         <Input
           label={props.translate("New password")}
@@ -133,7 +133,7 @@ export default function Profile(props) {
             setNewPassword(e.target.value);
             setInvalidNewPassword(false);
           }}
-          invalidFeedback={invalidNewPassword ? <InvalidFeedback feedback="Your new password must be at least 8 characters long." /> : null}
+          invalidFeedback={invalidNewPassword ? <InvalidFeedback feedback={props.translate("Your new password must be at least 8 characters long.")} /> : null}
         />
         {memberSince}
         <Button label={props.translate("Save")} type="submit" disabled={name === props.account.name && email === props.account.email && newPassword === ""} id="button-save" working={working} />

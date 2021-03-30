@@ -53,7 +53,7 @@ export default function SignIn(props) {
             setEmail(e.target.value);
             setInvalidEmail(false);
           }}
-          invalidFeedback={invalidEmail ? <InvalidFeedback feedback="You must enter a valid email address." /> : null}
+          invalidFeedback={invalidEmail ? <InvalidFeedback feedback={props.translate("You must enter a valid email address.")} /> : null}
         />
         <Input
           label={props.translate("Password")}
@@ -66,7 +66,7 @@ export default function SignIn(props) {
             setPassword(e.target.value);
             setInvalidPassword(false);
           }}
-          invalidFeedback={invalidPassword ? <InvalidFeedback feedback="Your password must be at least 8 characters long." /> : null}
+          invalidFeedback={invalidPassword ? <InvalidFeedback feedback={props.translate("Your password must be at least 8 characters long.")} /> : null}
         />
         <Button label={props.translate("Sign in")} type="submit" id="button-sign-in" working={working} />
       </form>

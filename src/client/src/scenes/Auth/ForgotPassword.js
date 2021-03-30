@@ -54,7 +54,7 @@ export default function ForgotPassword(props) {
               setEmail(e.target.value);
               setInvalidEmail(false);
             }}
-            invalidFeedback={invalidEmail ? <InvalidFeedback feedback="You must enter a valid email address."/> : null}
+            invalidFeedback={invalidEmail ? <InvalidFeedback feedback={props.translate("You must enter a valid email address.")} /> : null}
           />
           <Button label={props.translate("Email me reset instructions")} type="submit" id="button-forgot-password" working={working} />
         </form>

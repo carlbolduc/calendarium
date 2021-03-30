@@ -62,7 +62,7 @@ export default function SignUp(props) {
                 setName(e.target.value);
                 setInvalidName(false);
               }}
-              invalidFeedback={invalidName ? <InvalidFeedback feedback="You must enter a name."/> : null}
+              invalidFeedback={invalidName ? <InvalidFeedback feedback={props.translate("You must enter a name.")} /> : null}
             />
             <Input
               label={props.translate("Email")}
@@ -75,7 +75,7 @@ export default function SignUp(props) {
                 setEmail(e.target.value);
                 setInvalidEmail(false);
               }}
-              invalidFeedback={invalidEmail ? <InvalidFeedback feedback="You must enter a valid email address."/> : null}
+              invalidFeedback={invalidEmail ? <InvalidFeedback feedback={props.translate("You must enter a valid email address.")} /> : null}
             />
             <Input
               label={props.translate("Password")}
@@ -88,7 +88,7 @@ export default function SignUp(props) {
                 setPassword(e.target.value);
                 setInvalidPassword(false);
               }}
-              invalidFeedback={invalidPassword ? <InvalidFeedback feedback="Your password must be at least 8 characters long."/> : null}
+              invalidFeedback={invalidPassword ? <InvalidFeedback feedback={props.translate("Your password must be at least 8 characters long.")} /> : null}
             />
             <div className="row">
               <div className="col-sm-auto col-12 pe-sm-0">
@@ -101,7 +101,7 @@ export default function SignUp(props) {
                     setTermsConditions(e.target.checked);
                     setInvalidTermsAndConditions(false);
                   }}
-                  invalidFeedback={invalidTermsAndConditions ? <InvalidFeedback feedback="You must agree before submitting."/> : null}
+                  invalidFeedback={invalidTermsAndConditions ? <InvalidFeedback feedback={props.translate("You must agree to the terms of service.")} /> : null}
                 />
               </div>
               <div className="col-sm col-12 ps-sm-0">
