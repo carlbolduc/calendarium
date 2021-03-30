@@ -31,7 +31,7 @@ export default function Header(props) {
         <button className="link-button navbar-brand" onClick={e => goTo(e, "/")}>
           <img src="/img/logo.png" alt="Calendarium logo" height="24" className="d-inline-block align-text-top"/> Calendarium
         </button>
-        <button className="navbar-toggler shadow-none" data-bs-toggle="collapse" data-bs-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <button className="navbar-toggler shadow-none" data-bs-toggle="collapse" data-bs-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label={props.translate("Toggle navigation")}>
           <span className="navbar-toggler-icon" />
         </button>
         <div className="collapse navbar-collapse" id="main-navbar">

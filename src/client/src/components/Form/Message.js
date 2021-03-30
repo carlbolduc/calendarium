@@ -29,7 +29,7 @@ export default function Message(props) {
       result = message !== undefined ? (
         <div className="alert alert-success alert-dismissible fade show my-4" role="alert">
           {props.translate(message)}
-          <button type="button" className="btn-close" aria-label="Close" onClick={e => {
+          <button type="button" className="btn-close" aria-label={props.translate("Close")} onClick={e => {
             e.preventDefault();
             setShow(false);
           }} />
@@ -79,7 +79,7 @@ export default function Message(props) {
       result = (
         <div className="alert alert-danger alert-dismissible fade show my-4" role="alert">
           {props.translate(message)}
-          <button type="button" className="btn-close" aria-label="Close" onClick={e => {
+          <button type="button" className="btn-close" aria-label={props.translate("Close")} onClick={e => {
             e.preventDefault();
             setShow(false);
           }} />
