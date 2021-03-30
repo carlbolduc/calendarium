@@ -60,10 +60,9 @@ export default function SubscribeForm(props) {
   };
 
   return (
-    // TODO: use {props.translate("")} for text visible in the app
     <form onSubmit={handleSubmit} id="form-subscribe">
-      <p>You're ready for Calendarium unlimited! Enter your payment info below.</p>
-      <h5>Credit card details</h5>
+      <p>{props.translate("You're ready for Calendarium unlimited! Enter your payment info below.")}</p>
+      <h5>{props.translate("Credit card details")}</h5>
       <div className="row mb-3">
         <div className="col">
           <div className="card-element mt-3">
@@ -78,8 +77,8 @@ export default function SubscribeForm(props) {
       </div>
       <Button label={props.translate("Cancel")} type="button" id="button-cancel" onClick={props.cancel} outline={true} />
       <Button label={props.translate("Subscribe")} type="submit" id="button-subscribe" working={working} disabled={!stripe} />
-      <p><span className="fw-bold">You will be charged $600 CAD now, plus any applicable* sales taxes</span>, and then each year until you cancel your subscription.</p>
-      <small className="fst-italic">*We currently charge sales taxes only to Canadian customers.</small>
+      <p><span className="fw-bold">{props.translate("You will be charged $600 CAD now, plus any applicable* sales taxes")}</span>, {props.translate("and then each year until you cancel your subscription.")}</p>
+      <small className="fst-italic">{props.translate("*We currently charge sales taxes only to Canadian customers.")}</small>
     </form>
   );
 };

@@ -57,16 +57,15 @@ export default function AcceptInvitation(props) {
   const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
   const title = `${props.translate("Invitation to collaborate to")} ${calendarName}`;
 
-  //TODO: think about this copy, then add props.translate
   const instructions = props.account.accountId !== null ? (
     <>
-      <p>You have been invited to collaborate to a calendar. Accept the invitation to get started.</p>
+      <p>{props.translate("You have been invited to collaborate to a calendar. Accept the invitation to get started and view this calendar in My calendars.")}</p>
     </>
   ) : (
     <>
-      <h5>Welcome to Calendarium.</h5>
-      <p>You have been invited to collaborate to a calendar. The email associated with your account is the email at which you receive your invitation. If you want to change it, you will be able to do so later in your account profile.</p>
-      <p>To complete your account creation, enter a password for your account, then accept the invitation to get started.</p>
+      <h5>{props.translate("Welcome to Calendarium.")}</h5>
+      <p>{props.translate("You have been invited to collaborate to a calendar. The email associated with your account is the email at which you receive your invitation. If you want to change it, you will be able to do so later in your account profile.")}</p>
+      <p>{props.translate("To complete your account creation, enter a password for your account, then accept the invitation to get started.")}</p>
     </>
   );
 
@@ -88,9 +87,9 @@ export default function AcceptInvitation(props) {
   // If user is signed in on a different account, don't show invitation
   const main = props.account.accountId !== null && props.calendarAccess.accountId !== props.account.accountId ? (
     <>
-      <h1>Calendar invitation for someone else</h1>
-      <p>You have clicked on a calendar invitation that was sent to an email address different than the one you are currently signed in with.</p>
-      <p>If you think this is an error, <a href="mailto:grove@codebards.io">contact us in the grove</a>.</p>
+      <h1>{props.translate("Calendar invitation for someone else")}</h1>
+      <p>{props.translate("You have clicked on a calendar invitation that was sent to an email address different than the one you are currently signed in with.")}</p>
+      <p>{props.translate("If you think this is an error")}, <a href="mailto:grove@codebards.io">{props.translate("contact us in the grove")}</a>.</p>
       <Link to="/my-calendars">{props.translate("Back to my calendars")}</Link>
     </>
   ) : (
