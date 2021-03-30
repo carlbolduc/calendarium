@@ -64,12 +64,15 @@ export default function SubscribeForm(props) {
     <form onSubmit={handleSubmit} id="form-subscribe">
       <p>You're ready for Calendarium unlimited! Enter your payment info below.</p>
       <h5>Credit card details</h5>
-      <div className="row">
+      <div className="row mb-3">
         <div className="col">
-          <div className="card-element my-3">
-            <CardElement 
+          <div className="card-element mt-3">
+            <CardElement
               // @ts-ignore
-              options={CARD_OPTIONS}/>
+              options={CARD_OPTIONS} />
+          </div>
+          <div id="powered-by-stripe">
+            <a href="https://stripe.com/" target="_blank"><img src="/img/stripe.svg" alt="Powered by Stripe" /></a>
           </div>
         </div>
       </div>
