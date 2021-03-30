@@ -51,13 +51,12 @@ export default function PasswordReset(props) {
           type="password"
           id="input-new-password"
           required={true}
-          placeholder={props.translate("Enter a new password.")}
           value={newPassword}
           handleChange={(e) => {
             setNewPassword(e.target.value);
             setInvalidNewPassword(false);
           }}
-          invalidFeedback={invalidNewPassword ? <InvalidFeedback feedback="Your password must be at least 8 characters long."/> : null}
+          invalidFeedback={invalidNewPassword ? <InvalidFeedback feedback={props.translate("Your password must be at least 8 characters long.")} /> : null}
         />
         <Button label={props.translate("Reset my password")} type="submit" id="button-reset-password" working={working} />
       </form>

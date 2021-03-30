@@ -61,26 +61,24 @@ export default function Collaborators(props) {
           type="text"
           id="input-name"
           required={true}
-          placeholder={props.translate("Enter your first name and last name.")}
           value={name}
           handleChange={(e) => {
             setName(e.target.value);
             setInvalidName(false);
           }}
-          invalidFeedback={invalidName ? <InvalidFeedback feedback="You must enter a name." /> : null}
+          invalidFeedback={invalidName ? <InvalidFeedback feedback={props.translate("You must enter a first name and last name.")} /> : null}
         />
         <Input
           label={props.translate("Email")}
           type="email"
           id="input-email"
           required={true}
-          placeholder={props.translate("Enter your email address.")}
           value={email}
           handleChange={(e) => {
             setEmail(e.target.value);
             setInvalidEmail(false);
           }}
-          invalidFeedback={invalidEmail ? <InvalidFeedback feedback="You must enter a valid email address." /> : null}
+          invalidFeedback={invalidEmail ? <InvalidFeedback feedback={props.translate("You must enter a valid email address.")} /> : null}
         />
         <Button label={props.translate("Cancel")} id="button-cancel-invite-collaborator" type="button" dataBsToggle="collapse" dataBsTarget="#invite-collaborator" ariaExpanded="false" ariaControls="invite-collaborator" outline={true} />
         {/* TODO: disable button when nothing is entered in the form */}

@@ -47,26 +47,24 @@ export default function SignIn(props) {
           type="email"
           id="input-email"
           required={true}
-          placeholder={props.translate("Enter your email address.")}
           value={email}
           handleChange={(e) => {
             setEmail(e.target.value);
             setInvalidEmail(false);
           }}
-          invalidFeedback={invalidEmail ? <InvalidFeedback feedback="You must enter a valid email address." /> : null}
+          invalidFeedback={invalidEmail ? <InvalidFeedback feedback={props.translate("You must enter a valid email address.")} /> : null}
         />
         <Input
           label={props.translate("Password")}
           type="password"
           id="input-password"
           required={true}
-          placeholder={props.translate("Enter your password.")}
           value={password}
           handleChange={(e) => {
             setPassword(e.target.value);
             setInvalidPassword(false);
           }}
-          invalidFeedback={invalidPassword ? <InvalidFeedback feedback="Your password must be at least 8 characters long." /> : null}
+          invalidFeedback={invalidPassword ? <InvalidFeedback feedback={props.translate("Your password must be at least 8 characters long.")} /> : null}
         />
         <Button label={props.translate("Sign in")} type="submit" id="button-sign-in" working={working} />
       </form>

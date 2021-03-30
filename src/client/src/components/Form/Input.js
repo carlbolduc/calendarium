@@ -47,8 +47,7 @@ export default function Input(props) {
           name={props.name ? props.name : null}
           autoComplete={props.autoComplete ? props.autoComplete : null}
           readOnly={props.readOnly ? props.readOnly : null}
-          placeholder={props.placeholder}
-          title={props.placeholder}
+          title={props.label}
           value={props.value === null ? "" : props.value}
           onChange={props.handleChange}
         />
@@ -69,7 +68,6 @@ export default function Input(props) {
                 name={props.name ? props.name : null}
                 autoComplete={props.autoComplete ? props.autoComplete : null}
                 readOnly={props.readOnly ? props.readOnly : null}
-                placeholder={props.placeholder ? props.placeholder : null}
                 value={props.value === null ? "" : props.value}
                 onChange={props.handleChange}
                 onClick={props.onClick}

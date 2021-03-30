@@ -33,7 +33,6 @@ export default function Textarea(props) {
               id={props.id}
               name={props.name ? props.name : null}
               readOnly={props.readOnly ? props.readOnly : null}
-              placeholder={props.placeholder ? props.placeholder : null}
               value={props.value}
               onChange={props.handleChange}
               style={props.height ? {height: `${props.height}px`} : null}

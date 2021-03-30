@@ -76,13 +76,12 @@ export default function AcceptInvitation(props) {
       type="password"
       id="input-password"
       required={true}
-      placeholder={props.translate("Enter a password.")}
       value={password}
       handleChange={(e) => {
         setPassword(e.target.value);
         setInvalidPassword(false);
       }}
-      invalidFeedback={invalidPassword ? <InvalidFeedback feedback="Your password must be at least 8 characters long." /> : null}
+      invalidFeedback={invalidPassword ? <InvalidFeedback feedback={props.translate("Your password must be at least 8 characters long.")} /> : null}
     />
   );
 

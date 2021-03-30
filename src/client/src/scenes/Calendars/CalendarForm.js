@@ -147,7 +147,6 @@ export default function CalendarForm(props) {
         label={props.translate("English name")}
         type="text"
         id="input-name-en"
-        placeholder={props.translate("Enter the English calendar name.")}
         info={props.translate("Enter the English calendar name.")}
         value={nameEn}
         handleChange={e => {
@@ -160,7 +159,6 @@ export default function CalendarForm(props) {
         label={props.translate("English description")}
         type="text"
         id="input-description-en"
-        placeholder={props.translate("Describe your calendar in English.")}
         info={props.translate("Describe your calendar in English.")}
         height="100"
         value={descriptionEn}
@@ -174,7 +172,6 @@ export default function CalendarForm(props) {
         label={props.translate("English customised link")}
         type="text"
         id="input-link-en"
-        placeholder={props.translate("Enter the English customised link.")}
         info={props.translate("Enter the customised name that you would like to appear in the browser url when accessing the English version of your calendar.")}
         value={linkEn}
         handleChange={e => {
@@ -200,7 +197,6 @@ export default function CalendarForm(props) {
         label={props.translate("French name")}
         type="text"
         id="input-name-fr"
-        placeholder={props.translate("Enter the French calendar name.")}
         info={props.translate("Enter the French calendar name.")}
         value={nameFr}
         handleChange={e => {
@@ -213,7 +209,6 @@ export default function CalendarForm(props) {
         label={props.translate("French description")}
         type="text"
         id="input-description-fr"
-        placeholder={props.translate("Describe your calendar in French.")}
         info={props.translate("Describe your calendar in French.")}
         height="100"
         value={descriptionFr}
@@ -227,7 +222,6 @@ export default function CalendarForm(props) {
         label={props.translate("French customised link")}
         type="text"
         id="input-link-fr"
-        placeholder={props.translate("Enter the French customised link.")}
         info={props.translate("Enter the customised name that you would like to appear in the browser url when accessing the French version of your calendar.")}
         value={linkFr}
         handleChange={e => {
@@ -247,7 +241,7 @@ export default function CalendarForm(props) {
     <>
       <h1>{props.translate(title)}</h1>
       <form onSubmit={handleSubmit} id="form-new-calendar" noValidate>
-        {noLanguageEnabled ? <InvalidFeedback feedback={props.translate("Enable at least one language.")} /> : null}
+        {noLanguageEnabled ? <InvalidFeedback feedback={props.translate("You must enable at least one language.")} /> : null}
         <div className="row mb-3">
           <div className="col-12 col-md-6">
             <Checkbox
@@ -284,7 +278,6 @@ export default function CalendarForm(props) {
               label={props.translate("Primary color")}
               type="color"
               id="input-primary-color"
-              placeholder={props.translate("Primary color")}
               value={primaryColor}
               handleChange={e => setPrimaryColor(e.target.value)}
               // TODO: include in the info text where the primary color is used in the calendar (TBD when the calendar display will be done)
@@ -294,7 +287,6 @@ export default function CalendarForm(props) {
               label={props.translate("Secondary color")}
               type="color"
               id="input-secondary-color"
-              placeholder={props.translate("Secondary color")}
               value={secondaryColor}
               handleChange={e => setSecondaryColor(e.target.value)}
               // TODO: include in the info text where the secondary color is used in the calendar (TBD when the calendar display will be done)
