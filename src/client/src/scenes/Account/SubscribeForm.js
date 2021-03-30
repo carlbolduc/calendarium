@@ -71,7 +71,7 @@ export default function SubscribeForm(props) {
               options={CARD_OPTIONS} />
           </div>
           <div id="powered-by-stripe">
-            <a href="https://stripe.com/" target="_blank"><img src="/img/stripe.svg" alt="Powered by Stripe" /></a>
+            <a href="https://stripe.com/" target="_blank" rel="noreferrer"><img src="/img/stripe.svg" alt="Powered by Stripe" /></a>
           </div>
         </div>
       </div>
