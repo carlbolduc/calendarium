@@ -1,5 +1,5 @@
-import React from 'react';
-import 'bootstrap/dist/js/bootstrap.bundle.js';
+import React from "react";
+import "bootstrap/dist/js/bootstrap.bundle.js";
 
 export default function Dropdown(props) {
   // TODO: generate options with a map of props.options
