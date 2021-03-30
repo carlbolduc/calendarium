@@ -160,8 +160,8 @@ export default function Event(props) {
       <div className="row">
         <div className="col">
           <div className="card-body">
-            <h5 className="card-title">Confirm deletion of event {decideWhatToDisplay(props.language, props.enableEn, props.enableFr, props.event.nameEn, props.event.nameFr)}</h5>
-            <p>Once deleted, the event will dissapear from your calendar forever.</p>
+            <h5 className="card-title">{props.translate("Do you really want to delete the event")} {decideWhatToDisplay(props.language, props.enableEn, props.enableFr, props.event.nameEn, props.event.nameFr)}?</h5>
+            <p>{props.translate("Once deleted, the event will be removed from your calendar and cannot be restored.")}</p>
           </div>
         </div>
       </div>

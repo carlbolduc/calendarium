@@ -84,9 +84,9 @@ export default function EventsSearch(props) {
   const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
   const title = `${props.translate("Events of")} ${calendarName}`;
   const searchButton = canSearch ? (
-    <Button label="Search" type="submit" id="button-search" working={working} />
+    <Button label={props.translate("Search")} type="submit" id="button-search" working={working} />
   ) : (
-    <Button label="Search" type="submit" id="button-search" working={working} disabled={true} />
+    <Button label={props.translate("Search")} type="submit" id="button-search" working={working} disabled={true} />
   );
 
   return (
@@ -98,7 +98,7 @@ export default function EventsSearch(props) {
         <div className="row">
           <div className="col">
             <Input
-              label="Search"
+              label={props.translate("Search")}
               type="search"
               id="input-search"
               value={search}
@@ -114,7 +114,7 @@ export default function EventsSearch(props) {
           <div className="col-12 col-md-6">
             <div style={{ position: "relative" }}>
               <Input
-                label="Start date"
+                label={props.translate("Start date")}
                 type="text"
                 id="input-start-date"
                 value={startDate !== null ? startDate.setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_HUGE) : ""}
@@ -127,7 +127,7 @@ export default function EventsSearch(props) {
           <div className="col-12 col-md-6">
             <div style={{ position: "relative" }}>
               <Input
-                label="End date"
+                label={props.translate("End date")}
                 type="text"
                 id="input-end-date"
                 value={endDate !== null ? endDate.setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_HUGE) : ""}
@@ -141,9 +141,9 @@ export default function EventsSearch(props) {
         <div className="row">
           <div className="col">
             <Select
-              label="Status"
+              label={props.translate("Status")}
               id="select-status"
-              options={[{ label: "All", value: "" }, { label: eventStatus.DRAFT.label, value: eventStatus.DRAFT.value }, { label: eventStatus.PENDING_APPROVAL.label, value: eventStatus.PENDING_APPROVAL.value }, { label: eventStatus.PUBLISHED.label, value: eventStatus.PUBLISHED.value }]}
+              options={[{ label: props.translate("All"), value: "" }, { label: props.translate(eventStatus.DRAFT.label), value: eventStatus.DRAFT.value }, { label: props.translate(eventStatus.PENDING_APPROVAL.label), value: eventStatus.PENDING_APPROVAL.value }, { label: props.translate(eventStatus.PUBLISHED.label), value: eventStatus.PUBLISHED.value }]}
               value={status}
               handleChange={e => {
                 setStatus(e.target.value);
