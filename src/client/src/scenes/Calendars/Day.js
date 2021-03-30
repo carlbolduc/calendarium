@@ -8,17 +8,34 @@ export default function Day(props) {
       props.selectDay(props.day);
     }
   }
-  const className = props.date.day === props.day 
+  const dayClassName = props.date.day === props.day 
     ? props.primaryColor === undefined || props.primaryColor === "#ffffff"
       ? "table-primary" 
       : textColor(props.primaryColor) 
     : "";
-  const style = props.date.day === props.day 
+  const dayStyle = props.date.day === props.day 
     ? props.primaryColor === undefined || props.primaryColor === "#ffffff"
       ? { cursor: "pointer" }
       : { cursor: "pointer", backgroundColor: props.primaryColor } 
     : { cursor: "pointer" };
+  // TODO: replace "props.day !== null" in the condition by "if day has an event in this calendar"
+  const dotClassName = props.day !== null && props.primaryColor !== undefined
+    ? props.date.day === props.day
+      ? props.primaryColor === undefined || props.primaryColor === "#ffffff"
+        ? "d-block"
+        : `d-block ${textColor(props.primaryColor)}`
+      : "d-block"
+    : "d-none";
+  // TODO: replace "props.day !== null" in the condition by "if day has an event in this calendar"
+  const dotStyle = props.day !== null && props.secondaryColor !== undefined
+    ? props.secondaryColor === "#ffffff"
+      ? { marginTop: '-30px', height: '34px', fontSize: '200%' }
+      : { color: props.secondaryColor, marginTop: '-30px', height: '34px', fontSize: '200%' }
+    : null;
   return (
-    <td className={className} style={style} onMouseDown={selectDay} onMouseUp={props.hide}>{props.day}</td>
+    <td className={dayClassName} style={dayStyle} onMouseDown={selectDay} onMouseUp={props.hide}>
+      {props.day}
+      <div className={dotClassName} style={dotStyle}>.</div>
+    </td>
   )
 }
