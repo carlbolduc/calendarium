@@ -8,8 +8,10 @@ import { DateTime } from "luxon";
 import Month from "../Calendars/Month";
 import { textValid, timesList, decideWhatToDisplay, getLocale, eventStatus, calendarAccessStatus } from "../../services/Helpers";
 import Textarea from "../../components/Form/Textarea";
+import usePrevious from "../../services/UsePreviousHook";
 
 export default function EventForm(props) {
+  const prevLanguage = usePrevious(props.language);
   const refreshEvents = props.refreshEvents;
   const createEvent = props.createEvent;
   const updateEvent = props.updateEvent;
@@ -67,26 +69,28 @@ export default function EventForm(props) {
   }, [props.event, props.language]);
 
   useEffect(() => {
-    const locale = getLocale(props.language);
-    const dt = DateTime.now();
-    const fm = DateTime.TIME_SIMPLE;
-    if (textValid(previousStartTime)) {
-      const previousStartTimeValues = getTimeValues(previousStartTime);
-      setPreviousStartTime(dt.set({ hour: previousStartTimeValues.hour, minute: previousStartTimeValues.minute, second: 0, millisecond: 0 }).setLocale(locale).toLocaleString(fm));
+    if (props.language !== prevLanguage) {
+      const locale = getLocale(props.language);
+      const dt = DateTime.now();
+      const fm = DateTime.TIME_SIMPLE;
+      if (textValid(previousStartTime)) {
+        const previousStartTimeValues = getTimeValues(previousStartTime);
+        setPreviousStartTime(dt.set({ hour: previousStartTimeValues.hour, minute: previousStartTimeValues.minute, second: 0, millisecond: 0 }).setLocale(locale).toLocaleString(fm));
+      }
+      if (textValid(startTime)) {
+        const startTimeValues = getTimeValues(startTime);
+        setStartTime(dt.set({ hour: startTimeValues.hour, minute: startTimeValues.minute, second: 0, millisecond: 0 }).setLocale(locale).toLocaleString(fm));
+      }
+      if (textValid(previousEndTime)) {
+        const previousEndTimeValues = getTimeValues(previousEndTime);
+        setPreviousEndTime(dt.set({ hour: previousEndTimeValues.hour, minute: previousEndTimeValues.minute, second: 0, millisecond: 0 }).setLocale(locale).toLocaleString(fm));
+      }
+      if (textValid(endTime)) {
+        const endTimeValues = getTimeValues(endTime);
+        setEndTime(dt.set({ hour: endTimeValues.hour, minute: endTimeValues.minute, second: 0, millisecond: 0 }).setLocale(locale).toLocaleString(fm));
+      }
     }
-    if (textValid(startTime)) {
-      const startTimeValues = getTimeValues(startTime);
-      setStartTime(dt.set({ hour: startTimeValues.hour, minute: startTimeValues.minute, second: 0, millisecond: 0 }).setLocale(locale).toLocaleString(fm));
-    }
-    if (textValid(previousEndTime)) {
-      const previousEndTimeValues = getTimeValues(previousEndTime);
-      setPreviousEndTime(dt.set({ hour: previousEndTimeValues.hour, minute: previousEndTimeValues.minute, second: 0, millisecond: 0 }).setLocale(locale).toLocaleString(fm));
-    }
-    if (textValid(endTime)) {
-      const endTimeValues = getTimeValues(endTime);
-      setEndTime(dt.set({ hour: endTimeValues.hour, minute: endTimeValues.minute, second: 0, millisecond: 0 }).setLocale(locale).toLocaleString(fm));
-    }
-  }, [props.language, previousEndTime, endTime, previousStartTime, startTime]);
+  }, [prevLanguage, props.language, previousEndTime, endTime, previousStartTime, startTime]);
 
   const buildEvent = useCallback((status) => {
     return {
@@ -242,20 +246,22 @@ export default function EventForm(props) {
     let minute;
     // We support two time formats: English (1:00 p.m.) and French (13 h 00)
     const timeParts = time.indexOf("h") !== -1 ? time.split(" h ") : time.split(":");
-    if (timeParts[1].indexOf("p.m.") !== -1) {
-      // When processing English format, return corresponding 24h format
-      hour = Number(timeParts[0]);
-      if (hour !== 12) {
-        hour += 12;
-      }
-      minute = Number(timeParts[1].replace("p.m.", ""));
-    } else {
-      hour = Number(timeParts[0]);
-      if (timeParts[1].indexOf("a.m.") !== -1 && hour === 12) {
+    if (timeParts.length > 1) {
+      if (timeParts[1].indexOf("p.m.") !== -1) {
         // When processing English format, return corresponding 24h format
-        hour = 0;
+        hour = Number(timeParts[0]);
+        if (hour !== 12) {
+          hour += 12;
+        }
+        minute = Number(timeParts[1].replace("p.m.", ""));
+      } else {
+        hour = Number(timeParts[0]);
+        if (timeParts[1].indexOf("a.m.") !== -1 && hour === 12) {
+          // When processing English format, return corresponding 24h format
+          hour = 0;
+        }
+        minute = Number(timeParts[1].replace("a.m.", ""));
       }
-      minute = Number(timeParts[1].replace("a.m.", ""));
     }
     return { hour: hour, minute: minute };
   }
