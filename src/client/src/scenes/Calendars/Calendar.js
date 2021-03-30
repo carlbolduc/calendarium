@@ -2,22 +2,16 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, Redirect } from "react-router-dom";
 import { DateTime } from "luxon";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle.js"
-import {calendarAccessStatus, decideWhatToDisplay, encodeObject, eventStatus} from "../../services/Helpers";
+import {calendarAccessStatus, decideWhatToDisplay, encodeObject} from "../../services/Helpers";
 import CalendarForm from "./CalendarForm";
 import Button from "../../components/Form/Button";
 import EventForm from "../Events/EventForm";
 import Month from "./Month";
 import Message from "../../components/Form/Message";
 import Collaborators from "../Collaborators/Collaborators";
-import Event from "../Events/Event";
 import EventsSearch from "../Events/EventsSearch";
-import EditEventButton from "../Events/EditEventButton";
-import SendForApprovalEventButton from "../Events/SendForApprovalEventButton";
-import PublishEventButton from "../Events/PublishEventButton";
-import ApproveEventButton from "../Events/ApproveEventButton";
-import DeleteEventButton from "../Events/DeleteEventButton";
-import UnpublishEventButton from "../Events/UnpublishEventButton";
 import DeleteEventModal from "../Events/DeleteEventModal";
+import EventsList from "../Events/EventsList";
 
 export default function Calendar(props) {
   const getCalendar = props.getCalendar;
@@ -86,42 +80,6 @@ export default function Calendar(props) {
       modal.hide();
     }
   }, [eventToDelete]);
-
-  const sendForApproval = useCallback((event) => {
-    event.status = eventStatus.PENDING_APPROVAL.value;
-    updateEvent(event, result => {
-      setResult(result);
-      setMessageOrigin("sendForApproval");
-      refreshEvents();
-    });
-  }, [updateEvent, refreshEvents]);
-
-  const approveEvent = useCallback((event) => {
-    event.status = eventStatus.PUBLISHED.value;
-    updateEvent(event, result => {
-      setResult(result);
-      setMessageOrigin("approveEvent");
-      refreshEvents();
-    });
-  }, [updateEvent, refreshEvents]);
-
-  const publishEvent = useCallback((event) => {
-    event.status = eventStatus.PUBLISHED.value;
-    updateEvent(event, result => {
-      setResult(result);
-      setMessageOrigin("publishEvent");
-      refreshEvents();
-    });
-  }, [updateEvent, refreshEvents]);
-
-  const unpublishEvent = useCallback((event) => {
-    event.status = eventStatus.DRAFT.value;
-    updateEvent(event, result => {
-      setResult(result);
-      setMessageOrigin("unpublishEvent");
-      refreshEvents();
-    });
-  }, [updateEvent, refreshEvents]);
 
   function confirmEventDeletion() {
     setEventToDelete({eventId: null});    
@@ -195,54 +153,6 @@ export default function Calendar(props) {
     />
   ) :null;
 
-  function eventActions(event) {
-    return (
-      <div>
-        <EditEventButton
-          event={event}
-          account={props.account}
-          calendar={props.calendar}
-          edit={() => setEvent(event)}
-          translate={props.translate}
-        />
-        <SendForApprovalEventButton
-          event={event}
-          account={props.account}
-          calendar={props.calendar}
-          sendForApproval={sendForApproval}
-          translate={props.translate}
-        />
-        <ApproveEventButton
-          event={event}
-          calendar={props.calendar}
-          approveEvent={approveEvent}
-          translate={props.translate}
-        />
-        <PublishEventButton
-          event={event}
-          account={props.account}
-          calendar={props.calendar}
-          publishEvent={publishEvent}
-          translate={props.translate}
-        />
-        <UnpublishEventButton
-          event={event}
-          account={props.account}
-          calendar={props.calendar}
-          unpublishEvent={unpublishEvent}
-          translate={props.translate}
-        />
-        <DeleteEventButton
-          event={event}
-          account={props.account}
-          calendar={props.calendar}
-          deleteEvent={() => setEventToDelete(event)}
-          translate={props.translate}
-        />
-      </div>
-    )
-  }
-
   const manageEvents = (
     <EventsSearch
       account={props.account}
@@ -265,20 +175,6 @@ export default function Calendar(props) {
       setEvent={setEvent}
     />
   );
-
-  const calendarEvents = props.calendarEvents.map(e => (
-    <Event 
-      key={e.eventId} 
-      event={e} 
-      eventActions={eventActions(e)} 
-      language={props.language} 
-      translate={props.translate}
-      primaryColor={props.calendar.primaryColor}
-      secondaryColor={props.calendar.secondaryColor}
-      enableEn={props.calendar.enableEn}
-      enableFr={props.calendar.enableFr}
-    />
-  ));
 
   const newEventButton = !showEventForm && [calendarAccessStatus.OWNER, calendarAccessStatus.ACTIVE].indexOf(props.calendar.access) !== -1 ? (
     <Button
@@ -386,7 +282,20 @@ export default function Calendar(props) {
                 />
               </div>
               <div className="col-12 col-md">
-                {calendarEvents.length === 0 ? props.translate("There are no events on or after the selected date.") : calendarEvents}
+                <EventsList
+                  events={props.calendarEvents}
+                  noEventsMessage={props.translate("There are no events on or after the selected date.")}
+                  account={props.account}
+                  calendar={props.calendar}
+                  language={props.language}
+                  translate={props.translate}
+                  edit={setEvent}
+                  deleteEvent={setEventToDelete}
+                  updateEvent={updateEvent}
+                  setResult={setResult}
+                  setMessageOrigin={setMessageOrigin}
+                  refreshEvents={refreshEvents}
+                />
               </div>
             </div>
           </div>
