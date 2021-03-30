@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Button from "../../components/Form/Button";
-import {calendarAccessStatus, eventStatus} from "../../services/Helpers";
+import { calendarAccessStatus, eventStatus } from "../../services/Helpers";
 
 export default function UnpublishEventButton(props) {
-  const unpublishEvent = props.unpublishEvent;
   const [working, setWorking] = useState(false);
 
   useEffect(() => {
-    if (working && [eventStatus.PUBLISHED.value, eventStatus.PENDING_APPROVAL.value].indexOf(props.event.status) !== -1) {
-      unpublishEvent(props.event);
-    } else {
+    if (
+      working &&
+      [eventStatus.PUBLISHED.value, eventStatus.PENDING_APPROVAL.value].indexOf(props.event.status) === -1
+    ) {
       setWorking(false);
     }
-  }, [working, props.event, unpublishEvent])
+  }, [working, props.event]);
+
+  function unpublishEvent() {
+    setWorking(true);
+    props.unpublishEvent(props.event);
+  }
 
   function render() {
     let shouldRender = false;
@@ -29,7 +34,13 @@ export default function UnpublishEventButton(props) {
         shouldRender = true;
       }
     }
-    return shouldRender ? <Button label={props.translate("Unpublish")} id="button-publish-event" onClick={() => setWorking(true)} /> : null;
+    return shouldRender ? (
+      <Button
+        label={props.translate("Unpublish")}
+        id="button-publish-event"
+        onClick={unpublishEvent}
+      />
+    ) : null;
   }
 
   return render();

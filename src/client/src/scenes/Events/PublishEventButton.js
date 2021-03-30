@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Button from "../../components/Form/Button";
-import {calendarAccessStatus, eventStatus} from "../../services/Helpers";
+import { calendarAccessStatus, eventStatus } from "../../services/Helpers";
 
 export default function PublishEventButton(props) {
-  const publishEvent = props.publishEvent;
   const [working, setWorking] = useState(false);
 
   useEffect(() => {
-    if (working && props.event.status === eventStatus.DRAFT.value) {
-      publishEvent(props.event);
-    } else {
+    if (working && props.event.status !== eventStatus.DRAFT.value) {
       setWorking(false);
     }
-  }, [working, props.event, publishEvent])
+  }, [working, props.event]);
+
+  function publishEvent() {
+    setWorking(true);
+    props.publishEvent(props.event);
+  }
 
   function render() {
     let shouldRender = false;
@@ -28,7 +30,13 @@ export default function PublishEventButton(props) {
         shouldRender = true;
       }
     }
-    return shouldRender ? <Button label={props.translate("Publish")} id="button-publish-event" onClick={() => setWorking(true)} /> : null;
+    return shouldRender ? (
+      <Button
+        label={props.translate("Publish")}
+        id="button-publish-event"
+        onClick={publishEvent}
+      />
+    ) : null;
   }
 
   return render();
