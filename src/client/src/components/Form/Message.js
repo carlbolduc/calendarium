@@ -15,7 +15,7 @@ export default function Message(props) {
       let messages = new Map();
       messages.set("signUp","Account created successfully.");
       messages.set("signIn","Successfully signed in.");
-      messages.set("forgotPassword","We have received your password reset request. Instructions are on their way, check your email!");
+      messages.set("forgotPassword","We have received your password reset request and your instructions are on their way. Check your email! If you don't hear from us, make sure to check the spam folder and add grove@codebards.io to your contacts.");
       messages.set("passwordReset","Your password has been reset successfully. You're good to go!");
       messages.set("profile","Your profile changes have been saved successfully.");
       messages.set("createSubscription","Thank you for your purchase! Your Calendarium subscription has now started.");
