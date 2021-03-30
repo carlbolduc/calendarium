@@ -3,8 +3,8 @@ import {useLocation, useParams} from "react-router-dom";
 import PropTypes from "prop-types";
 import { DateTime } from "luxon";
 import Month from "../Calendars/Month";
-import Event from "../Events/Event";
 import {encodeObject} from "../../services/Helpers";
+import EventsList from "../Events/EventsList";
 
 
 export default function Embed(props) {
@@ -47,19 +47,6 @@ export default function Embed(props) {
     }
   }, [props.calendar.calendarId, currentDay, getCalendarEvents])
 
-  const calendarEvents = props.calendarEvents.map(e => (
-    <Event 
-      key={e.eventId} 
-      event={e} 
-      language={props.language} 
-      translate={props.translate}
-      primaryColor={props.calendar.primaryColor}
-      secondaryColor={props.calendar.secondaryColor}
-      enableEn={props.calendar.enableEn}
-      enableFr={props.calendar.enableFr}
-    />
-  ));
-
   function main() {
     let result;
     if (loading) {
@@ -87,7 +74,16 @@ export default function Embed(props) {
             />
           </div>
           <div className="col-12 col-md">
-            {calendarEvents.length === 0 ? props.translate("There are no events on or after the selected date.") : calendarEvents}
+            <EventsList
+              events={props.calendarEvents}
+              noEventsMessage={props.translate("There are no events on or after the selected date.")}
+              account={props.account}
+              calendar={props.calendar}
+              language={props.language}
+              translate={props.translate}
+              showStatus={false}
+              showButtons={false}
+            />
           </div>
         </div>
       );

@@ -10,8 +10,6 @@ import EventsList from "./EventsList";
 
 export default function EventsSearch(props) {
   const searchEvents = props.searchEvents;
-  const updateEvent = props.updateEvent;
-  const deleteEvent = props.deleteEvent;
   const [search, setSearch] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [showStartDateSelector, setShowStartDateSelector] = useState(false);
@@ -167,12 +165,13 @@ export default function EventsSearch(props) {
         calendar={props.calendar}
         language={props.language}
         translate={props.translate}
-        edit={props.setEvent}
-        // deleteEvent={setEventToDelete}
-        updateEvent={updateEvent}
+        edit={props.editEvent}
+        deleteEvent={props.deleteEvent}
+        updateEvent={props.updateEvent}
         setResult={setResult}
         setMessageOrigin={setMessageOrigin}
         showStatus={true}
+        showButtons={true}
         refreshEvents={() => {
           const q = buildQuery();
           searchEvents(q);

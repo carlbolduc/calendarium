@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, Redirect } from "react-router-dom";
 import { DateTime } from "luxon";
-import bootstrap from "bootstrap/dist/js/bootstrap.bundle.js"
 import {calendarAccessStatus, decideWhatToDisplay, encodeObject} from "../../services/Helpers";
 import CalendarForm from "./CalendarForm";
 import Button from "../../components/Form/Button";
@@ -10,14 +9,11 @@ import Month from "./Month";
 import Message from "../../components/Form/Message";
 import Collaborators from "../Collaborators/Collaborators";
 import EventsSearch from "../Events/EventsSearch";
-import DeleteEventModal from "../Events/DeleteEventModal";
 import EventsList from "../Events/EventsList";
 
 export default function Calendar(props) {
   const getCalendar = props.getCalendar;
   const getCalendarEvents = props.getCalendarEvents;
-  const updateEvent = props.updateEvent;
-  const deleteEvent = props.deleteEvent;
   let { link } = useParams();
   const [currentDay, setCurrentDay] = useState(DateTime.now());
   const [showCalendarForm, setShowCalendarForm] = useState(false);
@@ -27,7 +23,6 @@ export default function Calendar(props) {
   const [showManageCollaborators, setShowManageCollaborators] = useState(false);
   const [showManageEvents, setShowManageEvents] = useState(false);
   const [messageOrigin, setMessageOrigin] = useState("");
-  const [eventToDelete, setEventToDelete] = useState({eventId: null});
 
   useEffect(() => {
     getCalendar({ link: link });
@@ -62,33 +57,6 @@ export default function Calendar(props) {
       setEvent(null);
     }
   }, [showEventForm]);
-
-  // Show or hide the Delete Event Modal based on the eventToDelete state
-  useEffect(() => {
-    const el = document.getElementById("delete-event-modal");
-    let modal = bootstrap.Modal.getInstance(el);
-    if (modal === null) {
-      // Instantiate the modal
-      modal = new bootstrap.Modal(el, {
-        backdrop: "static",
-        keyboard: false
-      });
-    }
-    if (eventToDelete.eventId !== null) {
-      modal.show();
-    } else {
-      modal.hide();
-    }
-  }, [eventToDelete]);
-
-  function confirmEventDeletion() {
-    setEventToDelete({eventId: null});    
-    deleteEvent(eventToDelete.eventId, result => {
-      setResult(result);
-      setMessageOrigin("deleteEvent");
-      refreshEvents();
-    });
-  }
 
   const calendarSettingsButton = props.calendar.access === calendarAccessStatus.OWNER ? (
     <Button
@@ -155,15 +123,15 @@ export default function Calendar(props) {
 
   const manageEvents = (
     <EventsSearch
+      events={props.events}
       account={props.account}
       calendar={props.calendar}
-      events={props.events}
-      editEvent={setEvent}
-      updateEvent={props.updateEvent}
-      deleteEvent={props.deleteEvent}
-      searchEvents={props.searchEvents}
       language={props.language}
       translate={props.translate}
+      editEvent={setEvent}
+      deleteEvent={props.deleteEvent}
+      updateEvent={props.updateEvent}
+      searchEvents={props.searchEvents}
       result={result}
       messageOrigin={messageOrigin}
       actionButtonsZone={
@@ -172,7 +140,6 @@ export default function Calendar(props) {
                   onClick={() => setShowManageEvents(false)} outline={true}/>
         </div>
       }
-      setEvent={setEvent}
     />
   );
 
@@ -290,24 +257,17 @@ export default function Calendar(props) {
                   language={props.language}
                   translate={props.translate}
                   edit={setEvent}
-                  deleteEvent={setEventToDelete}
-                  updateEvent={updateEvent}
+                  deleteEvent={props.deleteEvent}
+                  updateEvent={props.updateEvent}
                   setResult={setResult}
                   setMessageOrigin={setMessageOrigin}
+                  showStatus={false}
+                  showButtons={true}
                   refreshEvents={refreshEvents}
                 />
               </div>
             </div>
           </div>
-          <DeleteEventModal
-            language={props.language}
-            enableEn={props.calendar.enableEn}
-            enableFr={props.calendar.enableFr}
-            event={eventToDelete}
-            delete={confirmEventDeletion}
-            cancel={() => setEventToDelete({eventId: null})}
-            translate={props.translate}
-          />
         </>
       );
     }

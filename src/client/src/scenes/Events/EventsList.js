@@ -1,14 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Event from "./Event";
-import EditEventButton from "./EditEventButton";
-import SendForApprovalEventButton from "./SendForApprovalEventButton";
-import ApproveEventButton from "./ApproveEventButton";
-import PublishEventButton from "./PublishEventButton";
-import UnpublishEventButton from "./UnpublishEventButton";
-import DeleteEventButton from "./DeleteEventButton";
 import { eventStatus } from "../../services/Helpers";
-
 
 export default function EventsList(props) {
 
@@ -48,66 +41,33 @@ export default function EventsList(props) {
     });
   }
 
-  function eventActions(event) {
-    return (
-      <div>
-        <EditEventButton
-          event={event}
-          account={props.account}
-          calendar={props.calendar}
-          edit={() => props.edit(event)}
-          translate={props.translate}
-        />
-        <SendForApprovalEventButton
-          event={event}
-          account={props.account}
-          calendar={props.calendar}
-          sendForApproval={sendForApproval}
-          translate={props.translate}
-        />
-        <PublishEventButton
-          event={event}
-          account={props.account}
-          calendar={props.calendar}
-          publishEvent={publishEvent}
-          translate={props.translate}
-        />
-        <UnpublishEventButton
-          event={event}
-          account={props.account}
-          calendar={props.calendar}
-          unpublishEvent={unpublishEvent}
-          translate={props.translate}
-        />
-        <ApproveEventButton
-          event={event}
-          calendar={props.calendar}
-          approveEvent={approveEvent}
-          translate={props.translate}
-        />
-        <DeleteEventButton
-          event={event}
-          account={props.account}
-          calendar={props.calendar}
-          deleteEvent={() => props.deleteEvent(event)}
-          translate={props.translate}
-        />
-      </div>
-    )
+  function deleteEvent(event) {
+    props.deleteEvent(event.eventId, result => {
+      props.setResult(result);
+      props.setMessageOrigin("deleteEvent");
+      props.refreshEvents();
+    });
   }
 
   const events = props.events.map(e => (
     <Event
-      key={e.eventId} 
-      event={e} 
-      eventActions={eventActions(e)} 
-      language={props.language} 
+      key={e.eventId}
+      event={e}
+      account={props.account}
+      calendar={props.calendar}
+      language={props.language}
       translate={props.translate}
-      primaryColor={props.calendar.primaryColor}
-      secondaryColor={props.calendar.secondaryColor}
       enableEn={props.calendar.enableEn}
       enableFr={props.calendar.enableFr}
-      showStatus={props.showStatus} 
+      primaryColor={props.calendar.primaryColor}      
+      showStatus={props.showStatus}
+      showButtons={props.showButtons}
+      edit={props.edit}
+      sendForApproval={sendForApproval}
+      publishEvent={publishEvent}
+      unpublishEvent={unpublishEvent}
+      approveEvent={approveEvent}
+      delete={deleteEvent}
     />
   ));
 
@@ -122,15 +82,16 @@ export default function EventsList(props) {
 EventsList.propTypes = {
   events: PropTypes.array.isRequired,
   noEventsMessage: PropTypes.string.isRequired,
-  account: PropTypes.object.isRequired,
+  account: PropTypes.object,
   calendar: PropTypes.object.isRequired,
   language: PropTypes.string.isRequired,
   translate: PropTypes.func.isRequired,
-  edit: PropTypes.func.isRequired,
-  deleteEvent: PropTypes.func.isRequired,
-  updateEvent: PropTypes.func.isRequired,
-  setResult: PropTypes.func.isRequired,
-  setMessageOrigin: PropTypes.func.isRequired,
-  showStatus: PropTypes.bool,
-  refreshEvents: PropTypes.func.isRequired
+  edit: PropTypes.func,
+  deleteEvent: PropTypes.func,
+  updateEvent: PropTypes.func,
+  setResult: PropTypes.func,
+  setMessageOrigin: PropTypes.func,
+  showStatus: PropTypes.bool.isRequired,
+  showButtons: PropTypes.bool.isRequired,
+  refreshEvents: PropTypes.func
 };
