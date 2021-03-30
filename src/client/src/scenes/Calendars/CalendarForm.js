@@ -238,7 +238,7 @@ export default function CalendarForm(props) {
   const submitButton = props.new ? "Create this calendar" : "Save changes"; // this is translated where the const is used
 
   return (
-    <>
+    <article>
       <h1>{props.translate(title)}</h1>
       <form onSubmit={handleSubmit} id="form-new-calendar" noValidate>
         {noLanguageEnabled ? <InvalidFeedback feedback={props.translate("You must enable at least one language.")} /> : null}
@@ -331,6 +331,6 @@ export default function CalendarForm(props) {
         <Button label={props.translate("Cancel")} id="button-cancel" onClick={() => setShowCalendarForm(false)} outline={true} />
         <Button label={props.translate(submitButton)} type="submit" id="button-save" working={working} />
       </form>
-    </>
+    </article>
   );
 }

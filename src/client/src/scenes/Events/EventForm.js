@@ -475,7 +475,7 @@ export default function EventForm(props) {
   }
 
   return (
-    <>
+    <article>
       <h1>{title}</h1>
       <form id="form-event" noValidate>
         <div className="row mb-3">
@@ -569,6 +569,6 @@ export default function EventForm(props) {
         {props.event === null || props.event.status === eventStatus.DRAFT.value ? <Button label={props.translate("Save as draft")} type="button" id="button-save-as-draft" onClick={saveAsDraft} working={savingAsDraft} /> : null}
         <Button label={sendForApprovalOrPublishButtonText()} type="button" id="button-send-for-approval-or-publish" onClick={sendForApprovalOrPublish} working={sendingForApprovalOrPublishing} />
       </form>
-    </>
+    </article>
   );
 }

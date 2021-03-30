@@ -58,7 +58,7 @@ export default function Embed(props) {
         </div>
       );
     } else if (props.calendar.calendarId === null) {
-      result = <div>{props.translate("We couldn't find a calendar at this URL.")}</div>
+      result = <div>{props.translate("We couldn't find a calendar at this URL.")}</div>;
     } else {
       result = (
         <div className="row justify-content-center">

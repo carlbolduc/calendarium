@@ -23,9 +23,12 @@ export default function Calendar(props) {
   const [showManageCollaborators, setShowManageCollaborators] = useState(false);
   const [showManageEvents, setShowManageEvents] = useState(false);
   const [messageOrigin, setMessageOrigin] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getCalendar({ link: link });
+    getCalendar({ link: link }, () => {
+      setLoading(false);
+    });
   }, [getCalendar, link]);
 
   const refreshEvents = useCallback(() => {
@@ -107,7 +110,7 @@ export default function Calendar(props) {
       inviteCollaborator={props.inviteCollaborator}
       deactivateCalendarAccess={props.deactivateCalendarAccess}
       activateCalendarAccess={props.activateCalendarAccess}
-/>
+    />
   );
 
   const manageEventsButton = [calendarAccessStatus.OWNER, calendarAccessStatus.ACTIVE].indexOf(props.calendar.access) !== -1 ? (
@@ -187,41 +190,34 @@ export default function Calendar(props) {
     </div>
   );
 
-  function renderMain() {
-    // TODO: simplify this
+  function main() {
     let result;
-    if (showCalendarForm) {
-      // We're editing the calendar settings
+    if (loading) {
       result = (
-        <>
-          {calendarForm}
-        </>
+        <div className="d-flex justify-content-center">
+          <div className="spinner-grow" role="status">
+            <span className="visually-hidden">{props.translate("Loading...")}</span>
+          </div>
+        </div>
       );
+    } else if (props.calendar.calendarId === null) {
+      result = <div>{props.translate("We couldn't find a calendar at this URL.")}</div>;
+    } else if (showCalendarForm) {
+      // We're editing the calendar settings
+      result = calendarForm;
     } else if (showEventForm) {
       // We're adding a new event
-      result = (
-        <>
-          {eventForm}
-        </>
-      );
+      result = eventForm;
     } else if (showManageCollaborators) {
       // We're managing the calendar collaborators
-      result = (
-        <>
-          {manageCollaborators}
-        </>
-      );
+      result = manageCollaborators;
     } else if (showManageEvents) {
       // We're managing the calendar events
-      result = (
-        <>
-          {manageEvents}
-        </>
-      );
+      result = manageEvents;
     } else {
       // We're viewing the calendar details and events
       result = (
-        <>
+        <article>
           <h1>
             {decideWhatToDisplay(
               props.language,
@@ -275,17 +271,13 @@ export default function Calendar(props) {
               </div>
             </div>
           </div>
-        </>
+        </article>
       );
     }
     return result;
   }
 
-  return props.calendar.publicCalendar || props.authenticated ? (
-    <article>
-      {renderMain()}
-    </article>
-  ) : (
+  return props.calendar.publicCalendar || props.authenticated ? main() : (
       <Redirect
         to={{
           pathname: "/sign-in",
