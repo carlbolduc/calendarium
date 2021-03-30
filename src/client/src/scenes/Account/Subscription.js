@@ -138,18 +138,17 @@ export default function Subscription(props) {
     return result;
   }
 
-  // TODO: translate user visible text
   function renderMain() {
     let result = null;
     if (props.authenticated) {
       if (wantTo === wantToOptions.CANCEL) {
         result = (
           <div>
-            <h5>Are you sure you want to cancel your subscription?</h5>
-            <p>When you cancel...</p>
+            <h5>{props.translate("Are you sure you want to cancel your subscription?")}</h5>
+            <p>{props.translate("When you cancel...")}</p>
             <ul>
-              <li>You won't be billed again.</li>
-              <li>Your calendars will become inaccessible at the end of your subscription.</li>
+              <li>{props.translate("You won't be billed again.")}</li>
+              <li>{props.translate("Your calendars will become inaccessible at the end of your subscription, on")} {endAt}.</li>
             </ul>
             <Button label={props.translate("Never mind")} type="button" id="button-never-mind" onClick={() => setWantTo("")} outline={true} />
             <Button label={props.translate("Cancel my subscription")} type="button" id="button-confirm-cancel" onClick={e => cancel(e)} />
@@ -158,10 +157,11 @@ export default function Subscription(props) {
       } else if (wantTo === wantToOptions.REACTIVATE) {
         result = (
           <div>
-            <h5>Are you sure you want to reactivate your subscription?</h5>
-            <p>When you reactivate...</p>
+            <h5>{props.translate("Are you sure you want to reactivate your subscription?")}</h5>
+            <p>{props.translate("When you reactivate...")}</p>
             <ul>
-              <li>You will be charged at the end of your current subscription cycle.</li>
+              <li>{props.translate("You will be charged at the end of your current subscription cycle, on")} {endAt}.</li>
+              <li>{props.translate("Your calendars will remain accessible.")}</li>
             </ul>
             <Button label={props.translate("Never mind")} type="button" id="button-never-mind" onClick={() => setWantTo("")} outline={true} />
             <Button label={props.translate("Reactivate my subscription")} type="button" id="button-confirm-cancel" onClick={e => reactivate(e)} />

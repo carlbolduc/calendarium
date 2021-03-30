@@ -63,7 +63,7 @@ export default function PasswordReset(props) {
     </>
   );
 
-  // Authenticated use should not see this page unless they weren't autenticated when they interracted with the form
+  // Authenticated users should not see this page
   return props.authenticated && newPassword === "" ? (
     <Redirect to={{pathname: "/"}}/>
   ) : (
