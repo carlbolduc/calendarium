@@ -22,7 +22,7 @@ public class TaxRates {
                 break;
             case 'r': case 's': case 't': case 'v': case 'x': case 'y':
                 // MP, SK, AB, BC, NUNT, YT
-                taxRateDescriptions.add("HST15");
+                taxRateDescriptions.add("GST");
                 break;
             default:
                 break;
