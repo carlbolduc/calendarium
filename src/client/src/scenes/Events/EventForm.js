@@ -411,6 +411,7 @@ export default function EventForm(props) {
   const startTimes = timesList(getLocale(props.language)).map((t, index) => (
     <div
       key={index}
+      className="mx-2"
       onMouseDown={() => {
         setStartTime(t);
         setInvalidStartTime(false);
@@ -422,7 +423,7 @@ export default function EventForm(props) {
   ));
 
   const startTimeSelector = showStartTimeSelector ? (
-    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white", height: 200, overflow: "scroll" }}>
+    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white", borderStyle: "solid", borderWidth: "1px", borderColor: "#dee2e6", height: 200, overflow: "scroll", cursor: "pointer" }}>
       {startTimes}
     </div>
   ) : null;
@@ -445,6 +446,7 @@ export default function EventForm(props) {
   const endTimes = timesList(getLocale(props.language)).map((t, index) => (
     <div
       key={index}
+      className="mx-2"
       onMouseDown={() => {
         setEndTime(t);
         setInvalidEndTime(false);
@@ -456,7 +458,7 @@ export default function EventForm(props) {
   ));
 
   const endTimeSelector = showEndTimeSelector ? (
-    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white", height: 200, overflow: "scroll" }}>
+    <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white", borderStyle: "solid", borderWidth: "1px", borderColor: "#dee2e6", height: 200, overflow: "scroll", cursor: "pointer" }}>
       {endTimes}
     </div>
   ) : null;
