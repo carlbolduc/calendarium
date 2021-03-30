@@ -47,7 +47,6 @@ export default function SignIn(props) {
           type="email"
           id="input-email"
           required={true}
-          placeholder={props.translate("Enter your email address.")}
           value={email}
           handleChange={(e) => {
             setEmail(e.target.value);
@@ -60,7 +59,6 @@ export default function SignIn(props) {
           type="password"
           id="input-password"
           required={true}
-          placeholder={props.translate("Enter your password.")}
           value={password}
           handleChange={(e) => {
             setPassword(e.target.value);

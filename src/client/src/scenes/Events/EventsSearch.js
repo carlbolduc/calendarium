@@ -103,7 +103,6 @@ export default function EventsSearch(props) {
               label="Search"
               type="search"
               id="input-search"
-              placeholder="Enter a search term."
               value={search}
               handleChange={e => {
                 setSearch(e.target.value);
@@ -120,7 +119,6 @@ export default function EventsSearch(props) {
                 label="Start date"
                 type="text"
                 id="input-start-date"
-                placeholder="Select date"
                 value={startDate !== null ? startDate.setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_HUGE) : ""}
                 readOnly={true}
                 onClick={() => setShowStartDateSelector(true)}
@@ -134,7 +132,6 @@ export default function EventsSearch(props) {
                 label="End date"
                 type="text"
                 id="input-end-date"
-                placeholder="Select date"
                 value={endDate !== null ? endDate.setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_HUGE) : ""}
                 readOnly={true}
                 onClick={() => setShowEndDateSelector(!showEndDateSelector)}

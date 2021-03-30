@@ -48,7 +48,6 @@ export default function ForgotPassword(props) {
             type="email"
             id="input-email"
             required={true}
-            placeholder={props.translate("Enter your email address.")}
             value={email}
             handleChange={(e) => {
               setEmail(e.target.value);

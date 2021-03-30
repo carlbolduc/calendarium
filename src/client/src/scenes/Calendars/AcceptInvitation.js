@@ -76,7 +76,6 @@ export default function AcceptInvitation(props) {
       type="password"
       id="input-password"
       required={true}
-      placeholder={props.translate("Enter a password.")}
       value={password}
       handleChange={(e) => {
         setPassword(e.target.value);

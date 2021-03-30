@@ -51,7 +51,6 @@ export default function PasswordReset(props) {
           type="password"
           id="input-new-password"
           required={true}
-          placeholder={props.translate("Enter a new password.")}
           value={newPassword}
           handleChange={(e) => {
             setNewPassword(e.target.value);

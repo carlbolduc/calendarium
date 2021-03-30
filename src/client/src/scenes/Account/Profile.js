@@ -87,20 +87,18 @@ export default function Profile(props) {
           type="text"
           id="input-name"
           required={true}
-          placeholder={props.translate("Enter your first name and last name.")}
           value={name}
           handleChange={(e) => {
             setName(e.target.value);
             setInvalidName(false);
           }}
-          invalidFeedback={invalidName ? <InvalidFeedback feedback={props.translate("You must enter a name.")} /> : null}
+          invalidFeedback={invalidName ? <InvalidFeedback feedback={props.translate("You must enter your first name and last name.")} /> : null}
         />
         <Input
           label={props.translate("Email")}
           type="email"
           id="input-email"
           required={true}
-          placeholder={props.translate("Enter your email address.")}
           value={email}
           handleChange={(e) => {
             setEmail(e.target.value);
@@ -114,20 +112,18 @@ export default function Profile(props) {
           id="input-current-password"
           autoComplete="new-password"
           required={false}
-          placeholder={props.translate("If you want to change your password, enter your current password.")}
           value={currentPassword}
           handleChange={(e) => {
             setCurrentPassword(e.target.value);
             setInvalidCurrentPassword(false);
           }}
-          invalidFeedback={invalidCurrentPassword ? <InvalidFeedback feedback={props.translate("Your existing password must be provided when you want to update it.")} /> : null}
+          invalidFeedback={invalidCurrentPassword ? <InvalidFeedback feedback={props.translate("You must provide your current password when you want to update it.")} /> : null}
         />
         <Input
           label={props.translate("New password")}
           type="password"
           id="input-new-password"
           required={currentPassword !== ""}
-          placeholder={props.translate("If you want to change your password, enter a new password.")}
           value={newPassword}
           handleChange={(e) => {
             setNewPassword(e.target.value);
