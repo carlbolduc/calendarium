@@ -53,12 +53,12 @@ export default function Embed(props) {
       result = (
         <div className="d-flex justify-content-center">
           <div className="spinner-grow" role="status">
-            <span className="visually-hidden">Loading...</span>
+            <span className="visually-hidden">{props.translate("Loading...")}</span>
           </div>
         </div>
       );
     } else if (props.calendar.calendarId === null) {
-      result = <div>We did not find a calendar for this URL.</div>
+      result = <div>{props.translate("We couldn't find a calendar at this URL.")}</div>
     } else {
       result = (
         <div className="row justify-content-center">
