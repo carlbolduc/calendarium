@@ -325,33 +325,30 @@ export default function EventForm(props) {
   const englishFields = props.calendar.enableEn ? (
     <div className="col-12 col-md-6">
       <Input
-        label={"English name"}
+        label={props.translate("English name")}
         type="text"
         id="input-name-en"
-        placeholder={"Enter the English event name."}
-        info={"Enter the English event name."}
+        info={props.translate("Enter the English event name.")}
         value={nameEn}
         handleChange={e => {
           setNameEn(e.target.value);
           setInvalidNameEn(false);
         }}
-        invalidFeedback={invalidNameEn ? <InvalidFeedback feedback="You must enter a name." /> : null}
+        invalidFeedback={invalidNameEn ? <InvalidFeedback feedback={props.translate("You must enter a name.")} /> : null}
       />
       <Textarea
-        label="English description"
+        label={props.translate("English description")}
         id="textarea-description-en"
-        placeholder={"Describe your event in English."}
         height={100}
-        info={"Describe your event in English."}
+        info={props.translate("Describe your event in English.")}
         value={descriptionEn}
         handleChange={e => setDescriptionEn(e.target.value)}
       />
       <Input
-        label="English hyperlink"
+        label={props.translate("English hyperlink")}
         type="text"
         id="input-hyperlink-en"
-        placeholder="Enter the English hyperlink."
-        info={"???"}
+        info={props.translate("Enter a URL to an external webpage in English related to your event.")}
         value={hyperlinkEn}
         handleChange={e => setHyperlinkEn(e.target.value)}
       />
@@ -364,30 +361,27 @@ export default function EventForm(props) {
         label={props.translate("French name")}
         type="text"
         id="input-name-fr"
-        placeholder="Enter the French event name."
-        info="Enter the French event name."
+        info={props.translate("Enter the French event name.")}
         value={nameFr}
         handleChange={e => {
           setNameFr(e.target.value);
           setInvalidNameFr(false);
         }}
-        invalidFeedback={invalidNameFr ? <InvalidFeedback feedback="You must enter a name." /> : null}
+        invalidFeedback={invalidNameFr ? <InvalidFeedback feedback={props.translate("You must enter a name.")} /> : null}
       />
       <Textarea
-        label="French description"
+        label={props.translate("French description")}
         id="textarea-description-fr"
-        placeholder={"Describe your event in French."}
         height={100}
-        info={"Describe your event in French."}
+        info={props.translate("Describe your event in French.")}
         value={descriptionFr}
         handleChange={e => setDescriptionFr(e.target.value)}
       />
       <Input
-        label="French hyperlink"
+        label={props.translate("French hyperlink")}
         type="text"
         id="input-hyperlink-fr"
-        placeholder="Enter the French hyperlink."
-        info={"???"}
+        info={props.translate("Enter a URL to an external webpage in French related to your event.")}
         value={hyperlinkFr}
         handleChange={e => setHyperlinkFr(e.target.value)}
       />
@@ -484,36 +478,34 @@ export default function EventForm(props) {
           {frenchFields}
         </div>
         <Checkbox
-          label="All day"
+          label={props.translate("All day")}
           id="all-day"
           value={allDay}
           handleChange={e => setAllDay(e.target.checked)}
-          info="When this is checked, ???."
+          info={props.translate("Check this box to indicate that your event lasts for one or multiple whole days.")}
         />
         <div className="row mb-3">
           <div className="col-12 col-md-6">
             <div style={{ position: "relative" }}>
               <Input
-                label="Start date"
+                label={props.translate("Start date")}
                 type="text"
                 id="input-start-date"
-                placeholder="Select date"
-                info="???"
+                info={props.translate("Select the date at which your event starts. Click inside the field to view a calendar and select a date.")}
                 value={startDate !== null ? startDate.setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_HUGE) : ""}
                 readOnly={true}
                 onClick={() => setShowStartDateSelector(true)}
-                invalidFeedback={invalidStartDate ? <InvalidFeedback feedback="You must chose a start date." /> : null}
+                invalidFeedback={invalidStartDate ? <InvalidFeedback feedback={props.translate("You must select a start date.")} /> : null}
               />
               {startDateSelector}
             </div>
             {allDay ? null : (
               <div style={{ position: "relative" }}>
                 <Input
-                  label="Start time"
+                  label={props.translate("Start time")}
                   type="text"
                   id="input-start-time"
-                  placeholder="Select time"
-                  info="???"
+                  info={props.translate("Enter the time at which your event starts. Click inside the field to view a dropdown with options, or enter a custom time.")}
                   value={startTime}
                   onClick={() => setShowStartTimeSelector(!showStartTimeSelector)}
                   onBlur={() => {
@@ -524,7 +516,7 @@ export default function EventForm(props) {
                     setStartTime(e.target.value);
                     setInvalidStartTime(false);
                   }}
-                  invalidFeedback={invalidStartTime ? <InvalidFeedback feedback="You must chose a start time." /> : null}
+                  invalidFeedback={invalidStartTime ? <InvalidFeedback feedback={props.translate("You must enter a start time.")} /> : null}
                 />
                 {startTimeSelector}
               </div>
@@ -533,26 +525,24 @@ export default function EventForm(props) {
           <div className="col-12 col-md-6">
             <div style={{ position: "relative" }}>
               <Input
-                label="End date"
+                label={props.translate("End date")}
                 type="text"
                 id="input-end-date"
-                placeholder="Select date"
-                info="???"
+                info={props.translate("Select the date at which your event ends. Click inside the field to view a calendar and select a date.")}
                 value={endDate !== null ? endDate.setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_HUGE) : ""}
                 readOnly={true}
                 onClick={() => setShowEndDateSelector(!showEndDateSelector)}
-                invalidFeedback={invalidEndDate ? <InvalidFeedback feedback="Your end date must be on the same day as your start date or later." /> : null}
+                invalidFeedback={invalidEndDate ? <InvalidFeedback feedback={props.translate("Your end date must be on the same day as your start date or later.")} /> : null}
               />
               {endDateSelector}
             </div>
             {allDay ? null : (
               <div style={{ position: "relative" }}>
                 <Input
-                  label="End time"
+                  label={props.translate("End time")}
                   type="text"
                   id="input-end-time"
-                  placeholder="Select time"
-                  info="???"
+                  info={props.translate("Enter the time at which your event ends. Click inside the field to view a dropdown with options, or enter a custom time.")}
                   value={endTime}
                   onClick={() => setShowEndTimeSelector(!showEndTimeSelector)}
                   onBlur={() => {
@@ -563,7 +553,7 @@ export default function EventForm(props) {
                     setEndTime(e.target.value);
                     setInvalidEndTime(false);
                   }}
-                  invalidFeedback={invalidEndTime ? <InvalidFeedback feedback="Your end time must be valid and later than your start time." /> : null}
+                  invalidFeedback={invalidEndTime ? <InvalidFeedback feedback={props.translate("Your end time must be valid and be later than your start time.")} /> : null}
                 />
                 {endTimeSelector}
               </div>
