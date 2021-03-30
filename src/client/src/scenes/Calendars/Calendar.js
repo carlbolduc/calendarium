@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useParams, Redirect } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { DateTime } from "luxon";
 import {calendarAccessStatus, decideWhatToDisplay, encodeObject} from "../../services/Helpers";
 import CalendarForm from "./CalendarForm";
@@ -32,16 +32,20 @@ export default function Calendar(props) {
   }, [getCalendar, link]);
 
   const refreshEvents = useCallback(() => {
-    const q = encodeObject({ startAt: currentDay.startOf("day").toSeconds()});
-    getCalendarEvents(props.calendar.calendarId, q, result => {
-      // We do nothing with the result.
-      // TODO: should we display the error if there is one (there should never be one)
-    });
+    if (props.calendar.calendarId !== null) {
+      const q = encodeObject({ startAt: currentDay.startOf("day").toSeconds()});
+      getCalendarEvents(props.calendar.calendarId, q, result => {
+        // We do nothing with the result.
+        // TODO: should we display the error if there is one (there should never be one)
+      });
+    }
   }, [props.calendar.calendarId, currentDay, getCalendarEvents]);
 
   useEffect(() => {
-    if ([props.calendar.linkEn, props.calendar.linkFr].indexOf(link) !== -1) {
-      refreshEvents();
+    if (props.calendar.calendarId !== null) {
+      if ([props.calendar.linkEn, props.calendar.linkFr].indexOf(link) !== -1) {
+        refreshEvents();
+      }
     }
   }, [props.calendar, link, refreshEvents]);
 
@@ -277,12 +281,5 @@ export default function Calendar(props) {
     return result;
   }
 
-  return props.calendar.publicCalendar || props.authenticated ? main() : (
-      <Redirect
-        to={{
-          pathname: "/sign-in",
-          state: { from: "/subscription" }
-        }}
-      />
-    );
+  return main();
 }

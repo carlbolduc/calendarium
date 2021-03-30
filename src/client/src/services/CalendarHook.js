@@ -7,7 +7,13 @@ export function useCalendar(token, subscribed, setEvents) {
   const [calendar, setCalendar] = useState(emptyCalendar());
 
   function emptyCalendar() {
-    return { calendarId: null, enableEn: false, enableFr: false, eventApprovalRequired: true };
+    return {
+      calendarId: null,
+      enableEn: false,
+      enableFr: false,
+      publicCalendar: true,
+      eventApprovalRequired: true,
+    };
   }
 
   const getCalendars = useCallback(() => {

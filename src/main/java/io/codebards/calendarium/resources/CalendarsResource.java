@@ -43,11 +43,28 @@ public class CalendarsResource {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
         Optional<Calendar> oCalendar = dao.findCalendarByLink(auth.getAccountId(), link);
         if (oCalendar.isPresent()) {
-            response = Response.ok(oCalendar.get()).build();
+            if (oCalendar.get().getPublicCalendar()) {
+                response = Response.ok(oCalendar.get()).build();
+            } else {
+                // Only owner and users with an active access can lookup this calendar
+                List<CalendarAccess> calendarAccesses = dao.findCalendarAccesses(auth.getAccountId());
+                Optional<CalendarAccess> oCalendarAccess = calendarAccesses
+                    .stream()
+                    .filter(ca -> ca.getCalendarId() == oCalendar.get().getCalendarId())
+                    .findAny();
+                if (
+                    oCalendarAccess.isPresent() &&
+                    (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.OWNER.getStatus()) ||
+                     oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.ACTIVE.getStatus()))
+                ) {
+                    response = Response.ok(oCalendar.get()).build();
+                }
+            }
         }
         return response;
     }
 
+    // This route is for the calendar invitation only, it returns limited data about the calendar
     @GET
     @Path("/anonymous/{link}")
     public Response getAnonymousCalendar(@PathParam("link") String link, @QueryParam("id") long id) {

@@ -208,7 +208,7 @@ public interface Dao {
             "       event_approval_required,\n" +
             "       '' AS access\n" +
             "FROM calendar\n" +
-            "WHERE (link_en = :link OR link_fr = :link)")
+            "WHERE (link_en = :link OR link_fr = :link) AND public_calendar IS TRUE")
     @RegisterBeanMapper(Calendar.class)
 	Optional<Calendar> findPublicCalendarByLink(@Bind("link") String link);
 
