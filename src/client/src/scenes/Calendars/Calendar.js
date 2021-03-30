@@ -136,8 +136,15 @@ export default function Calendar(props) {
       messageOrigin={messageOrigin}
       actionButtonsZone={
         <div className="mb-4">
-          <Button label={props.translate("Back to calendar")} id="button-cancel"
-                  onClick={() => setShowManageEvents(false)} outline={true}/>
+          <Button
+            label={props.translate("Back to calendar")}
+            id="button-cancel"
+            onClick={() => {
+              setShowManageEvents(false);
+              refreshEvents();
+            }}
+            outline={true}
+          />
         </div>
       }
     />
