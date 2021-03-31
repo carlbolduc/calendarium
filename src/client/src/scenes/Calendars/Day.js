@@ -18,16 +18,14 @@ export default function Day(props) {
       ? { cursor: "pointer" }
       : { cursor: "pointer", backgroundColor: props.primaryColor } 
     : { cursor: "pointer" };
-  // TODO: replace "props.day !== null" in the condition by "if day has an event in this calendar"
-  const dotClassName = props.day !== null && props.primaryColor !== undefined
+  const dotClassName = props.showDot && props.primaryColor !== undefined
     ? props.date.day === props.day
       ? props.primaryColor === undefined || props.primaryColor === "#ffffff"
         ? "d-block"
         : `d-block ${textColor(props.primaryColor)}`
       : "d-block"
     : "d-none";
-  // TODO: replace "props.day !== null" in the condition by "if day has an event in this calendar"
-  const dotStyle = props.day !== null && props.secondaryColor !== undefined
+  const dotStyle = props.showDot && props.secondaryColor !== undefined
     ? props.secondaryColor === "#ffffff"
       ? { marginTop: '-30px', height: '34px', fontSize: '200%' }
       : { color: props.secondaryColor, marginTop: '-30px', height: '34px', fontSize: '200%' }
