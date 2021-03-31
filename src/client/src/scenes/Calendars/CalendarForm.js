@@ -277,20 +277,20 @@ export default function CalendarForm(props) {
               info={props.translate("Select which day of the week will be the first day displayed on the left in this calendar.")}
             />
             <Input
-              label={props.translate("Primary color")}
+              label={props.translate("Primary colour")}
               type="color"
               id="input-primary-color"
               value={primaryColor}
               handleChange={e => setPrimaryColor(e.target.value)}
-              info={props.translate("Select a primary color for this calendar.")}
+              info={props.translate("Select a primary colour for this calendar.")}
             />
             <Input
-              label={props.translate("Secondary color")}
+              label={props.translate("Secondary colour")}
               type="color"
               id="input-secondary-color"
               value={secondaryColor}
               handleChange={e => setSecondaryColor(e.target.value)}
-              info={props.translate("Select a secondary color for this calendar.")}
+              info={props.translate("Select a secondary colour for this calendar.")}
             />
           </div>
           <div className="col-12 col-md-auto">
