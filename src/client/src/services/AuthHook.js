@@ -77,11 +77,12 @@ export function useAuth() {
   }
 
   const updateAccount = useCallback((data, cb) => {
-    // TODO: check usage of this function, it can cause loops since it updates accout and is triggered by account
+    // TODO: check usage of this function, it can cause loops since it updates account and is triggered by account
+    // TODO: split in different update functions
     const updatedAccount = {
       accountId: account.accountId,
-      name: data["name"] === undefined ? account.name : data["name"],
-      email: data["email"] === undefined ? account.email : data["email"],
+      name: data["name"] === undefined || data["name"] === "" ? account.name : data["name"],
+      email: data["email"] === undefined || data["email"] === "" ? account.email : data["email"],
       languageId: data["languageId"] === undefined ? account.languageId : data["languageId"],
       stripeCusId: account.stripeCusId,
       createdAt: account.createdAt,
