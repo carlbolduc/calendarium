@@ -14,7 +14,7 @@
     <rule>
         <name>Client Side Routing</name>
         <note>Cleanly forward any request not matching asset resources or api to react router</note>
-        <from>^/(?!(api|static/|manifest\.json|assets-manifest\.json|favicon\.ico)).*$</from>
+        <from>^/(?!(api|static/|img/|favicon/|manifest\.json|assets-manifest\.json)).*$</from>
         <to>/index.html</to>
     </rule>
 </urlrewrite>
