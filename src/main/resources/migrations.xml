@@ -415,8 +415,8 @@
         </addColumn>
     </changeSet>
 
-    <!-- Create table tax -->
     <changeSet id="4" author="carl">
+        <!-- Create table tax -->
         <createTable tableName="tax">
             <column name="tax_id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -439,4 +439,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="5" author="mag">
+        <!-- Add not empty constraints on account email and name -->
+        <sql>
+            ALTER TABLE account ADD CONSTRAINT check_email_not_empty CHECK (email != '');
+            ALTER TABLE account ADD CONSTRAINT check_name_not_empty CHECK (name != '');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
