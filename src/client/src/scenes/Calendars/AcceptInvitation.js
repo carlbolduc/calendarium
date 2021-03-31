@@ -58,10 +58,13 @@ export default function AcceptInvitation(props) {
   const title = `${props.translate("Invitation to collaborate to")} ${calendarName}`;
 
   const instructions = props.account.accountId !== null ? (
+    // If user is signed in, display shorter instructions
+    // TODO: don't validate if user is signed in, validate if they already have an account, because if they are simply signed out, at the moment, they will see the password field
     <>
       <p>{props.translate("You have been invited to collaborate to a calendar. Accept the invitation to get started and view this calendar in My calendars.")}</p>
     </>
   ) : (
+    // If user is new, display more extensive instructions
     <>
       <h5>{props.translate("Welcome to Calendarium.")}</h5>
       <p>{props.translate("You have been invited to collaborate to a calendar. The email associated with your account is the email at which you receive your invitation. If you want to change it, you will be able to do so later in your account profile.")}</p>
