@@ -71,6 +71,7 @@ export default function Embed(props) {
               language={props.language}
               primaryColor={props.calendar.primaryColor}
               secondaryColor={props.calendar.secondaryColor}
+              events={props.events}
             />
           </div>
           <div className="col-12 col-md">
