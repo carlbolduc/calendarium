@@ -60,6 +60,7 @@ public class CollaboratorsResource {
             // if account doesn't exist, create it, with the language of the account that is
             // inviting and a null password
             accountId = dao.insertAccount(collaborator.getEmail(), collaborator.getName(), auth.getLanguageId(), null);
+            oAccount = dao.findAccountById(accountId);
         }
 
         // check if account already is a collaborator on that calendar
