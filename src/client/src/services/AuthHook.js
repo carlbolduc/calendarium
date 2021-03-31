@@ -82,6 +82,7 @@ export function useAuth() {
   }
 
   const updateAccount = useCallback((data, cb) => {
+    debugger
     // TODO: check usage of this function, it can cause loops since it updates account and is triggered by account
     // TODO: split in different update functions
     if (token !== null) {
@@ -115,46 +116,44 @@ export function useAuth() {
   }, [token, account.accountId, account.name, account.email, account.languageId]);
 
   const updateAccountLanguageId = useCallback((languageId, cb) => {
-      if (languageId !== account.languageId) {
-        const updatedAccount = {
-          name: account.name,
-          email: account.email,
-          currentPassword: null,
-          newPassword: null,
-          languageId: languageId,
-        };
-        // signed in user on embed page may have a null accountId
-        if (token !== null && account.accountId !== null) {
-          axios({
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            url: `${process.env.REACT_APP_API}/accounts/${account.accountId}`,
-            data: updatedAccount,
+    if (languageId !== account.languageId) {
+      const updatedAccount = {
+        name: account.name,
+        email: account.email,
+        currentPassword: null,
+        newPassword: null,
+        languageId: languageId,
+      };
+      // signed in user on embed page may have a null accountId
+      if (token !== null && account.accountId !== null) {
+        axios({
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          url: `${process.env.REACT_APP_API}/accounts/${account.accountId}`,
+          data: updatedAccount,
+        })
+          .then((res) => {
+            setAccount(res.data);
+            if (cb) {
+              const result = {
+                success: true,
+              };
+              cb(result);
+            }
           })
-            .then((res) => {
-              setAccount(res.data);
-              if (cb) {
-                const result = {
-                  success: true,
-                };
-                cb(result);
-              }
-            })
-            .catch((err) => {
-              errorCallback(err, cb);
-            });
-        } else {
-          const updatedAccount = { ...account };
-          updatedAccount.languageId = languageId;
-          setAccount(updatedAccount);
-        }
+          .catch((err) => {
+            errorCallback(err, cb);
+          });
+      } else {
+        const updatedAccount = {...account};
+        updatedAccount.languageId = languageId;
+        setAccount(updatedAccount);
       }
-    },
-    [token, account]
-  );
+    }
+  }, [token, account]);
 
   const createPasswordReset = useCallback((data, cb) => {
     axios.post(`${process.env.REACT_APP_API}/auth/password-resets`, data).then(() => {

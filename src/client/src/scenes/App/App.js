@@ -57,8 +57,8 @@ export default function App() {
   const { collaborators, calendarAccess, getCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation, deactivateCalendarAccess, activateCalendarAccess } = useCollaborator(token, saveToken);
 
   const switchLanguage = useCallback((languageId) => {
-    updateAccount({ languageId: languageId });
-  }, [updateAccount]);
+    updateAccountLanguageId(languageId);
+  }, [updateAccountLanguageId]);
 
   function signOutAndClearData(cb) {
     signOut();
