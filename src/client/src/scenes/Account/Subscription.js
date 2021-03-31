@@ -38,8 +38,13 @@ export default function Subscription(props) {
   }
 
   function createSubscription(paymentMethod, cb) {
-    setMessageOrigin("createSubscription");
-    props.createSubscription(paymentMethod, cb);
+    props.createSubscription(paymentMethod, result => {
+      if (!result.success) {
+        setMessageOrigin("createSubscription");
+        setResult(result);
+        if (cb) cb();
+      }
+    });
   }
 
   function cancel(e) {

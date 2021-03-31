@@ -32,9 +32,8 @@ export default function SubscribeForm(props) {
       console.log("[error]", error);
       setWorking(false);
     } else {
-      props.createSubscription(paymentMethod, result => {
+      props.createSubscription(paymentMethod, () => {
         setWorking(false);
-        // TODO: handle error after attempting to create subscription
       });
     }
   };
