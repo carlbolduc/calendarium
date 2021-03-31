@@ -33,6 +33,10 @@ export default function Collaborators(props) {
         }
       );
       inviteCollaborator(props.calendar.calendarId, data, result => {
+        if (result.success) {
+          setName("");
+          setEmail("");
+        }
         setResult(result);
         setMessageOrigin("inviteCollaborator");
         setWorking(false);
