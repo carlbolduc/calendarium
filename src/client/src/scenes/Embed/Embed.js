@@ -59,7 +59,7 @@ export default function Embed(props) {
     if (loading) {
       result = (
         <div className="d-flex justify-content-center">
-          <div className="spinner-grow" role="status">
+          <div className="spinner-grow text-secondary" role="status">
             <span className="visually-hidden">{props.translate("Loading...")}</span>
           </div>
         </div>
