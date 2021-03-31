@@ -14,6 +14,7 @@ import EventsList from "../Events/EventsList";
 export default function Calendar(props) {
   const getCalendar = props.getCalendar;
   const getCalendarEvents = props.getCalendarEvents;
+  const getDots = props.getDots;
   let { link } = useParams();
   const [currentDay, setCurrentDay] = useState(DateTime.now());
   const [showCalendarForm, setShowCalendarForm] = useState(false);
@@ -33,13 +34,19 @@ export default function Calendar(props) {
 
   const refreshEvents = useCallback(() => {
     if (props.calendar.calendarId !== null) {
-      const q = encodeObject({ startAt: currentDay.startOf("day").toSeconds()});
-      getCalendarEvents(props.calendar.calendarId, q, result => {
+      const eventsQ = encodeObject({ startAt: currentDay.startOf("day").toSeconds()});
+      getCalendarEvents(props.calendar.calendarId, eventsQ, result => {
         // We do nothing with the result.
         // TODO: should we display the error if there is one (there should never be one)
       });
+      const dotsQ = encodeObject({ 
+        calendarId: props.calendar.calendarId,
+        startAt: currentDay.startOf("day").toSeconds(),
+        zoneName: currentDay.zoneName
+      });
+      getDots(dotsQ);
     }
-  }, [props.calendar.calendarId, currentDay, getCalendarEvents]);
+  }, [props.calendar.calendarId, currentDay, getCalendarEvents, getDots]);
 
   useEffect(() => {
     if (props.calendar.calendarId !== null) {

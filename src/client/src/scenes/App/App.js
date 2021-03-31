@@ -5,6 +5,7 @@ import { useAuth } from "../../services/AuthHook";
 import { useSubscription } from "../../services/SubscriptionHook";
 import { useCalendar } from "../../services/CalendarHook";
 import { useEvent } from "../../services/EventHook";
+import { useDot } from "../../services/DotHook";
 import { useCollaborator } from "../../services/CollaboratorHook";
 import Header from "../../components/Header/Header";
 import SignUp from "../Auth/SignUp";
@@ -52,6 +53,7 @@ export default function App() {
     getCalendarEvents,
     clearCalendar
   } = useCalendar(token, subscribed, setEvents);
+  const { dots, getDots } = useDot();
   const { collaborators, calendarAccess, getCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation, deactivateCalendarAccess, activateCalendarAccess } = useCollaborator(token, saveToken);
 
   const switchLanguage = useCallback((languageId) => {
@@ -199,6 +201,8 @@ export default function App() {
                   deleteEvent={deleteEvent}
                   events={events}
                   searchEvents={searchEvents}
+                  dots={dots}
+                  getDots={getDots}
                   collaborators={collaborators}
                   getCollaborators={getCollaborators}
                   inviteCollaborator={inviteCollaborator}

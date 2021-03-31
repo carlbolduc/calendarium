@@ -13,10 +13,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.YearMonth;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -93,10 +90,11 @@ public class PublicResource {
             DotsParams dotsParams = mapper.readValue(decodedQuery, DotsParams.class);
             if (dotsParams.getCalendarId() != null && dotsParams.getStartAt() != null) {
                 ZoneId zoneId = ZoneId.of(dotsParams.getZoneName());
-                // Find the upper limit for months event: the begining of the first day of next month
-                LocalDate monthEnd = YearMonth.from(dotsParams.getStartAt().atZone(zoneId)).atEndOfMonth();
+                ZonedDateTime zonedStartAt = dotsParams.getStartAt().atZone(zoneId);
+                // Find the upper limit for months event: the beginning of the first day of next month
+                LocalDate monthEnd = YearMonth.from(zonedStartAt).atEndOfMonth();
                 Instant firstDayOfNextMonth = monthEnd.plusDays(1).atStartOfDay().atZone(zoneId).toInstant();
-                List<Event> monthEvents = dao.findMonthEvents(dotsParams.getCalendarId(), dotsParams.getStartAt(), firstDayOfNextMonth);
+                List<Event> monthEvents = dao.findMonthEvents(dotsParams.getCalendarId(), zonedStartAt.toInstant(), firstDayOfNextMonth);
                 // TODO: finish this
                 dots.add(monthEvents.size());
             }
