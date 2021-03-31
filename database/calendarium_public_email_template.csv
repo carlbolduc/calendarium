@@ -1,0 +1,64 @@
+2,Email footer,,,"Ce courriel a été envoyé sur demande à [account.email] 
+
+Questions? Écrivez-nous à grove@codebards.io
+
+© [current_year] Code Bards
+1010-1180 rue Louis-Adolphe-Robitaille, Québec, QC, G1S 0C7, Canada 
+Notre politique de confidentialité : http://codebards.io/policies/privacy/","This email was sent by request to [account.email] 
+
+Questions? Write to us at grove@codebards.io
+
+© [current_year] Code Bards
+1010-1180 rue Louis-Adolphe-Robitaille, Québec, QC, G1S 0C7, Canada 
+Our privacy policy: http://codebards.io/policies/privacy/",2021-03-04 16:17:39.501264,0,2021-03-10 15:48:41.220411,0
+4,Calendar invitation accepted,[account.name] a accepté votre invitation au calendrier [calendar.nameFr],[account.name] has accepted your invitation to the calendar [calendar.nameEn],"Bonjour [calendar_owner.name],
+
+[account.name] a accepté votre invitation au calendrier [calendar.nameFr] et est maintenant prêt à partager des événements.
+
+Nous vous souhaitons une bonne collaboration!
+
+- L'équipe de Calendarium","Hi [calendar_owner.name],
+
+[account.name] has accepted your invitation to the calendar [calendar.nameEn] and is now ready to share events.
+
+We wish you a happy collaboration!
+
+- The Calendarium Team",2021-03-04 16:49:58.835620,0,,
+3,Calendar collaborator invitation,[calendar_owner.name] vous invite à collaborer au calendrier [calendar.nameFr],[calendar_owner.name] is inviting you to collaborate to the calendar [calendar.nameEn],"Bonjour [account.name],
+
+[calendar_owner.name] vous invite à collaborer au calendrier [calendar.nameFr]. Ce calendrier est disponible en tout temps en ligne. Vous pourrez y consulter les événements ajoutés par les autres collaborateurs et y partager vos propres événements.
+
+Cliquez sur le lien suivant pour accepter l'invitation :
+
+[accept_calendar_invitation_link]
+
+Si vous croyez que ce courriel vous a été envoyé par erreur, vous pouvez l'ignorer en toute sécurité. Si vous avez besoin de plus d'information, n'hésitez pas à répondre à ce courriel.
+
+- L'équipe de Calendarium","Hi [account.name],
+
+[calendar_owner.name] is inviting you to collaborate to the calendar [calendar.nameEn]. This calendar is available at any time online. You will be able to consult events created by the other collaborators as well as share your own events.
+
+Click the following link to accept the invitation:
+
+[accept_calendar_invitation_link]
+
+If you believe you were sent this email by mistake, you can safely ignore it. If you have more questions, feel free to reply to this email.
+
+- The Calendarium Team",2021-03-04 16:43:16.880132,0,2021-03-10 19:15:17.611091,0
+1,Password reset,Voici votre réinitialisation de mot de passe,Here is the password reset you requested,"Bonjour [account.name],
+
+Cliquez sur le lien suivant pour réinitialiser votre mot de passe :
+
+[reset_password_link]
+
+Si vous n'avez pas demandé de réinitialisation de mot de passe, vous pouvez ignorer ce courriel en toute sécurité. Il s'agit fort probablement d'une autre personne qui a tenté par erreur de se connecter avec votre adresse de courriel. Si vous avez besoin de plus d'information, n'hésitez pas à répondre à ce courriel.
+
+- L'équipe de Calendarium","Hi [account.name],
+
+Click the following link to reset your password:
+
+[reset_password_link]
+
+If you did not request that your password be reset, you can safely ignore this email. It's likely that another person has mistakenly attempted to log in using your email address. If you have more questions, feel free to reply to this email.
+
+- The Calendarium Team",2021-03-04 16:03:53.571720,0,2021-03-04 16:08:13.785351,0
