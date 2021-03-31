@@ -110,11 +110,11 @@ export default function Collaborators(props) {
           <thead>
             <tr className="text-nowrap">
               <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Email</th>
-              <th scope="col">Status</th>
-              <th scope="col">Collaborating since</th>
-              <th scope="col">Manage</th>
+              <th scope="col">{props.translate("Name")}</th>
+              <th scope="col">{props.translate("Email")}</th>
+              <th scope="col">{props.translate("Status")}</th>
+              <th scope="col">{props.translate("Collaborating since")}</th>
+              <th scope="col">{props.translate("Manage")}</th>
             </tr>
           </thead>
           <tbody>
@@ -123,7 +123,7 @@ export default function Collaborators(props) {
                 <th scope="row">{index + 1}</th>
                 <td>{c.name}</td>
                 <td>{c.email}</td>
-                <td>{c.status}</td>
+                <td>{props.translate(c.status)}</td>
                 <td>{DateTime.fromSeconds(c.createdAt).setLocale(getLocale(props.language)).toLocaleString(DateTime.DATETIME_FULL)}</td>
                 <td>{collaboratorActions(c)}</td>
               </tr>
