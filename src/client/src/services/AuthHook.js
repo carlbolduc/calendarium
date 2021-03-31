@@ -123,7 +123,8 @@ export function useAuth() {
           newPassword: null,
           languageId: languageId,
         };
-        if (token !== null) {
+        // signed in user on embed page may have a null accountId
+        if (token !== null && account.accountId !== null) {
           axios({
             method: "PUT",
             headers: {
