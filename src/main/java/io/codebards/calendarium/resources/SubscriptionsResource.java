@@ -1,6 +1,5 @@
 package io.codebards.calendarium.resources;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stripe.Stripe;
 import com.stripe.exception.CardException;
 import com.stripe.exception.StripeException;
@@ -42,7 +41,6 @@ public class SubscriptionsResource {
     private final Dao dao;
     private final String stripeApiKey;
     private final String stripeWebhookSecret;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public SubscriptionsResource(Dao dao, String stripeApiKey, String stripeWebhookSecret) {
         this.dao = dao;

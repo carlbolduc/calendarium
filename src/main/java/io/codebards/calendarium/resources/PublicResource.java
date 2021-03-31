@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.codebards.calendarium.api.Calendar;
 import io.codebards.calendarium.api.CalendarEventsParams;
+import io.codebards.calendarium.api.DotsParams;
 import io.codebards.calendarium.api.Event;
 import io.codebards.calendarium.db.Dao;
 
@@ -12,10 +13,16 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Path("/public")
 @Produces(MediaType.APPLICATION_JSON)
@@ -73,6 +80,30 @@ public class PublicResource {
             }
         }
         return events;
+    }
+
+    @GET
+    @Path("/dots")
+    public List<Integer> getDots(@QueryParam("q") String q) {
+        List<Integer> dots = new ArrayList<>();
+        String decodedQuery = new String(Base64.getDecoder().decode(q), StandardCharsets.UTF_8);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        try {
+            DotsParams dotsParams = mapper.readValue(decodedQuery, DotsParams.class);
+            if (dotsParams.getCalendarId() != null && dotsParams.getStartAt() != null) {
+                ZoneId zoneId = ZoneId.of(dotsParams.getZoneName());
+                // Find the upper limit for months event: the begining of the first day of next month
+                LocalDate monthEnd = YearMonth.from(dotsParams.getStartAt().atZone(zoneId)).atEndOfMonth();
+                Instant firstDayOfNextMonth = monthEnd.plusDays(1).atStartOfDay().atZone(zoneId).toInstant();
+                List<Event> monthEvents = dao.findMonthEvents(dotsParams.getCalendarId(), dotsParams.getStartAt(), firstDayOfNextMonth);
+                // TODO: finish this
+                dots.add(monthEvents.size());
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return dots;
     }
 
 }

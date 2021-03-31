@@ -2,6 +2,8 @@ package io.codebards.calendarium.db;
 
 import io.codebards.calendarium.api.*;
 import io.codebards.calendarium.core.Account;
+
+import org.checkerframework.checker.signature.qual.DotSeparatedIdentifiers;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -401,6 +403,14 @@ public interface Dao {
     @RegisterBeanMapper(Event.class)
     List<Event> findAccountCalendarEvents(@Bind("accountId") long accountId, @BindBean EventsParams eventsParams);
 
+    @SqlQuery("SELECT e.event_id, e.start_at, e.end_at\n" +
+            "FROM event e\n" +
+            "INNER JOIN calendar c ON e.calendar_id = c.calendar_id\n" +
+            "WHERE c.calendar_id = :calendarId\n" +
+            "AND ((e.start_at < :monthStart AND e.end_at >= :monthStart) OR (e.start_at >= :monthStart AND e.start_at < :firstDayOfNextMonth))")
+    @RegisterBeanMapper(Event.class)
+    List<Event> findMonthEvents(@Bind("calendarId") long calendarId, @Bind("monthStart") Instant monthStart, @Bind("firstDayOfNextMonth") Instant firstDayOfNextMonth);
+
     // ******************** Calendar Access ********************
 
     @SqlUpdate("INSERT INTO calendar_access (account_id, calendar_id, status) VALUES (:accountId, :calendarId, :status)")
@@ -454,6 +464,7 @@ public interface Dao {
     @SqlUpdate("UPDATE calendar_access SET status = :status WHERE calendar_access_id = :calendarAccessId and calendar_id = :calendarId")
     @RegisterBeanMapper(CalendarAccess.class)
     void updateCalendarAccessStatus(@Bind("calendarAccessId") long calendarAccessId, @Bind("calendarId") long calendarId, @Bind("status") String status);
+
 
     // ******************** Email Template ********************
 
