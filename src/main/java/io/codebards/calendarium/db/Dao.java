@@ -345,7 +345,9 @@ public interface Dao {
             "FROM event\n" +
             "WHERE calendar_id = :calendarId\n" +
             "  AND status = 'published'\n" +
-            "  AND end_at >= :startAt")
+            "  AND end_at >= :startAt\n" +
+            "ORDER BY start_at\n" +
+            "LIMIT 20")
     @RegisterBeanMapper(Event.class)
     List<Event> findCalendarEmbedEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Instant startAt);
 
