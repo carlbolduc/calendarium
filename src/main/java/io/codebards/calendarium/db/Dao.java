@@ -93,7 +93,7 @@ public interface Dao {
     @RegisterBeanMapper(Price.class)
     Price findPrice();
 
-    @SqlQuery("SELECT stripe_tax_id, stripe_description FROM tax")
+    @SqlQuery("SELECT stripe_tax_id, description FROM tax")
     @RegisterBeanMapper(Tax.class)
     List<Tax> findTaxes();
 
