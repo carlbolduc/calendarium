@@ -74,7 +74,7 @@ export default function SubscribeForm(props) {
           </div>
         </div>
       </div>
-      <Button label={props.translate("Cancel")} type="button" id="button-cancel" onClick={props.cancel} outline={true} />
+      <Button label={props.translate("Cancel")} type="button" id="button-cancel" onClick={props.cancel} disabled={working} outline={true} />
       <Button label={props.translate("Subscribe")} type="submit" id="button-subscribe" working={working} disabled={!stripe} />
       <p><span className="fw-bold">{props.translate("You will be charged $600 CAD now, plus any applicable* sales taxes")}</span>, {props.translate("and then each year until you cancel your subscription.")}</p>
       <small className="fst-italic">{props.translate("*We currently charge sales taxes only to Canadian customers.")}</small>
