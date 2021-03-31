@@ -151,7 +151,7 @@ export default function Month(props) {
     <Week
       key={uuidv4()}
       days={week}
-      dots={props.events !== undefined ? daysWithDot() : []}
+      dots={props.dots !== undefined ? props.dots : []}
       selectedDate={props.selectedDate}
       selectDay={selectDay}
       hide={props.hide}

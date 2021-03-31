@@ -8,6 +8,7 @@ import EventsList from "../Events/EventsList";
 
 
 export default function Embed(props) {
+  const getDots = props.getDots;
   let { id } = useParams();
   const location = useLocation();
   const updateAccountLanguageId = props.updateAccountLanguageId;
@@ -44,6 +45,12 @@ export default function Embed(props) {
         // We do nothing with the result.
         // TODO: should we display the error if there is one (there should never be one)
       });
+      const dotsQ = encodeObject({
+        calendarId: props.calendar.calendarId,
+        startAt: selectedDate.startOf("month").startOf("day").toSeconds(),
+        zoneName: selectedDate.zoneName
+      });
+      getDots(dotsQ);
     }
   }, [props.calendar.calendarId, selectedDate, getCalendarEvents])
 
@@ -70,7 +77,7 @@ export default function Embed(props) {
               language={props.language}
               primaryColor={props.calendar.primaryColor}
               secondaryColor={props.calendar.secondaryColor}
-              events={props.events}
+              dots={props.dots}
             />
           </div>
           <div className="col-12 col-md">

@@ -41,7 +41,7 @@ export default function Calendar(props) {
       });
       const dotsQ = encodeObject({ 
         calendarId: props.calendar.calendarId,
-        startAt: selectedDate.startOf("day").toSeconds(),
+        startAt: selectedDate.startOf("month").startOf("day").toSeconds(),
         zoneName: selectedDate.zoneName
       });
       getDots(dotsQ);
@@ -259,7 +259,7 @@ export default function Calendar(props) {
                   language={props.language}
                   primaryColor={props.calendar.primaryColor}
                   secondaryColor={props.calendar.secondaryColor}
-                  events={props.events}
+                  dots={props.dots}
                 />
               </div>
               <div className="col-12 col-md">

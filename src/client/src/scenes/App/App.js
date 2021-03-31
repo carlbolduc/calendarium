@@ -76,6 +76,8 @@ export default function App() {
             calendar={calendar}
             getCalendar={getCalendar}
             events={events}
+            dots={dots}
+            getDots={getDots}
             getCalendarEvents={getCalendarEvents}
             languages={languages}
             language={language}

@@ -407,7 +407,8 @@ public interface Dao {
             "FROM event e\n" +
             "INNER JOIN calendar c ON e.calendar_id = c.calendar_id\n" +
             "WHERE c.calendar_id = :calendarId\n" +
-            "AND ((e.start_at < :monthStart AND e.end_at >= :monthStart) OR (e.start_at >= :monthStart AND e.start_at < :firstDayOfNextMonth))")
+            "AND ((e.start_at < :monthStart AND e.end_at >= :monthStart) OR (e.start_at >= :monthStart AND e.start_at < :firstDayOfNextMonth))\n" +
+            "ORDER BY e.start_at")
     @RegisterBeanMapper(Event.class)
     List<Event> findMonthEvents(@Bind("calendarId") long calendarId, @Bind("monthStart") Instant monthStart, @Bind("firstDayOfNextMonth") Instant firstDayOfNextMonth);
 
