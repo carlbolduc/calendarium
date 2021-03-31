@@ -52,7 +52,7 @@ export default function Embed(props) {
       });
       getDots(dotsQ);
     }
-  }, [props.calendar.calendarId, selectedDate, getCalendarEvents])
+  }, [props.calendar.calendarId, selectedDate, getCalendarEvents, getDots])
 
   function main() {
     let result;
