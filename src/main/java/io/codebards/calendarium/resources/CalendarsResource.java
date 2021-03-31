@@ -50,9 +50,10 @@ public class CalendarsResource {
             } else {
                 // Only owner and users with an active access can lookup this calendar
                 List<CalendarAccess> calendarAccesses = dao.findCalendarAccesses(auth.getAccountId());
+                Calendar calendar = oCalendar.get();
                 Optional<CalendarAccess> oCalendarAccess = calendarAccesses
                     .stream()
-                    .filter(ca -> ca.getCalendarId() == oCalendar.get().getCalendarId())
+                    .filter(ca -> ca.getCalendarId() == calendar.getCalendarId())
                     .findAny();
                 if (
                     oCalendarAccess.isPresent() &&
@@ -61,6 +62,12 @@ public class CalendarsResource {
                 ) {
                     response = Response.ok(oCalendar.get()).build();
                 }
+            }
+        } else {
+            // User might not have access and calendar may be public
+            oCalendar = dao.findPublicCalendarByLink(link);
+            if (oCalendar.isPresent()) {
+                response = Response.ok(oCalendar.get()).build();
             }
         }
         return response;
