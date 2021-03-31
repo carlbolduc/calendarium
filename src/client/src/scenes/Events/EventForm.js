@@ -129,7 +129,7 @@ export default function EventForm(props) {
     if (props.event === null) {
       createEvent(event, result => {
         if (result.success) {
-          refreshEvents();
+          props.setSelectedDate(startDate);
           hideForm();
         } else {
           setResult(result);
@@ -397,7 +397,7 @@ export default function EventForm(props) {
     <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white" }}>
       <Month
         startWeekOn={props.calendar.startWeekOn}
-        currentDay={DateTime.now()}
+        selectedDate={DateTime.now()}
         selectDay={date => {
           setStartDate(DateTime.fromFormat(`${date.year}-${date.month}-${date.day}`, "yyyy-M-d"));
           setInvalidStartDate(false);
@@ -432,7 +432,7 @@ export default function EventForm(props) {
     <div style={{ position: "absolute", top: 57, left: 0, zIndex: 10, background: "white" }}>
       <Month
         startWeekOn={props.calendar.startWeekOn}
-        currentDay={DateTime.now()}
+        selectedDate={DateTime.now()}
         selectDay={date => {
           setEndDate(DateTime.fromFormat(`${date.year}-${date.month}-${date.day}`, "yyyy-M-d"));
           setInvalidEndDate(false);

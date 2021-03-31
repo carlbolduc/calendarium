@@ -16,7 +16,7 @@ export default function Calendar(props) {
   const getCalendarEvents = props.getCalendarEvents;
   const getDots = props.getDots;
   let { link } = useParams();
-  const [currentDay, setCurrentDay] = useState(DateTime.now());
+  const [selectedDate, setSelectedDate] = useState(DateTime.now());
   const [showCalendarForm, setShowCalendarForm] = useState(false);
   const [event, setEvent] = useState(null);
   const [showEventForm, setShowEventForm] = useState(false);
@@ -34,19 +34,19 @@ export default function Calendar(props) {
 
   const refreshEvents = useCallback(() => {
     if (props.calendar.calendarId !== null) {
-      const eventsQ = encodeObject({ startAt: currentDay.startOf("day").toSeconds()});
+      const eventsQ = encodeObject({ startAt: selectedDate.startOf("day").toSeconds()});
       getCalendarEvents(props.calendar.calendarId, eventsQ, result => {
         // We do nothing with the result.
         // TODO: should we display the error if there is one (there should never be one)
       });
       const dotsQ = encodeObject({ 
         calendarId: props.calendar.calendarId,
-        startAt: currentDay.startOf("day").toSeconds(),
-        zoneName: currentDay.zoneName
+        startAt: selectedDate.startOf("day").toSeconds(),
+        zoneName: selectedDate.zoneName
       });
       getDots(dotsQ);
     }
-  }, [props.calendar.calendarId, currentDay, getCalendarEvents, getDots]);
+  }, [props.calendar.calendarId, selectedDate, getCalendarEvents, getDots]);
 
   useEffect(() => {
     if (props.calendar.calendarId !== null) {
@@ -188,6 +188,7 @@ export default function Calendar(props) {
       setResult={setResult}
       calendar={props.calendar}
       refreshEvents={refreshEvents}
+      setSelectedDate={setSelectedDate}
     />
   );
 
@@ -253,9 +254,8 @@ export default function Calendar(props) {
               <div className="col-12 col-md-auto">
                 <Month
                   startWeekOn={props.calendar.startWeekOn}
-                  currentDay={currentDay}
-                  selectDay={(date) => setCurrentDay(date)}
-                  setCurrentDay={setCurrentDay}
+                  selectedDate={selectedDate}
+                  selectDay={(date) => setSelectedDate(date)}
                   language={props.language}
                   primaryColor={props.calendar.primaryColor}
                   secondaryColor={props.calendar.secondaryColor}
