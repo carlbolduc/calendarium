@@ -146,22 +146,33 @@ public class CalendarsResource {
 
         List<CalendarAccess> calendarAccesses = dao.findCalendarAccesses(auth.getAccountId());
         Optional<CalendarAccess> oCalendarAccess = calendarAccesses.stream().filter(ca -> ca.getCalendarId() == calendarId).findAny();
-        if (oCalendarAccess.isPresent()) {
+
+        Optional<Calendar> oCalendar = Optional.empty();
+        if (oCalendarAccess.isEmpty()) {
+            oCalendar = dao.findCalendar(calendarId);
+        }
+
+        if (oCalendarAccess.isPresent() || (oCalendar.isPresent() && oCalendar.get().getPublicCalendar())) {
             String decodedQuery = new String(Base64.getDecoder().decode(q), StandardCharsets.UTF_8);
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
             try {
                 CalendarEventsParams calendarEventsParams = mapper.readValue(decodedQuery, CalendarEventsParams.class);
-                if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.OWNER.getStatus())) {
-                    events = dao.findCalendarOwnerEvents(calendarId, calendarEventsParams.getStartAt());
-                } else if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.ACTIVE.getStatus())) {
-                    events = dao.findCollaboratorEvents(auth.getAccountId(), calendarId, calendarEventsParams.getStartAt());
+                if (oCalendarAccess.isPresent()) {
+                    if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.OWNER.getStatus())) {
+                        events = dao.findCalendarOwnerEvents(calendarId, calendarEventsParams.getStartAt());
+                    } else if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.ACTIVE.getStatus())) {
+                        events = dao.findCollaboratorEvents(auth.getAccountId(), calendarId, calendarEventsParams.getStartAt());
+                    }
+                } else {
+                    // Public calendar, show events even if user isn't owner or collaborator
+                    events = dao.findCalendarEmbedEvents(calendarId, calendarEventsParams.getStartAt());
                 }
+
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
         }
-
 
         return events;
     }
