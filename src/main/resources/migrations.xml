@@ -415,4 +415,28 @@
         </addColumn>
     </changeSet>
 
+    <!-- Create table tax -->
+    <changeSet id="4" author="carl">
+        <createTable tableName="tax">
+            <column name="tax_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="stripe_tax_id" type="clob"/>
+            <column name="description" type="clob"/>
+            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
+            <column name="created_by" type="bigint"/>
+            <column name="updated_at" type="timestamptz"/>
+            <column name="updated_by" type="bigint"/>
+        </createTable>
+        <!-- Add audit triggers to tax -->
+        <sql>
+            DROP TRIGGER IF EXISTS row_created ON tax;
+            CREATE TRIGGER row_created BEFORE INSERT ON tax FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
+        </sql>
+        <sql>
+            DROP TRIGGER IF EXISTS row_updated ON tax;
+            CREATE TRIGGER row_updated BEFORE UPDATE ON tax FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

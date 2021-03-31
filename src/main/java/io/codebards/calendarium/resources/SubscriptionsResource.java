@@ -14,6 +14,7 @@ import io.codebards.calendarium.api.PaymentIntentStatus;
 import io.codebards.calendarium.api.Price;
 import io.codebards.calendarium.api.SubscriptionStatus;
 import io.codebards.calendarium.api.SubscriptionUpdate;
+import io.codebards.calendarium.api.Tax;
 import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
@@ -90,13 +91,10 @@ public class SubscriptionsResource {
                 Price price = dao.findPrice();
                 SubscriptionCreateParams subCreateParams;
                 if (pm.getCard().getCountry().equals("CA")) {
-                    List<TaxRate> taxesToCharge = new ArrayList<>();
-                    Map<String, Object> params = new HashMap<>();
-                    params.put("limit", 4);
-                    TaxRateCollection taxRates = TaxRate.list(params);
-                    List<TaxRate> taxes = taxRates.getData();
+                    List<Tax> taxesToCharge = new ArrayList<>();
                     String postalCode = pm.getBillingDetails().getAddress().getPostalCode();
                     if (postalCode != null) {
+                        List<Tax> taxes = dao.findTaxes();
                         List<String> taxRateDescriptions = getTaxRateDescriptions(postalCode);
                         taxesToCharge = taxes.stream().filter(t -> taxRateDescriptions.contains(t.getDescription())).collect(Collectors.toList());
                     }
@@ -105,7 +103,7 @@ public class SubscriptionsResource {
                         .addItem(SubscriptionCreateParams.Item.builder().setPrice(price.getStripePriceId()).build())
                         .setCustomer(customer.getId())
                         .addAllExpand(Collections.singletonList("latest_invoice.payment_intent"))
-                        .addAllDefaultTaxRate(taxesToCharge.stream().map(TaxRate::getId).collect(Collectors.toList()))
+                        .addAllDefaultTaxRate(taxesToCharge.stream().map(Tax::getStripeTaxId).collect(Collectors.toList()))
                         .build();
                 } else {
                     subCreateParams = SubscriptionCreateParams

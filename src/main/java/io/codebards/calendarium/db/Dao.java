@@ -92,6 +92,10 @@ public interface Dao {
     @RegisterBeanMapper(Price.class)
     Price findPrice();
 
+    @SqlQuery("SELECT stripe_tax_id, stripe_description FROM tax")
+    @RegisterBeanMapper(Tax.class)
+    List<Tax> findTaxes();
+
     @SqlUpdate("INSERT INTO subscription (account_id, stripe_sub_id, price_id, start_at, end_at, status) VALUES (:accountId, :stripeSubId, :priceId, :startAt, :endAt, :status)")
     void insertSubscription(@Bind("accountId") long accountId, @Bind("stripeSubId") String stripeSubId, @Bind("priceId") long priceId, @Bind("startAt") Instant startAt, @Bind("endAt") Instant endAt, @Bind("status") String status);
 
