@@ -8,18 +8,18 @@ export default function Day(props) {
       props.selectDay(props.day);
     }
   }
-  const dayClassName = props.date.day === props.day 
+  const dayClassName = props.selectedDate.day === props.day 
     ? props.primaryColor === undefined || props.primaryColor === "#ffffff"
       ? "table-primary" 
       : textColor(props.primaryColor) 
     : "";
-  const dayStyle = props.date.day === props.day 
+  const dayStyle = props.selectedDate.day === props.day 
     ? props.primaryColor === undefined || props.primaryColor === "#ffffff"
       ? { cursor: "pointer" }
       : { cursor: "pointer", backgroundColor: props.primaryColor } 
     : { cursor: "pointer" };
   const dotClassName = props.showDot && props.primaryColor !== undefined
-    ? props.date.day === props.day
+    ? props.selectedDate.day === props.day
       ? props.primaryColor === undefined || props.primaryColor === "#ffffff"
         ? "d-block"
         : `d-block ${textColor(props.primaryColor)}`

@@ -8,10 +8,9 @@ export default function Week(props) {
     <Day
       key={uuidv4()}
       day={d}
-      currentDay={props.currentDay}
       selectDay={props.selectDay}
       hide={props.hide}
-      date={props.date}
+      selectedDate={props.selectedDate}
       primaryColor={props.primaryColor}
       secondaryColor={props.secondaryColor}
       showDot={props.dots.indexOf(d) !== -1}

@@ -152,10 +152,9 @@ export default function Month(props) {
       key={uuidv4()}
       days={week}
       dots={props.events !== undefined ? daysWithDot() : []}
-      currentDay={props.currentDay}
+      selectedDate={props.selectedDate}
       selectDay={selectDay}
       hide={props.hide}
-      date={date}
       primaryColor={props.primaryColor}
       secondaryColor={props.secondaryColor}
     />

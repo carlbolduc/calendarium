@@ -13,7 +13,7 @@ export default function Embed(props) {
   const updateAccountLanguageId = props.updateAccountLanguageId;
   const getCalendar = props.getCalendar;
   const getCalendarEvents = props.getCalendarEvents;
-  const [currentDay, setCurrentDay] = useState(DateTime.now());
+  const [selectedDate, setSelectedDate] = useState(DateTime.now());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,13 +39,13 @@ export default function Embed(props) {
 
   useEffect(() => {
     if (props.calendar.calendarId !== null) {
-      const q = encodeObject({ startAt: currentDay.startOf("day").toSeconds()});
+      const q = encodeObject({ startAt: selectedDate.startOf("day").toSeconds()});
       getCalendarEvents(props.calendar.calendarId, q, result => {
         // We do nothing with the result.
         // TODO: should we display the error if there is one (there should never be one)
       });
     }
-  }, [props.calendar.calendarId, currentDay, getCalendarEvents])
+  }, [props.calendar.calendarId, selectedDate, getCalendarEvents])
 
   function main() {
     let result;
@@ -65,9 +65,8 @@ export default function Embed(props) {
           <div className="col-12 col-md-auto">
             <Month
               startWeekOn={props.calendar.startWeekOn}
-              currentDay={currentDay}
-              selectDay={date => setCurrentDay(date)}
-              setCurrentDay={setCurrentDay}
+              selectedDate={selectedDate}
+              selectDay={date => setSelectedDate(date)}
               language={props.language}
               primaryColor={props.calendar.primaryColor}
               secondaryColor={props.calendar.secondaryColor}

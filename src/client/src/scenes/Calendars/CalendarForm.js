@@ -37,7 +37,7 @@ export default function CalendarForm(props) {
   const [working, setWorking] = useState(false);
   const [eventApprovalRequired, setEventApprovalRequired] = useState(props.new ? true : props.calendar.eventApprovalRequired);
   const [noLanguageEnabled, setNoLanguageEnabled] = useState(false);
-  const [currentDay, setCurrentDay] = useState(DateTime.now());
+  const [selectedDate, setSelectedDate] = useState(DateTime.now());
   const [result, setResult] = useState("");
 
   const buildCalendar = useCallback(() => {
@@ -297,9 +297,8 @@ export default function CalendarForm(props) {
             <div className="mb-2">{props.translate("Calendar preview")}</div>
             <Month
               startWeekOn={startWeekOn}
-              currentDay={currentDay}
-              selectDay={date => setCurrentDay(date)}
-              setCurrentDay={setCurrentDay}
+              selectedDate={selectedDate}
+              selectDay={date => setSelectedDate(date)}
               language={props.language}
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
