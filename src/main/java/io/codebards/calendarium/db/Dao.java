@@ -3,7 +3,6 @@ package io.codebards.calendarium.db;
 import io.codebards.calendarium.api.*;
 import io.codebards.calendarium.core.Account;
 
-import org.checkerframework.checker.signature.qual.DotSeparatedIdentifiers;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
