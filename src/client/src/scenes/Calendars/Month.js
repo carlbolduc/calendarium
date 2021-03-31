@@ -36,6 +36,7 @@ export default function Month(props) {
         }
       }
       setWeeks(result);
+      props.selectDay(date);
     }
   }, [date, props.startWeekOn]);
 
