@@ -35,6 +35,7 @@
 162,Confirm your password,Confirmer votre mot de passe,2021-02-16 18:49:02.374800,0,2021-03-25 17:32:17.327455,0
 4375,"The customised link you've entered cannot be saved. It may be already used by another calendar, or it is a reserved word. Enter another customised link and try saving again.",Le lien personnalisé que vous avez entré ne peut pas être sauvegardé. Il est peut-être déjà utilisé par un autre calendrier ou il s'agit d'un mot réservé. Entrez un autre lien personnalisé et réessayez d'enregistrer.,2021-03-30 22:55:01.957802,0,,
 1506,Copy,Copier,2021-03-25 17:35:36.958493,0,2021-03-25 17:35:51.458555,0
+4376,"Embed your customised calendars on your company’s website: select start of week day, match your website colours, use different embed links for English and French.","Intégrez vos calendriers personnalisés au site web de votre entreprise : sélectionnez le jour du début de la semaine, harmonisez le calendrier aux couleurs de votre site web, obtenez des liens d'intégration différents pour l'anglais et le français.",2021-03-31 15:58:48.813408,0,2021-03-31 16:04:02.909489,0
 240,"If you want to change your password, enter a new password.","Pour changer votre mot de passe, entrer un nouveau mot de passe. ",2021-02-16 20:46:12.245455,0,2021-03-25 17:38:55.670212,0
 160,Enter a new password,Entrer un nouveau mot de passe,2021-02-16 18:49:02.373972,0,2021-03-25 17:38:55.670212,0
 226,New password,Nouveau mot de passe,2021-02-16 20:30:38.638340,0,2021-02-16 21:59:29.682132,0
@@ -62,6 +63,7 @@
 1323,"Click on Copy to copy the embeddable iframe code to your clipboard, then paste it in your website.","Cliquer sur Copier pour copier le code du iframe incorporable dans votre presse-papiers, puis coller le code dans votre site web.",2021-03-25 16:54:39.584555,0,2021-03-25 17:32:17.327455,0
 1514,Copied,Copié,2021-03-25 17:35:54.178556,0,2021-03-25 17:36:06.076226,0
 947,New event in,Nouvel événement dans,2021-03-02 21:44:00.453181,0,2021-03-25 17:25:20.140504,0
+4377,Create and manage private and public calendars to share event dates in a secured centralised online place.,Créez et gérez des calendriers privés et publics pour partager des dates d'événements dans un espace en ligne centralisé et sécurisé.,2021-03-31 15:58:48.813758,0,2021-03-31 16:04:02.909489,0
 2178,Unpublish,Dépublier,2021-03-29 15:52:39.056589,0,2021-03-30 21:44:52.259000,0
 2067,"Your Calendarium subscription has now been cancelled. Thank you for the time you spent with us, and we hope you had fun here!","Votre abonnement à Calendarium a été annulé. Merci pour le temps que vous avez passé avec nous, et nous espérons que vous vous êtes amusé ici!",2021-03-28 19:41:39.569898,0,2021-03-30 21:56:24.489670,0
 1348,Monday,Lundi,2021-03-25 16:54:39.605338,0,2021-03-25 16:55:49.223059,0
@@ -98,33 +100,33 @@
 1362,Make this calendar embeddable,Rendre ce calendrier incorporable,2021-03-25 16:54:39.617414,0,2021-03-25 17:25:20.140504,0
 1093,Send invitation,Envoyer l'invitation,2021-03-03 17:53:29.684127,0,2021-03-25 17:25:20.140504,0
 1221,Delete,Supprimer,2021-03-16 20:15:26.216979,0,2021-03-25 17:25:20.140504,0
-1359,Secondary color,Couleur secondaire,2021-03-25 16:54:39.614142,0,2021-03-25 17:25:20.140504,0
 1322,English name,Nom anglais,2021-03-25 16:54:39.583999,0,2021-03-25 17:25:20.140504,0
 1328,Describe your calendar in English.,Décrire votre calendrier en anglais.,2021-03-25 16:54:39.590595,0,2021-03-25 17:25:20.140504,0
 816,New event,Nouvel événement,2021-03-02 16:57:50.832024,0,2021-03-25 17:25:20.140504,0
 1325,Enter the English calendar name.,Entrer le nom du calendrier en anglais.,2021-03-25 16:54:39.585464,0,2021-03-25 17:25:20.140504,0
 1101,Manage all events,Gérer tous les événements,2021-03-04 15:48:03.286466,0,2021-03-25 17:25:20.140504,0
 1118,Accept the invitation,Accepter l'invitation,2021-03-13 20:54:07.234383,0,2021-03-25 17:25:20.140504,0
+1357,Select a primary colour for this calendar.,Choisir une couleur primaire pour ce calendrier.,2021-03-25 16:54:39.613901,0,2021-03-25 17:25:20.140504,0
 1364,Make this calendar publicly available,Rendre ce calendrier disponible publiquement,2021-03-25 16:54:39.618543,0,2021-03-25 17:25:20.140504,0
 1142,Deactivate,Désactiver,2021-03-14 22:03:02.173345,0,2021-03-25 17:25:20.140504,0
-1356,Primary color,Couleur primaire,2021-03-25 16:54:39.613014,0,2021-03-25 17:25:20.140504,0
 1365,Require my approval to publish collaborators' events,Requérir mon approbation pour publier les événements de collaborateurs,2021-03-25 16:54:39.618908,0,2021-03-25 17:25:20.140504,0
 1338,Describe your calendar in French.,Décrire votre calendrier en français.,2021-03-25 16:54:39.598395,0,2021-03-25 17:25:20.140504,0
 1298,They can be read ,Elles peuvent être lues,2021-03-25 15:27:52.314522,0,2021-03-25 17:25:20.140504,0
 1109,Manage my events,Gérer mes événements,2021-03-04 15:48:41.978942,0,2021-03-25 17:25:20.140504,0
 1217,Activate,Activer,2021-03-14 22:45:56.013575,0,2021-03-25 17:25:20.140504,0
-1361,Select a secondary color for this calendar.,Choisir une couleur secondaire pour ce calendrier.,2021-03-25 16:54:39.616577,0,2021-03-25 17:25:20.140504,0
 1236,All rights reserved,Tous droits réservés,2021-03-16 21:12:06.547237,0,2021-03-25 17:25:20.140504,0
 1078,Invite collaborator,Inviter un collaborateur,2021-03-03 17:39:02.168008,0,2021-03-25 17:25:20.140504,0
 1264,Privacy policy,Politique de confidentialité,2021-03-25 15:01:33.346896,0,2021-03-25 17:25:20.140504,0
 1331,English customised link,Lien personnalisé anglais,2021-03-25 16:54:39.593006,0,2021-03-25 17:25:20.140504,0
 1326,English description,Description anglaise,2021-03-25 16:54:39.585754,0,2021-03-25 17:25:20.140504,0
-1357,Select a primary color for this calendar.,Choisir une couleur primaire pour ce calendrier.,2021-03-25 16:54:39.613901,0,2021-03-25 17:25:20.140504,0
 1228,Publish,Publier,2021-03-16 20:15:26.232454,0,2021-03-25 17:25:20.140504,0
 1237,Contact us,Nous contacter,2021-03-16 21:12:06.547465,0,2021-03-25 17:25:20.140504,0
 1337,French description,Description française,2021-03-25 16:54:39.597375,0,2021-03-25 17:25:20.140504,0
 1117,Invitation to collaborate to,Invitation à collaborer à,2021-03-13 20:54:07.233890,0,2021-03-25 17:25:20.140504,0
 1071,Collaborators of,Collaborateurs de,2021-03-03 16:01:35.679164,0,2021-03-25 17:25:20.140504,0
+1361,Select a secondary colour for this calendar.,Choisir une couleur secondaire pour ce calendrier.,2021-03-25 16:54:39.616577,0,2021-03-25 17:25:20.140504,0
+1356,Primary colour,Couleur primaire,2021-03-25 16:54:39.613014,0,2021-03-25 17:25:20.140504,0
+1359,Secondary colour,Couleur secondaire,2021-03-25 16:54:39.614142,0,2021-03-25 17:25:20.140504,0
 945,Manage events,Gérer les événements,2021-03-02 21:10:50.500337,0,2021-03-25 17:25:20.140504,0
 1114,Enter a new password.,Entrer un nouveau mot de passe.,2021-03-10 17:22:26.930533,0,2021-03-25 17:25:20.140504,0
 1263,Terms of service,Conditions d'utilisation,2021-03-25 15:01:22.583380,0,2021-03-25 17:25:20.140504,0
@@ -135,11 +137,13 @@
 1341,French customised link,Lien personnalisé français,2021-03-25 16:54:39.601021,0,2021-03-25 17:25:20.140504,0
 1344,Enable French content for this calendar,Activer le contenu français pour ce calendrier,2021-03-25 16:54:39.603107,0,2021-03-25 17:25:20.140504,0
 767,Never mind,J'ai changé d'idée,2021-02-23 21:50:06.116852,0,2021-03-25 17:25:20.140504,0
+4378,Decide who can contribute events to your calendars: invite people from your organisation and outside.,Décidez qui peut contribuer aux événements de vos calendriers : invitez des personnes de votre organisation et de l'extérieur.,2021-03-31 15:58:48.814114,0,2021-03-31 16:04:02.909489,0
 1334,Enter the English customised link.,Entrer un lien personnalisé anglais.,2021-03-25 16:54:39.594114,0,2021-03-25 17:25:20.140504,0
 1115,Enter a password.,Entrer un mot de passe.,2021-03-13 20:54:07.234184,0,2021-03-25 17:25:20.140504,0
 194,Your password has been reset successfully. You're good to go!,Votre mot de passe a été réinitialisé avec succès. Vous êtes prêt à continuer!,2021-02-16 18:54:12.019346,0,2021-03-25 17:38:55.670212,0
 385,"If you want to make change to your profile, enter your current password.","Pour apporter des modifications à votre profil, entrer votre mot de passe actuel.",2021-02-16 21:23:44.939378,0,2021-03-25 17:38:55.670212,0
 1258,Edit event in,Modifier un événement de,2021-03-18 21:08:31.123503,0,2021-03-25 17:25:20.140504,0
+4379,"Use a thorough event publishing workflow: create events as draft, send them for approval, publish or unpublish them.","Utilisez un flux de travail complet pour la publication des événements : créez des événements sous forme de brouillon, envoyez-les pour approbation, publiez-les ou dépubliez-les.",2021-03-31 15:58:48.814876,0,2021-03-31 16:04:02.909489,0
 2335,An invitation email has been sent to your future collaborator.,Un courriel d'invitation a été envoyé à votre futur collaborateur.,2021-03-29 20:01:16.439387,0,2021-03-30 17:06:52.209834,0
 2620,All day,Toute la journée,2021-03-30 16:50:10.147447,0,2021-03-30 17:06:52.209834,0
 463,"By subscribing to Calendarium, you will be able to create and manage your own calendars, and invite people to collaborate with you on these calendars.","En vous abonnant à Calendarium, vous pourrez créer et gérer vos propres calendriers, et inviter des personnes à collaborer avec vous sur ces calendriers.",,,2021-03-30 17:06:52.209834,0
@@ -169,6 +173,7 @@
 3740,You must enable at least one language.,Vous devez activer au moins une langue.,2021-03-30 19:35:07.699114,0,2021-03-30 21:56:24.489670,0
 3764,Your new password must be at least 8 characters long.,Votre nouveau mot de passe doit comporter au moins 8 caractères.,2021-03-30 19:38:06.805826,0,2021-03-30 21:56:24.489670,0
 3836,You must enter a first name and last name.,Vous devez entrer un prénom et un nom de famille.,2021-03-30 19:54:20.982094,0,2021-03-30 21:56:24.489670,0
+4380,"Create bilingual calendars and events content: select if your calendars support English, French, or both languages.","Créez des contenus de calendriers et d'événements bilingues : décidez si vos calendriers prennent en charge l'anglais, le français ou les deux.",2021-03-31 15:58:48.818919,0,2021-03-31 16:04:02.909489,0
 4112,All,Tous,2021-03-30 21:10:09.366276,0,2021-03-30 21:56:24.489670,0
 3964,"You have been invited to collaborate to a calendar. The email associated with your account is the email at which you receive your invitation. If you want to change it, you will be able to do so later in your account profile.","Vous avez été invité à collaborer à un calendrier. Le courriel associé à votre compte sera le courriel auquel vous avez reçu votre invitation. Si vous souhaitez le modifier, vous pourrez le faire ultérieurement dans votre profil.",2021-03-30 20:23:20.747943,0,2021-03-30 21:56:24.489670,0
 4110,Status,Statut,2021-03-30 21:10:09.364535,0,2021-03-30 21:56:24.489670,0
@@ -180,6 +185,7 @@
 3963,"To complete your account creation, enter a password for your account, then accept the invitation to get started.","Pour terminer la création de votre compte, entrez un mot de passe pour votre compte, puis acceptez l'invitation.",2021-03-30 20:23:20.748074,0,2021-03-30 21:56:24.489670,0
 3892,Reactivate subscription,Réactiver l'abonnement,2021-03-30 20:09:35.664412,0,2021-03-30 21:56:24.489670,0
 3868,Reactivate my subscription,Réactiver mon abonnement,2021-03-30 20:08:29.822947,0,2021-03-30 21:56:24.489670,0
+4381,Use a bilingual user interface that supports English and French.,Utilisez une interface utilisateur bilingue prenant en charge l'anglais et le français.,2021-03-31 15:58:48.818382,0,2021-03-31 16:04:02.909489,0
 4109,Search,Rechercher,2021-03-30 21:10:09.363620,0,2021-03-30 21:25:04.581921,0
 3867,Are you sure you want to reactivate your subscription?,Êtes-vous sûr de vouloir réactiver votre abonnement?,2021-03-30 20:08:29.822507,0,2021-03-30 21:25:04.581921,0
 3997,Do you really want to delete the event,Voulez-vous vraiment supprimer l'événement,2021-03-30 20:59:35.205958,0,2021-03-30 21:25:04.581921,0
