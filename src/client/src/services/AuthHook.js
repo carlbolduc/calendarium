@@ -84,14 +84,14 @@ export function useAuth() {
   const updateAccount = useCallback((data, cb) => {
     // TODO: check usage of this function, it can cause loops since it updates account and is triggered by account
     // TODO: split in different update functions
-    const updatedAccount = {
-      name: data["name"] === undefined || data["name"] === "" ? account.name : data["name"],
-      email: data["email"] === undefined || data["email"] === "" ? account.email : data["email"],
-      currentPassword: data["currentPassword"] === undefined ? null : data["currentPassword"],
-      newPassword: data["newPassword"] === undefined ? null : data["newPassword"],
-      languageId: data["languageId"] === undefined ? account.languageId : data["languageId"],
-    };
     if (token !== null) {
+      const updatedAccount = {
+        name: data["name"] === undefined || data["name"] === "" ? account.name : data["name"],
+        email: data["email"] === undefined || data["email"] === "" ? account.email : data["email"],
+        currentPassword: data["currentPassword"] === undefined ? null : data["currentPassword"],
+        newPassword: data["newPassword"] === undefined ? null : data["newPassword"],
+        languageId: data["languageId"] === undefined ? account.languageId : data["languageId"],
+      };
       axios({
         method: "PUT",
         headers: {
@@ -111,10 +111,8 @@ export function useAuth() {
       }).catch(err => {
         errorCallback(err, cb);
       });
-    } else {
-      setAccount(updatedAccount);
     }
-  }, [token, account.accountId, account.name, account.email, account.languageId, account.stripeCusId, account.createdAt, account.subscription]);
+  }, [token, account.accountId, account.name, account.email, account.languageId]);
 
   const updateAccountLanguageId = useCallback((languageId, cb) => {
       if (languageId !== account.languageId) {
@@ -148,6 +146,8 @@ export function useAuth() {
               errorCallback(err, cb);
             });
         } else {
+          const updatedAccount = { ...account };
+          account.languageId = languageId;
           setAccount(updatedAccount);
         }
       }
