@@ -4,8 +4,12 @@ import {errorCallback} from "./Helpers";
 
 export function useAuth() {
   const [token, setToken] = useState(localStorage.getItem("token"));
-  const [account, setAccount] = useState({accountId: null, name: "", email: "", languageId: 1, stripeCusId: null, createdAt: new Date().getTime() / 1000, subscription: null});
+  const [account, setAccount] = useState(emptyAccount());
   const authenticated = token !== null;
+
+  function emptyAccount() {
+    return {accountId: null, name: "", email: "", languageId: 1, stripeCusId: null, createdAt: new Date().getTime() / 1000, subscription: null};
+  }
 
   const saveToken = useCallback((token) => {
     localStorage.setItem("token", token);
@@ -73,6 +77,7 @@ export function useAuth() {
 
   function signOut() {
     localStorage.removeItem("token");
+    setAccount(emptyAccount());
     setToken(null);
   }
 
@@ -80,13 +85,11 @@ export function useAuth() {
     // TODO: check usage of this function, it can cause loops since it updates account and is triggered by account
     // TODO: split in different update functions
     const updatedAccount = {
-      accountId: account.accountId,
       name: data["name"] === undefined || data["name"] === "" ? account.name : data["name"],
       email: data["email"] === undefined || data["email"] === "" ? account.email : data["email"],
+      currentPassword: data["currentPassword"] === undefined ? null : data["currentPassword"],
+      newPassword: data["newPassword"] === undefined ? null : data["newPassword"],
       languageId: data["languageId"] === undefined ? account.languageId : data["languageId"],
-      stripeCusId: account.stripeCusId,
-      createdAt: account.createdAt,
-      subscription: account.subscription
     };
     if (token !== null) {
       axios({
@@ -115,8 +118,13 @@ export function useAuth() {
 
   const updateAccountLanguageId = useCallback((languageId, cb) => {
       if (languageId !== account.languageId) {
-        const updatedAccount = { ...account };
-        updatedAccount.languageId = languageId;
+        const updatedAccount = {
+          name: account.name,
+          email: account.email,
+          currentPassword: null,
+          newPassword: null,
+          languageId: languageId,
+        };
         if (token !== null) {
           axios({
             method: "PUT",
