@@ -147,7 +147,7 @@ export function useAuth() {
             });
         } else {
           const updatedAccount = { ...account };
-          account.languageId = languageId;
+          updatedAccount.languageId = languageId;
           setAccount(updatedAccount);
         }
       }
