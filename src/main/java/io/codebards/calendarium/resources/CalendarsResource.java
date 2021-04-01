@@ -89,10 +89,9 @@ public class CalendarsResource {
     @RolesAllowed({ "SUBSCRIBER" })
     public Response createCalendar(@Auth Account auth, Calendar calendar) {
         Response response = Response.status(Status.CONFLICT).build();
-        List<String> reservedWords = Arrays.asList("embed", "sign-in", "sign-up", "forgot-password", "password-reset", "profile", "subscription", "my-calendars", "public-calendars");
         if (
-            (calendar.getEnableEn() != null && !reservedWords.contains(calendar.getLinkEn())) &&
-            (calendar.getEnableFr() != null && !reservedWords.contains(calendar.getLinkFr()))
+            (calendar.getEnableEn() != null && !reservedWords().contains(calendar.getLinkEn())) &&
+            (calendar.getEnableFr() != null && !reservedWords().contains(calendar.getLinkFr()))
         ) {
             try {
                 long calendarId = dao.insertCalendar(auth.getAccountId(), calendar);
@@ -109,18 +108,27 @@ public class CalendarsResource {
     @RolesAllowed({ "SUBSCRIBER" })
     @Path("/{calendarId}")
     public Response updateCalendar(@Auth Account auth, @PathParam("calendarId") long calendarId, Calendar calendar) {
-        Response response;
+        Response response = Response.status(Status.CONFLICT).build();
         if (auth.getAccountId() == dao.findCalendarOwnerAccountId(calendarId)) {
             // the calendar owner is doing the action
-            dao.updateCalendar(auth.getAccountId(), calendarId, calendar);
-            Optional<Calendar> oCalendar = dao.findCalendarByLink(auth.getAccountId(), calendar.getLinkEn());
-            if (oCalendar.isPresent()) {
-                // the update went according to plan, return 200 OK
-                response = Response.ok(oCalendar.get()).build();
-            } else {
-                // the calendar cannot be found after update, return 404 Not Found
-                response = Response.status(Response.Status.NOT_FOUND).build();
-            }
+            if (
+                (calendar.getEnableEn() != null && !reservedWords().contains(calendar.getLinkEn())) &&
+                (calendar.getEnableFr() != null && !reservedWords().contains(calendar.getLinkFr()))
+            ) {
+                try {
+                    dao.updateCalendar(auth.getAccountId(), calendarId, calendar);
+                    Optional<Calendar> oCalendar = dao.findCalendarByLink(auth.getAccountId(), calendar.getLinkEn());
+                    if (oCalendar.isPresent()) {
+                        // the update went according to plan, return 200 OK
+                        response = Response.ok(oCalendar.get()).build();
+                    } else {
+                        // the calendar cannot be found after update, return 404 Not Found
+                        response = Response.status(Response.Status.NOT_FOUND).build();
+                    }   
+                } catch (Exception e) {
+                    // Unique constraint will cause insert to fail
+                }
+            }            
         } else {
             // it's not the calendar owner, return 401 Unauthorized
             response = Response.status(Response.Status.UNAUTHORIZED).build();
@@ -175,5 +183,10 @@ public class CalendarsResource {
         }
 
         return events;
+    }
+
+    private List<String> reservedWords() {
+        return Arrays.asList("api", "static", "img", "favicon", "embed", "sign-in", "sign-up", "forgot-password",
+                "password-reset", "profile", "subscription", "my-calendars", "public-calendars");
     }
 }
