@@ -60,7 +60,8 @@ export default function Event(props) {
     let result = null;
     const hyperlinkToDisplay = decideWhatToDisplay(props.localeId, props.enableEn, props.enableFr, props.event.hyperlinkEn, props.event.hyperlinkFr);
     if (hyperlinkToDisplay !== null) {
-      result = <a href={hyperlinkToDisplay}>{hyperlinkToDisplay}</a>;
+      
+      result = <a href={hyperlinkToDisplay.indexOf("http") === -1 ? `http://${hyperlinkToDisplay}` : hyperlinkToDisplay}>{hyperlinkToDisplay}</a>;
     }
     return result;
   }
