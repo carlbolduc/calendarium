@@ -69,6 +69,12 @@ a {
   font-size: larger;
 }
 
+// Set the width of Powered by Stripe image in subscribe form
 #powered-by-stripe {
   width:8rem;
+}
+
+// Use this class to render line breaks from text values entered in a textarea
+.p-wrap {
+  white-space: pre-line;
 }

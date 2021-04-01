@@ -142,7 +142,7 @@ export default function Event(props) {
           <div className="card-body">
             <h5 className="card-title">{decideWhatToDisplay(props.localeId, props.enableEn, props.enableFr, props.event.nameEn, props.event.nameFr)}</h5>
             <h6 className="card-subtitle mb-2 text-muted">{duration()}</h6>
-            <p className="card-text">{decideWhatToDisplay(props.localeId, props.enableEn, props.enableFr, props.event.descriptionEn, props.event.descriptionFr)}</p>
+            <p className="card-text p-wrap">{decideWhatToDisplay(props.localeId, props.enableEn, props.enableFr, props.event.descriptionEn, props.event.descriptionFr)}</p>
             {hyperlink()}
           </div>
         </div>
