@@ -40,45 +40,6 @@ export default function Month(props) {
     }
   }, [date, props.startWeekOn]);
 
-  function daysWithDot() {
-    const dots = [];
-    for (let event of props.events) {
-      const startAt = DateTime.fromSeconds(event.startAt);
-      const endAt = DateTime.fromSeconds(event.endAt);
-      if (date.month === startAt.month) {
-        if (dots.indexOf(startAt.day) === -1) {
-          dots.push(startAt.day);
-        }
-        if (endAt.startOf("day") !== startAt.startOf("day")) {
-          if (endAt.year !== startAt.year || endAt.month !== startAt.month) {
-            // fill all day of the month
-            for (let x = startAt.day; x < date.endOf("month").day; x++) {
-              if (dots.indexOf(x+1) === -1) {
-                dots.push(x+1);
-              }
-            }
-          } else {
-            for (let x = startAt.day; x < endAt.day; x++) {
-              if (dots.indexOf(x+1) === -1) {
-                dots.push(x+1);
-              }
-            }
-          }
-        }
-      } else if (date.month === endAt.month) {
-        if (dots.indexOf(date.startOf("month").day) === -1) {
-          dots.push(1);
-        }
-        for (let x = 2; x === endAt.day; x++) {
-          if (dots.indexOf(x) === -1) {
-            dots.push(x);
-          }
-        }
-      }
-    }
-    return dots;
-  }
-
   function selectDay(d) {
     const selectedDate = date.set({ day: d });
     setDate(selectedDate);
