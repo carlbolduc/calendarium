@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import usePrevious from "./UsePreviousHook";
 
 export function useLoc(account) {
-  const prevLanguageId = usePrevious(account.languageId);
   const [loc, setLoc] = useState([]);
   const [languages, setLanguages] = useState([]);
-  const [language, setLanguage] = useState("enCa");
+  const [localeId, setLocaleId] = useState("enCa");
 
   // Load languages when the app boots
   useEffect(() => {
@@ -32,13 +30,13 @@ export function useLoc(account) {
   
   // Change the language of the app according to the account language
   useEffect(() => {
-    if (languages.length > 0 && account.languageId !== prevLanguageId) {
+    if (languages.length > 0) {
       const l = languages.find(l => l.languageId === account.languageId);
-      if (l !== undefined) {
-        setLanguage(l.localeId);
+      if (l.localeId !== localeId) {
+        setLocaleId(l.localeId)
       }
     }
-  }, [prevLanguageId, account.languageId, languages]);
+  }, [account.languageId, languages, localeId]);
 
   function translate(label) {
     let locTranslated = "";
@@ -73,5 +71,5 @@ export function useLoc(account) {
     return locTranslated;
   }
 
-  return { languages, language, translate };
+  return { languages, localeId, translate };
 }

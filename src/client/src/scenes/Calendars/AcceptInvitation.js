@@ -54,7 +54,7 @@ export default function AcceptInvitation(props) {
 
   }
 
-  const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
+  const calendarName = decideWhatToDisplay(props.localeId, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
   const title = `${props.translate("Invitation to collaborate to")} ${calendarName}`;
 
   const instructions = props.account.accountId !== null ? (

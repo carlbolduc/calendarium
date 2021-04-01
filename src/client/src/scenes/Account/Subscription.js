@@ -106,7 +106,7 @@ export default function Subscription(props) {
     </div>
   );
 
-  const endAt = props.account.subscription ? DateTime.fromSeconds(props.account.subscription.endAt).setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_FULL) : null;
+  const endAt = props.account.subscription ? DateTime.fromSeconds(props.account.subscription.endAt).setLocale(getLocale(props.localeId)).toLocaleString(DateTime.DATE_FULL) : null;
 
   function renderSubscriptionEndAt() {
     let result = null;
@@ -190,7 +190,7 @@ export default function Subscription(props) {
               <StripeWrapper
                 createSubscription={createSubscription}
                 cancel={() => setWantTo("")}
-                language={props.language}
+                localeId={props.localeId}
                 translate={props.translate}
               />
             </>

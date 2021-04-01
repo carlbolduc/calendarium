@@ -29,8 +29,8 @@ export default function MyCalendars(props) {
     if (!showCalendarForm) {
       result = (
         <div className="row">
-          {sortedCalendars(props.calendars, props.language).map(c => (
-            <CalendarPreview key={c.calendarId} calendar={c} language={props.language} translate={props.translate} />
+          {sortedCalendars(props.calendars, props.localeId).map(c => (
+            <CalendarPreview key={c.calendarId} calendar={c} localeId={props.localeId} translate={props.translate} />
           ))}
         </div>
       );
@@ -60,7 +60,7 @@ export default function MyCalendars(props) {
     <CalendarForm
       new={true}
       calendar={props.calendar}
-      language={props.language}
+      localeId={props.localeId}
       translate={props.translate}
       createCalendar={props.createCalendar}
       setShowCalendarForm={setShowCalendarForm}

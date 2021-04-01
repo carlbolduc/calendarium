@@ -47,7 +47,7 @@ export default function Collaborators(props) {
     }
   }
 
-  const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
+  const calendarName = decideWhatToDisplay(props.localeId, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
   const title = `${props.translate("Collaborators of")} ${calendarName}`;
 
   const actionButtonsZone = (
@@ -128,7 +128,7 @@ export default function Collaborators(props) {
                 <td>{c.name}</td>
                 <td>{c.email}</td>
                 <td>{props.translate(c.status)}</td>
-                <td>{DateTime.fromSeconds(c.createdAt).setLocale(getLocale(props.language)).toLocaleString(DateTime.DATETIME_FULL)}</td>
+                <td>{DateTime.fromSeconds(c.createdAt).setLocale(getLocale(props.localeId)).toLocaleString(DateTime.DATETIME_FULL)}</td>
                 <td>{collaboratorActions(c)}</td>
               </tr>
             ))}

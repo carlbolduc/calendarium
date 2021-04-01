@@ -97,7 +97,7 @@ export default function Month(props) {
 
   function renderHeader() {
     const dayOfWeek = dayNumber(props.startWeekOn);
-    const locale = getLocale(props.language);
+    const locale = getLocale(props.localeId);
     const weekdayRowClassName = props.secondaryColor === undefined || props.secondaryColor === "#ffffff" 
       ? "text-muted" 
       : `${textColor(props.secondaryColor)}`;
@@ -123,7 +123,7 @@ export default function Month(props) {
               <ArrowLeft />
             </button>
           </th>
-          <th className="border-0 p-1" colSpan={5}>{date.setLocale(getLocale(props.language)).monthLong} {date.year}</th>
+          <th className="border-0 p-1" colSpan={5}>{date.setLocale(getLocale(props.localeId)).monthLong} {date.year}</th>
           <th className="border-0 p-1">
             <button
               className={`btn ${monthRowTextColor} btn-icon p-0`}

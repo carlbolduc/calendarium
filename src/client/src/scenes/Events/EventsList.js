@@ -55,7 +55,7 @@ export default function EventsList(props) {
       event={e}
       account={props.account}
       calendar={props.calendar}
-      language={props.language}
+      localeId={props.localeId}
       translate={props.translate}
       enableEn={props.calendar.enableEn}
       enableFr={props.calendar.enableFr}
@@ -84,7 +84,7 @@ EventsList.propTypes = {
   noEventsMessage: PropTypes.string.isRequired,
   account: PropTypes.object,
   calendar: PropTypes.object.isRequired,
-  language: PropTypes.string.isRequired,
+  localeId: PropTypes.string.isRequired,
   translate: PropTypes.func.isRequired,
   edit: PropTypes.func,
   deleteEvent: PropTypes.func,

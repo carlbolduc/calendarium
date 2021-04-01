@@ -5,7 +5,7 @@ import SubscribeForm from "./SubscribeForm";
 
 export default function StripeWrapper(props) {
   const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK, {
-    locale: props.language === "frCa" ? "fr-CA" : "en",
+    locale: props.localeId === "frCa" ? "fr-CA" : "en",
   });
   return (
     <Elements stripe={stripePromise}>

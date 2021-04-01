@@ -89,7 +89,7 @@ export default function Calendar(props) {
     <CalendarForm
       new={false}
       calendar={props.calendar}
-      language={props.language}
+      localeId={props.localeId}
       translate={props.translate}
       updateCalendar={props.updateCalendar}
       deleteCalendar={props.deleteCalendar}
@@ -112,7 +112,7 @@ export default function Calendar(props) {
     <Collaborators
       calendar={props.calendar}
       translate={props.translate}
-      language={props.language}
+      localeId={props.localeId}
       cancel={() => setShowManageCollaborators(false)}
       hideForm={() => setShowManageCollaborators(false)}
       collaborators={props.collaborators}
@@ -139,7 +139,7 @@ export default function Calendar(props) {
       events={props.events}
       account={props.account}
       calendar={props.calendar}
-      language={props.language}
+      localeId={props.localeId}
       translate={props.translate}
       editEvent={setEvent}
       deleteEvent={props.deleteEvent}
@@ -179,7 +179,7 @@ export default function Calendar(props) {
   const eventForm = (
     <EventForm
       event={event}
-      language={props.language}
+      localeId={props.localeId}
       translate={props.translate}
       cancel={() => setShowEventForm(false)}
       createEvent={props.createEvent}
@@ -231,7 +231,7 @@ export default function Calendar(props) {
         <article>
           <h1>
             {decideWhatToDisplay(
-              props.language,
+              props.localeId,
               props.calendar.enableEn,
               props.calendar.enableFr,
               props.calendar.nameEn,
@@ -242,7 +242,7 @@ export default function Calendar(props) {
           {actionButtonsZone}
           <div id="calendar-description">
             {decideWhatToDisplay(
-              props.language,
+              props.localeId,
               props.calendar.enableEn,
               props.calendar.enableFr,
               props.calendar.descriptionEn,
@@ -256,7 +256,7 @@ export default function Calendar(props) {
                   startWeekOn={props.calendar.startWeekOn}
                   selectedDate={selectedDate}
                   selectDay={(date) => setSelectedDate(date)}
-                  language={props.language}
+                  localeId={props.localeId}
                   primaryColor={props.calendar.primaryColor}
                   secondaryColor={props.calendar.secondaryColor}
                   dots={props.dots}
@@ -268,7 +268,7 @@ export default function Calendar(props) {
                   noEventsMessage={props.translate("There are no events on or after the selected date.")}
                   account={props.account}
                   calendar={props.calendar}
-                  language={props.language}
+                  localeId={props.localeId}
                   translate={props.translate}
                   edit={setEvent}
                   deleteEvent={props.deleteEvent}

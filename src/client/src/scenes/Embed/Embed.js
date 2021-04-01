@@ -74,7 +74,7 @@ export default function Embed(props) {
               startWeekOn={props.calendar.startWeekOn}
               selectedDate={selectedDate}
               selectDay={date => setSelectedDate(date)}
-              language={props.language}
+              localeId={props.localeId}
               primaryColor={props.calendar.primaryColor}
               secondaryColor={props.calendar.secondaryColor}
               dots={props.dots}
@@ -86,7 +86,7 @@ export default function Embed(props) {
               noEventsMessage={props.translate("There are no events on or after the selected date.")}
               account={props.account}
               calendar={props.calendar}
-              language={props.language}
+              localeId={props.localeId}
               translate={props.translate}
               showStatus={false}
               showButtons={false}
@@ -110,9 +110,11 @@ Embed.propTypes = {
   calendar: PropTypes.object.isRequired,
   getCalendar: PropTypes.func.isRequired,
   events: PropTypes.array.isRequired,
+  dots: PropTypes.array.isRequired,
+  getDots: PropTypes.func.isRequired,
   getCalendarEvents: PropTypes.func.isRequired,
   languages: PropTypes.array.isRequired,
-  language: PropTypes.string.isRequired,
+  localeId: PropTypes.string.isRequired,
   updateAccountLanguageId: PropTypes.func.isRequired,
   translate: PropTypes.func.isRequired
 };

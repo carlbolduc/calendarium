@@ -36,7 +36,7 @@ export default function Event(props) {
   }
 
   function duration() {
-    const locale = getLocale(props.language);
+    const locale = getLocale(props.localeId);
     let result;
     const startAt = DateTime.fromSeconds(props.event.startAt);
     const endAt = DateTime.fromSeconds(props.event.endAt);
@@ -58,7 +58,7 @@ export default function Event(props) {
 
   function hyperlink() {
     let result = null;
-    const hyperlinkToDisplay = decideWhatToDisplay(props.language, props.enableEn, props.enableFr, props.event.hyperlinkEn, props.event.hyperlinkFr);
+    const hyperlinkToDisplay = decideWhatToDisplay(props.localeId, props.enableEn, props.enableFr, props.event.hyperlinkEn, props.event.hyperlinkFr);
     if (hyperlinkToDisplay !== null) {
       result = <a href={hyperlinkToDisplay}>{hyperlinkToDisplay}</a>;
     }
@@ -139,9 +139,9 @@ export default function Event(props) {
       <div className="row">
         <div className="col">
           <div className="card-body">
-            <h5 className="card-title">{decideWhatToDisplay(props.language, props.enableEn, props.enableFr, props.event.nameEn, props.event.nameFr)}</h5>
+            <h5 className="card-title">{decideWhatToDisplay(props.localeId, props.enableEn, props.enableFr, props.event.nameEn, props.event.nameFr)}</h5>
             <h6 className="card-subtitle mb-2 text-muted">{duration()}</h6>
-            <p className="card-text">{decideWhatToDisplay(props.language, props.enableEn, props.enableFr, props.event.descriptionEn, props.event.descriptionFr)}</p>
+            <p className="card-text">{decideWhatToDisplay(props.localeId, props.enableEn, props.enableFr, props.event.descriptionEn, props.event.descriptionFr)}</p>
             {hyperlink()}
           </div>
         </div>
@@ -160,7 +160,7 @@ export default function Event(props) {
       <div className="row">
         <div className="col">
           <div className="card-body">
-            <p className="fs-5">{props.translate("Do you really want to delete the event")} <span className="fw-bold">{decideWhatToDisplay(props.language, props.enableEn, props.enableFr, props.event.nameEn, props.event.nameFr)}</span>?</p>
+            <p className="fs-5">{props.translate("Do you really want to delete the event")} <span className="fw-bold">{decideWhatToDisplay(props.localeId, props.enableEn, props.enableFr, props.event.nameEn, props.event.nameFr)}</span>?</p>
             <p>{props.translate("Once deleted, the event will be removed from your calendar and cannot be restored.")}</p>
           </div>
         </div>
@@ -192,7 +192,7 @@ Event.propTypes = {
   event: PropTypes.object.isRequired,
   account: PropTypes.object,
   calendar: PropTypes.object.isRequired,
-  language: PropTypes.string.isRequired,
+  localeId: PropTypes.string.isRequired,
   translate: PropTypes.func.isRequired,
   enableFr: PropTypes.bool.isRequired,
   enableEn: PropTypes.bool.isRequired,

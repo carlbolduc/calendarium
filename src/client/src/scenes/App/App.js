@@ -37,7 +37,7 @@ export default function App() {
     resetPassword,
     saveToken
   } = useAuth();
-  const { languages, language, translate } = useLoc(account);
+  const { languages, localeId, translate } = useLoc(account);
   const { customerCreated, subscribed, createCustomer, createSubscription, cancelSubscription, reactivateSubscription } = useSubscription(token, account, getAccount);
   const { events, setEvents, createEvent, updateEvent, deleteEvent, searchEvents, clearEvents } = useEvent(token);
   const {
@@ -80,7 +80,7 @@ export default function App() {
             getDots={getDots}
             getCalendarEvents={getCalendarEvents}
             languages={languages}
-            language={language}
+            localeId={localeId}
             updateAccountLanguageId={updateAccountLanguageId}
             translate={translate}
           />
@@ -132,7 +132,7 @@ export default function App() {
                   updateAccount={updateAccount}
                   authenticated={authenticated}
                   translate={translate}
-                  language={language}
+                  localeId={localeId}
                 />
               </Route>
               <Route exact path="/subscription">
@@ -140,7 +140,7 @@ export default function App() {
                   account={account}
                   authenticated={authenticated}
                   translate={translate}
-                  language={language}
+                  localeId={localeId}
                   customerCreated={customerCreated}
                   subscribed={subscribed}
                   createCustomer={createCustomer}
@@ -155,7 +155,7 @@ export default function App() {
                   authenticated={authenticated}
                   subscribed={subscribed}
                   translate={translate}
-                  language={language}
+                  localeId={localeId}
                   calendars={calendars}
                   calendar={calendar}
                   getCalendars={getCalendars}
@@ -170,7 +170,7 @@ export default function App() {
                   calendars={calendars}
                   getCalendars={getPublicCalendars}
                   translate={translate}
-                  language={language}
+                  localeId={localeId}
                 />
               </Route>
               <Route exact path="/:link/accept-invitation">
@@ -178,7 +178,7 @@ export default function App() {
                   account={account}
                   authenticated={authenticated}
                   translate={translate}
-                  language={language}
+                  localeId={localeId}
                   calendar={calendar}
                   getCalendar={getCalendar}
                   calendarAccess={calendarAccess}
@@ -191,7 +191,7 @@ export default function App() {
                   account={account}
                   authenticated={authenticated}
                   translate={translate}
-                  language={language}
+                  localeId={localeId}
                   calendar={calendar}
                   getCalendar={getCalendar}
                   subscribed={subscribed}

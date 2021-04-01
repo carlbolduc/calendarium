@@ -299,7 +299,7 @@ export default function CalendarForm(props) {
               startWeekOn={startWeekOn}
               selectedDate={selectedDate}
               selectDay={date => setSelectedDate(date)}
-              language={props.language}
+              localeId={props.localeId}
               primaryColor={primaryColor}
               secondaryColor={secondaryColor}
             />

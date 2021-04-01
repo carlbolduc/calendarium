@@ -9,8 +9,8 @@ export default function PublicCalendars(props) {
     getCalendars();
   }, [getCalendars])
 
-  const calendars = sortedCalendars(props.calendars, props.language).map(c => (
-    <CalendarPreview key={c.calendarId} calendar={c} language={props.language} translate={props.translate} />
+  const calendars = sortedCalendars(props.calendars, props.localeId).map(c => (
+    <CalendarPreview key={c.calendarId} calendar={c} localeId={props.localeId} translate={props.translate} />
   ));
   return (
     <article>

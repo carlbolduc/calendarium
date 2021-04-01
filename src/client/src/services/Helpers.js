@@ -125,11 +125,11 @@ export function textColor(backgroundColor) {
 }
 
 // This function returns the right text to display for a calendar user content, according to calendar settings and current language
-export function decideWhatToDisplay(language, enableEn, enableFr, textEn, textFr) {
+export function decideWhatToDisplay(localeId, enableEn, enableFr, textEn, textFr) {
   let result;
-  if (language === "enCa" && enableEn) { // we're in English and the calendar has English enabled
+  if (localeId === "enCa" && enableEn) { // we're in English and the calendar has English enabled
     result = textEn;
-  } else if (language === "frCa" && enableFr) { // we're in French and the calendar has French enabled
+  } else if (localeId === "frCa" && enableFr) { // we're in French and the calendar has French enabled
     result = textFr;
   } else if (enableEn && textEn !== "") { // none of the above, the calendar has English enabled and text isn't empty
     result = textEn;
@@ -140,8 +140,8 @@ export function decideWhatToDisplay(language, enableEn, enableFr, textEn, textFr
 }
 
 // This function converts a language to an actual locale. E.g.: "enCa" becomes "en-Ca".
-export function getLocale(language) {
-  return language.substring(0, 2) + "-" + language.substring(2, 4);
+export function getLocale(localeId) {
+  return localeId.substring(0, 2) + "-" + localeId.substring(2, 4);
 }
 
 // Return all times of day in 30 minutes increments
@@ -169,8 +169,8 @@ export function sameDay(d1, d2) {
 }
 
   // Try to sort calendars according to the current language, fallback to alternative language when sorting if current language isn't enabled
-  export function sortedCalendars(calendars, language) {
-    if (language === "frCa") {
+  export function sortedCalendars(calendars, localeId) {
+    if (localeId === "frCa") {
       return calendars.sort((a, b) => (a.enableFr ? a.nameFr : a.nameEn).localeCompare((b.enableFr ? b.nameFr : b.nameEn)));
     } else {
       return calendars.sort((a, b) => (a.enableEn ? a.nameEn : a.nameFr).localeCompare((b.enableEn ? b.nameEn : b.nameFr)));

@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { textColor, decideWhatToDisplay } from "../../services/Helpers";
 
 export default function CalendarPreview(props) {
-  const link = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.linkEn, props.calendar.linkFr);
-  const name = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
-  const description = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.descriptionEn, props.calendar.descriptionFr);
+  const link = decideWhatToDisplay(props.localeId, props.calendar.enableEn, props.calendar.enableFr, props.calendar.linkEn, props.calendar.linkFr);
+  const name = decideWhatToDisplay(props.localeId, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
+  const description = decideWhatToDisplay(props.localeId, props.calendar.enableEn, props.calendar.enableFr, props.calendar.descriptionEn, props.calendar.descriptionFr);
 
   return (
     <div className="col-12 col-md-6 col-xl-4 col-xxl-3">

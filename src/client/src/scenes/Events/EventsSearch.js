@@ -61,7 +61,7 @@ export default function EventsSearch(props) {
           setCanSearch(true);
         }}
         hide={() => setShowStartDateSelector(false)}
-        language={props.language}
+        localeId={props.localeId}
       />
     </div>
   ) : null;
@@ -76,12 +76,12 @@ export default function EventsSearch(props) {
           setCanSearch(true);
         }}
         hide={() => setShowEndDateSelector(false)}
-        language={props.language}
+        localeId={props.localeId}
       />
     </div>
   ) : null;
 
-  const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
+  const calendarName = decideWhatToDisplay(props.localeId, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
   const title = `${props.translate("Events of")} ${calendarName}`;
   const searchButton = canSearch ? (
     <Button label={props.translate("Search")} type="submit" id="button-search" working={working} />
@@ -117,7 +117,7 @@ export default function EventsSearch(props) {
                 label={props.translate("Start date")}
                 type="text"
                 id="input-start-date"
-                value={startDate !== null ? startDate.setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_HUGE) : ""}
+                value={startDate !== null ? startDate.setLocale(getLocale(props.localeId)).toLocaleString(DateTime.DATE_HUGE) : ""}
                 readOnly={true}
                 onClick={() => setShowStartDateSelector(true)}
               />
@@ -130,7 +130,7 @@ export default function EventsSearch(props) {
                 label={props.translate("End date")}
                 type="text"
                 id="input-end-date"
-                value={endDate !== null ? endDate.setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_HUGE) : ""}
+                value={endDate !== null ? endDate.setLocale(getLocale(props.localeId)).toLocaleString(DateTime.DATE_HUGE) : ""}
                 readOnly={true}
                 onClick={() => setShowEndDateSelector(!showEndDateSelector)}
               />
@@ -160,7 +160,7 @@ export default function EventsSearch(props) {
         noEventsMessage={props.translate("There are no events matching these search criteria.")}
         account={props.account}
         calendar={props.calendar}
-        language={props.language}
+        localeId={props.localeId}
         translate={props.translate}
         edit={props.editEvent}
         deleteEvent={props.deleteEvent}

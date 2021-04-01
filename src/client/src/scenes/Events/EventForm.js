@@ -11,7 +11,7 @@ import Textarea from "../../components/Form/Textarea";
 import usePrevious from "../../services/UsePreviousHook";
 
 export default function EventForm(props) {
-  const prevLanguage = usePrevious(props.language);
+  const prevLanguage = usePrevious(props.localeId);
   const refreshEvents = props.refreshEvents;
   const createEvent = props.createEvent;
   const updateEvent = props.updateEvent;
@@ -45,7 +45,7 @@ export default function EventForm(props) {
 
   useEffect(() => {
     if (props.event !== null) {
-      const locale = getLocale(props.language);
+      const locale = getLocale(props.localeId);
       const fm = DateTime.TIME_SIMPLE;
       setNameEn(props.event.nameEn);
       setNameFr(props.event.nameFr);
@@ -66,11 +66,11 @@ export default function EventForm(props) {
         setEndTime(endAt.setLocale(locale).toLocaleString(fm));
       }
     }
-  }, [props.event, props.language]);
+  }, [props.event, props.localeId]);
 
   useEffect(() => {
-    if (props.language !== prevLanguage) {
-      const locale = getLocale(props.language);
+    if (props.localeId !== prevLanguage) {
+      const locale = getLocale(props.localeId);
       const dt = DateTime.now();
       const fm = DateTime.TIME_SIMPLE;
       if (textValid(previousStartTime)) {
@@ -90,7 +90,7 @@ export default function EventForm(props) {
         setEndTime(dt.set({ hour: endTimeValues.hour, minute: endTimeValues.minute, second: 0, millisecond: 0 }).setLocale(locale).toLocaleString(fm));
       }
     }
-  }, [prevLanguage, props.language, previousEndTime, endTime, previousStartTime, startTime]);
+  }, [prevLanguage, props.localeId, previousEndTime, endTime, previousStartTime, startTime]);
 
   const buildEvent = useCallback((status) => {
     return {
@@ -304,7 +304,7 @@ export default function EventForm(props) {
   function processStartTime() {
     const startTimeValues = processTime(startTime);
     if (startTimeValues.valid) {
-      const locale = getLocale(props.language);
+      const locale = getLocale(props.localeId);
       const fm = DateTime.TIME_SIMPLE;
       const dt = DateTime.fromObject({ hour: startTimeValues.hour, minute: startTimeValues.minute, second: 0, millisecond: 0 });
       setPreviousStartTime(dt.setLocale(locale).toLocaleString(fm))
@@ -317,7 +317,7 @@ export default function EventForm(props) {
   function processEndTime() {
     const result = processTime(endTime);
     if (result.valid) {
-      const locale = getLocale(props.language);
+      const locale = getLocale(props.localeId);
       const fm = DateTime.TIME_SIMPLE;
       const dt = DateTime.fromObject({ hour: result.hour, minute: result.minute, second: 0, millisecond: 0 });
       setPreviousEndTime(dt.setLocale(locale).toLocaleString(fm));
@@ -403,12 +403,12 @@ export default function EventForm(props) {
           setInvalidStartDate(false);
         }}
         hide={() => setShowStartDateSelector(false)}
-        language={props.language}
+        localeId={props.localeId}
       />
     </div>
   ) : null;
 
-  const startTimes = timesList(getLocale(props.language)).map((t, index) => (
+  const startTimes = timesList(getLocale(props.localeId)).map((t, index) => (
     <div
       key={index}
       className="mx-2"
@@ -438,12 +438,12 @@ export default function EventForm(props) {
           setInvalidEndDate(false);
         }}
         hide={() => setShowEndDateSelector(false)}
-        language={props.language}
+        localeId={props.localeId}
       />
     </div>
   ) : null;
 
-  const endTimes = timesList(getLocale(props.language)).map((t, index) => (
+  const endTimes = timesList(getLocale(props.localeId)).map((t, index) => (
     <div
       key={index}
       className="mx-2"
@@ -463,7 +463,7 @@ export default function EventForm(props) {
     </div>
   ) : null;
 
-  const calendarName = decideWhatToDisplay(props.language, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
+  const calendarName = decideWhatToDisplay(props.localeId, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
   const title = props.event === null ? `${props.translate("New event in")} ${calendarName}` : `${props.translate("Edit event in")} ${calendarName}`;
 
   function sendForApprovalOrPublishButtonText() {
@@ -499,7 +499,7 @@ export default function EventForm(props) {
                 type="text"
                 id="input-start-date"
                 info={props.translate("Select the date at which your event starts. Click inside the field to view a calendar and select a date.")}
-                value={startDate !== null ? startDate.setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_HUGE) : ""}
+                value={startDate !== null ? startDate.setLocale(getLocale(props.localeId)).toLocaleString(DateTime.DATE_HUGE) : ""}
                 readOnly={true}
                 onClick={() => setShowStartDateSelector(true)}
                 invalidFeedback={invalidStartDate ? <InvalidFeedback feedback={props.translate("You must select a start date.")} /> : null}
@@ -536,7 +536,7 @@ export default function EventForm(props) {
                 type="text"
                 id="input-end-date"
                 info={props.translate("Select the date at which your event ends. Click inside the field to view a calendar and select a date.")}
-                value={endDate !== null ? endDate.setLocale(getLocale(props.language)).toLocaleString(DateTime.DATE_HUGE) : ""}
+                value={endDate !== null ? endDate.setLocale(getLocale(props.localeId)).toLocaleString(DateTime.DATE_HUGE) : ""}
                 readOnly={true}
                 onClick={() => setShowEndDateSelector(!showEndDateSelector)}
                 invalidFeedback={invalidEndDate ? <InvalidFeedback feedback={props.translate("Your end date must be on the same day as your start date or later.")} /> : null}
