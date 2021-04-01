@@ -11,7 +11,7 @@ import Textarea from "../../components/Form/Textarea";
 import usePrevious from "../../services/UsePreviousHook";
 
 export default function EventForm(props) {
-  const prevLanguage = usePrevious(props.localeId);
+  const prevLocaleId = usePrevious(props.localeId);
   const refreshEvents = props.refreshEvents;
   const createEvent = props.createEvent;
   const updateEvent = props.updateEvent;
@@ -69,7 +69,7 @@ export default function EventForm(props) {
   }, [props.event, props.localeId]);
 
   useEffect(() => {
-    if (props.localeId !== prevLanguage) {
+    if (props.localeId !== prevLocaleId) {
       const locale = getLocale(props.localeId);
       const dt = DateTime.now();
       const fm = DateTime.TIME_SIMPLE;
@@ -90,7 +90,7 @@ export default function EventForm(props) {
         setEndTime(dt.set({ hour: endTimeValues.hour, minute: endTimeValues.minute, second: 0, millisecond: 0 }).setLocale(locale).toLocaleString(fm));
       }
     }
-  }, [prevLanguage, props.localeId, previousEndTime, endTime, previousStartTime, startTime]);
+  }, [prevLocaleId, props.localeId, previousEndTime, endTime, previousStartTime, startTime]);
 
   const buildEvent = useCallback((status) => {
     return {

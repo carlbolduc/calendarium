@@ -124,7 +124,7 @@ export function textColor(backgroundColor) {
   }
 }
 
-// This function returns the right text to display for a calendar user content, according to calendar settings and current language
+// This function returns the right text to display for a calendar user content, according to calendar settings and current localeId
 export function decideWhatToDisplay(localeId, enableEn, enableFr, textEn, textFr) {
   let result;
   if (localeId === "enCa" && enableEn) { // we're in English and the calendar has English enabled
@@ -139,7 +139,7 @@ export function decideWhatToDisplay(localeId, enableEn, enableFr, textEn, textFr
   return result;
 }
 
-// This function converts a language to an actual locale. E.g.: "enCa" becomes "en-Ca".
+// This function converts a localeId to an actual locale. E.g.: "enCa" becomes "en-Ca".
 export function getLocale(localeId) {
   return localeId.substring(0, 2) + "-" + localeId.substring(2, 4);
 }
@@ -168,7 +168,7 @@ export function sameDay(d1, d2) {
   );
 }
 
-  // Try to sort calendars according to the current language, fallback to alternative language when sorting if current language isn't enabled
+  // Try to sort calendars according to the current localeId, fallback to alternative language when sorting if current localeId isn't enabled
   export function sortedCalendars(calendars, localeId) {
     if (localeId === "frCa") {
       return calendars.sort((a, b) => (a.enableFr ? a.nameFr : a.nameEn).localeCompare((b.enableFr ? b.nameFr : b.nameEn)));
