@@ -179,7 +179,7 @@ export default function CalendarForm(props) {
           setLinkEn(e.target.value);
           setInvalidLinkEn(false);
         }}
-        invalidFeedback={invalidLinkEn ? <InvalidFeedback feedback={props.translate("You must enter a valid link (only letters, numbers, or dashes).")} /> : null}
+        invalidFeedback={invalidLinkEn ? <InvalidFeedback feedback={props.translate("You must enter a valid link (only letters without accents, numbers, or dashes).")} /> : null}
       />
     </>
   ) : null;
@@ -229,7 +229,7 @@ export default function CalendarForm(props) {
           setLinkFr(e.target.value);
           setInvalidLinkFr(false);
         }}
-        invalidFeedback={invalidLinkFr ? <InvalidFeedback feedback={props.translate("You must enter a link.")} /> : null}
+        invalidFeedback={invalidLinkFr ? <InvalidFeedback feedback={props.translate("You must enter a valid link (only letters without accents, numbers, or dashes).")} /> : null}
       />
     </>
   ) : null;

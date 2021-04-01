@@ -465,4 +465,14 @@
             '
         </sql>
     </changeSet>
+
+    <changeSet id="7" author="mag">
+      <!-- Update localisation copy -->
+      <sql>
+        UPDATE localisation SET
+          en_ca = 'You must enter a valid link (only letters without accents, numbers, or dashes).',
+          fr_ca = 'Vous devez entrer un lien valide (uniquement des lettres sans accent, des chiffres ou des tirets).'
+        WHERE en_ca = 'You must enter a valid link (only letters, numbers, or dashes).';
+      </sql>
+    </changeSet>
 </databaseChangeLog>
