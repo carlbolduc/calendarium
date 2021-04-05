@@ -62,7 +62,7 @@ public class AccountsResource {
                         String passwordDigest = dao.findPasswordDigest(auth.getAccountId());
                         if (argon2.verify(passwordDigest, accountUpdate.getCurrentPassword().toCharArray())) {
                             String newPasswordDigest = argon2.hash(2, 65536, 1, accountUpdate.getNewPassword().toCharArray());
-                            dao.updateAccountAndPassword(auth.getAccountId(), accountUpdate.getEmail(), accountUpdate.getName(), accountUpdate.getLanguageId(), newPasswordDigest);
+                            dao.updateAccountAndPassword(auth.getAccountId(), accountUpdate.getEmail(), accountUpdate.getName(), accountUpdate.getLanguageId(), newPasswordDigest, auth.getAccountId());
                             oAccount = dao.findAccountById(auth.getAccountId());
                             if (oAccount.isPresent()) {
                                 // Set subscription information
@@ -73,7 +73,7 @@ public class AccountsResource {
                             response = Response.status(Response.Status.UNAUTHORIZED).build();
                         }
                     } else {
-                        dao.updateAccount(auth.getAccountId(), accountUpdate.getEmail(), accountUpdate.getName(), accountUpdate.getLanguageId());
+                        dao.updateAccount(auth.getAccountId(), accountUpdate.getEmail(), accountUpdate.getName(), accountUpdate.getLanguageId(), auth.getAccountId());
                         oAccount = dao.findAccountById(auth.getAccountId());
                         if (oAccount.isPresent()) {
                             // Set subscription information
@@ -89,7 +89,7 @@ public class AccountsResource {
                     String passwordDigest = dao.findPasswordDigest(auth.getAccountId());
                     if (argon2.verify(passwordDigest, accountUpdate.getCurrentPassword().toCharArray())) {
                         String newPasswordDigest = argon2.hash(2, 65536, 1, accountUpdate.getNewPassword().toCharArray());
-                        dao.updateAccountAndPassword(auth.getAccountId(), auth.getEmail(), accountUpdate.getName(), accountUpdate.getLanguageId(), newPasswordDigest);
+                        dao.updateAccountAndPassword(auth.getAccountId(), auth.getEmail(), accountUpdate.getName(), accountUpdate.getLanguageId(), newPasswordDigest, auth.getAccountId());
                         oAccount = dao.findAccountById(auth.getAccountId());
                         if (oAccount.isPresent()) {
                             // Set subscription information
@@ -100,7 +100,7 @@ public class AccountsResource {
                         response = Response.status(Response.Status.UNAUTHORIZED).build();
                     }
                 } else {
-                    dao.updateAccount(auth.getAccountId(), auth.getEmail(), accountUpdate.getName(), accountUpdate.getLanguageId());
+                    dao.updateAccount(auth.getAccountId(), auth.getEmail(), accountUpdate.getName(), accountUpdate.getLanguageId(), auth.getAccountId());
                     oAccount = dao.findAccountById(auth.getAccountId());
                     if (oAccount.isPresent()) {
                         // Set subscription information

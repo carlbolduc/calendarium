@@ -35,7 +35,7 @@ public class TrialsResource {
         Instant in30Days = LocalDateTime.from(now.atZone(ZoneId.of("UTC"))).plusDays(30).atZone(ZoneId.of("UTC")).toInstant();
         Price price = dao.findPrice(0);
         // Create the subscription
-        dao.insertSubscription(auth.getAccountId(), null, price.getPriceId(), now, in30Days, SubscriptionStatus.ACTIVE.getStatus());
+        dao.insertSubscription(auth.getAccountId(), null, price.getPriceId(), now, in30Days, SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
         return Response.ok().build();
     }
     

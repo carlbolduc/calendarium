@@ -17,6 +17,8 @@ public class Calendar {
     private Boolean publicCalendar = false;
     private Boolean eventApprovalRequired = true;
     private String access;
+    private long createdBy;
+    private long updatedBy;
 
     public long getCalendarId() {
         return calendarId;
@@ -144,6 +146,22 @@ public class Calendar {
 
     public void setAccess(String access) {
         this.access = access;
+    }
+
+    public long getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(long createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public long getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(long updatedBy) {
+        this.updatedBy = updatedBy;
     }
 
 }

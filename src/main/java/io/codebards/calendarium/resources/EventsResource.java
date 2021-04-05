@@ -39,6 +39,7 @@ public class EventsResource {
         Optional<CalendarAccess> oCalendarAccess = calendarAccesses.stream().filter(ca -> ca.getCalendarId() == event.getCalendarId()).findAny();
         if (oCalendarAccess.isPresent()) {
             event.setAccountId(auth.getAccountId());
+            event.setCreatedBy(auth.getAccountId());
             dao.insertEvent(event);
             // event created, return 200 OK
             response = Response.ok().build();
@@ -63,7 +64,7 @@ public class EventsResource {
                 if (oCalendarAccess.isPresent()) {
                     // Account has access to the original event's calendar and the calendar was not modified
                     // may return 200 OK or 401 Unauthorized
-                    response = updateEventIfPossible(oCalendarAccess.get(), event);
+                    response = updateEventIfPossible(oCalendarAccess.get(), event, auth.getAccountId());
                 }
             } else if (oCalendarAccess.isPresent()) {
                 // Before anything, make sure account has the access in the original calendar of the event
@@ -74,7 +75,7 @@ public class EventsResource {
                     if (oCalendarAccess.isPresent()) {
                         // Account has access to the new event's calendar
                         // may return 200 OK or 401 Unauthorized
-                        response = updateEventIfPossible(oCalendarAccess.get(), event);
+                        response = updateEventIfPossible(oCalendarAccess.get(), event, auth.getAccountId());
                     }
                 }
             }
@@ -147,15 +148,17 @@ public class EventsResource {
         return events;
     }
 
-    private Response updateEventIfPossible(CalendarAccess calendarAccess, Event event) {
+    private Response updateEventIfPossible(CalendarAccess calendarAccess, Event event, long updatedBy) {
         // default response to return is 401 Unauthorized
         Response response = Response.status(Response.Status.UNAUTHORIZED).build();
         if (calendarAccess.getStatus().equals(CalendarAccessStatus.OWNER.getStatus())) {
             // We can update the event
+            event.setUpdatedBy(updatedBy);
             dao.updateEvent(event);
             // event updated, return 200 OK
             response = Response.ok().build();
         } else if (calendarAccess.getStatus().equals(CalendarAccessStatus.ACTIVE.getStatus())) {
+            event.setUpdatedBy(updatedBy);
             dao.updateEvent(event);
             // event updated, return 200 OK
             response = Response.ok().build();

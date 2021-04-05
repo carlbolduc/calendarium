@@ -82,7 +82,6 @@ export function useAuth() {
   }
 
   const updateAccount = useCallback((data, cb) => {
-    debugger
     // TODO: check usage of this function, it can cause loops since it updates account and is triggered by account
     // TODO: split in different update functions
     if (token !== null) {

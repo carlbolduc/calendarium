@@ -21,9 +21,9 @@ public interface Dao {
 
     // ******************** Account ********************
 
-    @SqlUpdate("INSERT INTO account (email, name, language_id, password_digest) VALUES (:email, :name, :languageId, :passwordDigest)")
+    @SqlUpdate("INSERT INTO account (email, name, language_id, password_digest, created_by) VALUES (:email, :name, :languageId, :passwordDigest, :createdBy)")
     @GetGeneratedKeys
-    long insertAccount(@Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId, @Bind("passwordDigest") String passwordDigest);
+    long insertAccount(@Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId, @Bind("passwordDigest") String passwordDigest, @Bind("createdBy") long createdBy);
 
     @SqlQuery("SELECT a.account_id, a.email, a.name, a.language_id, a.stripe_cus_id, at.validator\n" +
             "FROM account a\n" +
@@ -50,14 +50,14 @@ public interface Dao {
     @SqlUpdate("UPDATE account SET password_reset_digest = :passwordResetDigest, password_reset_requested_at = :now WHERE account_id = :accountId")
     void updatePasswordResetDigest(@Bind("accountId") long accountId, @Bind("passwordResetDigest") String passwordResetDigest, @Bind("now") Instant now);
 
-    @SqlUpdate("UPDATE account SET password_digest = :passwordDigest, password_reset_digest = NULL, password_reset_requested_at = NULL WHERE account_id = :accountId")
-    void updatePasswordDigest(@Bind("accountId") long accountId, @Bind("passwordDigest") String passwordDigest);
+    @SqlUpdate("UPDATE account SET password_digest = :passwordDigest, password_reset_digest = NULL, password_reset_requested_at = NULL, updated_by = :updatedBy WHERE account_id = :accountId")
+    void updatePasswordDigest(@Bind("accountId") long accountId, @Bind("passwordDigest") String passwordDigest, @Bind("updatedBy") long updatedBy);
 
-    @SqlUpdate("UPDATE account SET email = :email, name = :name, language_id = :languageId WHERE account_id = :accountId")
-    void updateAccount(@Bind("accountId") long accountId, @Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId);
+    @SqlUpdate("UPDATE account SET email = :email, name = :name, language_id = :languageId, updated_by = :updatedBy WHERE account_id = :accountId")
+    void updateAccount(@Bind("accountId") long accountId, @Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId, @Bind("updatedBy") long updatedBy);
 
-    @SqlUpdate("UPDATE account SET email = :email, name = :name, language_id = :languageId, password_digest = :passwordDigest WHERE account_id = :accountId")
-    void updateAccountAndPassword(@Bind("accountId") long accountId, @Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId, @Bind("passwordDigest") String passwordDigest);
+    @SqlUpdate("UPDATE account SET email = :email, name = :name, language_id = :languageId, password_digest = :passwordDigest, updated_by = :updatedBy WHERE account_id = :accountId")
+    void updateAccountAndPassword(@Bind("accountId") long accountId, @Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId, @Bind("passwordDigest") String passwordDigest, @Bind("updatedBy") long updatedBy);
 
     @SqlUpdate("INSERT INTO account_token (selector, validator, created_at, account_id)\n" +
             "VALUES (:selector, :validator, :now, :accountId)")
@@ -110,14 +110,14 @@ public interface Dao {
     @RegisterBeanMapper(Tax.class)
     List<Tax> findTaxes();
 
-    @SqlUpdate("INSERT INTO subscription (account_id, stripe_sub_id, price_id, start_at, end_at, status) VALUES (:accountId, :stripeSubId, :priceId, :startAt, :endAt, :status)")
-    void insertSubscription(@Bind("accountId") long accountId, @Bind("stripeSubId") String stripeSubId, @Bind("priceId") long priceId, @Bind("startAt") Instant startAt, @Bind("endAt") Instant endAt, @Bind("status") String status);
+    @SqlUpdate("INSERT INTO subscription (account_id, stripe_sub_id, price_id, start_at, end_at, status, created_by) VALUES (:accountId, :stripeSubId, :priceId, :startAt, :endAt, :status, :createdBy)")
+    void insertSubscription(@Bind("accountId") long accountId, @Bind("stripeSubId") String stripeSubId, @Bind("priceId") long priceId, @Bind("startAt") Instant startAt, @Bind("endAt") Instant endAt, @Bind("status") String status, @Bind("createdBy") long createdBy);
 
     @SqlQuery("SELECT stripe_sub_id FROM subscription WHERE account_id = :accountId")
     String findStripeSubId(@Bind("accountId") long accountId);
 
-    @SqlUpdate("UPDATE subscription SET status = :status WHERE stripe_sub_id = :stripeSubId")
-    void updateSubscriptionStatus(@Bind("stripeSubId") String stripeSubId, @Bind("status") String status);
+    @SqlUpdate("UPDATE subscription SET status = :status, updated_by = :updatedBy WHERE stripe_sub_id = :stripeSubId")
+    void updateSubscriptionStatus(@Bind("stripeSubId") String stripeSubId, @Bind("status") String status, @Bind("updatedBy") long updatedBy);
 
     // ******************** Calendar ********************
 
@@ -243,13 +243,13 @@ public interface Dao {
     Optional<Calendar> findAnonymousCalendar(@Bind("link") String link, @Bind("calendarAccessId") long calendarAccessId);
 
     @SqlUpdate("INSERT INTO calendar (enable_en, enable_fr, name_en, name_fr, description_en, description_fr, link_en, link_fr,\n" +
-            "                      start_week_on, primary_color, secondary_color, embed_calendar, public_calendar, event_approval_required)\n" +
+            "                      start_week_on, primary_color, secondary_color, embed_calendar, public_calendar, event_approval_required, created_by)\n" +
             "VALUES (:enableEn, :enableFr, :nameEn, :nameFr, :descriptionEn, :descriptionFr, :linkEn, :linkFr,\n" +
-            "        :startWeekOn, :primaryColor, :secondaryColor, :embedCalendar, :publicCalendar, :eventApprovalRequired)")
+            "        :startWeekOn, :primaryColor, :secondaryColor, :embedCalendar, :publicCalendar, :eventApprovalRequired, :createdBy)")
     @GetGeneratedKeys
     long insertCalendar(@Bind("accountId") long accountId, @BindBean Calendar calendar);
 
-    @SqlUpdate("UPDATE calendar SET enable_en = :enableEn, enable_fr = :enableFr, name_en = :nameEn, name_fr = :nameFr, description_en = :descriptionEn, description_fr = :descriptionFr, link_en = :linkEn, link_fr = :linkFr, start_week_on = :startWeekOn, primary_color = :primaryColor, secondary_color = :secondaryColor, embed_calendar = :embedCalendar, public_calendar = :publicCalendar, event_approval_required = :eventApprovalRequired WHERE calendar_id = :calendarId")
+    @SqlUpdate("UPDATE calendar SET enable_en = :enableEn, enable_fr = :enableFr, name_en = :nameEn, name_fr = :nameFr, description_en = :descriptionEn, description_fr = :descriptionFr, link_en = :linkEn, link_fr = :linkFr, start_week_on = :startWeekOn, primary_color = :primaryColor, secondary_color = :secondaryColor, embed_calendar = :embedCalendar, public_calendar = :publicCalendar, event_approval_required = :eventApprovalRequired, updated_by = :updatedBy WHERE calendar_id = :calendarId")
     void updateCalendar(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @BindBean Calendar calendar);
 
     @SqlUpdate("DELETE FROM calendar WHERE calendar_id = :calendarId")
@@ -294,9 +294,9 @@ public interface Dao {
     Optional<Event> findEvent(@Bind("eventId") long eventId);
 
     @SqlUpdate("INSERT INTO event (account_id, calendar_id, status, name_fr, name_en, description_fr, \n" +
-            "                   description_en, start_at, end_at, all_day, hyperlink_fr, hyperlink_en)\n" +
+            "                   description_en, start_at, end_at, all_day, hyperlink_fr, hyperlink_en, created_by)\n" +
             "VALUES (:accountId, :calendarId, :status, :nameFr, :nameEn, :descriptionFr, \n" +
-            "        :descriptionEn, :startAt, :endAt, :allDay, :hyperlinkFr, :hyperlinkEn)")
+            "        :descriptionEn, :startAt, :endAt, :allDay, :hyperlinkFr, :hyperlinkEn, :createdBy)")
     void insertEvent(@BindBean Event event);
 
     @SqlUpdate("UPDATE event\n" +
@@ -310,7 +310,8 @@ public interface Dao {
             "    end_at         = :endAt,\n" +
             "    all_day        = :allDay,\n" +
             "    hyperlink_fr   = :hyperlinkFr,\n" +
-            "    hyperlink_en   = :hyperlinkEn\n" +
+            "    hyperlink_en   = :hyperlinkEn,\n" +
+            "    updated_by     = :updatedBy\n" +
             "WHERE event_id = :eventId")
     void updateEvent(@BindBean Event event);
 
@@ -428,9 +429,9 @@ public interface Dao {
 
     // ******************** Calendar Access ********************
 
-    @SqlUpdate("INSERT INTO calendar_access (account_id, calendar_id, status) VALUES (:accountId, :calendarId, :status)")
+    @SqlUpdate("INSERT INTO calendar_access (account_id, calendar_id, status, created_by) VALUES (:accountId, :calendarId, :status, :createdBy)")
     @GetGeneratedKeys
-    long insertCalendarAccess(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @Bind("status") String status);
+    long insertCalendarAccess(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @Bind("status") String status, @Bind("createdBy") long createdBy);
 
     @SqlQuery("SELECT calendar_access_id, account_id, calendar_id, status\n" +
             "FROM calendar_access\n" +
@@ -468,17 +469,17 @@ public interface Dao {
     @RegisterBeanMapper(CalendarAccess.class)
     Optional<CalendarAccess> findCalendarAccessByCalendarAccessIdAndCalendarId(@Bind("calendarAccessId") long calendarAccessId, @Bind("calendarId") long calendarId);
 
-    @SqlUpdate("UPDATE calendar_access SET status = 'active' WHERE calendar_access_id = :calendarAccessId and calendar_id = :calendarId")
+    @SqlUpdate("UPDATE calendar_access SET status = 'active', updated_by = :updatedBy WHERE calendar_access_id = :calendarAccessId and calendar_id = :calendarId")
     @RegisterBeanMapper(CalendarAccess.class)
-    void acceptCalendarInvitation(@Bind("calendarAccessId") long calendarAccessId, @Bind("calendarId") long calendarId);
+    void acceptCalendarInvitation(@Bind("calendarAccessId") long calendarAccessId, @Bind("calendarId") long calendarId, @Bind("updatedBy") long updatedBy);
 
     @SqlQuery("SELECT account_id FROM calendar_access WHERE calendar_id = :calendarId AND status = 'owner'")
     @RegisterBeanMapper(CalendarAccess.class)
     long findCalendarOwnerAccountId(@Bind("calendarId") long calendarId);
 
-    @SqlUpdate("UPDATE calendar_access SET status = :status WHERE calendar_access_id = :calendarAccessId and calendar_id = :calendarId")
+    @SqlUpdate("UPDATE calendar_access SET status = :status, updated_by = :updatedBy WHERE calendar_access_id = :calendarAccessId and calendar_id = :calendarId")
     @RegisterBeanMapper(CalendarAccess.class)
-    void updateCalendarAccessStatus(@Bind("calendarAccessId") long calendarAccessId, @Bind("calendarId") long calendarId, @Bind("status") String status);
+    void updateCalendarAccessStatus(@Bind("calendarAccessId") long calendarAccessId, @Bind("calendarId") long calendarId, @Bind("status") String status, @Bind("updatedBy") long updatedBy);
 
 
     // ******************** Email Template ********************

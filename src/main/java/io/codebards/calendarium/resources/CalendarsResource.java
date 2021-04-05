@@ -94,8 +94,9 @@ public class CalendarsResource {
             (calendar.getEnableFr() != null && !reservedWords().contains(calendar.getLinkFr()))
         ) {
             try {
+                calendar.setCreatedBy(auth.getAccountId());
                 long calendarId = dao.insertCalendar(auth.getAccountId(), calendar);
-                dao.insertCalendarAccess(auth.getAccountId(), calendarId, CalendarAccessStatus.OWNER.getStatus());
+                dao.insertCalendarAccess(auth.getAccountId(), calendarId, CalendarAccessStatus.OWNER.getStatus(), auth.getAccountId());
                 response = Response.noContent().build();
             } catch (Exception e) {
                 // Unique constraint will cause insert to fail
@@ -116,6 +117,7 @@ public class CalendarsResource {
                 (calendar.getEnableFr() != null && !reservedWords().contains(calendar.getLinkFr()))
             ) {
                 try {
+                    calendar.setUpdatedBy(auth.getAccountId());
                     dao.updateCalendar(auth.getAccountId(), calendarId, calendar);
                     Optional<Calendar> oCalendar = dao.findCalendarByLink(auth.getAccountId(), calendar.getLinkEn());
                     if (oCalendar.isPresent()) {

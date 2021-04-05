@@ -113,7 +113,7 @@ public class SubscriptionsResource {
                 }
                 // Create the subscription
                 Subscription subscription = Subscription.create(subCreateParams);
-                dao.insertSubscription(auth.getAccountId(), subscription.getId(), price.getPriceId(), Instant.ofEpochSecond(subscription.getCurrentPeriodStart()), Instant.ofEpochSecond(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus());
+                dao.insertSubscription(auth.getAccountId(), subscription.getId(), price.getPriceId(), Instant.ofEpochSecond(subscription.getCurrentPeriodStart()), Instant.ofEpochSecond(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
                 if (subscription.getLatestInvoiceObject().getPaymentIntentObject().getStatus().equals(PaymentIntentStatus.SUCCEEDED.getStatus())) {
                     // TODO: It worked, check what we must return to client
                     // Check with Stripe if it's possible to get a subscription that is not succeeded when we reach this step
@@ -143,9 +143,9 @@ public class SubscriptionsResource {
                     SubscriptionUpdateParams params = SubscriptionUpdateParams.builder().setCancelAtPeriodEnd(update.getCancelAtPeriodEnd()).build();
                     subscription.update(params);
                     if (update.getCancelAtPeriodEnd()) {
-                        dao.updateSubscriptionStatus(stripeSubId, SubscriptionStatus.CANCELED.getStatus());
+                        dao.updateSubscriptionStatus(stripeSubId, SubscriptionStatus.CANCELED.getStatus(), auth.getAccountId());
                     } else {
-                        dao.updateSubscriptionStatus(stripeSubId, SubscriptionStatus.ACTIVE.getStatus());
+                        dao.updateSubscriptionStatus(stripeSubId, SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
                     }
                 } catch (StripeException e) {
                     e.printStackTrace();

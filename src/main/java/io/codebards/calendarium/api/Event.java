@@ -16,6 +16,8 @@ public class Event {
     private Boolean allDay;
     private String hyperlinkFr;
     private String hyperlinkEn;
+    private long createdBy;
+    private long updatedBy;
 
     public long getEventId() {
         return eventId;
@@ -119,5 +121,21 @@ public class Event {
 
     public void setHyperlinkEn(String hyperlinkEn) {
         this.hyperlinkEn = hyperlinkEn;
+    }
+
+    public long getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(long createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public long getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(long updatedBy) {
+        this.updatedBy = updatedBy;
     }
 }
