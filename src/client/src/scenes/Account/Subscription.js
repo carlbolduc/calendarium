@@ -9,6 +9,7 @@ import StripeWrapper from "./StripeWrapper";
 
 const wantToOptions = {
   SUBSCRIBE: "subscribe",
+  START_TRIAL: "start trial",
   CANCEL: "cancel",
   REACTIVATE: "reactivate"
 }
@@ -30,6 +31,11 @@ export default function Subscription(props) {
         }
       });
     }
+  }
+
+  function wantToStartTrial(e) {
+    e.preventDefault();
+    setWantTo(wantToOptions.START_TRIAL);
   }
 
   function wantToCancel(e) {
@@ -74,6 +80,17 @@ export default function Subscription(props) {
     });
   }
 
+  function startTrial(e) {
+    e.preventDefault();
+    setMessageOrigin("startTrial");
+    props.startTrial(result => {
+      if (result.success) {
+        setWantTo("");
+      }
+      setResult(result);
+    });
+  }
+
   const productPresentation = (
     <div>
       <p>{props.translate("By subscribing to Calendarium, you will be able to create and manage your own calendars, and invite people to collaborate with you on these calendars.")}</p>
@@ -89,19 +106,42 @@ export default function Subscription(props) {
   );
 
   const pricing = (
-    <div className="card mt-4" style={{ width: "18rem" }}>
-      <img
-        src="/img/logo.png"
-        alt="Calendarium logo"
-        width="100%"
-        height="180"
-        className="card-img-top"
-      />
-      <div className="card-body">
-        <h5 className="card-title">{props.translate("Calendarium unlimited")}</h5>
-        <h6 className="card-subtitle mb-2 text-muted">{props.translate("$600 CAD per year")}</h6>
-        <p className="card-text">{props.translate("Includes unlimited calendars and unlimited collaborators.")}</p>
-        <Button label={props.translate("Subscribe")} type="button" id="button-subscribe" onClick={e => wantToSubscribe(e)} />
+    <div className="row mt-4">
+      {/* ***** Calendarium trial ***** */}
+      <div className="col-auto">
+        <div className="card" style={{ width: "18rem" }}>
+          <img
+            src="/img/logo.png"
+            alt="Calendarium logo"
+            width="100%"
+            height="180"
+            className="card-img-top"
+          />
+          <div className="card-body">
+            <h5 className="card-title">{props.translate("Calendarium trial")}</h5>
+            <h6 className="card-subtitle mb-2 text-muted">{props.translate("Free for one month")}</h6>
+            <p className="card-text">{props.translate("Includes unlimited calendars and unlimited collaborators.")}</p>
+            <Button label={props.translate("Start trial")} type="button" id="button-subscribe" onClick={e => wantToStartTrial(e)} />
+          </div>
+        </div>
+      </div>
+      {/* ***** Calendarium unlimited ***** */}
+      <div className="col-auto">
+        <div className="card" style={{ width: "18rem" }}>
+          <img
+            src="/img/logo.png"
+            alt="Calendarium logo"
+            width="100%"
+            height="180"
+            className="card-img-top"
+          />
+          <div className="card-body">
+            <h5 className="card-title">{props.translate("Calendarium unlimited")}</h5>
+            <h6 className="card-subtitle mb-2 text-muted">{props.translate("$600 CAD per year")}</h6>
+            <p className="card-text">{props.translate("Includes unlimited calendars and unlimited collaborators.")}</p>
+            <Button label={props.translate("Subscribe")} type="button" id="button-subscribe" onClick={e => wantToSubscribe(e)} />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -193,6 +233,32 @@ export default function Subscription(props) {
                 localeId={props.localeId}
                 translate={props.translate}
               />
+            </>
+          );
+        } else if (wantTo === wantToOptions.START_TRIAL) {
+          // Show start trial form
+          result = (
+            <>
+              {productPresentation}
+              <div>
+                <h5>{props.translate("Are you ready to start your one-month Calendarium unlimited trial?")}</h5>
+                <p>{props.translate("When your trial starts...")}</p>
+                <ul>
+                  <li>{props.translate("You will enjoy creating calendars and inviting collaborators right away.")}</li>
+                  <li>{props.translate("You will have full access to all of Calendarium features for a full month.")}</li>
+                  <li>{props.translate("It will feel like you have all the time in the world.")}</li>
+                </ul>
+                <p>{props.translate("Once your trial ends...")}</p>
+                <ul>
+                  <li>{props.translate("You will NOT be charged unless you decide to subscribe.")}</li>
+                  <li>{props.translate("Your calendars will NOT be deleted, and if you ever decide to subscribe, they will be there for you.")}</li>
+                  <li>{props.translate("If some of your calendars are public, they will stop appearing in our Public calendars section.")}</li>
+                  <li>{props.translate("If you have embedded calendars in other websites, their embed code will stop displaying the calendar, showing instead a discreet message.")}</li>
+                  <li>{props.translate("You will have realised that one month flies by so fast.")}</li>
+                </ul>
+                <Button label={props.translate("Never mind")} type="button" id="button-never-mind" onClick={() => setWantTo("")} outline={true} />
+                <Button label={props.translate("Start my trial")} type="button" id="button-start-trial" onClick={e => startTrial(e)} />
+              </div>
             </>
           );
         } else {
