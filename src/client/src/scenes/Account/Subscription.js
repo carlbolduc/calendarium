@@ -108,6 +108,7 @@ export default function Subscription(props) {
   const pricing = (
     <div className="row mt-4">
       {/* ***** Calendarium trial ***** */}
+      {/* TODO: show trial option only if account has never had a trial before */}
       <div className="col-auto">
         <div className="card" style={{ width: "18rem" }}>
           <img
@@ -148,38 +149,63 @@ export default function Subscription(props) {
 
   const endAt = props.account.subscription ? DateTime.fromSeconds(props.account.subscription.endAt).setLocale(getLocale(props.localeId)).toLocaleString(DateTime.DATE_FULL) : null;
 
-  function renderSubscriptionEndAt() {
+  function subscriptionEndAt() {
     let result = null;
     if (props.account.subscription !== null) {
+      // There's a subscription
       if (props.account.subscription.status === subscriptionStatus.ACTIVE) {
-        result = <p>{props.translate("Your subscription renews on")} {endAt}.</p>
+        // It's active
+        if (props.account.subscription.product === "trial") {
+          // It's a trial
+          result = <p>{props.translate("Your trial ends on")} {endAt}.</p>
+        } else {
+          // It's a regular subscription
+          result = <p>{props.translate("Your subscription renews on")} {endAt}.</p>
+        }
       } else if (props.account.subscription.status === subscriptionStatus.CANCELED) {
+        // It's canceled
         result = <p>{props.translate("Your subscription ends on")} {endAt}.</p>
       }
     }
     return result;
   }
 
-  const subscriptionDetails = (
-    <div>
-      <p>{props.translate("Here are the details about your subscription.")}</p>
-      <h5 className="mt-4">{props.translate("Calendarium unlimited")}</h5>
-      <p>{props.translate("$600 CAD per year")}</p>
-      {renderSubscriptionEndAt()}
-    </div>
-  );
-
-  function renderSubscriptionActions() {
+  function subscriptionActions() {
     let result = null;
     if (props.account.subscription !== null) {
+      // There's a subscription
       if (props.account.subscription.status === subscriptionStatus.ACTIVE) {
-        result =
-          <Button label={props.translate("Cancel subscription")} type="button" id="button-cancel-subscription" onClick={e => wantToCancel(e)} />;
+        // It's active
+        if (props.account.subscription.product === "trial") {
+          // It's a trial
+          result = <Button label={props.translate("Subscribe")} type="button" id="button-subscribe" onClick={e => wantToSubscribe(e)} />;
+        } else {
+          // It's a regular subscription
+          result = <Button label={props.translate("Cancel subscription")} type="button" id="button-cancel-subscription" onClick={e => wantToCancel(e)} />;
+        }
       } else if (props.account.subscription.status === subscriptionStatus.CANCELED) {
-        result =
-          <Button label={props.translate("Reactivate subscription")} type="button" id="button-reactivate-subscription" onClick={e => wantToReactivate(e)} />;
+        // It's canceled and it's a regular subscription
+        result = <Button label={props.translate("Reactivate subscription")} type="button" id="button-reactivate-subscription" onClick={e => wantToReactivate(e)} />;
       }
     }
+    return result;
+  }
+
+  function subscriptionDetails() {
+    let result = null;
+    const product = props.account.subscription.product === "trial" ? "Calendarium trial" : "Calendarium unlimited";
+    const price = props.account.subscription.product === "trial" ? "Free for one month" : "$600 CAD per year";
+    result = (
+      <>
+        <div>
+          <p>{props.translate("Here are the details about your subscription.")}</p>
+          <h5 className="mt-4">{props.translate(product)}</h5>
+          <p>{props.translate(price)}</p>
+          {subscriptionEndAt()}
+        </div>
+        {subscriptionActions()}
+      </>
+    );
     return result;
   }
 
@@ -187,6 +213,7 @@ export default function Subscription(props) {
     let result = null;
     if (props.authenticated) {
       if (wantTo === wantToOptions.CANCEL) {
+        // Show cancel info
         result = (
           <div>
             <h5>{props.translate("Are you sure you want to cancel your subscription?")}</h5>
@@ -200,6 +227,7 @@ export default function Subscription(props) {
           </div>
         );
       } else if (wantTo === wantToOptions.REACTIVATE) {
+        // Show reactivate info
         result = (
           <div>
             <h5>{props.translate("Are you sure you want to reactivate your subscription?")}</h5>
@@ -212,64 +240,56 @@ export default function Subscription(props) {
             <Button label={props.translate("Reactivate my subscription")} type="button" id="button-confirm-cancel" onClick={e => reactivate(e)} />
           </div>
         );
-      } else if (props.subscribed) {
-        // Show subscription details
-        // TODO: show subscription details only if subscription end date is in the future
+      } else if (wantTo === wantToOptions.SUBSCRIBE) {
+        // Show subscribe form
         result = (
           <>
-            {subscriptionDetails}
-            {renderSubscriptionActions()}
+            {productPresentation}
+            <StripeWrapper
+              createSubscription={createSubscription}
+              cancel={() => setWantTo("")}
+              localeId={props.localeId}
+              translate={props.translate}
+            />
           </>
         );
+      } else if (wantTo === wantToOptions.START_TRIAL) {
+        // Show start trial info
+        result = (
+          <>
+            {productPresentation}
+            <div>
+              <h5>{props.translate("Are you ready to start your one-month Calendarium unlimited trial?")}</h5>
+              <p>{props.translate("When your trial starts...")}</p>
+              <ul>
+                <li>{props.translate("You will enjoy creating calendars and inviting collaborators right away.")}</li>
+                <li>{props.translate("You will have full access to all of Calendarium features for a full month.")}</li>
+                <li>{props.translate("It will feel like you have all the time in the world.")}</li>
+              </ul>
+              <p>{props.translate("Once your trial ends...")}</p>
+              <ul>
+                <li>{props.translate("You will NOT be charged unless you decide to subscribe.")}</li>
+                <li>{props.translate("Your calendars will NOT be deleted, and if you ever decide to subscribe, they will be there for you.")}</li>
+                <li>{props.translate("If some of your calendars are public, they will stop appearing in our Public calendars section.")}</li>
+                <li>{props.translate("If you have embedded calendars in other websites, their embed code will stop displaying the calendar, showing instead a discreet message.")}</li>
+                <li>{props.translate("You will have realised that one month flies by so fast.")}</li>
+              </ul>
+              <Button label={props.translate("Never mind")} type="button" id="button-never-mind" onClick={() => setWantTo("")} outline={true} />
+              <Button label={props.translate("Start my trial")} type="button" id="button-start-trial" onClick={e => startTrial(e)} />
+            </div>
+          </>
+        );
+      } else if (props.subscribed && DateTime.fromSeconds(props.account.subscription.endAt) >= DateTime.now()) {
+        // Show subscription details, but only if subscription end date is in the future
+        result = subscriptionDetails();
       } else {
-        if (wantTo === wantToOptions.SUBSCRIBE) {
-          // Show subscribe form
-          result = (
-            <>
-              {productPresentation}
-              <StripeWrapper
-                createSubscription={createSubscription}
-                cancel={() => setWantTo("")}
-                localeId={props.localeId}
-                translate={props.translate}
-              />
-            </>
-          );
-        } else if (wantTo === wantToOptions.START_TRIAL) {
-          // Show start trial form
-          result = (
-            <>
-              {productPresentation}
-              <div>
-                <h5>{props.translate("Are you ready to start your one-month Calendarium unlimited trial?")}</h5>
-                <p>{props.translate("When your trial starts...")}</p>
-                <ul>
-                  <li>{props.translate("You will enjoy creating calendars and inviting collaborators right away.")}</li>
-                  <li>{props.translate("You will have full access to all of Calendarium features for a full month.")}</li>
-                  <li>{props.translate("It will feel like you have all the time in the world.")}</li>
-                </ul>
-                <p>{props.translate("Once your trial ends...")}</p>
-                <ul>
-                  <li>{props.translate("You will NOT be charged unless you decide to subscribe.")}</li>
-                  <li>{props.translate("Your calendars will NOT be deleted, and if you ever decide to subscribe, they will be there for you.")}</li>
-                  <li>{props.translate("If some of your calendars are public, they will stop appearing in our Public calendars section.")}</li>
-                  <li>{props.translate("If you have embedded calendars in other websites, their embed code will stop displaying the calendar, showing instead a discreet message.")}</li>
-                  <li>{props.translate("You will have realised that one month flies by so fast.")}</li>
-                </ul>
-                <Button label={props.translate("Never mind")} type="button" id="button-never-mind" onClick={() => setWantTo("")} outline={true} />
-                <Button label={props.translate("Start my trial")} type="button" id="button-start-trial" onClick={e => startTrial(e)} />
-              </div>
-            </>
-          );
-        } else {
-          // Show pricing options
-          result = (
-            <>
-              {productPresentation}
-              {pricing}
-            </>
-          );
-        }
+        // Show pricing options
+        result = (
+          <>
+            {productPresentation}
+            {pricing}
+          </>
+        );
       }
     }
     return result;
