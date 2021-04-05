@@ -97,13 +97,14 @@ public interface Dao {
             "    END AS product\n" +
             "FROM subscription s\n" +
             "      INNER JOIN price p on p.price_id = s.price_id\n" +
-            "WHERE account_id = :accountId")
+            "WHERE account_id = :accountId\n" +
+            "ORDER BY s.start_at DESC LIMIT 1")
     @RegisterBeanMapper(Subscription.class)
     Subscription findSubscriptionByAccountId(@Bind("accountId") long accountId);
 
-    @SqlQuery("SELECT * FROM price LIMIT 1")
+    @SqlQuery("SELECT * FROM price WHERE amount = :amount")
     @RegisterBeanMapper(Price.class)
-    Price findPrice();
+    Price findPrice(@Bind("amount") int amount);
 
     @SqlQuery("SELECT stripe_tax_id, description FROM tax")
     @RegisterBeanMapper(Tax.class)

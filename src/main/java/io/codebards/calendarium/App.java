@@ -83,6 +83,7 @@ public class App extends Application<Config> {
         final AccountsResource accountsResource = new AccountsResource(dao, argon2, stripeService);
         final LocalisationsResource localisationsResource = new LocalisationsResource(dao);
         final SubscriptionsResource subscriptionsResource = new SubscriptionsResource(dao, config.getThirdPartyFactory().getStripeApiKey(), config.getThirdPartyFactory().getStripeWebhookSecret());
+        final TrialsResource trialsResource = new TrialsResource(dao);
         final CalendarsResource calendarsResource = new CalendarsResource(dao);
         final PublicResource publicResource = new PublicResource(dao);
         final EventsResource eventsResource = new EventsResource(dao);
@@ -106,6 +107,7 @@ public class App extends Application<Config> {
         environment.jersey().register(accountsResource);
         environment.jersey().register(localisationsResource);
         environment.jersey().register(subscriptionsResource);
+        environment.jersey().register(trialsResource);
         environment.jersey().register(calendarsResource);
         environment.jersey().register(publicResource);
         environment.jersey().register(eventsResource);

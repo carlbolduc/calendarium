@@ -86,7 +86,7 @@ public class SubscriptionsResource {
                         .build();
                 customer.update(customerUpdateParams);
                 // Get price id from database
-                Price price = dao.findPrice();
+                Price price = dao.findPrice(600);
                 SubscriptionCreateParams subCreateParams;
                 if (pm.getCard().getCountry().equals("CA")) {
                     List<Tax> taxesToCharge = new ArrayList<>();
