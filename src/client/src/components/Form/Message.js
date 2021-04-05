@@ -1,7 +1,8 @@
-import React from "react";
-import {useState, useEffect} from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { CSSTransition } from "react-transition-group";
 
 export default function Message(props) {
+  const nodeRef = useRef(null);
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -78,15 +79,23 @@ export default function Message(props) {
       if (message === undefined) {message = "We have encountered the unexpected. Mark the calendar! And maybe contact us in the grove."}
 
       result = (
-        <div className="alert alert-danger alert-dismissible fade show my-4" role="alert">
+        <CSSTransition
+          nodeRef={nodeRef}
+          in={show}
+          timeout={300}
+          classNames="message"
+          unmountOnExit
+          >
+        <div ref={nodeRef} className="alert alert-danger alert-dismissible fade show my-4" role="alert">
           {props.translate(message)}
           <button type="button" className="btn-close" aria-label={props.translate("Close")} onClick={e => {
             e.preventDefault();
             setShow(false);
           }} />
         </div>
+        </CSSTransition>
       );
     }
   } 
-  return show ? result : null;
+  return result;
 }

@@ -78,3 +78,18 @@ a {
 .p-wrap {
   white-space: pre-line;
 }
+
+.message-enter {
+  opacity: 0;
+}
+.message-active {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+.message-exit {
+  opacity: 1;
+}
+.message-exit-active {
+  opacity: 0;
+  transition: opacity 200ms;
+}
