@@ -129,6 +129,7 @@ public class Account implements Principal {
     }
 
     @JsonIgnore
+    // TODO: subscription, when filled, is the latest one, validate a few things here to make sure the user still has access
     public Set<String> getRoles() {
         List<String> roles = new ArrayList<>();
         roles.add("USER");
