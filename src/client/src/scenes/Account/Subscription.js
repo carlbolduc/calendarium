@@ -263,7 +263,7 @@ export default function Subscription(props) {
               <p>{props.translate("When your trial starts...")}</p>
               <ul>
                 <li>{props.translate("You will enjoy creating calendars and inviting collaborators right away.")}</li>
-                <li>{props.translate("You will have full access to all of Calendarium features for a full month.")}</li>
+                <li>{props.translate("You will have full access to all of Calendarium features for a whole month.")}</li>
                 <li>{props.translate("It will feel like you have all the time in the world.")}</li>
               </ul>
               <p>{props.translate("Once your trial ends...")}</p>

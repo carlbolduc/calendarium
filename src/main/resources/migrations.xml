@@ -482,4 +482,28 @@
         INSERT INTO price (amount) VALUES (0);
       </sql>
     </changeSet>
+
+    <changeSet id="9" author="mag">
+      <!-- Create loc related to trial -->
+      <sql>
+        INSERT INTO localisation (en_ca, fr_ca) VALUES 
+        ('Free for one month', 'Gratuit pour un mois'),
+        ('You will enjoy creating calendars and inviting collaborators right away.', 'Vous pourrez immédiatement commencer à créer des calendriers et inviter des collaborateurs.'),
+        ('If some of your calendars are public, they will stop appearing in our Public calendars section.', 'Si certains de vos calendriers sont publics, ils n''apparaîtront plus dans notre section Calendriers publics.'),
+        ('You will have full access to all of Calendarium features for a whole month.', 'Vous aurez accès à toutes les fonctionnalités de Calendarium pendant un mois complet.'),
+        ('If you have embedded calendars in other websites, their embed code will stop displaying the calendar, showing instead a discreet message.', 'Si vous avez incorporé des calendriers dans d''autres sites web, leur code d''incorporation n''affichera plus le calendrier, mais plutôt un message discret.'),
+        ('Your trial ends on', 'Votre essai se termine le'),
+        ('You will NOT be charged unless you decide to subscribe.', 'Vous ne serez PAS facturé, sauf si vous décidez de vous abonner.'),
+        ('Thank you! Your Calendarium trial has now started.', 'Merci! Votre essai de Calendarium est maintenant commencé.'),
+        ('It will feel like you have all the time in the world.', 'Vous aurez l''impression d''avoir tout le temps du monde.'),
+        ('When your trial starts...', 'Quand votre essai commencera...'),
+        ('Your calendars will NOT be deleted, and if you ever decide to subscribe, they will be there for you.', 'Vos calendriers ne seront PAS supprimés et si vous décidez un jour de vous abonner, ils seront là pour vous.'),
+        ('Are you ready to start your one-month Calendarium unlimited trial?', 'Êtes-vous prêt à commencer votre essai d''un mois de Calendarium illimité?'),
+        ('You will have realised that one month flies by so fast.', 'Vous aurez constaté qu''un mois, ça passe très vite.'),
+        ('Once your trial ends...', 'Une fois votre essai terminé...'),
+        ('Start my trial', 'Commencer mon essai'),
+        ('Calendarium trial', 'Essai de Calendarium'),
+        ('Start trial', 'Commencer un essai');
+      </sql>
+    </changeSet>
 </databaseChangeLog>
