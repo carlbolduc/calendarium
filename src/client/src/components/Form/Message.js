@@ -28,13 +28,21 @@ export default function Message(props) {
       let message = messages.get(props.origin);
 
       result = message !== undefined ? (
-        <div className="alert alert-success alert-dismissible fade show my-4" role="alert">
-          {props.translate(message)}
-          <button type="button" className="btn-close" aria-label={props.translate("Close")} onClick={e => {
-            e.preventDefault();
-            setShow(false);
-          }} />
-        </div>
+        <CSSTransition
+          nodeRef={nodeRef}
+          in={show}
+          timeout={300}
+          classNames="message"
+          unmountOnExit
+        >
+          <div ref={nodeRef} className="alert alert-success alert-dismissible fade show my-4" role="alert">
+            {props.translate(message)}
+            <button type="button" className="btn-close" aria-label={props.translate("Close")} onClick={e => {
+              e.preventDefault();
+              setShow(false);
+            }}/>
+          </div>
+        </CSSTransition>
       ) : null;
     } else {
       // map of all possible error messages
@@ -85,14 +93,14 @@ export default function Message(props) {
           timeout={300}
           classNames="message"
           unmountOnExit
-          >
-        <div ref={nodeRef} className="alert alert-danger alert-dismissible fade show my-4" role="alert">
-          {props.translate(message)}
-          <button type="button" className="btn-close" aria-label={props.translate("Close")} onClick={e => {
-            e.preventDefault();
-            setShow(false);
-          }} />
-        </div>
+        >
+          <div ref={nodeRef} className="alert alert-danger alert-dismissible fade show my-4" role="alert">
+            {props.translate(message)}
+            <button type="button" className="btn-close" aria-label={props.translate("Close")} onClick={e => {
+              e.preventDefault();
+              setShow(false);
+            }}/>
+          </div>
         </CSSTransition>
       );
     }
