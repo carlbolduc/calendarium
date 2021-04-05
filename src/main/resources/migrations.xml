@@ -475,4 +475,11 @@
         WHERE en_ca = 'You must enter a valid link (only letters, numbers, or dashes).';
       </sql>
     </changeSet>
+
+    <changeSet id="8" author="mag">
+      <!-- Create trial subscription price -->
+      <sql>
+        INSERT INTO price (amount) VALUES (0);
+      </sql>
+    </changeSet>
 </databaseChangeLog>
