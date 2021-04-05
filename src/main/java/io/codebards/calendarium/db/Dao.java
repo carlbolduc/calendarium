@@ -85,7 +85,19 @@ public interface Dao {
     @SqlUpdate("UPDATE account SET stripe_cus_id = :stripeCusId WHERE account_id = :accountId")
     void setStripeCusId(@Bind("accountId") long accountId, @Bind("stripeCusId") String stripeCusId);
 
-    @SqlQuery("SELECT subscription_id, status, start_at, end_at, stripe_sub_id FROM subscription WHERE account_id = :accountId")
+    @SqlQuery("SELECT s.subscription_id,\n" +
+            "s.status,\n" +
+            "s.start_at,\n" +
+            "s.end_at,\n" +
+            "s.stripe_sub_id,\n" +
+            "CASE\n" +
+            "    WHEN p.amount = 600 THEN 'unlimited'\n" +
+            "    WHEN p.amount = 0 THEN 'trial'\n" +
+            "    ELSE 'unknown'\n" +
+            "    END AS product\n" +
+            "FROM subscription s\n" +
+            "      INNER JOIN price p on p.price_id = s.price_id\n" +
+            "WHERE account_id = :accountId")
     @RegisterBeanMapper(Subscription.class)
     Subscription findSubscriptionByAccountId(@Bind("accountId") long accountId);
 

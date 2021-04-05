@@ -8,6 +8,7 @@ public class Subscription {
     private Instant startAt;
     private Instant endAt;
     private String stripeSubId;
+    private String product;
 
     public long getSubscriptionId() {
         return subscriptionId;
@@ -47,5 +48,13 @@ public class Subscription {
 
     public void setStripeSubId(String stripeSubId) {
         this.stripeSubId = stripeSubId;
+    }
+
+    public String getProduct() {
+        return product;
+    }
+
+    public void setProduct(String product) {
+        this.product = product;
     }
 }

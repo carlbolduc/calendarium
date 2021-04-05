@@ -37,6 +37,11 @@ export const calendarAccessStatus = {
   INACTIVE: "inactive"
 }
 
+export const product = {
+  UNLIMITED: "unlimited",
+  TRIAL: "trial"
+}
+
 export function dayNumber(day) {
   let dayNumber;
   switch (day) {
