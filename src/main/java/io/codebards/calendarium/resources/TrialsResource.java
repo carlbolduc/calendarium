@@ -32,7 +32,7 @@ public class TrialsResource {
     @POST
     public Response createTrial(@Auth Account auth) {
         Instant now = Instant.now();
-        Instant in30Days = LocalDateTime.from(now).plusDays(30).atZone(ZoneId.of("UTC")).toInstant();
+        Instant in30Days = LocalDateTime.from(now.atZone(ZoneId.of("UTC"))).plusDays(30).atZone(ZoneId.of("UTC")).toInstant();
         Price price = dao.findPrice(0);
         // Create the subscription
         dao.insertSubscription(auth.getAccountId(), null, price.getPriceId(), Instant.now(), in30Days, SubscriptionStatus.ACTIVE.getStatus());

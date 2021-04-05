@@ -38,7 +38,7 @@ export default function App() {
     saveToken
   } = useAuth();
   const { languages, localeId, translate } = useLoc(account);
-  const { customerCreated, subscribed, createCustomer, createSubscription, cancelSubscription, reactivateSubscription } = useSubscription(token, account, getAccount);
+  const { customerCreated, subscribed, createCustomer, createSubscription, cancelSubscription, reactivateSubscription, startTrial } = useSubscription(token, account, getAccount);
   const { events, setEvents, createEvent, updateEvent, deleteEvent, searchEvents, clearEvents } = useEvent(token);
   const {
     calendars,
@@ -147,6 +147,7 @@ export default function App() {
                   createSubscription={createSubscription}
                   cancelSubscription={cancelSubscription}
                   reactivateSubscription={reactivateSubscription}
+                  startTrial={startTrial}
                 />
               </Route>
               <Route exact path="/my-calendars">

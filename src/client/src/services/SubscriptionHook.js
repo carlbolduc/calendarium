@@ -92,5 +92,32 @@ export function useSubscription(token, account, getAccount) {
     }
   }
 
-  return {customerCreated, subscribed, createCustomer, createSubscription, cancelSubscription, reactivateSubscription};
+  function startTrial(cb) {
+    if (token !== null) {
+      axios({
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        url: `${process.env.REACT_APP_API}/trials`,
+      })
+        .then(() => {
+          // Success, fetch account to retrieve the trial subscription
+          getAccount();
+          if (cb) {
+            const result = {
+              success: true,
+            };
+            cb(result);
+          }
+        })
+        .catch((err) => {
+          // Let caller know that something went wrong
+          errorCallback(err, cb);
+        });
+    }
+  }
+
+  return {customerCreated, subscribed, createCustomer, createSubscription, cancelSubscription, reactivateSubscription, startTrial};
 }
