@@ -45,11 +45,12 @@ export default function Subscription(props) {
 
   function createSubscription(paymentMethod, cb) {
     props.createSubscription(paymentMethod, result => {
-      if (!result.success) {
-        setMessageOrigin("createSubscription");
-        setResult(result);
-        if (cb) cb();
+      setMessageOrigin("createSubscription");
+      if (result.success) {
+        setWantTo("");
       }
+      setResult(result);
+      if (cb) cb();
     });
   }
 
