@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { DateTime } from "luxon";
 import Input from "../../components/Form/Input";
 import Button from "../../components/Form/Button";
 import Message from "../../components/Form/Message";
-import { emailValid, passwordValid, textValid, getLocale } from "../../services/Helpers";
+import { emailValid, textValid, getLocale } from "../../services/Helpers";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 
 export default function Profile(props) {
@@ -13,10 +13,6 @@ export default function Profile(props) {
   const [invalidName, setInvalidName] = useState(false);
   const [email, setEmail] = useState(props.account.email);
   const [invalidEmail, setInvalidEmail] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [invalidCurrentPassword, setInvalidCurrentPassword] = useState(false);
-  const [newPassword, setNewPassword] = useState("")
-  const [invalidNewPassword, setInvalidNewPassword] = useState(false);
   const [working, setWorking] = useState(false);
   const [result, setResult] = useState("");
 
@@ -27,49 +23,19 @@ export default function Profile(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    let canSubmit = false;
     if (textValid(name) && emailValid(email)) {
-      if (newPassword === "") {
-        // No new password is provided, we can submit the change
-        canSubmit = true;
-      } else {
-        // New password is provided, current password must be submitted
-        if (passwordValid(currentPassword) && passwordValid(newPassword)) {
-          canSubmit = true;
-        } else {
-          if (!passwordValid(currentPassword)) setInvalidCurrentPassword(true);
-          if (!passwordValid(newPassword)) setInvalidNewPassword(true);
-        }
-      }
-      if (canSubmit) {
-        setWorking(true);
-        const data =
-        newPassword !== ""
-          ? {
-              name: name,
-              email: email,
-              currentPassword: currentPassword,
-              newPassword: newPassword,
-            }
-          : {
-              name: name,
-              email: email,
-            };
-        updateAccount(data, (result) => {
-          setCurrentPassword("");
-          setNewPassword("");
-          setResult(result);
-          setWorking(false);
-        });
-      }
+      setWorking(true);
+      const data = {
+        name: name,
+        email: email,
+      };
+      updateAccount(data, (result) => {
+        setResult(result);
+        setWorking(false);
+      });
     } else {
       if (!textValid(name)) setInvalidName(true);
       if (!emailValid(email)) setInvalidEmail(true);
-      if (newPassword !== "") {
-        // New password is provided, current password must be submitted
-        if (!passwordValid(currentPassword)) setInvalidCurrentPassword(true);
-        if (!passwordValid(newPassword)) setInvalidNewPassword(true);
-      }
     }
   }
 
@@ -106,33 +72,11 @@ export default function Profile(props) {
           }}
           invalidFeedback={invalidEmail ? <InvalidFeedback feedback={props.translate("You must enter a valid email address.")} /> : null}
         />
-        <Input
-          label={props.translate("Current password")}
-          type="password"
-          id="input-current-password"
-          autoComplete="new-password"
-          required={false}
-          value={currentPassword}
-          handleChange={(e) => {
-            setCurrentPassword(e.target.value);
-            setInvalidCurrentPassword(false);
-          }}
-          invalidFeedback={invalidCurrentPassword ? <InvalidFeedback feedback={props.translate("You must provide your current password when you want to update it.")} /> : null}
-        />
-        <Input
-          label={props.translate("New password")}
-          type="password"
-          id="input-new-password"
-          required={currentPassword !== ""}
-          value={newPassword}
-          handleChange={(e) => {
-            setNewPassword(e.target.value);
-            setInvalidNewPassword(false);
-          }}
-          invalidFeedback={invalidNewPassword ? <InvalidFeedback feedback={props.translate("Your new password must be at least 8 characters long.")} /> : null}
-        />
         {memberSince}
-        <Button label={props.translate("Save")} type="submit" disabled={name === props.account.name && email === props.account.email && newPassword === ""} id="button-save" working={working} />
+        <p className="small">
+          {props.translate("Change your password")} <Link to="/profile-password">{props.translate("here")}</Link>.
+        </p>
+        <Button label={props.translate("Save")} type="submit" disabled={name === props.account.name && email === props.account.email} id="button-save" working={working} />
       </form>
     </article>
   ) : (

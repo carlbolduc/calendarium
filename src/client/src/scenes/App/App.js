@@ -21,6 +21,7 @@ import Calendar from "../Calendars/Calendar";
 import AcceptInvitation from "../Calendars/AcceptInvitation";
 import Footer from "../../components/Footer/Footer";
 import Embed from "../Embed/Embed";
+import ProfilePassword from "../Account/ProfilePassword";
 
 export default function App() {
   const {
@@ -134,6 +135,14 @@ export default function App() {
                   authenticated={authenticated}
                   translate={translate}
                   localeId={localeId}
+                />
+              </Route>
+              <Route exact path="/profile-password">
+                <ProfilePassword
+                  localeId={localeId}
+                  authenticated={authenticated}
+                  updateAccountPassword={updateAccountPassword}
+                  translate={translate}
                 />
               </Route>
               <Route exact path="/subscription">
