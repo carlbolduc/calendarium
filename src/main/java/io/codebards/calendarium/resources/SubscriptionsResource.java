@@ -15,6 +15,7 @@ import io.codebards.calendarium.api.SubscriptionStatus;
 import io.codebards.calendarium.api.SubscriptionUpdate;
 import io.codebards.calendarium.api.Tax;
 import io.codebards.calendarium.core.Account;
+import io.codebards.calendarium.core.StripeService;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
 
@@ -28,9 +29,7 @@ import javax.ws.rs.core.Response;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RolesAllowed({"USER"})
@@ -39,11 +38,13 @@ import java.util.stream.Collectors;
 @Consumes(MediaType.APPLICATION_JSON)
 public class SubscriptionsResource {
     private final Dao dao;
+    private final StripeService stripeService;
     private final String stripeApiKey;
     private final String stripeWebhookSecret;
 
-    public SubscriptionsResource(Dao dao, String stripeApiKey, String stripeWebhookSecret) {
+    public SubscriptionsResource(Dao dao, StripeService stripeService, String stripeApiKey, String stripeWebhookSecret) {
         this.dao = dao;
+        this.stripeService = stripeService;
         this.stripeApiKey = stripeApiKey;
         this.stripeWebhookSecret = stripeWebhookSecret;
     }
@@ -52,18 +53,13 @@ public class SubscriptionsResource {
     @Path("/stripe-customers")
     public Response createStripeCustomer(@Auth Account auth) {
         Response response;
-        Stripe.apiKey = stripeApiKey;
-        Map<String, Object> params = new HashMap<>();
-        params.put("email", auth.getEmail());
-        params.put("name", auth.getName());
         try {
-            Customer customer = Customer.create(params);
+            Customer customer = stripeService.createCustomer(auth);
             dao.setStripeCusId(auth.getAccountId(), customer.getId());
             // Customer successfully created, client should fetch the account again to obtain the stripe customer id
             response = Response.ok().build();
         } catch (StripeException e) {
             // Stripe failed to create the customer, client should ask the customer to retry
-	        System.out.println(e.getMessage());
             response = Response.serverError().build();
         }
         return response;

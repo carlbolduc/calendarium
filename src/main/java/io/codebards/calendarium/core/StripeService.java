@@ -9,43 +9,47 @@ import com.stripe.model.Customer;
 import com.stripe.model.PaymentMethod;
 import com.stripe.model.Subscription;
 
-
 public class StripeService {
-  private final String stripeApiKey;
+    private final String stripeApiKey;
 
-  public StripeService(String stripeApiKey) {
-    this.stripeApiKey = stripeApiKey;
-  }
-
-  public Customer createCustomer() {
-    Stripe.apiKey = stripeApiKey;
-    Customer customer = null;
-    Map<String, Object> params = new HashMap<>();
-    params.put("email", "cbol@me.com");
-    params.put("description", "Created from API.");
-
-    try {
-      customer = Customer.create(params);
-    } catch (StripeException e) {
-      e.printStackTrace();
+    public StripeService(String stripeApiKey) {
+        this.stripeApiKey = stripeApiKey;
     }
-    return customer;
-  }
 
-  public Subscription createSubscription() {
-    Subscription subscription = null;
-    return subscription;
-  }
+    public Customer createCustomer(Account account) throws StripeException {
+        Stripe.apiKey = stripeApiKey;
+        Map<String, Object> params = new HashMap<>();
+        params.put("email", account.getEmail());
+        params.put("name", account.getName());
+        Customer customer = Customer.create(params);
+        return customer;
+    }
 
-  public Subscription cancelSubscription() {
-    Subscription subscription = null;
-    return subscription;
-  }
+    public void updateCustomer(String stripeCusId, String email, String name) throws StripeException {
+        if (stripeCusId != null && !stripeCusId.equals("")) {
+            Stripe.apiKey = stripeApiKey;
+            Customer customer = Customer.retrieve(stripeCusId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("email", email);
+            params.put("name", name);
+            customer.update(params);
+        }
+    }
 
-  public PaymentMethod getPaymentMethod() {
-    // Retrieve customer's payment method
-    PaymentMethod paymentMethod = null;
-    return paymentMethod;
-  }
-  
+    public Subscription createSubscription() {
+        Subscription subscription = null;
+        return subscription;
+    }
+
+    public Subscription cancelSubscription() {
+        Subscription subscription = null;
+        return subscription;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        // Retrieve customer's payment method
+        PaymentMethod paymentMethod = null;
+        return paymentMethod;
+    }
+
 }

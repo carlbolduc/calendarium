@@ -13,6 +13,9 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import com.stripe.exception.StripeException;
+
 import java.util.Optional;
 
 @RolesAllowed({"USER"})
@@ -56,7 +59,11 @@ public class AccountsResource {
         }
         if (canUpdate) {
             dao.updateAccount(auth.getAccountId(), accountUpdate.getEmail(), accountUpdate.getName(), auth.getAccountId());
-            // TODO: update info in stripe
+            try {
+                stripeService.updateCustomer(auth.getStripeCusId(), auth.getEmail(), accountUpdate.getName());
+            } catch (StripeException e) {
+                // TODO customer could not be updated in stripe, we should log this somewhere
+            }
             response = Response.ok().entity(buildAccount(auth.getAccountId())).build();
         }
         return response;
