@@ -89,6 +89,8 @@ export default function AcceptInvitation(props) {
     </>
   );
 
+  const backToMyCalendars = props.account.accountId !== null ? <Link to="/my-calendars">{props.translate("Back to my calendars")}</Link> : null;
+
   function main() {
     let result = null;
     // If user is signed in on a different account, show a message that invitation is for someone else
@@ -98,7 +100,7 @@ export default function AcceptInvitation(props) {
           <h1>{props.translate("Calendar invitation")}</h1>
           <p>{props.translate("You have clicked on a calendar invitation that was sent to an email address different than the one you are currently signed in with.")}</p>
           <p>{props.translate("If you think this is an error")}, <a href="mailto:grove@codebards.io">{props.translate("contact us in the grove")}</a>.</p>
-          <Link to="/my-calendars">{props.translate("Back to my calendars")}</Link>
+          {backToMyCalendars}
         </>
       );
     } else if (props.calendar.calendarId === null || props.calendarAccess.status !== calendarAccessStatus.INVITED) {
@@ -109,7 +111,7 @@ export default function AcceptInvitation(props) {
           <h1>{props.translate("Calendar invitation")}</h1>
           <p>{props.translate("This calendar invitation is no longer valid.")}</p>
           <p>{props.translate("If you think this is an error")}, <a href="mailto:grove@codebards.io">{props.translate("contact us in the grove")}</a>.</p>
-          <Link to="/my-calendars">{props.translate("Back to my calendars")}</Link>
+          {backToMyCalendars}
         </>
       );
     } else {
