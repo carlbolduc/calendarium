@@ -173,6 +173,9 @@ public class CalendarsResource {
                         events = dao.findCalendarOwnerEvents(calendarId, calendarEventsParams.getStartAt());
                     } else if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.ACTIVE.getStatus())) {
                         events = dao.findCollaboratorEvents(auth.getAccountId(), calendarId, calendarEventsParams.getStartAt());
+                    } else if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.INVITED.getStatus())) {
+                        // Collaborator is invited but has yet to create content, show them published events
+                        events = dao.findCalendarEmbedEvents(calendarId, calendarEventsParams.getStartAt());
                     }
                 } else {
                     // Public calendar, show events even if user isn't owner or collaborator
