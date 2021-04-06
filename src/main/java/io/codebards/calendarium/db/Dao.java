@@ -124,7 +124,7 @@ public interface Dao {
     @SqlUpdate("INSERT INTO subscription (account_id, stripe_sub_id, price_id, start_at, end_at, status, created_by) VALUES (:accountId, :stripeSubId, :priceId, :startAt, :endAt, :status, :createdBy)")
     void insertSubscription(@Bind("accountId") long accountId, @Bind("stripeSubId") String stripeSubId, @Bind("priceId") long priceId, @Bind("startAt") Instant startAt, @Bind("endAt") Instant endAt, @Bind("status") String status, @Bind("createdBy") long createdBy);
 
-    @SqlUpdate("UPDATE INTO subscription SET stripe_sub_id = :stripeSubId, price_id = :priceId, start_at = :startAt, end_at = :endAt, status = :status, updated_by = :updatedBy WHERE subscription_id = subscriptionId")
+    @SqlUpdate("UPDATE subscription SET stripe_sub_id = :stripeSubId, price_id = :priceId, start_at = :startAt, end_at = :endAt, status = :status, updated_by = :updatedBy WHERE subscription_id = :subscriptionId")
     void updateSubscription(@Bind("subscriptionId") long subscriptionId, @Bind("stripeSubId") String stripeSubId, @Bind("priceId") long priceId, @Bind("startAt") Instant startAt, @Bind("endAt") Instant endAt, @Bind("status") String status, @Bind("updatedBy") long updatedBy);
 
     @SqlQuery("SELECT stripe_sub_id FROM subscription WHERE account_id = :accountId")
