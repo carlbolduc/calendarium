@@ -46,13 +46,6 @@ export function useLoc(account) {
       // if user language is en_ca, return the label as is
       if (defaultLanguage.languageId === account.languageId) {
         locTranslated = label;
-        if (process.env.REACT_APP_ENV === "development") {
-          // if label doesn't exist in loc, insert it
-          const locToTranslate = loc.find(l => l.enCa === label);
-          if (locToTranslate === undefined) {
-            axios.post(`${process.env.REACT_APP_API}/loc`, label);
-          }
-        }
       }
       // if user language is not en_ca, try to translate it
       else {
