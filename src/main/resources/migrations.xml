@@ -506,4 +506,28 @@
         ('Start trial', 'Commencer un essai');
       </sql>
     </changeSet>
+
+    <changeSet id="10" author="mag">
+      <!-- Remove unused loc -->
+      <sql>
+        DELETE FROM localisation WHERE en_ca = 'Calendar invitation for someone else';
+      </sql>
+      <!-- Create new loc -->
+      <sql>
+        INSERT INTO localisation (en_ca, fr_ca) VALUES 
+        ('Our system could not sign you in automatically after you accepted the invitation. Try signing in manually with the password you just created. You can access the sign in page by the account menu in the upper right corner. If signing in doesn''t work, contact us in the grove.', 'Notre système n''a pas pu vous connecter automatiquement après que vous ayez accepté l''invitation. Essayez de vous connecter manuellement avec le mot de passe que vous venez de créer. Vous pouvez accéder à la page de connexion en cliquant sur le menu "Compte" dans le coin supérieur droit. Si la connexion ne fonctionne pas, contactez-nous dans la clairière.'),
+        ('Your password must be at least 8 characters long.','Votre mot de passe doit comporter au moins 8 caractères.'),
+        ('If you already have an account, you can','Si vous avez déjà un compte, vous pouvez'),
+        ('sign in here','vous connecter ici'),
+        ('and then click again on the invitation link you''ve received.','et ensuite cliquer de nouveau sur le lien d''invitation que vous avez reçu.'),
+        ('This calendar invitation is no longer valid.','Cette invitation à un calendrier n''est plus valide.'),
+        ('Calendar invitation','Invitation à un calendrier'),
+        ('Your password has been changed successfully.','Votre mot de passe a été modifié avec succès.'),
+        ('Change my password','Changer mon mot de passe'),
+        ('Edit my profile','Modifier mon profil'),
+        ('Name:','Nom :'),
+        ('Email:','Courriel :'),
+        ('We didn''t recognise your current password. Make sure it is entered correctly and try again.','Nous n''avons pas reconnu votre mot de passe actuel. Assurez-vous qu''il est entré correctement et réessayez.');
+      </sql>
+    </changeSet>
 </databaseChangeLog>

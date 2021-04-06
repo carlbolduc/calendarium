@@ -37,9 +37,9 @@ export default function ProfilePassword(props) {
     }
   }
 
-  return props.authenticated ? (
+  return (
     <article>
-      <h1>{props.translate("Change your password")}</h1>
+      <h1>{props.translate("Change my password")}</h1>
       <Message result={result} origin="profilePassword" translate={props.translate} />
       <form onSubmit={handleSubmit} id="form-profile-password" noValidate>
         <Input
@@ -67,22 +67,16 @@ export default function ProfilePassword(props) {
           }}
           invalidFeedback={invalidNewPassword ? <InvalidFeedback feedback={props.translate("Your new password must be at least 8 characters long.")} /> : null}
         />
-        <Button label={props.translate("Save")} type="submit" disabled={newPassword === ""} id="button-save" working={working} />
+        <Button label={result.success ? props.translate("Back") : props.translate("Cancel")} type="button" id="button-cancel" onClick={props.cancel} disabled={working} outline={true} />
+        {result.success ? null : <Button label={props.translate("Save")} type="submit" disabled={newPassword === ""} id="button-save" working={working} />}
       </form>
     </article>
-  ) : (
-      <Redirect
-        to={{
-          pathname: "/sign-in",
-          state: { from: "/profile-password" }
-        }}
-      />
-    );
+  );
 }
 
 ProfilePassword.propTypes = {
   localeId: PropTypes.string.isRequired,
-  authenticated: PropTypes.bool.isRequired,
   updateAccountPassword: PropTypes.func.isRequired,
-  translate: PropTypes.func.isRequired
+  translate: PropTypes.func.isRequired,
+  cancel: PropTypes.func.isRequired
 };
