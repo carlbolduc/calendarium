@@ -24,6 +24,7 @@ export default function Message(props) {
       messages.set("reactivateSubscription","Your Calendarium subscription has now been reactivated. Thank you for being back with us!");
       messages.set("inviteCollaborator","An invitation email has been sent to your future collaborator.");
       messages.set("startTrial","Thank you! Your Calendarium trial has now started.");
+      messages.set("profilePassword","Your password has been changed successfully.");
 
       // get the message that needs to be displayed, or undefined if we defined no success message for the action
       let message = messages.get(props.origin);
@@ -57,7 +58,7 @@ export default function Message(props) {
       messages.set("passwordReset500","Something went wrong with our servers when trying to reset your password. Try again, and if this error keeps popping, contact us in the grove.");
       messages.set("profile404","We couldn't find your profile. Try saving your changes again, and if this error keeps popping, contact us in the grove");
       messages.set("profile409","We already have someone else registered with the new email you've entered, so we cannot update your profile to this email. Choose a different one, or make sure it is entered correctly, then try saving your changes again.");
-      messages.set("profile401","We didn't recognise your current password. Make sure it is entered correctly and try again.");
+      messages.set("profilePassword401","We didn't recognise your current password. Make sure it is entered correctly and try again.");
       messages.set("createCustomer500","Our payment processing platform returned an error while trying to initialise your customer profile. You may want to try subscribing again, and if that error keeps popping, contact us in the grove.");
       messages.set("createSubscription402","There was an error while processing your credit card. Verify that your billing information is correct and try again. If that error keeps popping, contact us in the grove.");
       messages.set("createSubscription500","Our payment processing platform returned an error. You may want to try subscribing again, and if that error keeps popping, contact us in the grove.");
