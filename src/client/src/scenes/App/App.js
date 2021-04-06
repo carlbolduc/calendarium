@@ -52,6 +52,7 @@ export default function App() {
     updateCalendar,
     deleteCalendar,
     getCalendarEvents,
+    getPublicCalendarEvents,
     clearCalendar
   } = useCalendar(token, subscribed, setEvents);
   const { dots, getDots } = useDot();
@@ -79,7 +80,7 @@ export default function App() {
             events={events}
             dots={dots}
             getDots={getDots}
-            getCalendarEvents={getCalendarEvents}
+            getCalendarEvents={getPublicCalendarEvents}
             languages={languages}
             localeId={localeId}
             updateAccountLanguageId={updateAccountLanguageId}

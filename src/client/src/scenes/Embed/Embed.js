@@ -9,6 +9,7 @@ import EventsList from "../Events/EventsList";
 
 export default function Embed(props) {
   const getDots = props.getDots;
+  // @ts-ignore
   let { id } = useParams();
   const location = useLocation();
   const updateAccountLanguageId = props.updateAccountLanguageId;
