@@ -8,12 +8,21 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
 import com.stripe.model.PaymentMethod;
 import com.stripe.model.Subscription;
+import com.stripe.param.CustomerUpdateParams;
+import com.stripe.param.PaymentMethodAttachParams;
+import com.stripe.param.SubscriptionCreateParams;
+import com.stripe.param.SubscriptionUpdateParams;
 
 public class StripeService {
     private final String stripeApiKey;
 
     public StripeService(String stripeApiKey) {
         this.stripeApiKey = stripeApiKey;
+    }
+
+    public Customer getCustomer(String customerId) throws StripeException {
+        Stripe.apiKey = stripeApiKey;
+        return Customer.retrieve(customerId);
     }
 
     public Customer createCustomer(Account account) throws StripeException {
@@ -25,10 +34,10 @@ public class StripeService {
         return customer;
     }
 
-    public void updateCustomer(String stripeCusId, String email, String name) throws StripeException {
-        if (stripeCusId != null && !stripeCusId.equals("")) {
+    public void updateCustomer(String customerId, String email, String name) throws StripeException {
+        if (customerId != null && !customerId.equals("")) {
             Stripe.apiKey = stripeApiKey;
-            Customer customer = Customer.retrieve(stripeCusId);
+            Customer customer = Customer.retrieve(customerId);
             Map<String, Object> params = new HashMap<>();
             params.put("email", email);
             params.put("name", name);
@@ -36,20 +45,32 @@ public class StripeService {
         }
     }
 
-    public Subscription createSubscription() {
-        Subscription subscription = null;
+    public Subscription createSubscription(SubscriptionCreateParams params) throws StripeException {
+        Subscription subscription = Subscription.create(params);;
         return subscription;
     }
 
-    public Subscription cancelSubscription() {
-        Subscription subscription = null;
-        return subscription;
+    public void updateSubscription(String subscriptionId, Boolean cancelAtPeriodEnd) throws StripeException {
+        Subscription subscription = Subscription.retrieve(subscriptionId);
+        SubscriptionUpdateParams params = SubscriptionUpdateParams.builder().setCancelAtPeriodEnd(cancelAtPeriodEnd).build();
+        subscription.update(params);
     }
 
     public PaymentMethod getPaymentMethod() {
         // Retrieve customer's payment method
         PaymentMethod paymentMethod = null;
         return paymentMethod;
+    }
+
+    public PaymentMethod setPaymentMethod(Customer customer, String paymentMethodId) throws StripeException {
+        PaymentMethod pm = PaymentMethod.retrieve(paymentMethodId);
+        pm.attach(PaymentMethodAttachParams.builder().setCustomer(customer.getId()).build());
+        CustomerUpdateParams customerUpdateParams = CustomerUpdateParams
+                .builder()
+                .setInvoiceSettings(CustomerUpdateParams.InvoiceSettings.builder().setDefaultPaymentMethod(pm.getId()).build())
+                .build();
+        customer.update(customerUpdateParams);
+        return pm;
     }
 
 }

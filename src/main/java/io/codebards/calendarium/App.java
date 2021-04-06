@@ -82,7 +82,7 @@ public class App extends Application<Config> {
         final AuthResource authResource = new AuthResource(dao, argon2, emailManager);
         final AccountsResource accountsResource = new AccountsResource(dao, argon2, stripeService);
         final LocalisationsResource localisationsResource = new LocalisationsResource(dao);
-        final SubscriptionsResource subscriptionsResource = new SubscriptionsResource(dao, stripeService, config.getThirdPartyFactory().getStripeApiKey(), config.getThirdPartyFactory().getStripeWebhookSecret());
+        final SubscriptionsResource subscriptionsResource = new SubscriptionsResource(dao, stripeService, config.getThirdPartyFactory().getStripeWebhookSecret());
         final TrialsResource trialsResource = new TrialsResource(dao);
         final CalendarsResource calendarsResource = new CalendarsResource(dao);
         final PublicResource publicResource = new PublicResource(dao);

@@ -1,14 +1,10 @@
 package io.codebards.calendarium.resources;
 
-import com.stripe.Stripe;
 import com.stripe.exception.CardException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.*;
 import com.stripe.net.Webhook;
-import com.stripe.param.CustomerUpdateParams;
-import com.stripe.param.PaymentMethodAttachParams;
 import com.stripe.param.SubscriptionCreateParams;
-import com.stripe.param.SubscriptionUpdateParams;
 import io.codebards.calendarium.api.PaymentIntentStatus;
 import io.codebards.calendarium.api.Price;
 import io.codebards.calendarium.api.SubscriptionStatus;
@@ -39,13 +35,11 @@ import java.util.stream.Collectors;
 public class SubscriptionsResource {
     private final Dao dao;
     private final StripeService stripeService;
-    private final String stripeApiKey;
     private final String stripeWebhookSecret;
 
-    public SubscriptionsResource(Dao dao, StripeService stripeService, String stripeApiKey, String stripeWebhookSecret) {
+    public SubscriptionsResource(Dao dao, StripeService stripeService, String stripeWebhookSecret) {
         this.dao = dao;
         this.stripeService = stripeService;
-        this.stripeApiKey = stripeApiKey;
         this.stripeWebhookSecret = stripeWebhookSecret;
     }
 
@@ -68,60 +62,56 @@ public class SubscriptionsResource {
     @POST
     public Response createSubscription(@Auth Account auth, PaymentMethod paymentMethod) {
         Response response;
-        Stripe.apiKey = stripeApiKey;
-        Customer customer;
-        try {
-            customer = Customer.retrieve(auth.getStripeCusId());
+        if (auth.getSubscription() == null) {
             try {
-                // Set the default payment method on the customer
-                PaymentMethod pm = PaymentMethod.retrieve(paymentMethod.getId());
-                pm.attach(PaymentMethodAttachParams.builder().setCustomer(customer.getId()).build());
-                CustomerUpdateParams customerUpdateParams = CustomerUpdateParams
-                        .builder()
-                        .setInvoiceSettings(CustomerUpdateParams.InvoiceSettings.builder().setDefaultPaymentMethod(pm.getId()).build())
-                        .build();
-                customer.update(customerUpdateParams);
-                // Get price id from database
-                Price price = dao.findPrice(600);
-                SubscriptionCreateParams subCreateParams;
-                if (pm.getCard().getCountry().equals("CA")) {
-                    List<Tax> taxesToCharge = new ArrayList<>();
-                    String postalCode = pm.getBillingDetails().getAddress().getPostalCode();
-                    if (postalCode != null) {
-                        List<Tax> taxes = dao.findTaxes();
-                        List<String> taxRateDescriptions = getTaxRateDescriptions(postalCode);
-                        taxesToCharge = taxes.stream().filter(t -> taxRateDescriptions.contains(t.getDescription())).collect(Collectors.toList());
-                    }
-                    subCreateParams = SubscriptionCreateParams
-                        .builder()
-                        .addItem(SubscriptionCreateParams.Item.builder().setPrice(price.getStripePriceId()).build())
-                        .setCustomer(customer.getId())
-                        .addAllExpand(Collections.singletonList("latest_invoice.payment_intent"))
-                        .addAllDefaultTaxRate(taxesToCharge.stream().map(Tax::getStripeTaxId).collect(Collectors.toList()))
-                        .build();
-                } else {
-                    subCreateParams = SubscriptionCreateParams
+                Customer customer = stripeService.getCustomer(auth.getStripeCusId());
+                try {
+                    // Set the default payment method on the customer
+                    PaymentMethod pm = stripeService.setPaymentMethod(customer, paymentMethod.getId());
+                    // Get price id from database
+                    Price price = dao.findPrice(600);
+                    SubscriptionCreateParams subCreateParams;
+                    if (pm.getCard().getCountry().equals("CA")) {
+                        List<Tax> taxesToCharge = new ArrayList<>();
+                        String postalCode = pm.getBillingDetails().getAddress().getPostalCode();
+                        if (postalCode != null) {
+                            List<Tax> taxes = dao.findTaxes();
+                            List<String> taxRateDescriptions = getTaxRateDescriptions(postalCode);
+                            taxesToCharge = taxes.stream().filter(t -> taxRateDescriptions.contains(t.getDescription())).collect(Collectors.toList());
+                        }
+                        subCreateParams = SubscriptionCreateParams
                             .builder()
                             .addItem(SubscriptionCreateParams.Item.builder().setPrice(price.getStripePriceId()).build())
                             .setCustomer(customer.getId())
                             .addAllExpand(Collections.singletonList("latest_invoice.payment_intent"))
+                            .addAllDefaultTaxRate(taxesToCharge.stream().map(Tax::getStripeTaxId).collect(Collectors.toList()))
                             .build();
+                    } else {
+                        subCreateParams = SubscriptionCreateParams
+                                .builder()
+                                .addItem(SubscriptionCreateParams.Item.builder().setPrice(price.getStripePriceId()).build())
+                                .setCustomer(customer.getId())
+                                .addAllExpand(Collections.singletonList("latest_invoice.payment_intent"))
+                                .build();
+                    }
+                    // Create the subscription
+                    Subscription subscription = stripeService.createSubscription(subCreateParams);
+                    dao.insertSubscription(auth.getAccountId(), subscription.getId(), price.getPriceId(), Instant.ofEpochSecond(subscription.getCurrentPeriodStart()), Instant.ofEpochSecond(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
+                    if (subscription.getLatestInvoiceObject().getPaymentIntentObject().getStatus().equals(PaymentIntentStatus.SUCCEEDED.getStatus())) {
+                        // TODO: It worked, check what we must return to client
+                        // Check with Stripe if it's possible to get a subscription that is not succeeded when we reach this step
+                    }
+                    response = Response.ok().build();
+                } catch (CardException e) {
+                    // Returns a 402 Payment Required
+                    response = Response.status(Response.Status.PAYMENT_REQUIRED).entity(e.getLocalizedMessage()).build();
                 }
-                // Create the subscription
-                Subscription subscription = Subscription.create(subCreateParams);
-                dao.insertSubscription(auth.getAccountId(), subscription.getId(), price.getPriceId(), Instant.ofEpochSecond(subscription.getCurrentPeriodStart()), Instant.ofEpochSecond(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
-                if (subscription.getLatestInvoiceObject().getPaymentIntentObject().getStatus().equals(PaymentIntentStatus.SUCCEEDED.getStatus())) {
-                    // TODO: It worked, check what we must return to client
-                    // Check with Stripe if it's possible to get a subscription that is not succeeded when we reach this step
-                }
-                response = Response.ok().build();
-            } catch (CardException e) {
-                // Returns a 402 Payment Required
-                response = Response.status(Response.Status.PAYMENT_REQUIRED).entity(e.getLocalizedMessage()).build();
+            } catch (StripeException e) {
+                // Returns a 500 Internal Server Error
+                response = Response.serverError().entity(e.getLocalizedMessage()).build();
             }
-        } catch (StripeException e) {
-            // Returns a 500 Internal Server Error
-            response = Response.serverError().entity(e.getLocalizedMessage()).build();
+        } else {
+            response = Response.status(Response.Status.FORBIDDEN).build();
         }
         return response;
     }
@@ -130,30 +120,23 @@ public class SubscriptionsResource {
     @Path("/{id}")
     public Response updateSubscription(@Auth Account auth, SubscriptionUpdate update) {
         Response response = Response.ok().build();
-        if (update.getCancelAtPeriodEnd() != null) {
-            Stripe.apiKey = stripeApiKey;
-            String stripeSubId = dao.findStripeSubId(auth.getAccountId());
-            if (stripeSubId != null) {
-                try {
-                    Subscription subscription = Subscription.retrieve(stripeSubId);
-                    SubscriptionUpdateParams params = SubscriptionUpdateParams.builder().setCancelAtPeriodEnd(update.getCancelAtPeriodEnd()).build();
-                    subscription.update(params);
-                    if (update.getCancelAtPeriodEnd()) {
-                        dao.updateSubscriptionStatus(stripeSubId, SubscriptionStatus.CANCELED.getStatus(), auth.getAccountId());
-                    } else {
-                        dao.updateSubscriptionStatus(stripeSubId, SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
-                    }
-                } catch (StripeException e) {
-                    e.printStackTrace();
-                    // Returns a 500 Internal Server Error
-                    response = Response.serverError().build();
+        if (auth.getSubscription() != null && auth.getSubscription().getStripeSubId() != null && update.getCancelAtPeriodEnd() != null) {
+            try {
+                stripeService.updateSubscription(auth.getSubscription().getStripeSubId(), update.getCancelAtPeriodEnd());
+                if (update.getCancelAtPeriodEnd()) {
+                    dao.updateSubscriptionStatus(auth.getSubscription().getStripeSubId(), SubscriptionStatus.CANCELED.getStatus(), auth.getAccountId());
+                } else {
+                    dao.updateSubscriptionStatus(auth.getSubscription().getStripeSubId(), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
                 }
-            } else {
-                // Returns a 404 Not Found
-                response = Response.status(Response.Status.NOT_FOUND).build();
+            } catch (StripeException e) {
+                e.printStackTrace();
+                // Returns a 500 Internal Server Error
+                response = Response.serverError().build();
             }
+        } else {
+            // Returns a 404 Not Found
+            response = Response.status(Response.Status.NOT_FOUND).build();
         }
-        
         return response;
     }
 
