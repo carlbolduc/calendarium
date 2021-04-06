@@ -108,7 +108,8 @@ export default function Subscription(props) {
   const pricing = (
     <div className="row mt-4">
       {/* ***** Calendarium trial ***** */}
-      {/* TODO: show trial option only if account has never had a trial before */}
+      {/* Show trial option only if account has never had a trial/sub before */}
+      {props.account.subscription !== null ? null : (
       <div className="col-auto">
         <div className="card" style={{ width: "18rem" }}>
           <img
@@ -125,7 +126,7 @@ export default function Subscription(props) {
             <Button label={props.translate("Start trial")} type="button" id="button-subscribe" onClick={e => wantToStartTrial(e)} />
           </div>
         </div>
-      </div>
+      </div>)}
       {/* ***** Calendarium unlimited ***** */}
       <div className="col-auto">
         <div className="card" style={{ width: "18rem" }}>
