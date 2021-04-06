@@ -61,6 +61,8 @@ export default function Message(props) {
       messages.set("profilePassword401","We didn't recognise your current password. Make sure it is entered correctly and try again.");
       messages.set("createCustomer500","Our payment processing platform returned an error while trying to initialise your customer profile. You may want to try subscribing again, and if that error keeps popping, contact us in the grove.");
       messages.set("createSubscription402","There was an error while processing your credit card. Verify that your billing information is correct and try again. If that error keeps popping, contact us in the grove.");
+      messages.set("createSubscription403","It seems you already have an active subscription. Refresh this page to view the details of your subscription. If that error keeps popping, contact us in the grove.");
+      messages.set("startTrial403","It seems you already started a trial or you have an active subscription. Refresh this page to view the details of your subscription. If that error keeps popping, contact us in the grove.");
       messages.set("createSubscription500","Our payment processing platform returned an error. You may want to try subscribing again, and if that error keeps popping, contact us in the grove.");
       messages.set("cancelSubscription500","Our payment processing platform returned an error. You may want to try cancelling again, and if that error keeps popping, contact us in the grove.");
       messages.set("cancelSubscription404","Our payment processing platform could not find the subscription you want to cancel, which is very unusual. Could you drop us an email so we can get you sorted?");

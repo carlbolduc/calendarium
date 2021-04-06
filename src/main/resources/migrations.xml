@@ -530,4 +530,13 @@
         ('We didn''t recognise your current password. Make sure it is entered correctly and try again.','Nous n''avons pas reconnu votre mot de passe actuel. Assurez-vous qu''il est entré correctement et réessayez.');
       </sql>
     </changeSet>
+
+    <changeSet id="11" author="mag">
+      <!-- Create new loc -->
+      <sql>
+        INSERT INTO localisation (en_ca, fr_ca) VALUES 
+        ('It seems you already have an active subscription. Refresh this page to view the details of your subscription. If that error keeps popping, contact us in the grove.','Il semble que vous ayez déjà un abonnement actif. Rafraîchissez cette page pour afficher les détails de votre abonnement. Si cette erreur persiste, contactez-nous dans la clairière'),
+        ('It seems you already started a trial or you have an active subscription. Refresh this page to view the details of your subscription. If that error keeps popping, contact us in the grove.','Il semble que vous ayez déjà commencé un essai ou que vous ayez un abonnement actif. Rafraîchissez cette page pour afficher les détails de votre abonnement. Si cette erreur persiste, contactez-nous dans la clairière');
+      </sql>            
+    </changeSet>
 </databaseChangeLog>
