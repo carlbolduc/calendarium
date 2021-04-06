@@ -1,6 +1,8 @@
 package io.codebards.calendarium.resources;
 
 import io.codebards.calendarium.api.AccountUpdate;
+import io.codebards.calendarium.api.LanguageUpdate;
+import io.codebards.calendarium.api.PasswordUpdate;
 import io.codebards.calendarium.core.StripeService;
 import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.db.Dao;
@@ -43,75 +45,48 @@ public class AccountsResource {
     @PUT
     @Path("/{accountId}")
     public Response putAccount(@Auth Account auth, AccountUpdate accountUpdate) {
-        // TODO: simplify all this
-        Response response = Response.status(Response.Status.NOT_FOUND).build();
-        if ((accountUpdate.getEmail() == null || accountUpdate.getEmail().equals("")) || (accountUpdate.getName() == null || accountUpdate.getName().equals(""))) {
-            // Until we split this route, these values cannot be empty
-            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        } else {
+        Response response = Response.status(Response.Status.CONFLICT).build();;
+        boolean canUpdate = true;
+        if (!accountUpdate.getEmail().equals(auth.getEmail())) {
+            // Trying to update email, we check first if email is available
             Optional<Account> oAccount = dao.findAccountByEmail(accountUpdate.getEmail());
-            // Check if email was changed
-            if (!accountUpdate.getEmail().equals(auth.getEmail())) {
-                // Email was updated, validate that new email is available
-                if (oAccount.isPresent()) {
-                    // New email is already used in the database
-                    response = Response.status(Response.Status.CONFLICT).build();
-                } else {
-                    if (accountUpdate.getCurrentPassword() != null) {
-                        // Password was updated
-                        String passwordDigest = dao.findPasswordDigest(auth.getAccountId());
-                        if (argon2.verify(passwordDigest, accountUpdate.getCurrentPassword().toCharArray())) {
-                            String newPasswordDigest = argon2.hash(2, 65536, 1, accountUpdate.getNewPassword().toCharArray());
-                            dao.updateAccountAndPassword(auth.getAccountId(), accountUpdate.getEmail(), accountUpdate.getName(), accountUpdate.getLanguageId(), newPasswordDigest, auth.getAccountId());
-                            oAccount = dao.findAccountById(auth.getAccountId());
-                            if (oAccount.isPresent()) {
-                                // Set subscription information
-                                oAccount.get().setSubscription(dao.findSubscriptionByAccountId(auth.getAccountId()));
-                                response = Response.status(Response.Status.OK).entity(oAccount.get()).build();
-                            }
-                        } else {
-                            response = Response.status(Response.Status.UNAUTHORIZED).build();
-                        }
-                    } else {
-                        dao.updateAccount(auth.getAccountId(), accountUpdate.getEmail(), accountUpdate.getName(), accountUpdate.getLanguageId(), auth.getAccountId());
-                        oAccount = dao.findAccountById(auth.getAccountId());
-                        if (oAccount.isPresent()) {
-                            // Set subscription information
-                            oAccount.get().setSubscription(dao.findSubscriptionByAccountId(auth.getAccountId()));
-                            response = Response.status(Response.Status.OK).entity(oAccount.get()).build();
-                        }
-                    }
-                }
-            } else {
-                // Email is the same as before
-                if (accountUpdate.getCurrentPassword() != null) {
-                    // Password was updated
-                    String passwordDigest = dao.findPasswordDigest(auth.getAccountId());
-                    if (argon2.verify(passwordDigest, accountUpdate.getCurrentPassword().toCharArray())) {
-                        String newPasswordDigest = argon2.hash(2, 65536, 1, accountUpdate.getNewPassword().toCharArray());
-                        dao.updateAccountAndPassword(auth.getAccountId(), auth.getEmail(), accountUpdate.getName(), accountUpdate.getLanguageId(), newPasswordDigest, auth.getAccountId());
-                        oAccount = dao.findAccountById(auth.getAccountId());
-                        if (oAccount.isPresent()) {
-                            // Set subscription information
-                            oAccount.get().setSubscription(dao.findSubscriptionByAccountId(auth.getAccountId()));
-                            response = Response.status(Response.Status.OK).entity(oAccount.get()).build();
-                        }
-                    } else {
-                        response = Response.status(Response.Status.UNAUTHORIZED).build();
-                    }
-                } else {
-                    dao.updateAccount(auth.getAccountId(), auth.getEmail(), accountUpdate.getName(), accountUpdate.getLanguageId(), auth.getAccountId());
-                    oAccount = dao.findAccountById(auth.getAccountId());
-                    if (oAccount.isPresent()) {
-                        // Set subscription information
-                        oAccount.get().setSubscription(dao.findSubscriptionByAccountId(auth.getAccountId()));
-                        response = Response.status(Response.Status.OK).entity(oAccount.get()).build();
-                    }
-                }
+            if (oAccount.isPresent()) {
+                canUpdate = false;
             }
         }
-
+        if (canUpdate) {
+            dao.updateAccount(auth.getAccountId(), accountUpdate.getEmail(), accountUpdate.getName(), auth.getAccountId());
+            // TODO: update info in stripe
+            response = Response.ok().entity(buildAccount(auth.getAccountId())).build();
+        }
         return response;
+    }
+
+    @PUT
+    @Path("/{accountId}/language")
+    public Account putAccountPassword(@Auth Account auth, LanguageUpdate languageUpdate) {
+        dao.updateAccountLanguage(auth.getAccountId(), languageUpdate.getLanguageId());
+        return buildAccount(auth.getAccountId());
+    }
+
+    @PUT
+    @Path("/{accountId}/password")
+    public Response putAccountPassword(@Auth Account auth, PasswordUpdate passwordUpdate) {
+        Response response = Response.status(Response.Status.UNAUTHORIZED).build();
+        String passwordDigest = dao.findPasswordDigest(auth.getAccountId());
+        if (argon2.verify(passwordDigest, passwordUpdate.getCurrentPassword().toCharArray())) {
+            String newPasswordDigest = argon2.hash(2, 65536, 1, passwordUpdate.getNewPassword().toCharArray());
+            dao.updateAccountPassword(auth.getAccountId(), newPasswordDigest);
+            response = Response.noContent().build();
+        }
+        return response;
+    }
+
+    // Only use this if you validated first that the account exists in the database
+    private Account buildAccount(long accountId) {
+        Account account = dao.findAccount(accountId);
+        account.setSubscription(dao.findSubscriptionByAccountId(accountId));
+        return account;
     }
 
 }

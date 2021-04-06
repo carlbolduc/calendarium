@@ -20,7 +20,7 @@ public class TokenAuthenticator implements Authenticator<String, Account> {
         if (token.length() > 17) {
             String selector = token.substring(0, 16);
             String verifier = token.substring(16);
-            Optional<Account> oAccount = dao.findAccount(selector);
+            Optional<Account> oAccount = dao.findAccountBySelector(selector);
             if (oAccount.isPresent()) {
                 try {
                     if (Utils.getHash(verifier).equals(oAccount.get().getTokenValidator())) {

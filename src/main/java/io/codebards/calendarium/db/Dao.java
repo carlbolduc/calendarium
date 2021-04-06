@@ -21,6 +21,11 @@ public interface Dao {
 
     // ******************** Account ********************
 
+    // Only use this if you validated first that the account exists in the database
+    @SqlQuery("SELECT account_id, email, name, language_id, stripe_cus_id, created_at FROM account WHERE account_id = :accountId")
+    @RegisterBeanMapper(Account.class)
+    Account findAccount(@Bind("accountId") long accountId);
+
     @SqlUpdate("INSERT INTO account (email, name, language_id, password_digest, created_by) VALUES (:email, :name, :languageId, :passwordDigest, :createdBy)")
     @GetGeneratedKeys
     long insertAccount(@Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId, @Bind("passwordDigest") String passwordDigest, @Bind("createdBy") long createdBy);
@@ -30,7 +35,7 @@ public interface Dao {
             "         INNER JOIN account_token at ON a.account_id = at.account_id\n" +
             "WHERE at.selector = :selector")
     @RegisterBeanMapper(Account.class)
-    Optional<Account> findAccount(@Bind("selector") String selector);
+    Optional<Account> findAccountBySelector(@Bind("selector") String selector);
 
     @SqlQuery("SELECT account_id, email, name, language_id, password_digest, password_reset_digest, password_reset_requested_at FROM account WHERE email = :email")
     @RegisterBeanMapper(Account.class)
@@ -53,11 +58,17 @@ public interface Dao {
     @SqlUpdate("UPDATE account SET password_digest = :passwordDigest, password_reset_digest = NULL, password_reset_requested_at = NULL, updated_by = :updatedBy WHERE account_id = :accountId")
     void updatePasswordDigest(@Bind("accountId") long accountId, @Bind("passwordDigest") String passwordDigest, @Bind("updatedBy") long updatedBy);
 
-    @SqlUpdate("UPDATE account SET email = :email, name = :name, language_id = :languageId, updated_by = :updatedBy WHERE account_id = :accountId")
-    void updateAccount(@Bind("accountId") long accountId, @Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId, @Bind("updatedBy") long updatedBy);
+    @SqlUpdate("UPDATE account SET email = :email, name = :name, updated_by = :updatedBy WHERE account_id = :accountId")
+    void updateAccount(@Bind("accountId") long accountId, @Bind("email") String email, @Bind("name") String name, @Bind("updatedBy") long updatedBy);
 
     @SqlUpdate("UPDATE account SET email = :email, name = :name, language_id = :languageId, password_digest = :passwordDigest, updated_by = :updatedBy WHERE account_id = :accountId")
     void updateAccountAndPassword(@Bind("accountId") long accountId, @Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId, @Bind("passwordDigest") String passwordDigest, @Bind("updatedBy") long updatedBy);
+
+    @SqlUpdate("UPDATE account SET language_id = :languageId, updated_by = :accountId WHERE account_id = :accountId")
+    void updateAccountLanguage(@Bind("accountId") long accountId, @Bind("languageId") long languageId);
+
+    @SqlUpdate("UPDATE account SET password_digest = :passwordDigest, updated_by = :accountId WHERE account_id = :accountId")
+    void updateAccountPassword(@Bind("accountId") long accountId, @Bind("passwordDigest") String passwordDigest);
 
     @SqlUpdate("INSERT INTO account_token (selector, validator, created_at, account_id)\n" +
             "VALUES (:selector, :validator, :now, :accountId)")
@@ -489,5 +500,6 @@ public interface Dao {
             "WHERE name = :name")
     @RegisterBeanMapper(EmailTemplate.class)
     Optional<EmailTemplate> findEmailTemplateByName(@Bind("name") String name);
+
 
 }

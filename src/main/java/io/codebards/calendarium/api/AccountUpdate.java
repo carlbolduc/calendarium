@@ -3,9 +3,6 @@ package io.codebards.calendarium.api;
 public class AccountUpdate {
     private String name;
     private String email;
-    private String currentPassword;
-    private String newPassword;
-    private long languageId;
 
     public String getName() {
         return name;
@@ -23,27 +20,4 @@ public class AccountUpdate {
         this.email = email;
     }
 
-    public String getCurrentPassword() {
-        return currentPassword;
-    }
-
-    public void setCurrentPassword(String currentPassword) {
-        this.currentPassword = currentPassword;
-    }
-
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
-    }
-
-    public long getLanguageId() {
-        return languageId;
-    }
-
-    public void setLanguageId(long languageId) {
-        this.languageId = languageId;
-    }
 }
