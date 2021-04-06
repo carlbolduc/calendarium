@@ -95,8 +95,8 @@ public class CollaboratorsResource {
     @PUT
     @Path("/{calendarId}/accept_invitation/{calendarAccessId}")
     public Response acceptCalendarInvitation(InvitationResponse invitationResponse) {
+        // default response to return is 200 OK
         Response response = Response.status(Response.Status.OK).build();
-        // TODO: implement failure checks and adjust response accordingly
         Optional<Account> oAccount = dao.findAccountById(invitationResponse.getAccountId());
         // if password is provided, update account password and sign in
         if (!invitationResponse.getPassword().isEmpty()) {
@@ -106,8 +106,10 @@ public class CollaboratorsResource {
                 String token = createToken(oAccount.get().getAccountId());
                 if (token != null) {
                     AccountToken accountToken = new AccountToken(oAccount.get().getAccountId(), token);
+                    // invitation accepted, return 200 OK
                     response = Response.status(Response.Status.OK).entity(accountToken).build();
                 } else {
+                    // token could not be created, return 500 Internal Server Error
                     response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
                 }
             }
