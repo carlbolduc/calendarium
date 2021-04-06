@@ -72,7 +72,7 @@ public class AccountsResource {
     @PUT
     @Path("/{accountId}/language")
     public Account putAccountPassword(@Auth Account auth, LanguageUpdate languageUpdate) {
-        dao.updateAccountLanguage(auth.getAccountId(), languageUpdate.getLanguageId());
+        dao.updateAccountLanguage(auth.getAccountId(), languageUpdate.getLanguageId(), auth.getAccountId());
         return buildAccount(auth.getAccountId());
     }
 
@@ -83,7 +83,7 @@ public class AccountsResource {
         String passwordDigest = dao.findPasswordDigest(auth.getAccountId());
         if (argon2.verify(passwordDigest, passwordUpdate.getCurrentPassword().toCharArray())) {
             String newPasswordDigest = argon2.hash(2, 65536, 1, passwordUpdate.getNewPassword().toCharArray());
-            dao.updateAccountPassword(auth.getAccountId(), newPasswordDigest);
+            dao.updateAccountPassword(auth.getAccountId(), newPasswordDigest, auth.getAccountId());
             response = Response.noContent().build();
         }
         return response;

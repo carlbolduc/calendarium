@@ -62,7 +62,12 @@ public class SubscriptionsResource {
     @POST
     public Response createSubscription(@Auth Account auth, PaymentMethod paymentMethod) {
         Response response;
-        if (auth.getSubscription() == null) {
+        // You can subscribe if you never subscribe, if you are on a trial or if your subscription is expired
+        if (
+            auth.getSubscription() == null
+            || auth.getSubscription().getStripeSubId() == null
+            || auth.getSubscription().getEndAt().isBefore(Instant.now())
+        ) {
             try {
                 Customer customer = stripeService.getCustomer(auth.getStripeCusId());
                 try {
@@ -96,7 +101,11 @@ public class SubscriptionsResource {
                     }
                     // Create the subscription
                     Subscription subscription = stripeService.createSubscription(subCreateParams);
-                    dao.insertSubscription(auth.getAccountId(), subscription.getId(), price.getPriceId(), Instant.ofEpochSecond(subscription.getCurrentPeriodStart()), Instant.ofEpochSecond(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
+                    if (auth.getSubscription() == null) {
+                        dao.insertSubscription(auth.getAccountId(), subscription.getId(), price.getPriceId(), Instant.ofEpochSecond(subscription.getCurrentPeriodStart()), Instant.ofEpochSecond(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
+                    } else {
+                        dao.updateSubscription(auth.getSubscription().getSubscriptionId(), subscription.getId(), price.getPriceId(), Instant.ofEpochSecond(subscription.getCurrentPeriodStart()), Instant.ofEpochSecond(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
+                    }
                     if (subscription.getLatestInvoiceObject().getPaymentIntentObject().getStatus().equals(PaymentIntentStatus.SUCCEEDED.getStatus())) {
                         // TODO: It worked, check what we must return to client
                         // Check with Stripe if it's possible to get a subscription that is not succeeded when we reach this step

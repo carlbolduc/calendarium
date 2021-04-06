@@ -102,6 +102,7 @@ public class CollaboratorsResource {
         if (!invitationResponse.getPassword().isEmpty()) {
             if (oAccount.isPresent()) {
                 String passwordDigest = argon2.hash(2, 65536, 1, invitationResponse.getPassword().toCharArray());
+                // TODO: check if we can use another method here
                 dao.updateAccountAndPassword(oAccount.get().getAccountId(), oAccount.get().getEmail(), oAccount.get().getName(), oAccount.get().getLanguageId(), passwordDigest, oAccount.get().getAccountId());
                 String token = createToken(oAccount.get().getAccountId());
                 if (token != null) {
