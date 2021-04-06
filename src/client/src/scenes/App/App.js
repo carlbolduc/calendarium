@@ -33,6 +33,7 @@ export default function App() {
     getAccount,
     updateAccount,
     updateAccountLanguageId,
+    updateAccountPassword,
     createPasswordReset,
     resetPassword,
     saveToken

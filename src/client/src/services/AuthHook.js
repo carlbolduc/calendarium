@@ -82,15 +82,10 @@ export function useAuth() {
   }
 
   const updateAccount = useCallback((data, cb) => {
-    // TODO: check usage of this function, it can cause loops since it updates account and is triggered by account
-    // TODO: split in different update functions
     if (token !== null) {
       const updatedAccount = {
         name: data["name"] === undefined || data["name"] === "" ? account.name : data["name"],
         email: data["email"] === undefined || data["email"] === "" ? account.email : data["email"],
-        currentPassword: data["currentPassword"] === undefined ? null : data["currentPassword"],
-        newPassword: data["newPassword"] === undefined ? null : data["newPassword"],
-        languageId: data["languageId"] === undefined ? account.languageId : data["languageId"],
       };
       axios({
         method: "PUT",
@@ -112,17 +107,10 @@ export function useAuth() {
         errorCallback(err, cb);
       });
     }
-  }, [token, account.accountId, account.name, account.email, account.languageId]);
+  }, [token, account.accountId, account.name, account.email]);
 
   const updateAccountLanguageId = useCallback((languageId, cb) => {
     if (languageId !== account.languageId) {
-      const updatedAccount = {
-        name: account.name,
-        email: account.email,
-        currentPassword: null,
-        newPassword: null,
-        languageId: languageId,
-      };
       // signed in user on embed page may have a null accountId
       if (token !== null && account.accountId !== null) {
         axios({
@@ -131,8 +119,8 @@ export function useAuth() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          url: `${process.env.REACT_APP_API}/accounts/${account.accountId}`,
-          data: updatedAccount,
+          url: `${process.env.REACT_APP_API}/accounts/${account.accountId}/language`,
+          data: { languageId: languageId },
         })
           .then((res) => {
             setAccount(res.data);
@@ -153,6 +141,29 @@ export function useAuth() {
       }
     }
   }, [token, account]);
+
+  const updateAccountPassword = useCallback((data, cb) => {
+    if (token !== null) {
+      axios({
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        url: `${process.env.REACT_APP_API}/accounts/${account.accountId}/password`,
+        data: data
+      }).then(() => {
+        if (cb) {
+          const result = {
+            success: true
+          }
+          cb(result);
+        }
+      }).catch(err => {
+        errorCallback(err, cb);
+      });
+    }
+  }, [token, account.accountId]);
 
   const createPasswordReset = useCallback((data, cb) => {
     axios.post(`${process.env.REACT_APP_API}/auth/password-resets`, data).then(() => {
@@ -186,5 +197,5 @@ export function useAuth() {
 
 
 
-  return {token, account, authenticated, signUp, signIn, signOut, getAccount, updateAccount, updateAccountLanguageId, createPasswordReset, resetPassword, saveToken};
+  return {token, account, authenticated, signUp, signIn, signOut, getAccount, updateAccount, updateAccountLanguageId, updateAccountPassword, createPasswordReset, resetPassword, saveToken};
 }
