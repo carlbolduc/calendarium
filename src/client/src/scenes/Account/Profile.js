@@ -15,7 +15,7 @@ export default function Profile(props) {
   const [email, setEmail] = useState(props.account.email);
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [working, setWorking] = useState(false);
-  const [result, setResult] = useState("");
+  const [formResult, setFormResult] = useState("");
   const [showEditProfileForm, setShowEditProfileForm] = useState(false);
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
 
@@ -32,14 +32,24 @@ export default function Profile(props) {
         name: name,
         email: email,
       };
-      updateAccount(data, (result) => {
-        setResult(result);
+      updateAccount(data, (formResult) => {
+        setFormResult(formResult);
         setWorking(false);
+        if (formResult.success) {
+          setShowEditProfileForm(false);
+        }
       });
     } else {
       if (!textValid(name)) setInvalidName(true);
       if (!emailValid(email)) setInvalidEmail(true);
     }
+  }
+
+  function cancelEditProfile() {
+    setName(props.account.name);
+    setEmail(props.account.email);
+    setFormResult("");
+    setShowEditProfileForm(false)
   }
 
   const memberSince = props.account ? (
@@ -52,6 +62,7 @@ export default function Profile(props) {
       id="button-edit-profile"
       outline={true}
       onClick={() => {
+        setFormResult("");
         setShowEditProfileForm(true);
       }}
     />
@@ -82,7 +93,7 @@ export default function Profile(props) {
       result = (
         <article>
           <h1>{props.translate("My profile")}</h1>
-          <Message result={result} origin="profile" translate={props.translate} />
+          <Message result={formResult} origin="profile" translate={props.translate} />
           <form onSubmit={handleSubmit} id="form-profile" noValidate>
             <Input
               label={props.translate("Name")}
@@ -108,7 +119,7 @@ export default function Profile(props) {
               }}
               invalidFeedback={invalidEmail ? <InvalidFeedback feedback={props.translate("You must enter a valid email address.")} /> : null}
             />
-            <Button label={props.translate("Cancel")} type="button" id="button-cancel" onClick={() => setShowEditProfileForm(false)} disabled={working} outline={true} />
+            <Button label={props.translate("Cancel")} type="button" id="button-cancel" onClick={cancelEditProfile} disabled={working} outline={true} />
             <Button label={props.translate("Save")} type="submit" disabled={name === props.account.name && email === props.account.email} id="button-save" working={working} />
           </form>
         </article>
@@ -128,7 +139,7 @@ export default function Profile(props) {
       result = (
         <article>
           <h1>{props.translate("My profile")}</h1>
-          <Message result={result} origin="profile" translate={props.translate} />
+          <Message result={formResult} origin="profile" translate={props.translate} />
           {actionButtonsZone}
           <p>{props.translate("Name:")} {name}</p>
           <p>{props.translate("Email:")} {email}</p>
