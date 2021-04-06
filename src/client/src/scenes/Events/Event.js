@@ -26,9 +26,19 @@ export default function Event(props) {
       }
       result = (
         <div className="col-auto">
-          <div className="card-body">
-            {status}
-          </div>
+          {status}
+        </div>
+      );
+    }
+    return result;
+  }
+
+  function author() {
+    let result = null;
+    if (props.calendar.showEventAuthor || props.showStatus) {
+      result = (
+        <div className="col-auto">
+          {props.event.author}
         </div>
       );
     }
@@ -56,12 +66,20 @@ export default function Event(props) {
     return result;
   }
 
+  function description() {
+    let result = null;
+    const descriptionToDisplay = decideWhatToDisplay(props.localeId, props.enableEn, props.enableFr, props.event.descriptionEn, props.event.descriptionFr);
+    if (descriptionToDisplay !== null) {
+      result = <div className="card-text p-wrap mt-3">{descriptionToDisplay}</div>;
+    }
+    return result;
+  }
+
   function hyperlink() {
     let result = null;
     const hyperlinkToDisplay = decideWhatToDisplay(props.localeId, props.enableEn, props.enableFr, props.event.hyperlinkEn, props.event.hyperlinkFr);
     if (hyperlinkToDisplay !== null) {
-      
-      result = <a href={hyperlinkToDisplay.indexOf("http") === -1 ? `http://${hyperlinkToDisplay}` : hyperlinkToDisplay}>{hyperlinkToDisplay}</a>;
+      result = <div className="mt-3"><a href={hyperlinkToDisplay.indexOf("http") === -1 ? `http://${hyperlinkToDisplay}` : hyperlinkToDisplay}>{hyperlinkToDisplay}</a></div>;
     }
     return result;
   }
@@ -137,16 +155,17 @@ export default function Event(props) {
 
   const eventDetails = (
     <article className={classNames()} style={borderStyle}>
-      <div className="row">
-        <div className="col">
-          <div className="card-body">
+      <div className="card-body">
+        <div className="row">
+          <div className="col">
             <h5 className="card-title">{decideWhatToDisplay(props.localeId, props.enableEn, props.enableFr, props.event.nameEn, props.event.nameFr)}</h5>
-            <h6 className="card-subtitle mb-2 text-muted">{duration()}</h6>
-            <p className="card-text p-wrap">{decideWhatToDisplay(props.localeId, props.enableEn, props.enableFr, props.event.descriptionEn, props.event.descriptionFr)}</p>
-            {hyperlink()}
+            <h6 className="card-subtitle text-muted">{duration()}</h6>
           </div>
+          {author()}
+          {status()}
         </div>
-        {status()}
+        {description()}
+        {hyperlink()}
       </div>
       <div className="row">
         <div className="col ms-3">

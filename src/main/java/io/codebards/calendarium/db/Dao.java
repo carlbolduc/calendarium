@@ -149,7 +149,8 @@ public interface Dao {
             "       c.secondary_color,\n" +
             "       c.embed_calendar,\n" +
             "       c.public_calendar,\n" +
-            "       c.event_approval_required\n" +
+            "       c.event_approval_required,\n" +
+            "       c.show_event_author\n" +
             "FROM calendar c\n" +
             "         INNER JOIN calendar_access ca on c.calendar_id = ca.calendar_id\n" +
             "WHERE ca.account_id = :accountId AND ca.status IN ('owner', 'active')")
@@ -187,7 +188,8 @@ public interface Dao {
             "       secondary_color,\n" +
             "       embed_calendar,\n" +
             "       public_calendar,\n" +
-            "       event_approval_required\n" +
+            "       event_approval_required,\n" +
+            "       show_event_author\n" +
             "FROM calendar\n" +
             "WHERE calendar_id = :calendarId")
     @RegisterBeanMapper(Calendar.class)
@@ -215,6 +217,7 @@ public interface Dao {
             "       c.embed_calendar,\n" +
             "       c.public_calendar,\n" +
             "       c.event_approval_required,\n" +
+            "       c.show_event_author,\n" +
             "       ca.status AS access\n" +
             "FROM calendar c\n" +
             "         INNER JOIN calendar_access ca on c.calendar_id = ca.calendar_id\n" +
@@ -238,6 +241,7 @@ public interface Dao {
             "       embed_calendar,\n" +
             "       public_calendar,\n" +
             "       event_approval_required,\n" +
+            "       show_event_author,\n" +
             "       '' AS access\n" +
             "FROM calendar\n" +
             "WHERE (link_en = :link OR link_fr = :link) AND public_calendar IS TRUE")
@@ -257,13 +261,13 @@ public interface Dao {
     Optional<Calendar> findAnonymousCalendar(@Bind("link") String link, @Bind("calendarAccessId") long calendarAccessId);
 
     @SqlUpdate("INSERT INTO calendar (enable_en, enable_fr, name_en, name_fr, description_en, description_fr, link_en, link_fr,\n" +
-            "                      start_week_on, primary_color, secondary_color, embed_calendar, public_calendar, event_approval_required, created_by)\n" +
+            "                      start_week_on, primary_color, secondary_color, embed_calendar, public_calendar, event_approval_required, show_event_author, created_by)\n" +
             "VALUES (:enableEn, :enableFr, :nameEn, :nameFr, :descriptionEn, :descriptionFr, :linkEn, :linkFr,\n" +
-            "        :startWeekOn, :primaryColor, :secondaryColor, :embedCalendar, :publicCalendar, :eventApprovalRequired, :createdBy)")
+            "        :startWeekOn, :primaryColor, :secondaryColor, :embedCalendar, :publicCalendar, :eventApprovalRequired, :showEventAuthor, :createdBy)")
     @GetGeneratedKeys
     long insertCalendar(@Bind("accountId") long accountId, @BindBean Calendar calendar);
 
-    @SqlUpdate("UPDATE calendar SET enable_en = :enableEn, enable_fr = :enableFr, name_en = :nameEn, name_fr = :nameFr, description_en = :descriptionEn, description_fr = :descriptionFr, link_en = :linkEn, link_fr = :linkFr, start_week_on = :startWeekOn, primary_color = :primaryColor, secondary_color = :secondaryColor, embed_calendar = :embedCalendar, public_calendar = :publicCalendar, event_approval_required = :eventApprovalRequired, updated_by = :updatedBy WHERE calendar_id = :calendarId")
+    @SqlUpdate("UPDATE calendar SET enable_en = :enableEn, enable_fr = :enableFr, name_en = :nameEn, name_fr = :nameFr, description_en = :descriptionEn, description_fr = :descriptionFr, link_en = :linkEn, link_fr = :linkFr, start_week_on = :startWeekOn, primary_color = :primaryColor, secondary_color = :secondaryColor, embed_calendar = :embedCalendar, public_calendar = :publicCalendar, event_approval_required = :eventApprovalRequired, show_event_author = :showEventAuthor, updated_by = :updatedBy WHERE calendar_id = :calendarId")
     void updateCalendar(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @BindBean Calendar calendar);
 
     @SqlUpdate("DELETE FROM calendar WHERE calendar_id = :calendarId")
@@ -272,7 +276,7 @@ public interface Dao {
     // ******************** Event ********************
 
     @SqlQuery("SELECT event_id,\n" +
-            "       account_id,\n" +
+            "       e.account_id,\n" +
             "       calendar_id,\n" +
             "       status,\n" +
             "       name_fr,\n" +
@@ -283,9 +287,11 @@ public interface Dao {
             "       end_at,\n" +
             "       all_day,\n" +
             "       hyperlink_fr,\n" +
-            "       hyperlink_en\n" +
-            "FROM event\n" +
-            "WHERE account_id = :accountId")
+            "       hyperlink_en,\n" +
+            "       a.name author\n" +
+            "FROM event e\n" +
+            "INNER JOIN account a ON e.account_id = a.account_id\n" +
+            "WHERE e.account_id = :accountId")
     @RegisterBeanMapper(Event.class)
     List<Event> findEventsByAccount(@Bind("accountId") long accountId);
 
@@ -332,8 +338,9 @@ public interface Dao {
     @SqlUpdate("DELETE FROM event WHERE event_id = :eventId")
     void deleteEvent(@Bind("eventId") long eventId);
 
-    @SqlQuery("SELECT event_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, account_id, calendar_id\n" +
-            "FROM event\n" +
+    @SqlQuery("SELECT event_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, e.account_id, calendar_id, a.name author\n" +
+            "FROM event e\n" +
+            "INNER JOIN account a ON e.account_id = a.account_id\n" +
             "WHERE calendar_id = :calendarId\n" +
             "  AND end_at >= :startAt\n" +
             "ORDER BY start_at\n" +
@@ -341,15 +348,17 @@ public interface Dao {
     @RegisterBeanMapper(Event.class)
     List<Event> findCalendarOwnerEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Instant startAt);
 
-    @SqlQuery("SELECT event_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, account_id, calendar_id\n" +
-            "FROM event\n" +
-            "WHERE account_id = :accountId\n" +
+    @SqlQuery("SELECT event_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, e.account_id, calendar_id, a.name author\n" +
+            "FROM event e\n" +
+            "INNER JOIN account a ON e.account_id = a.account_id\n" +
+            "WHERE e.account_id = :accountId\n" +
             "  AND calendar_id = :calendarId\n" +
             "  AND end_at >= :startAt\n" +
             "UNION\n" +
-            "SELECT event_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, account_id, calendar_id\n" +
-            "FROM event\n" +
-            "WHERE account_id != :accountId\n" +
+            "SELECT event_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, e.account_id, calendar_id, a.name author\n" +
+            "FROM event e\n" +
+            "INNER JOIN account a ON e.account_id = a.account_id\n" +
+            "WHERE e.account_id != :accountId\n" +
             "  AND calendar_id = :calendarId\n" +
             "  AND end_at >= :startAt\n" +
             "  AND status = 'published'\n" +
@@ -379,12 +388,12 @@ public interface Dao {
     @RegisterBeanMapper(Event.class)
     List<Event> findCalendarEmbedEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Instant startAt);
 
-    @SqlQuery("SELECT event_id, account_id, calendar_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr FROM event WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%'))) AND (:status = '' OR status = :status) ORDER BY start_at")
+    @SqlQuery("SELECT event_id, e.account_id, calendar_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, a.name author FROM event e INNER JOIN account a ON e.account_id = a.account_id WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%'))) AND (:status = '' OR status = :status) ORDER BY start_at")
     @RegisterBeanMapper(Event.class)
     List<Event> findEvents(@BindBean EventsParams eventsParams);
 
     @SqlQuery("SELECT event_id,\n" +
-            "       account_id,\n" +
+            "       e.account_id,\n" +
             "       calendar_id,\n" +
             "       status,\n" +
             "       name_en,\n" +
@@ -395,8 +404,10 @@ public interface Dao {
             "       end_at,\n" +
             "       all_day,\n" +
             "       hyperlink_en,\n" +
-            "       hyperlink_fr\n" +
-            "FROM event\n" +
+            "       hyperlink_fr,\n" +
+            "       a.name author\n" +
+            "FROM event e\n" +
+            "INNER JOIN account a ON e.account_id = a.account_id\n" +
             "WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR\n" +
             "       (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%')))\n" +
             "  AND (:status = '' OR status = :status)\n" +
@@ -408,7 +419,7 @@ public interface Dao {
     List<Event> findAllCalendarEvents(@BindBean EventsParams eventsParams, @Bind("startAt2") Instant startAt2);
 
     @SqlQuery("SELECT event_id,\n" +
-            "       account_id,\n" +
+            "       e.account_id,\n" +
             "       calendar_id,\n" +
             "       status,\n" +
             "       name_en,\n" +
@@ -419,15 +430,17 @@ public interface Dao {
             "       end_at,\n" +
             "       all_day,\n" +
             "       hyperlink_en,\n" +
-            "       hyperlink_fr\n" +
-            "FROM event\n" +
+            "       hyperlink_fr,\n" +
+            "       a.name author\n" +
+            "FROM event e\n" +
+            "INNER JOIN account a ON e.account_id = a.account_id\n" +
             "WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR\n" +
             "       (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%')))\n" +
             "  AND (:status = '' OR status = :status)\n" +
             "  AND (cast(:startAt AS date) IS NULL OR end_at >= :startAt)\n" +
             "  AND (cast(:endAt AS date) IS NULL OR end_at <= :endAt)\n" +
             "  AND calendar_id = :calendarId\n" +
-            "  AND account_id = :accountId\n" +
+            "  AND e.account_id = :accountId\n" +
             "ORDER BY start_at")
     @RegisterBeanMapper(Event.class)
     List<Event> findAccountCalendarEvents(@Bind("accountId") long accountId, @BindBean EventsParams eventsParams);

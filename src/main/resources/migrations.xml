@@ -539,4 +539,20 @@
         ('It seems you already started a trial or you have an active subscription. Refresh this page to view the details of your subscription. If that error keeps popping, contact us in the grove.','Il semble que vous ayez déjà commencé un essai ou que vous ayez un abonnement actif. Rafraîchissez cette page pour afficher les détails de votre abonnement. Si cette erreur persiste, contactez-nous dans la clairière');
       </sql>            
     </changeSet>
+
+    <changeSet id="12" author="mag">
+      <!-- Add calendar setting to show author name on calendar event -->
+      <addColumn tableName="calendar">
+        <column name="show_event_author" type="boolean"/>
+      </addColumn>
+    </changeSet>
+
+    <changeSet id="13" author="mag">
+      <!-- Create new loc -->
+      <sql>
+        INSERT INTO localisation (en_ca, fr_ca) VALUES
+        ('Show event author names to collaborators','Afficher les noms des auteurs des événements pour les collaborateurs'),
+        ('When this box is checked, the name of the collaborator who created an event will be displayed on that event, visible to other collaborators of the calendar. The names will not be visible for anonymous users viewing Public calendars nor in the embedded calendar. When this box is not checked, the name of the collaborator who created an event will be visible only to you, in Manage all events, to help with event approval and communication.','Quand cette case est cochée, le nom du collaborateur qui a créé l''événement sera affiché sur cet événement, visible aux autres collaborateurs du calendrier. Les noms ne seront pas visibles pour les utilisateurs anonymes qui consultent les calendriers publics ni dans le calendrier incorporable. Lorsque cette case n''est pas cochée, le nom du collaborateur qui a créé un événement ne sera visible que pour vous, dans la section Gérer tous les événements, afin de faciliter l''approbation des événements et la communication.');
+      </sql>      
+    </changeSet>
 </databaseChangeLog>

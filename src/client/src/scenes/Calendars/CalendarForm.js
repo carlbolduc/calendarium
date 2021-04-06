@@ -36,6 +36,7 @@ export default function CalendarForm(props) {
   const [publicCalendar, setPublicCalendar] = useState(props.new ? false : props.calendar.publicCalendar);
   const [working, setWorking] = useState(false);
   const [eventApprovalRequired, setEventApprovalRequired] = useState(props.new ? true : props.calendar.eventApprovalRequired);
+  const [showEventAuthor, setShowEventAuthor] = useState(props.new ? false : props.calendar.showEventAuthor);
   const [noLanguageEnabled, setNoLanguageEnabled] = useState(false);
   const [selectedDate, setSelectedDate] = useState(DateTime.now());
   const [result, setResult] = useState("");
@@ -55,9 +56,10 @@ export default function CalendarForm(props) {
       secondaryColor: secondaryColor,
       embedCalendar: embedCalendar,
       publicCalendar: publicCalendar,
-      eventApprovalRequired: eventApprovalRequired
+      eventApprovalRequired: eventApprovalRequired,
+      showEventAuthor: showEventAuthor
     };
-  }, [enableEn, nameEn, descriptionEn, linkEn, enableFr, nameFr, descriptionFr, linkFr, startWeekOn, primaryColor, secondaryColor, embedCalendar, publicCalendar, eventApprovalRequired])
+  }, [enableEn, nameEn, descriptionEn, linkEn, enableFr, nameFr, descriptionFr, linkFr, startWeekOn, primaryColor, secondaryColor, embedCalendar, publicCalendar, eventApprovalRequired, showEventAuthor])
 
   useEffect(() => {
     if (enableEn || enableFr) {
@@ -328,6 +330,14 @@ export default function CalendarForm(props) {
           required={false}
           handleChange={e => setEventApprovalRequired(e.target.checked)}
           info={props.translate("When this box is checked, you will need to approve all events created by collaborators that you have invited to this calendar. You can uncheck this at any time to remove the restriction.")}
+        />
+        <Checkbox
+          label={props.translate("Show event author names to collaborators")}
+          id="show-event-author"
+          value={showEventAuthor}
+          required={false}
+          handleChange={e => setShowEventAuthor(e.target.checked)}
+          info={props.translate("When this box is checked, the name of the collaborator who created an event will be displayed on that event, visible to other collaborators of the calendar. The names will not be visible for anonymous users viewing Public calendars nor in the embedded calendar. When this box is not checked, the name of the collaborator who created an event will be visible only to you, in Manage all events, to help with event approval and communication.")}
         />
         <Button label={props.translate("Cancel")} id="button-cancel" onClick={() => setShowCalendarForm(false)} outline={true} />
         <Button label={props.translate(submitButton)} type="submit" id="button-save" working={working} />

@@ -16,6 +16,7 @@ public class Calendar {
     private Boolean embedCalendar = false;
     private Boolean publicCalendar = false;
     private Boolean eventApprovalRequired = true;
+    private Boolean showEventAuthor = false;
     private String access;
     private long createdBy;
     private long updatedBy;
@@ -138,6 +139,14 @@ public class Calendar {
 
     public void setEventApprovalRequired(Boolean eventApprovalRequired) {
         this.eventApprovalRequired = eventApprovalRequired;
+    }
+
+    public Boolean getShowEventAuthor() {
+        return showEventAuthor;
+    }
+
+    public void setShowEventAuthor(Boolean showEventAuthor) {
+        this.showEventAuthor = showEventAuthor;
     }
 
     public String getAccess() {

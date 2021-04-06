@@ -18,6 +18,7 @@ public class Event {
     private String hyperlinkEn;
     private long createdBy;
     private long updatedBy;
+    private String author;
 
     public long getEventId() {
         return eventId;
@@ -137,5 +138,13 @@ public class Event {
 
     public void setUpdatedBy(long updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }
