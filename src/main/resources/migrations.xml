@@ -555,4 +555,17 @@
         ('When this box is checked, the name of the collaborator who created an event will be displayed on that event, visible to other collaborators of the calendar. The names will not be visible for anonymous users viewing Public calendars nor in the embedded calendar. When this box is not checked, the name of the collaborator who created an event will be visible only to you, in Manage all events, to help with event approval and communication.','Quand cette case est cochée, le nom du collaborateur qui a créé l''événement sera affiché sur cet événement, visible aux autres collaborateurs du calendrier. Les noms ne seront pas visibles pour les utilisateurs anonymes qui consultent les calendriers publics ni dans le calendrier incorporable. Lorsque cette case n''est pas cochée, le nom du collaborateur qui a créé un événement ne sera visible que pour vous, dans la section Gérer tous les événements, afin de faciliter l''approbation des événements et la communication.');
       </sql>      
     </changeSet>
-</databaseChangeLog>
+
+    <changeSet id="14" author="mag">
+      <!-- Create new loc -->
+      <sql>
+        INSERT INTO localisation (en_ca, fr_ca) VALUES
+        ('Welcome!','Bienvenue!'),
+        ('You don''t have any calendar yet, so this page feels a little empty for now. But it won''t always stay like this!','Vous n''avez pas encore de calendrier, cette page est donc un peu vide pour le moment. Mais elle ne restera pas toujours comme ça!'),
+        ('For now, you can have a look at the','Pour l''instant, vous pouvez jeter un coup d''œil aux'),
+        ('or if you''re ready to create your own calendars, you can','ou si vous êtes prêt à créer vos propres calendriers, vous pouvez'),
+        ('start a free Calendarium trial','commencer un essai gratuit de Calendarium'),
+        ('We hope you enjoy your time here!','Nous espérons que votre temps passé ici sera agréable!');
+      </sql>      
+    </changeSet>
+  </databaseChangeLog>

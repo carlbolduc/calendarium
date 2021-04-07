@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import CalendarForm from "./CalendarForm";
 import Message from "../../components/Form/Message";
 import Button from "../../components/Form/Button";
@@ -12,7 +12,7 @@ export default function MyCalendars(props) {
   const [showCalendarForm, setShowCalendarForm] = useState(false);
   const [calendarFormResult, setCalendarFormResult] = useState(null);
 
-  useEffect(() =>{
+  useEffect(() => {
     getCalendars();
   }, [getCalendars]);
 
@@ -27,13 +27,28 @@ export default function MyCalendars(props) {
   function calendars() {
     let result = null;
     if (!showCalendarForm) {
-      result = (
-        <div className="row">
-          {sortedCalendars(props.calendars, props.localeId).map(c => (
-            <CalendarPreview key={c.calendarId} calendar={c} localeId={props.localeId} translate={props.translate} />
-          ))}
-        </div>
-      );
+      if (props.calendars.length > 0) {
+        // There are calendars to display
+        result = (
+          <div className="row">
+            {sortedCalendars(props.calendars, props.localeId).map(c => (
+              <CalendarPreview key={c.calendarId} calendar={c} localeId={props.localeId} translate={props.translate} />
+            ))}
+          </div>
+        );
+      } else {
+        // There are no calendars to display, show a welcoming message if the person has never been subscribed
+        if (props.account.subscription === null) {
+          result = (
+            <>
+              <p>{props.translate("Welcome!")}</p>
+              <p>{props.translate("You don't have any calendar yet, so this page feels a little empty for now. But it won't always stay like this!")}</p>
+              <p>{props.translate("For now, you can have a look at the")} <Link to="/public-calendars">{props.translate("Public calendars")}</Link> {props.translate("or if you're ready to create your own calendars, you can")} <Link to="/subscription">{props.translate("start a free Calendarium trial")}</Link>.</p>
+              <p>{props.translate("We hope you enjoy your time here!")}</p>
+            </>
+          );
+        }
+      }
     }
     return result;
   }
@@ -76,11 +91,11 @@ export default function MyCalendars(props) {
       {calendarForm}
     </article>
   ) : (
-      <Redirect
-        to={{
-          pathname: "/sign-in",
-          state: { from: "/subscription" }
-        }}
-      />
-    );
+    <Redirect
+      to={{
+        pathname: "/sign-in",
+        state: { from: "/subscription" }
+      }}
+    />
+  );
 }

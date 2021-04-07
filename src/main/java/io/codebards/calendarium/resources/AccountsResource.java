@@ -60,7 +60,7 @@ public class AccountsResource {
         if (canUpdate) {
             dao.updateAccount(auth.getAccountId(), accountUpdate.getEmail(), accountUpdate.getName(), auth.getAccountId());
             try {
-                stripeService.updateCustomer(auth.getStripeCusId(), auth.getEmail(), accountUpdate.getName());
+                stripeService.updateCustomer(auth.getStripeCusId(), accountUpdate.getEmail(), accountUpdate.getName());
             } catch (StripeException e) {
                 // TODO customer could not be updated in stripe, we should log this somewhere
             }
