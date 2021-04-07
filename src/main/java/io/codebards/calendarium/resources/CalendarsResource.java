@@ -109,6 +109,7 @@ public class CalendarsResource {
     @RolesAllowed({ "SUBSCRIBER" })
     @Path("/{calendarId}")
     public Response updateCalendar(@Auth Account auth, @PathParam("calendarId") long calendarId, Calendar calendar) {
+        // the default response is for when the link is already in use, return 409 Conflict
         Response response = Response.status(Status.CONFLICT).build();
         if (auth.getAccountId() == dao.findCalendarOwnerAccountId(calendarId)) {
             // the calendar owner is doing the action
@@ -119,7 +120,14 @@ public class CalendarsResource {
                 try {
                     calendar.setUpdatedBy(auth.getAccountId());
                     dao.updateCalendar(auth.getAccountId(), calendarId, calendar);
-                    Optional<Calendar> oCalendar = dao.findCalendarByLink(auth.getAccountId(), calendar.getLinkEn());
+                    // check if calendar exists after update
+                    String linkToUse;
+                    if (calendar.getEnableEn()) {
+                        linkToUse = calendar.getLinkEn();
+                    } else {
+                        linkToUse = calendar.getLinkFr();
+                    }
+                    Optional<Calendar> oCalendar = dao.findCalendarByLink(auth.getAccountId(), linkToUse);
                     if (oCalendar.isPresent()) {
                         // the update went according to plan, return 200 OK
                         response = Response.ok(oCalendar.get()).build();

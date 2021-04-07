@@ -243,7 +243,7 @@ export default function CalendarForm(props) {
   return (
     <article>
       <h1>{props.translate(title)}</h1>
-      <Message result={result} origin={"calendarForm"} translate={props.translate} />
+      <Message result={result} origin={props.new ? "createCalendar" : "updateCalendar"} translate={props.translate} />
       <form onSubmit={handleSubmit} id="form-new-calendar" noValidate>
         {noLanguageEnabled ? <InvalidFeedback feedback={props.translate("You must enable at least one language.")} /> : null}
         <div className="row mb-3">
