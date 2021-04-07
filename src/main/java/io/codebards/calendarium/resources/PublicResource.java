@@ -70,7 +70,7 @@ public class PublicResource {
             try {
                 CalendarEventsParams calendarEventsParams = mapper.readValue(decodedQuery, CalendarEventsParams.class);
                 // We return published events if calendar is either embeddable or public
-                events = dao.findCalendarEmbedEvents(calendarId, calendarEventsParams.getStartAt());
+                events = dao.findCalendarPublishedEvents(calendarId, calendarEventsParams.getStartAt());
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }

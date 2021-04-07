@@ -386,7 +386,7 @@ public interface Dao {
             "ORDER BY start_at\n" +
             "LIMIT 20")
     @RegisterBeanMapper(Event.class)
-    List<Event> findCalendarEmbedEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Instant startAt);
+    List<Event> findCalendarPublishedEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Instant startAt);
 
     @SqlQuery("SELECT event_id, e.account_id, calendar_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, a.name author FROM event e INNER JOIN account a ON e.account_id = a.account_id WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%'))) AND (:status = '' OR status = :status) ORDER BY start_at")
     @RegisterBeanMapper(Event.class)
