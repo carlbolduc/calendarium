@@ -348,20 +348,25 @@ public interface Dao {
     @RegisterBeanMapper(Event.class)
     List<Event> findCalendarOwnerEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Instant startAt);
 
-    @SqlQuery("SELECT event_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, e.account_id, calendar_id, a.name author\n" +
+    @SqlQuery("SELECT event_id,\n" +
+            "       status,\n" +
+            "       name_en,\n" +
+            "       name_fr,\n" +
+            "       description_en,\n" +
+            "       description_fr,\n" +
+            "       start_at,\n" +
+            "       end_at,\n" +
+            "       all_day,\n" +
+            "       hyperlink_en,\n" +
+            "       hyperlink_fr,\n" +
+            "       e.account_id,\n" +
+            "       calendar_id,\n" +
+            "       a.name author\n" +
             "FROM event e\n" +
-            "INNER JOIN account a ON e.account_id = a.account_id\n" +
-            "WHERE e.account_id = :accountId\n" +
-            "  AND calendar_id = :calendarId\n" +
+            "         INNER JOIN account a ON e.account_id = a.account_id\n" +
+            "WHERE calendar_id = :calendarId\n" +
             "  AND end_at >= :startAt\n" +
-            "UNION\n" +
-            "SELECT event_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, e.account_id, calendar_id, a.name author\n" +
-            "FROM event e\n" +
-            "INNER JOIN account a ON e.account_id = a.account_id\n" +
-            "WHERE e.account_id != :accountId\n" +
-            "  AND calendar_id = :calendarId\n" +
-            "  AND end_at >= :startAt\n" +
-            "  AND status = 'published'\n" +
+            "  AND (e.status = 'published' || e.account_id = :accountId)\n" +
             "ORDER BY start_at\n" +
             "LIMIT 20")
     @RegisterBeanMapper(Event.class)
@@ -453,6 +458,39 @@ public interface Dao {
             "ORDER BY e.start_at")
     @RegisterBeanMapper(Event.class)
     List<Event> findMonthEvents(@Bind("calendarId") long calendarId, @Bind("monthStart") Instant monthStart, @Bind("firstDayOfNextMonth") Instant firstDayOfNextMonth);
+
+    @SqlQuery("SELECT e.event_id, e.start_at, e.end_at\n" +
+            "FROM event e\n" +
+            "         INNER JOIN calendar c ON e.calendar_id = c.calendar_id\n" +
+            "WHERE c.calendar_id = :calendarId\n" +
+            "  AND ((e.start_at < :monthStart AND e.end_at >= :monthStart) OR\n" +
+            "       (e.start_at >= :monthStart AND e.start_at < :firstDayOfNextMonth))\n" +
+            "  AND status = 'published'\n" +
+            "ORDER BY e.start_at")
+    @RegisterBeanMapper(Event.class)
+    List<Event> findMonthPublishedEvents(@Bind("calendarId") long calendarId, @Bind("monthStart") Instant monthStart, @Bind("firstDayOfNextMonth") Instant firstDayOfNextMonth);
+
+    @SqlQuery("SELECT e.event_id, e.start_at, e.end_at\n" +
+            "FROM event e\n" +
+            "         INNER JOIN calendar c ON e.calendar_id = c.calendar_id\n" +
+            "WHERE c.calendar_id = :calendarId\n" +
+            "  AND ((e.start_at < :monthStart AND e.end_at >= :monthStart) OR\n" +
+            "       (e.start_at >= :monthStart AND e.start_at < :firstDayOfNextMonth))\n" +
+            "ORDER BY e.start_at")
+    @RegisterBeanMapper(Event.class)
+    List<Event> findMonthOwnerEvents(@Bind("calendarId") long calendarId, @Bind("monthStart") Instant monthStart, @Bind("firstDayOfNextMonth") Instant firstDayOfNextMonth);
+
+    @SqlQuery("SELECT e.event_id, e.start_at, e.end_at\n" +
+            "FROM event e\n" +
+            "         INNER JOIN calendar c ON e.calendar_id = c.calendar_id\n" +
+            "WHERE c.calendar_id = :calendarId\n" +
+            "  AND ((e.start_at < :monthStart AND e.end_at >= :monthStart) OR\n" +
+            "       (e.start_at >= :monthStart AND e.start_at < :firstDayOfNextMonth))\n" +
+            "  AND (status = 'published' || e.account_id = :accountId)\n" +
+            "ORDER BY e.start_at")
+    @RegisterBeanMapper(Event.class)
+    List<Event> findMonthCollaboratorEvents(@Bind("calendarId") long calendarId, @Bind("accountId") long accountId, @Bind("monthStart") Instant monthStart, @Bind("firstDayOfNextMonth") Instant firstDayOfNextMonth);
+
 
     // ******************** Calendar Access ********************
 

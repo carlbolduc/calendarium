@@ -10,6 +10,7 @@ import io.codebards.calendarium.api.Language;
 import io.codebards.calendarium.auth.CalendariumAuthorizer;
 import io.codebards.calendarium.auth.TokenAuthenticator;
 import io.codebards.calendarium.core.EmailManager;
+import io.codebards.calendarium.core.EventHelpers;
 import io.codebards.calendarium.core.StripeService;
 import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.db.Dao;
@@ -77,6 +78,7 @@ public class App extends Application<Config> {
         List<Language> allLanguages = dao.findAllLanguages();
         final EmailManager emailManager = new EmailManager(emailClient, config.getThirdPartyFactory().getBaseUrl(), allLanguages, dao);
         final StripeService stripeService = new StripeService(config.getThirdPartyFactory().getStripeApiKey());
+        final EventHelpers eventHelpers = new EventHelpers();
         final OpsResource opsResource = new OpsResource(dao);
         final BotResource botResource = new BotResource(dao);
         final AuthResource authResource = new AuthResource(dao, argon2, emailManager);
@@ -84,8 +86,8 @@ public class App extends Application<Config> {
         final LocalisationsResource localisationsResource = new LocalisationsResource(dao);
         final SubscriptionsResource subscriptionsResource = new SubscriptionsResource(dao, stripeService, config.getThirdPartyFactory().getStripeWebhookSecret());
         final TrialsResource trialsResource = new TrialsResource(dao);
-        final CalendarsResource calendarsResource = new CalendarsResource(dao);
-        final PublicResource publicResource = new PublicResource(dao);
+        final CalendarsResource calendarsResource = new CalendarsResource(dao, eventHelpers);
+        final PublicResource publicResource = new PublicResource(dao, eventHelpers);
         final EventsResource eventsResource = new EventsResource(dao);
         final CollaboratorsResource collaboratorsResource = new CollaboratorsResource(dao, argon2, emailManager);
 

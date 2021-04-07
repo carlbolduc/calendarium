@@ -12,10 +12,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.codebards.calendarium.api.*;
 import io.codebards.calendarium.core.Account;
+import io.codebards.calendarium.core.EventHelpers;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
 
 import java.nio.charset.StandardCharsets;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -28,9 +30,11 @@ import java.util.Optional;
 public class CalendarsResource {
 
     private final Dao dao;
+    private EventHelpers eventHelpers;
 
-    public CalendarsResource(Dao dao) {
+    public CalendarsResource(Dao dao, EventHelpers eventHelpers) {
         this.dao = dao;
+        this.eventHelpers = eventHelpers;
     }
 
     @GET
@@ -189,13 +193,54 @@ public class CalendarsResource {
                     // Public calendar, show events even if user isn't owner or collaborator
                     events = dao.findCalendarPublishedEvents(calendarId, calendarEventsParams.getStartAt());
                 }
-
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
         }
 
         return events;
+    }
+
+    @GET
+    @Path("/dots")
+    public List<Integer> getDots(@Auth Account auth, @QueryParam("q") String q) {
+        List<Integer> dots = new ArrayList<>();
+        String decodedQuery = new String(Base64.getDecoder().decode(q), StandardCharsets.UTF_8);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        try {
+            DotsParams dotsParams = mapper.readValue(decodedQuery, DotsParams.class);
+            if (dotsParams.getCalendarId() != null && dotsParams.getStartAt() != null) {
+                List<Event> monthEvents = new ArrayList<>();
+                ZoneId zoneId = ZoneId.of(dotsParams.getZoneName());
+                ZonedDateTime dotsZonedStartAt = dotsParams.getStartAt().atZone(zoneId);
+                // Find the upper limit for months event: the beginning of the first day of next month
+                LocalDate monthEnd = YearMonth.from(dotsZonedStartAt).atEndOfMonth();
+                Instant firstDayOfNextMonth = monthEnd.plusDays(1).atStartOfDay().atZone(zoneId).toInstant();
+                monthEvents = dao.findMonthPublishedEvents(dotsParams.getCalendarId(), dotsZonedStartAt.toInstant(), firstDayOfNextMonth);
+
+                List<CalendarAccess> calendarAccesses = dao.findCalendarAccesses(auth.getAccountId());
+                Optional<CalendarAccess> oCalendarAccess = calendarAccesses.stream().filter(ca -> ca.getCalendarId() == dotsParams.getCalendarId()).findAny();
+
+                if (oCalendarAccess.isPresent()) {
+                    if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.OWNER.getStatus())) {
+                        monthEvents = dao.findMonthOwnerEvents(dotsParams.getCalendarId(), dotsZonedStartAt.toInstant(), firstDayOfNextMonth);
+                    } else if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.ACTIVE.getStatus())) {
+                        monthEvents = dao.findMonthCollaboratorEvents(dotsParams.getCalendarId(), auth.getAccountId(), dotsZonedStartAt.toInstant(), firstDayOfNextMonth);
+                    } else if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.INVITED.getStatus())) {
+                        // Collaborator is invited but has yet to create content, process published events
+                        monthEvents = dao.findMonthPublishedEvents(dotsParams.getCalendarId(), dotsZonedStartAt.toInstant(), firstDayOfNextMonth);
+                    }
+                } else {
+                    // Public calendar, process published events if user isn't owner or collaborator
+                    monthEvents = dao.findMonthPublishedEvents(dotsParams.getCalendarId(), dotsZonedStartAt.toInstant(), firstDayOfNextMonth);
+                }
+                dots = eventHelpers.generateDots(monthEvents, zoneId, dotsZonedStartAt, monthEnd);
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return dots;
     }
 
     private List<String> reservedWords() {

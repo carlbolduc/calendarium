@@ -55,7 +55,7 @@ export default function App() {
     getPublicCalendarEvents,
     clearCalendar
   } = useCalendar(token, subscribed, setEvents);
-  const { dots, getDots } = useDot();
+  const { dots, getDots, getPublicDots } = useDot(token);
   const { collaborators, calendarAccess, getCollaborators, inviteCollaborator, getCalendarInvitation, acceptCalendarInvitation, deactivateCalendarAccess, activateCalendarAccess } = useCollaborator(token, saveToken);
 
   const switchLanguage = useCallback((languageId) => {
@@ -79,7 +79,7 @@ export default function App() {
             getCalendar={getCalendar}
             events={events}
             dots={dots}
-            getDots={getDots}
+            getDots={getPublicDots}
             getCalendarEvents={getPublicCalendarEvents}
             languages={languages}
             localeId={localeId}

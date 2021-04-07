@@ -7,6 +7,7 @@ import io.codebards.calendarium.api.Calendar;
 import io.codebards.calendarium.api.CalendarEventsParams;
 import io.codebards.calendarium.api.DotsParams;
 import io.codebards.calendarium.api.Event;
+import io.codebards.calendarium.core.EventHelpers;
 import io.codebards.calendarium.db.Dao;
 
 import javax.ws.rs.*;
@@ -25,9 +26,11 @@ import java.util.Optional;
 public class PublicResource {
 
     private final Dao dao;
+    private final EventHelpers eventHelpers;
 
-    public PublicResource(Dao dao) {
+    public PublicResource(Dao dao, EventHelpers eventHelpers) {
         this.dao = dao;
+        this.eventHelpers = eventHelpers;
     }
 
     @GET
@@ -93,47 +96,8 @@ public class PublicResource {
                 // Find the upper limit for months event: the beginning of the first day of next month
                 LocalDate monthEnd = YearMonth.from(dotsZonedStartAt).atEndOfMonth();
                 Instant firstDayOfNextMonth = monthEnd.plusDays(1).atStartOfDay().atZone(zoneId).toInstant();
-                List<Event> monthEvents = dao.findMonthEvents(dotsParams.getCalendarId(), dotsZonedStartAt.toInstant(), firstDayOfNextMonth);
-                for (Event event: monthEvents) {
-                    ZonedDateTime zonedStartAt = event.getStartAt().atZone(zoneId);
-                    ZonedDateTime zonedEndAt = event.getEndAt().atZone(zoneId);
-                    // Check if start and end are in the same month
-                    if (zonedStartAt.getYear() == zonedEndAt.getYear() && zonedStartAt.getMonth() == zonedEndAt.getMonth()) {
-                        // Start and end are in the same month
-                        if (!dots.contains(zonedStartAt.getDayOfMonth())) {
-                            // Add start to dot
-                            dots.add(zonedStartAt.getDayOfMonth());
-                        }
-                        if (zonedEndAt.getDayOfMonth() != zonedStartAt.getDayOfMonth()) {
-                            // Event ends on a different day, throw more dots until end date
-                            for (int x = zonedStartAt.getDayOfMonth(); x < zonedEndAt.getDayOfMonth(); x++) {
-                                if (!dots.contains(x+1)) {
-                                    dots.add(x+1);
-                                }
-                            }
-                        }
-
-                    } else {
-                        // Start and end are not in the same month
-                        if (zonedStartAt.getMonth() == monthEnd.getMonth()) {
-                            // Event starts in our current month and ends after the current month, throw more dots until end of month
-                            for (int x = zonedStartAt.getDayOfMonth(); x <= monthEnd.getDayOfMonth(); x++) {
-                                if (!dots.contains(x)) {
-                                    dots.add(x);
-                                }
-                            }
-                        } else {
-                            // Event started before current month, throw more dots until end day
-                            int startDay = dotsZonedStartAt.getDayOfMonth();
-                            int endDay = zonedEndAt.getMonth() == monthEnd.getMonth() ? zonedEndAt.getDayOfMonth() : monthEnd.getDayOfMonth();
-                            for (int x = startDay; x < endDay; x++) {
-                                if (!dots.contains(x)) {
-                                    dots.add(x);
-                                }
-                            }
-                        }
-                    }
-                }
+                List<Event> monthEvents = dao.findMonthPublishedEvents(dotsParams.getCalendarId(), dotsZonedStartAt.toInstant(), firstDayOfNextMonth);
+                dots = eventHelpers.generateDots(monthEvents, zoneId, dotsZonedStartAt, monthEnd);
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
