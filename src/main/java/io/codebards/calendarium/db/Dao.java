@@ -366,7 +366,7 @@ public interface Dao {
             "         INNER JOIN account a ON e.account_id = a.account_id\n" +
             "WHERE calendar_id = :calendarId\n" +
             "  AND end_at >= :startAt\n" +
-            "  AND (e.status = 'published' || e.account_id = :accountId)\n" +
+            "  AND (e.status = 'published' OR e.account_id = :accountId)\n" +
             "ORDER BY start_at\n" +
             "LIMIT 20")
     @RegisterBeanMapper(Event.class)
@@ -486,7 +486,7 @@ public interface Dao {
             "WHERE c.calendar_id = :calendarId\n" +
             "  AND ((e.start_at < :monthStart AND e.end_at >= :monthStart) OR\n" +
             "       (e.start_at >= :monthStart AND e.start_at < :firstDayOfNextMonth))\n" +
-            "  AND (status = 'published' || e.account_id = :accountId)\n" +
+            "  AND (status = 'published' OR e.account_id = :accountId)\n" +
             "ORDER BY e.start_at")
     @RegisterBeanMapper(Event.class)
     List<Event> findMonthCollaboratorEvents(@Bind("calendarId") long calendarId, @Bind("accountId") long accountId, @Bind("monthStart") Instant monthStart, @Bind("firstDayOfNextMonth") Instant firstDayOfNextMonth);
