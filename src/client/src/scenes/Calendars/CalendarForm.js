@@ -142,7 +142,7 @@ export default function CalendarForm(props) {
         <ReadOnlyIframe
           id="read-only-iframe-en"
           label={props.translate("English embeddable iframe")}
-          iframe={`<iframe src="https://calendarium.ca/embed/${props.calendar.calendarId}?locale=enCa"></iframe>`}
+          iframe={`<iframe src="https://calendarium.ca/embed/${props.calendar.calendarId}?locale=enCa" style="border: 0; width: 100%; height: 600px"></iframe>`}
           info={props.translate("Click on Copy to copy the embeddable iframe code to your clipboard, then paste it in your website.")}
           translate={props.translate}
         /> : null}
@@ -192,7 +192,7 @@ export default function CalendarForm(props) {
         <ReadOnlyIframe
           id="read-only-iframe-fr"
           label={props.translate("French embeddable iframe")}
-          iframe={`<iframe src="https://calendarium.ca/embed/${props.calendar.calendarId}?locale=frCa"></iframe>`}
+          iframe={`<iframe src="https://calendarium.ca/embed/${props.calendar.calendarId}?locale=frCa" style="border: 0; width: 100%; height: 600px"></iframe>`}
           info={props.translate("Click on Copy to copy the embeddable iframe code to your clipboard, then paste it in your website.")}
           translate={props.translate}
         /> : null}
