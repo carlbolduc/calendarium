@@ -5,20 +5,18 @@ title_en:
 
 body_fr:
 Ce courriel a été envoyé sur demande à [account.email] 
-
 Questions? Écrivez-nous à grove@codebards.io
 
 © [current_year] Code Bards
-1010-1180 rue Louis-Adolphe-Robitaille, Québec, QC, G1S 0C7, Canada 
+509 rue Racine, Québec, QC, G2B 1G3, Canada
 Notre politique de confidentialité : http://codebards.io/policies/privacy/
 
 body_en:
 This email was sent by request to [account.email] 
-
 Questions? Write to us at grove@codebards.io
 
 © [current_year] Code Bards
-1010-1180 rue Louis-Adolphe-Robitaille, Québec, QC, G1S 0C7, Canada 
+509 rue Racine, Québec, QC, G2B 1G3, Canada
 Our privacy policy: http://codebards.io/policies/privacy/
 
 ---------------------
