@@ -421,7 +421,7 @@ public interface Dao {
             "  AND calendar_id = :calendarId\n" +
             "ORDER BY start_at")
     @RegisterBeanMapper(Event.class)
-    List<Event> findAllCalendarEvents(@BindBean EventsParams eventsParams, @Bind("startAt2") Instant startAt2);
+    List<Event> findAllCalendarEvents(@BindBean EventsParams eventsParams, @Bind("startAt2") Instant startAt2); // TODO: startAt2 is never used in the query
 
     @SqlQuery("SELECT event_id,\n" +
             "       e.account_id,\n" +
