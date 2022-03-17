@@ -14,7 +14,7 @@ version '1.0.4'
 repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -30,7 +30,7 @@ dependencies {
     implementation 'de.mkammerer:argon2-jvm:2.7'
     implementation 'com.amazonaws:aws-java-sdk-s3:1.11.878'
     implementation 'com.amazonaws:aws-java-sdk-ses:1.11.878'
-    implementation 'com.stripe:stripe-java:20.33.0'
+    implementation 'com.stripe:stripe-java:20.104.0'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.13'
