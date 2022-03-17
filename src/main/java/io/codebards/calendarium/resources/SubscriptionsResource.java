@@ -2,14 +2,13 @@ package io.codebards.calendarium.resources;
 
 import com.stripe.exception.CardException;
 import com.stripe.exception.StripeException;
+import com.stripe.model.Event;
+import com.stripe.model.Subscription;
 import com.stripe.model.*;
 import com.stripe.net.Webhook;
 import com.stripe.param.SubscriptionCreateParams;
-import io.codebards.calendarium.api.PaymentIntentStatus;
 import io.codebards.calendarium.api.Price;
-import io.codebards.calendarium.api.SubscriptionStatus;
-import io.codebards.calendarium.api.SubscriptionUpdate;
-import io.codebards.calendarium.api.Tax;
+import io.codebards.calendarium.api.*;
 import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.core.StripeService;
 import io.codebards.calendarium.db.Dao;
@@ -21,14 +20,15 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RolesAllowed({"USER"})
 @Path("/subscriptions")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -43,6 +43,7 @@ public class SubscriptionsResource {
         this.stripeWebhookSecret = stripeWebhookSecret;
     }
 
+    @RolesAllowed({"USER"})
     @POST
     @Path("/stripe-customers")
     public Response createStripeCustomer(@Auth Account auth) {
@@ -59,6 +60,7 @@ public class SubscriptionsResource {
         return response;
     }
 
+    @RolesAllowed({"USER"})
     @POST
     public Response createSubscription(@Auth Account auth, PaymentMethod paymentMethod) {
         Response response;
@@ -125,6 +127,7 @@ public class SubscriptionsResource {
         return response;
     }
 
+    @RolesAllowed({"USER"})
     @PUT
     @Path("/{id}")
     public Response updateSubscription(@Auth Account auth, SubscriptionUpdate update) {
@@ -166,7 +169,22 @@ public class SubscriptionsResource {
                 // instructions on how to handle this case, or return an error here.
             }
             // Handle the event
+            System.out.println(event.getType());
             switch (event.getType()) {
+                case "invoice.paid":
+                    // Renew the subscription
+                    Invoice invoice = (Invoice) stripeObject;
+                    if (invoice != null && invoice.getStatus().equals("paid")) {
+                        DateTimeFormatter formatter = DateTimeFormatter
+                                .ofPattern("yyyy-MM-dd'T'hh:mm'Z'")
+                                .withZone(ZoneOffset.UTC);
+                        System.out.println(invoice.getCustomer());
+                        Instant periodStart = Instant.ofEpochSecond(invoice.getPeriodStart());
+                        Instant periodEnd = Instant.ofEpochSecond(invoice.getPeriodEnd());
+                        System.out.println("Start: " + LocalDateTime.ofInstant(periodStart, ZoneOffset.UTC).format(formatter));
+                        System.out.println("End: " + LocalDateTime.ofInstant(periodEnd, ZoneOffset.UTC).format(formatter));
+                    }
+                    System.out.println("TODO: renew sub");
                 case "payment_intent.succeeded":
                     PaymentIntent paymentIntent = (PaymentIntent) stripeObject;
                     // Then define and call a method to handle the successful payment intent.
