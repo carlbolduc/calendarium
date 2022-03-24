@@ -21,12 +21,10 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Path("/subscriptions")
@@ -62,7 +60,7 @@ public class SubscriptionsResource {
 
     @RolesAllowed({"USER"})
     @POST
-    public Response createSubscription(@Auth Account auth, PaymentMethod paymentMethod) {
+    public Response createSubscription(@Auth Account auth, PaymentMethodDetails paymentMethodDetails) {
         Response response;
         // You can subscribe if you never subscribe, if you are on a trial or if your subscription is expired
         if (
@@ -74,13 +72,13 @@ public class SubscriptionsResource {
                 Customer customer = stripeService.getCustomer(auth.getStripeCusId());
                 try {
                     // Set the default payment method on the customer
-                    PaymentMethod pm = stripeService.setPaymentMethod(customer, paymentMethod.getId());
+                    PaymentMethod paymentMethod = stripeService.setPaymentMethod(customer, paymentMethodDetails.getId());
                     // Get price id from database
                     Price price = dao.findPrice(600);
                     SubscriptionCreateParams subCreateParams;
-                    if (pm.getCard().getCountry().equals("CA")) {
+                    if (paymentMethod.getCard().getCountry().equals("CA")) {
                         List<Tax> taxesToCharge = new ArrayList<>();
-                        String postalCode = pm.getBillingDetails().getAddress().getPostalCode();
+                        String postalCode = paymentMethod.getBillingDetails().getAddress().getPostalCode();
                         if (postalCode != null) {
                             List<Tax> taxes = dao.findTaxes();
                             List<String> taxRateDescriptions = getTaxRateDescriptions(postalCode);
@@ -164,45 +162,24 @@ public class SubscriptionsResource {
             if (dataObjectDeserializer.getObject().isPresent()) {
                 stripeObject = dataObjectDeserializer.getObject().get();
             } else {
-                // Deserialization failed, probably due to an API version mismatch.
-                // Refer to the Javadoc documentation on `EventDataObjectDeserializer` for
-                // instructions on how to handle this case, or return an error here.
+                // TODO: email grove since we cannot process renewal
             }
-            // Handle the event
-            System.out.println(event.getType());
-            switch (event.getType()) {
-                case "invoice.paid":
-                    // Renew the subscription
+            if (stripeObject != null) {
+                if (event.getType().equals("invoice.paid")) {
                     Invoice invoice = (Invoice) stripeObject;
-                    if (invoice != null && invoice.getStatus().equals("paid")) {
-                        DateTimeFormatter formatter = DateTimeFormatter
-                                .ofPattern("yyyy-MM-dd'T'hh:mm'Z'")
-                                .withZone(ZoneOffset.UTC);
-                        System.out.println(invoice.getCustomer());
-                        Instant periodStart = Instant.ofEpochSecond(invoice.getPeriodStart());
-                        Instant periodEnd = Instant.ofEpochSecond(invoice.getPeriodEnd());
-                        System.out.println("Start: " + LocalDateTime.ofInstant(periodStart, ZoneOffset.UTC).format(formatter));
-                        System.out.println("End: " + LocalDateTime.ofInstant(periodEnd, ZoneOffset.UTC).format(formatter));
+                    if (invoice.getStatus().equals("paid")) {
+                        Optional<Long> oSubscriptionId = dao.findSubscriptionId(invoice.getSubscription());
+                        if (oSubscriptionId.isPresent()) {
+                            // Renew the subscription by postponing its end time
+                            Subscription subscription = stripeService.getSubscription(invoice.getSubscription());
+                            dao.renewSubscription(oSubscriptionId.get(), Instant.ofEpochSecond(subscription.getCurrentPeriodEnd()));
+                        }
                     }
-                    System.out.println("TODO: renew sub");
-                case "payment_intent.succeeded":
-                    PaymentIntent paymentIntent = (PaymentIntent) stripeObject;
-                    // Then define and call a method to handle the successful payment intent.
-                    // handlePaymentIntentSucceeded(paymentIntent);
-                    break;
-                case "payment_method.attached":
-                    PaymentMethod paymentMethod = (PaymentMethod) stripeObject;
-                    // Then define and call a method to handle the successful attachment of a PaymentMethod.
-                    // handlePaymentMethodAttached(paymentMethod);
-                    break;
-                // ... handle other event types
-                default:
-                    System.out.println("Unhandled event type: " + event.getType());
+                }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
         return Response.ok().build();
     }
 

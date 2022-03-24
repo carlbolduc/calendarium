@@ -39,7 +39,7 @@ export function useSubscription(token, account, getAccount) {
           "Authorization": `Bearer ${token}`
         },
         url: `${process.env.REACT_APP_API}/subscriptions`,
-        data: paymentMethod
+        data: {id: paymentMethod.id}
       }).then(() => {
         // Success, fetch account to retrieve the subscription
         getAccount();

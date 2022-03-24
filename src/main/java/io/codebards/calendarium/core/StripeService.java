@@ -30,8 +30,7 @@ public class StripeService {
         Map<String, Object> params = new HashMap<>();
         params.put("email", account.getEmail());
         params.put("name", account.getName());
-        Customer customer = Customer.create(params);
-        return customer;
+        return Customer.create(params);
     }
 
     public void updateCustomer(String customerId, String email, String name) throws StripeException {
@@ -45,24 +44,25 @@ public class StripeService {
         }
     }
 
+    public Subscription getSubscription(String subscriptionId) throws StripeException {
+        Stripe.apiKey = stripeApiKey;
+        return Subscription.retrieve(subscriptionId);
+    }
+
     public Subscription createSubscription(SubscriptionCreateParams params) throws StripeException {
-        Subscription subscription = Subscription.create(params);;
-        return subscription;
+        Stripe.apiKey = stripeApiKey;
+        return Subscription.create(params);
     }
 
     public void updateSubscription(String subscriptionId, Boolean cancelAtPeriodEnd) throws StripeException {
+        Stripe.apiKey = stripeApiKey;
         Subscription subscription = Subscription.retrieve(subscriptionId);
         SubscriptionUpdateParams params = SubscriptionUpdateParams.builder().setCancelAtPeriodEnd(cancelAtPeriodEnd).build();
         subscription.update(params);
     }
 
-    public PaymentMethod getPaymentMethod() {
-        // Retrieve customer's payment method
-        PaymentMethod paymentMethod = null;
-        return paymentMethod;
-    }
-
     public PaymentMethod setPaymentMethod(Customer customer, String paymentMethodId) throws StripeException {
+        Stripe.apiKey = stripeApiKey;
         PaymentMethod pm = PaymentMethod.retrieve(paymentMethodId);
         pm.attach(PaymentMethodAttachParams.builder().setCustomer(customer.getId()).build());
         CustomerUpdateParams customerUpdateParams = CustomerUpdateParams

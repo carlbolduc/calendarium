@@ -2,7 +2,6 @@ package io.codebards.calendarium.db;
 
 import io.codebards.calendarium.api.*;
 import io.codebards.calendarium.core.Account;
-
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -49,6 +48,10 @@ public interface Dao {
     @RegisterBeanMapper(Account.class)
     Optional<Account> findAccountById(@Bind("accountId") long accountId);
 
+    @SqlQuery("SELECT account_id, email, name, language_id, stripe_cus_id, created_at FROM account WHERE stripe_cus_id = :stripeCusId")
+    @RegisterBeanMapper(Account.class)
+    Optional<Account> findAccountByStripeCusId(@Bind("stripeCusId") String stripeCusId);
+
     @SqlQuery("SELECT password_digest FROM account WHERE account_id = :accountId")
     String findPasswordDigest(@Bind("accountId") long accountId);
 
@@ -93,6 +96,9 @@ public interface Dao {
 
     // ******************** Subscription ********************
 
+    @SqlQuery("SELECT subscription_id FROM subscription WHERE stripe_sub_id = :stripeSubId")
+    Optional<Long> findSubscriptionId(@Bind("stripeSubId") String stripeSubId);
+
     @SqlUpdate("UPDATE account SET stripe_cus_id = :stripeCusId WHERE account_id = :accountId")
     void setStripeCusId(@Bind("accountId") long accountId, @Bind("stripeCusId") String stripeCusId);
 
@@ -127,8 +133,8 @@ public interface Dao {
     @SqlUpdate("UPDATE subscription SET stripe_sub_id = :stripeSubId, price_id = :priceId, start_at = :startAt, end_at = :endAt, status = :status, updated_by = :updatedBy WHERE subscription_id = :subscriptionId")
     void updateSubscription(@Bind("subscriptionId") long subscriptionId, @Bind("stripeSubId") String stripeSubId, @Bind("priceId") long priceId, @Bind("startAt") Instant startAt, @Bind("endAt") Instant endAt, @Bind("status") String status, @Bind("updatedBy") long updatedBy);
 
-    @SqlQuery("SELECT stripe_sub_id FROM subscription WHERE account_id = :accountId")
-    String findStripeSubId(@Bind("accountId") long accountId);
+    @SqlUpdate("UPDATE subscription SET end_at = :endAt WHERE subscription_id = :subscriptionId")
+    void renewSubscription(@Bind("subscriptionId") long subscriptionId, @Bind("endAt") Instant endAt);
 
     @SqlUpdate("UPDATE subscription SET status = :status, updated_by = :updatedBy WHERE stripe_sub_id = :stripeSubId")
     void updateSubscriptionStatus(@Bind("stripeSubId") String stripeSubId, @Bind("status") String status, @Bind("updatedBy") long updatedBy);
