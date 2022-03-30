@@ -37,7 +37,7 @@ export default function Embed(props) {
         }
       }
     }
-  }, [props.languages, location, updateAccountLanguageId]);
+  }, [props.languages, location, updateAccountLanguageId]);
 
   useEffect(() => {
     if (props.calendar.calendarId !== null) {
