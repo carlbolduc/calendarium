@@ -25,6 +25,7 @@ export default function Message(props) {
       messages.set("inviteCollaborator","An invitation email has been sent to your future collaborator.");
       messages.set("startTrial","Thank you! Your Calendarium trial has now started.");
       messages.set("profilePassword","Your password has been changed successfully.");
+      messages.set("updateBillingInformation", "Your billing information has been updated successfully");
 
       // get the message that needs to be displayed, or undefined if we defined no success message for the action
       let message = messages.get(props.origin);

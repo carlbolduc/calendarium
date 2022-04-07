@@ -92,6 +92,48 @@ export function useSubscription(token, account, getAccount) {
     }
   }
 
+  function createCheckoutSession(cb) {
+    if (token !== null && account.subscription !== null) {
+      axios({
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        url: `${process.env.REACT_APP_API}/subscriptions/checkout-sessions`,
+      })
+        .then(res => {
+          if (cb) {
+            cb(res.data);
+          }
+        })
+        .catch((err) => {
+          // Let caller know that something went wrong
+          errorCallback(err, cb);
+        });
+    }
+  }
+
+  function updatePaymentMethod(sessionId, cb) {
+    axios({
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      url: `${process.env.REACT_APP_API}/subscriptions/checkout-sessions/${sessionId}`,
+    })
+      .then(() => {
+        if (cb) {
+          cb({success: true});
+        }
+      })
+      .catch((err) => {
+        // Let caller know that something went wrong
+        errorCallback(err, cb);
+      });
+  }
+
   function startTrial(cb) {
     if (token !== null) {
       axios({
@@ -119,5 +161,5 @@ export function useSubscription(token, account, getAccount) {
     }
   }
 
-  return {customerCreated, subscribed, createCustomer, createSubscription, cancelSubscription, reactivateSubscription, startTrial};
+  return {customerCreated, subscribed, createCustomer, createSubscription, cancelSubscription, reactivateSubscription, createCheckoutSession, updatePaymentMethod, startTrial};
 }

@@ -7,16 +7,21 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
 import com.stripe.model.PaymentMethod;
+import com.stripe.model.SetupIntent;
 import com.stripe.model.Subscription;
+import com.stripe.model.checkout.Session;
 import com.stripe.param.CustomerUpdateParams;
 import com.stripe.param.PaymentMethodAttachParams;
 import com.stripe.param.SubscriptionCreateParams;
 import com.stripe.param.SubscriptionUpdateParams;
+import com.stripe.param.checkout.SessionCreateParams;
 
 public class StripeService {
+    private final String env;
     private final String stripeApiKey;
 
-    public StripeService(String stripeApiKey) {
+    public StripeService(String env, String stripeApiKey) {
+        this.env = env;
         this.stripeApiKey = stripeApiKey;
     }
 
@@ -71,6 +76,35 @@ public class StripeService {
                 .build();
         customer.update(customerUpdateParams);
         return pm;
+    }
+
+    public Session getSession(String sessionId) throws StripeException {
+        Stripe.apiKey = stripeApiKey;
+        return Session.retrieve(sessionId);
+    }
+
+    public Session createCheckoutSession(String customerId, String subscriptionId) throws StripeException {
+        Stripe.apiKey = stripeApiKey;
+        String cancelUrl = env.equals("development") ? "http://localhost:3003/subscription" : "https://calendarium.ca/subscription";
+        String successUrl = env.equals("development") ? "http://localhost:3003/subscription" : "https://calendarium.ca/subscription";
+        SessionCreateParams params = SessionCreateParams.builder()
+                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+                .setMode(SessionCreateParams.Mode.SETUP)
+                .setCustomer(customerId)
+                .setSetupIntentData(SessionCreateParams.SetupIntentData.builder()
+                        .putMetadata("customer_id", customerId)
+                        .putMetadata("subscription_id", subscriptionId)
+                        .build())
+                .setSuccessUrl(successUrl + "?session-id={CHECKOUT_SESSION_ID}")
+                .setCancelUrl(cancelUrl)
+                .build();
+
+        return Session.create(params);
+    }
+
+    public SetupIntent getSetupIntent(String setupIntentId) throws StripeException {
+        Stripe.apiKey = stripeApiKey;
+        return SetupIntent.retrieve(setupIntentId);
     }
 
 }

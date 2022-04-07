@@ -1,23 +1,42 @@
-import React, { useState } from "react";
-import { Redirect } from "react-router-dom";
-import { DateTime } from "luxon";
+import React, {useEffect, useState} from "react";
+import {Redirect, useLocation} from "react-router-dom";
+import {DateTime} from "luxon";
 import Button from "../../components/Form/Button";
 import FeaturesList from "../../components/Content/FeaturesList";
 import Message from "../../components/Form/Message";
-import { getLocale, subscriptionStatus } from "../../services/Helpers";
+import {getLocale, subscriptionStatus} from "../../services/Helpers";
 import StripeWrapper from "./StripeWrapper";
+import UpdateBillingInformationButton from "./UpdateBillingInformationButton";
 
 const wantToOptions = {
   SUBSCRIBE: "subscribe",
   START_TRIAL: "start trial",
   CANCEL: "cancel",
-  REACTIVATE: "reactivate"
+  REACTIVATE: "reactivate",
 }
 
 export default function Subscription(props) {
+  const location = useLocation();
   const [wantTo, setWantTo] = useState("");
   const [result, setResult] = useState("");
   const [messageOrigin, setMessageOrigin] = useState("");
+  const [working, setWorking] = useState(true);
+
+  useEffect(() => {
+    // After adding a new payment method, user is brought back here with a checkout session id inside query params
+    const query = new URLSearchParams(location.search);
+    const sessionId = query.get("session-id");
+    if (sessionId === null) {
+      setWorking(false);
+    } else {
+      // Try to update billing info information using the checkout session id
+      setMessageOrigin("updateBillingInformation");
+      props.updatePaymentMethod(sessionId, result => {
+        setResult(result);
+        setWorking(false);
+      });
+    }
+  }, []);
 
   function wantToSubscribe(e) {
     e.preventDefault();
@@ -183,7 +202,12 @@ export default function Subscription(props) {
           result = <Button label={props.translate("Subscribe")} type="button" id="button-subscribe" onClick={e => wantToSubscribe(e)} />;
         } else {
           // It's a regular subscription
-          result = <Button label={props.translate("Cancel subscription")} type="button" id="button-cancel-subscription" onClick={e => wantToCancel(e)} />;
+          result = (
+           <>
+             <UpdateBillingInformationButton translate={props.translate} createCheckoutSession={props.createCheckoutSession} />
+             <Button label={props.translate("Cancel subscription")} type="button" id="button-cancel-subscription" onClick={e => wantToCancel(e)} />
+           </>
+          )
         }
       } else if (props.account.subscription.status === subscriptionStatus.CANCELED) {
         // It's canceled and it's a regular subscription
@@ -194,10 +218,9 @@ export default function Subscription(props) {
   }
 
   function subscriptionDetails() {
-    let result = null;
     const product = props.account.subscription.product === "trial" ? "Calendarium trial" : "Calendarium unlimited";
     const price = props.account.subscription.product === "trial" ? "Free for one month" : "$600 CAD per year";
-    result = (
+    return (
       <>
         <div>
           <p>{props.translate("Here are the details about your subscription.")}</p>
@@ -208,12 +231,17 @@ export default function Subscription(props) {
         {subscriptionActions()}
       </>
     );
-    return result;
   }
 
   function renderMain() {
-    let result = null;
-    if (props.authenticated) {
+    let result;
+    if (working) {
+      result = (
+        <div className="text-center">
+          <span className="spinner-border"/>
+        </div>
+      );
+    } else {
       if (wantTo === wantToOptions.CANCEL) {
         // Show cancel info
         result = (

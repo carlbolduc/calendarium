@@ -5,6 +5,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.Subscription;
 import com.stripe.model.*;
+import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
 import com.stripe.param.SubscriptionCreateParams;
 import io.codebards.calendarium.api.Price;
@@ -150,6 +151,41 @@ public class SubscriptionsResource {
         return response;
     }
 
+    @RolesAllowed({"USER"})
+    @GET
+    @Path("/checkout-sessions/{sessionId}")
+    public Response createCheckoutSession(@Auth Account auth, @PathParam("sessionId") String sessionId) {
+        Response response;
+        try {
+            Session session = stripeService.getSession(sessionId);
+            SetupIntent setupIntent = stripeService.getSetupIntent(session.getSetupIntent());
+            Customer customer = stripeService.getCustomer(session.getCustomer());
+            stripeService.setPaymentMethod(customer, setupIntent.getPaymentMethod());
+            response = Response.ok().build();
+        } catch (StripeException e) {
+            response = Response.serverError().entity(e.getLocalizedMessage()).build();
+        }
+        return response;
+    }
+
+    @RolesAllowed({"USER"})
+    @POST
+    @Path("/checkout-sessions")
+    public Response createCheckoutSession(@Auth Account auth) {
+        Response response;
+        if (auth.getSubscription() != null) {
+            try {
+                Session session = stripeService.createCheckoutSession(auth.getStripeCusId(), auth.getSubscription().getStripeSubId());
+                response = Response.ok(session.getId()).build();
+            } catch (StripeException e) {
+                response = Response.serverError().entity(e.getLocalizedMessage()).build();
+            }
+        } else {
+            response = Response.status(Response.Status.FORBIDDEN).build();
+        }
+        return response;
+    }
+
     @POST
     @Path("/stripe-events")
     public Response createStripeEvent(String payload, @Context HttpHeaders headers) {
@@ -186,25 +222,22 @@ public class SubscriptionsResource {
     private List<String> getTaxRateDescriptions(String postalCode) {
         List<String> taxRateDescriptions = new ArrayList<>();
         switch (postalCode.toLowerCase().charAt(0)) {
-            case 'a': case 'b': case 'c': case 'e':
-                // NL, NS, PE, NB
-                taxRateDescriptions.add("HST15");
-                break;
-            case 'g': case 'h': case 'j':
+            case 'a', 'b', 'c', 'e' ->
+                    // NL, NS, PE, NB
+                    taxRateDescriptions.add("HST15");
+            case 'g', 'h', 'j' -> {
                 // QC
                 taxRateDescriptions.add("GST");
                 taxRateDescriptions.add("QST");
-                break;
-            case 'k': case 'l': case 'm': case 'n': case 'p':
-                // ON
-                taxRateDescriptions.add("HST13");
-                break;
-            case 'r': case 's': case 't': case 'v': case 'x': case 'y':
-                // MP, SK, AB, BC, NUNT, YT
-                taxRateDescriptions.add("HST15");
-                break;
-            default:
-                break;
+            }
+            case 'k', 'l', 'm', 'n', 'p' ->
+                    // ON
+                    taxRateDescriptions.add("HST13");
+            case 'r', 's', 't', 'v', 'x', 'y' ->
+                    // MP, SK, AB, BC, NUNT, YT
+                    taxRateDescriptions.add("HST15");
+            default -> {
+            }
         }
         return taxRateDescriptions;
     }

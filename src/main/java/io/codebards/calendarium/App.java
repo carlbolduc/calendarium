@@ -77,7 +77,7 @@ public class App extends Application<Config> {
         final Dao dao = jdbi.onDemand(Dao.class);
         List<Language> allLanguages = dao.findAllLanguages();
         final EmailManager emailManager = new EmailManager(emailClient, config.getThirdPartyFactory().getBaseUrl(), allLanguages, dao);
-        final StripeService stripeService = new StripeService(config.getThirdPartyFactory().getStripeApiKey());
+        final StripeService stripeService = new StripeService(config.getThirdPartyFactory().getEnv(), config.getThirdPartyFactory().getStripeApiKey());
         final EventHelpers eventHelpers = new EventHelpers();
         final OpsResource opsResource = new OpsResource(dao);
         final BotResource botResource = new BotResource(dao);
