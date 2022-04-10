@@ -1,6 +1,6 @@
 {
   "name": "calendarium",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "private": true,
   "dependencies": {
     "@stripe/react-stripe-js": "^1.7.0",
