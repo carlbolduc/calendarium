@@ -62,6 +62,7 @@ export default function EventsList(props) {
       primaryColor={props.calendar.primaryColor}      
       showStatus={props.showStatus}
       showButtons={props.showButtons}
+      isEmbedded={props.isEmbedded}
       edit={props.edit}
       sendForApproval={sendForApproval}
       publishEvent={publishEvent}
@@ -93,5 +94,6 @@ EventsList.propTypes = {
   setMessageOrigin: PropTypes.func,
   showStatus: PropTypes.bool.isRequired,
   showButtons: PropTypes.bool.isRequired,
-  refreshEvents: PropTypes.func
+  isEmbedded: PropTypes.bool,
+  refreshEvents: PropTypes.func,
 };

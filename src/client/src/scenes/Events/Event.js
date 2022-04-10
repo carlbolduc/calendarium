@@ -79,7 +79,11 @@ export default function Event(props) {
     let result = null;
     const hyperlinkToDisplay = decideWhatToDisplay(props.localeId, props.enableEn, props.enableFr, props.event.hyperlinkEn, props.event.hyperlinkFr);
     if (hyperlinkToDisplay !== null) {
-      result = <div className="mt-3"><a href={hyperlinkToDisplay.indexOf("http") === -1 ? `http://${hyperlinkToDisplay}` : hyperlinkToDisplay}>{hyperlinkToDisplay}</a></div>;
+      if (props.isEmbedded !== null && props.isEmbedded) {
+        result = <div className="mt-3"><a href={hyperlinkToDisplay.indexOf("http") === -1 ? `http://${hyperlinkToDisplay}` : hyperlinkToDisplay} target="_top">{hyperlinkToDisplay}</a></div>;
+      } else {
+        result = <div className="mt-3"><a href={hyperlinkToDisplay.indexOf("http") === -1 ? `http://${hyperlinkToDisplay}` : hyperlinkToDisplay}>{hyperlinkToDisplay}</a></div>;
+      }
     }
     return result;
   }
@@ -219,6 +223,7 @@ Event.propTypes = {
   primaryColor: PropTypes.string,
   showStatus: PropTypes.bool.isRequired,
   showButtons: PropTypes.bool.isRequired,
+  isEmbedded: PropTypes.bool,
   edit: PropTypes.func,
   sendForApproval: PropTypes.func,
   publishEvent: PropTypes.func,

@@ -91,6 +91,7 @@ export default function Embed(props) {
               translate={props.translate}
               showStatus={false}
               showButtons={false}
+              isEmbedded={true}
             />
           </div>
         </div>
