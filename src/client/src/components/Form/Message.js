@@ -25,7 +25,7 @@ export default function Message(props) {
       messages.set("inviteCollaborator","An invitation email has been sent to your future collaborator.");
       messages.set("startTrial","Thank you! Your Calendarium trial has now started.");
       messages.set("profilePassword","Your password has been changed successfully.");
-      messages.set("updateBillingInformation", "Your billing information has been updated successfully");
+      messages.set("updateBillingInformation", "Your billing information has been updated successfully.");
 
       // get the message that needs to be displayed, or undefined if we defined no success message for the action
       let message = messages.get(props.origin);
@@ -87,6 +87,7 @@ export default function Message(props) {
       messages.set("inviteCollaborator409","This person is already a collaborator on the calendar, we cannot invite them again.");
       messages.set("updateCalendar409","The customised link you've entered cannot be saved. It may be already used by another calendar, or it is a reserved word. Enter another customised link and try saving again.");
       messages.set("acceptInvitation500","Our system could not sign you in automatically after you accepted the invitation. Try signing in manually with the password you just created. You can access the sign in page by the account menu in the upper right corner. If signing in doesn't work, contact us in the grove.");
+      messages.set("updateBillingInformation500", "Our payment processing platform returned an error while updating your billing information. You may want to try again, and if that error keeps popping, contact us in the grove.");
 
       // manage the unexpected errors
       let message = messages.get(props.origin + props.result.errorCode);

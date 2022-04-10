@@ -568,4 +568,14 @@
         ('We hope you enjoy your time here!','Nous espérons que votre temps passé ici sera agréable!');
       </sql>      
     </changeSet>
+
+    <changeSet id="15" author="mag">
+        <!-- Create new loc -->
+        <sql>
+            INSERT INTO localisation (en_ca, fr_ca) VALUES
+            ('Update billing information','Mettre à jour les informations de paiement'),
+            ('Your billing information has been updated successfully.','Vos informations de paiement ont été mises à jour avec succès.'),
+            ('Our payment processing platform returned an error while updating your billing information. You may want to try again, and if that error keeps popping, contact us in the grove.','Notre plateforme de traitement des paiements a retourné une erreur. Vous pouvez essayer à nouveau de mettre à jour vos informations de paiement, et si cette erreur persiste, contactez-nous dans la clairière.');
+        </sql>
+    </changeSet>
   </databaseChangeLog>
