@@ -6,392 +6,204 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <property name="now" value="now()" dbms="postgresql"/>
-
     <changeSet id="1" author="mag">
+
         <!-- Create table language -->
-        <createTable tableName="language">
-            <column name="language_id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="locale_id" type="clob"/>
-            <column name="name" type="clob"/>
-            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
-            <column name="created_by" type="bigint"/>
-            <column name="updated_at" type="timestamptz"/>
-            <column name="updated_by" type="bigint"/>
-        </createTable>
+        <sql>
+            create table language
+            (
+                language_id integer primary key autoincrement not null,
+                locale_id   text,
+                name        text,
+                created_at  numeric default current_timestamp,
+                created_by  integer,
+                updated_at  numeric,
+                updated_by  integer
+            );
+        </sql>
 
         <!-- Create table localisation with two columns for en-ca and fr-ca (more columns can be added later) -->
-        <createTable tableName="localisation">
-            <column name="localisation_id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="en_ca" type="clob"/>
-            <column name="fr_ca" type="clob"/>
-            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
-            <column name="created_by" type="bigint"/>
-            <column name="updated_at" type="timestamptz"/>
-            <column name="updated_by" type="bigint"/>
-        </createTable>
-        <!-- Add unique constraint on localisation.en_ca column -->
         <sql>
-            ALTER TABLE localisation ADD UNIQUE (en_ca);
+            create table localisation
+            (
+                localisation_id integer primary key autoincrement not null,
+                en_ca           text unique,
+                fr_ca           text,
+                created_at      numeric default current_timestamp,
+                created_by      integer,
+                updated_at      numeric,
+                updated_by      integer
+            );
         </sql>
 
         <!-- Create table account -->
-        <createTable tableName="account">
-            <column name="account_id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="email" type="clob">
-                <constraints nullable="false" unique="true"/>
-            </column>
-            <column name="name" type="clob"/>
-            <column name="stripe_cus_id" type="clob"/>
-            <column name="language_id" type="bigint"/>
-            <column name="password_digest" type="clob"/>
-            <column name="password_reset_digest" type="clob"/>
-            <column name="password_reset_requested_at" type="timestamptz"/>
-            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
-            <column name="created_by" type="bigint"/>
-            <column name="updated_at" type="timestamptz"/>
-            <column name="updated_by" type="bigint"/>
-        </createTable>
-        <addForeignKeyConstraint baseColumnNames="language_id"
-                                 baseTableName="account"
-                                 constraintName="fk__account__language"
-                                 referencedColumnNames="language_id"
-                                 referencedTableName="language"/>
+        <sql>
+            create table account
+            (
+                account_id                  integer primary key autoincrement not null,
+                email                       text not null unique check (length(email) > 0),
+                name                        text check (length(name) > 0),
+                stripe_cus_id               text,
+                language_id                 integer,
+                password_digest             text,
+                password_reset_digest       text,
+                password_reset_requested_at numeric,
+                created_at                  numeric default current_timestamp,
+                created_by                  integer,
+                updated_at                  numeric,
+                updated_by                  integer,
+                foreign key (language_id) references language (language_id)
+            );
+        </sql>
 
         <!-- Create table account_token -->
-        <createTable tableName="account_token">
-            <column name="account_token_id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="selector" type="clob">
-                <constraints nullable="false"/>
-            </column>
-            <column name="validator" type="clob">
-                <constraints nullable="false"/>
-            </column>
-            <column name="account_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
-            <column name="created_by" type="bigint"/>
-            <column name="updated_at" type="timestamptz"/>
-            <column name="updated_by" type="bigint"/>
-        </createTable>
-        <addForeignKeyConstraint baseColumnNames="account_id"
-                                 baseTableName="account_token"
-                                 constraintName="fk__account_token__account"
-                                 referencedColumnNames="account_id"
-                                 referencedTableName="account"/>
+        <sql>
+            create table account_token
+            (
+                account_token_id integer primary key autoincrement not null,
+                selector         text   not null,
+                validator        text   not null,
+                account_id       integer not null,
+                created_at       numeric default current_timestamp,
+                created_by       integer,
+                updated_at       numeric,
+                updated_by       integer,
+                foreign key (account_id) references account (account_id)
+            );
+        </sql>
 
         <!-- Create table price -->
-        <createTable tableName="price">
-            <column name="price_id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="stripe_price_id" type="clob"/>
-            <column name="stripe_product_id" type="clob"/>
-            <column name="amount" type="int">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+        <sql>
+            create table price
+            (
+                price_id          integer primary key autoincrement not null,
+                stripe_price_id   text,
+                stripe_product_id text,
+                amount            integer not null
+            );
+        </sql>
 
         <!-- Create table subscription -->
-        <createTable tableName="subscription">
-            <column name="subscription_id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="account_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="price_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="stripe_sub_id" type="clob"/>
-            <column name="start_at" type="timestamptz"/>
-            <column name="end_at" type="timestamptz"/>
-            <column name="status" type="clob"/>
-            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
-            <column name="created_by" type="bigint"/>
-            <column name="updated_at" type="timestamptz"/>
-            <column name="updated_by" type="bigint"/>
-        </createTable>
-        <addForeignKeyConstraint baseColumnNames="account_id"
-                                 baseTableName="subscription"
-                                 constraintName="fk__subscription__account"
-                                 referencedColumnNames="account_id"
-                                 referencedTableName="account"/>
-        <addForeignKeyConstraint baseColumnNames="price_id"
-                                 baseTableName="subscription"
-                                 constraintName="fk__subscription__price"
-                                 referencedColumnNames="price_id"
-                                 referencedTableName="price"/>
+        <sql>
+            create table subscription
+            (
+                subscription_id integer primary key autoincrement not null,
+                account_id      integer not null,
+                price_id        integer not null,
+                stripe_sub_id   text,
+                start_at        numeric,
+                end_at          numeric,
+                status          text,
+                created_at      numeric default current_timestamp,
+                created_by      integer,
+                updated_at      numeric,
+                updated_by      integer,
+                foreign key (account_id) references account (account_id),
+                foreign key (price_id) references price (price_id)
+            );
+        </sql>
 
         <!-- Create table calendar -->
-        <createTable tableName="calendar">
-            <column name="calendar_id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="enable_fr" type="boolean"/>
-            <column name="enable_en" type="boolean"/>
-            <column name="name_fr" type="clob"/>
-            <column name="name_en" type="clob"/>
-            <column name="description_fr" type="clob"/>
-            <column name="description_en" type="clob"/>
-            <column name="link_name_fr" type="clob"/>
-            <column name="link_name_en" type="clob"/>
-            <column name="primary_color" type="clob"/>
-            <column name="secondary_color" type="clob"/>
-            <column name="start_week_on" type="clob"/>
-            <column name="public" type="boolean"/>
-            <column name="event_approval_required" type="boolean"/>
-            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
-            <column name="created_by" type="bigint"/>
-            <column name="updated_at" type="timestamptz"/>
-            <column name="updated_by" type="bigint"/>
-        </createTable>
+        <sql>
+            create table calendar
+            (
+                calendar_id             integer primary key autoincrement not null,
+                enable_fr               integer check (enable_fr IN (0, 1)),
+                enable_en               integer check (enable_en IN (0, 1)),
+                name_fr                 text,
+                name_en                 text,
+                description_fr          text,
+                description_en          text,
+                link_fr                 text unique,
+                link_en                 text unique,
+                primary_color           text,
+                secondary_color         text,
+                start_week_on           text,
+                public_calendar         integer check (public_calendar IN (0, 1)),
+                event_approval_required integer check (event_approval_required IN (0, 1)),
+                created_at              numeric default current_timestamp,
+                created_by              integer,
+                updated_at              numeric,
+                updated_by              integer,
+                embed_calendar          integer check (embed_calendar IN (0, 1)),
+                show_event_author       integer check (show_event_author IN (0, 1))
+            );
+        </sql>
 
         <!-- Create table calendar_access -->
-        <createTable tableName="calendar_access">
-            <column name="calendar_access_id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="account_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="calendar_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="status" type="clob"/>
-            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
-            <column name="created_by" type="bigint"/>
-            <column name="updated_at" type="timestamptz"/>
-            <column name="updated_by" type="bigint"/>
-        </createTable>
-        <addForeignKeyConstraint baseColumnNames="account_id"
-                                 baseTableName="calendar_access"
-                                 constraintName="fk__calendar_access__account"
-                                 referencedColumnNames="account_id"
-                                 referencedTableName="account"/>
-        <addForeignKeyConstraint baseColumnNames="calendar_id"
-                                 baseTableName="calendar_access"
-                                 constraintName="fk__calendar_access__calendar"
-                                 referencedColumnNames="calendar_id"
-                                 referencedTableName="calendar"/>
+        <sql>
+            create table calendar_access
+            (
+                calendar_access_id integer primary key autoincrement not null,
+                account_id         integer not null,
+                calendar_id        integer not null,
+                status             text,
+                created_at         numeric default current_timestamp,
+                created_by         integer,
+                updated_at         numeric,
+                updated_by         integer,
+                foreign key (account_id) references account (account_id),
+                foreign key (calendar_id) references calendar (calendar_id)
+            );
+        </sql>
 
         <!-- Create table event -->
-        <createTable tableName="event">
-            <column name="event_id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="account_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="calendar_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="status" type="clob"/>
-            <column name="name_fr" type="clob"/>
-            <column name="name_en" type="clob"/>
-            <column name="description_fr" type="clob"/>
-            <column name="description_en" type="clob"/>
-            <column name="start_at" type="timestamptz"/>
-            <column name="end_at" type="timestamptz"/>
-            <column name="all_day" type="boolean"/>
-            <column name="hyperlink_fr" type="clob"/>
-            <column name="hyperlink_en" type="clob"/>
-            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
-            <column name="created_by" type="bigint"/>
-            <column name="updated_at" type="timestamptz"/>
-            <column name="updated_by" type="bigint"/>
-        </createTable>
-        <addForeignKeyConstraint baseColumnNames="account_id"
-                                 baseTableName="event"
-                                 constraintName="fk__event__account"
-                                 referencedColumnNames="account_id"
-                                 referencedTableName="account"/>
-        <addForeignKeyConstraint baseColumnNames="calendar_id"
-                                 baseTableName="event"
-                                 constraintName="fk__event__calendar"
-                                 referencedColumnNames="calendar_id"
-                                 referencedTableName="calendar"/>
+        <sql>
+            create table event
+            (
+                event_id       integer primary key autoincrement not null,
+                account_id     integer not null,
+                calendar_id    integer not null,
+                status         text,
+                name_fr        text,
+                name_en        text,
+                description_fr text,
+                description_en text,
+                start_at       numeric,
+                end_at         numeric,
+                all_day        integer check (all_day IN (0, 1)),
+                hyperlink_fr   text,
+                hyperlink_en   text,
+                created_at     numeric default current_timestamp,
+                created_by     integer,
+                updated_at     numeric,
+                updated_by     integer,
+                foreign key (account_id) references account (account_id),
+                foreign key (calendar_id) references calendar (calendar_id)
+            );
+        </sql>
 
-        <!-- Create table email_template -->
-        <createTable tableName="email_template">
-            <column name="email_template_id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="name" type="clob"/>
-            <column name="title_fr" type="clob"/>
-            <column name="title_en" type="clob"/>
-            <column name="body_fr" type="clob"/>
-            <column name="body_en" type="clob"/>
-            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
-            <column name="created_by" type="bigint"/>
-            <column name="updated_at" type="timestamptz"/>
-            <column name="updated_by" type="bigint"/>
-        </createTable>
+         <!-- Create table email_template -->
+        <sql>
+            create table email_template
+            (
+                email_template_id integer primary key autoincrement not null,
+                name              text,
+                title_fr          text,
+                title_en          text,
+                body_fr           text,
+                body_en           text,
+                created_at        numeric default current_timestamp,
+                created_by        integer,
+                updated_at        numeric,
+                updated_by        integer
+            );
+        </sql>
 
         <!-- Create table activity -->
-        <createTable tableName="activity">
-            <column name="activity_id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="account_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="type" type="clob"/>
-            <column name="description" type="clob"/>
-            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
-            <column name="created_by" type="bigint"/>
-            <column name="updated_at" type="timestamptz"/>
-            <column name="updated_by" type="bigint"/>
-        </createTable>
-        <addForeignKeyConstraint baseColumnNames="account_id"
-                                 baseTableName="activity"
-                                 constraintName="fk__activity__account"
-                                 referencedColumnNames="account_id"
-                                 referencedTableName="account"/>
-
-        <!-- Create triggers functions to manage audit fields -->
         <sql>
-            CREATE OR REPLACE FUNCTION set_created_audit() RETURNS TRIGGER
-                LANGUAGE plpgsql
-            AS
-            '
-            BEGIN
-                IF NEW.created_by IS null THEN
-                    NEW.created_by := 0;
-                END IF;
-                IF NEW.created_at IS null THEN
-                    NEW.created_at := now();
-                END IF;
-
-                RETURN NEW;
-            END
-            '
-        </sql>
-        <sql>
-            CREATE OR REPLACE FUNCTION set_updated_audit() RETURNS TRIGGER
-                LANGUAGE plpgsql
-            AS
-            '
-            BEGIN
-                IF NEW.updated_by IS null THEN
-                    NEW.updated_by := 0;
-                END IF;
-                IF NEW.updated_at IS null THEN
-                    NEW.updated_at := now();
-                END IF;
-
-                RETURN NEW;
-            END
-            '
-        </sql>
-
-        <!-- Add audit triggers to language -->
-        <sql>
-          DROP TRIGGER IF EXISTS row_created ON language;
-          CREATE TRIGGER row_created BEFORE INSERT ON language FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
-      </sql>
-      <sql>
-          DROP TRIGGER IF EXISTS row_updated ON language;
-          CREATE TRIGGER row_updated BEFORE UPDATE ON language FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
-      </sql>
-      
-      <!-- Add audit triggers to localisation -->
-      <sql>
-          DROP TRIGGER IF EXISTS row_created ON localisation;
-          CREATE TRIGGER row_created BEFORE INSERT ON localisation FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
-      </sql>
-      <sql>
-          DROP TRIGGER IF EXISTS row_updated ON localisation;
-          CREATE TRIGGER row_updated BEFORE UPDATE ON localisation FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
-      </sql>
-
-        <!-- Add audit triggers to account -->
-        <sql>
-            DROP TRIGGER IF EXISTS row_created ON account;
-            CREATE TRIGGER row_created BEFORE INSERT ON account FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
-        </sql>
-        <sql>
-            DROP TRIGGER IF EXISTS row_updated ON account;
-            CREATE TRIGGER row_updated BEFORE UPDATE ON account FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
-        </sql>
-
-        <!-- Add audit triggers to account_token -->
-        <sql>
-            DROP TRIGGER IF EXISTS row_created ON account_token;
-            CREATE TRIGGER row_created BEFORE INSERT ON account_token FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
-        </sql>
-        <sql>
-            DROP TRIGGER IF EXISTS row_updated ON account_token;
-            CREATE TRIGGER row_updated BEFORE UPDATE ON account_token FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
-        </sql>
-
-        <!-- Add audit triggers to subscription -->
-        <sql>
-            DROP TRIGGER IF EXISTS row_created ON subscription;
-            CREATE TRIGGER row_created BEFORE INSERT ON subscription FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
-        </sql>
-        <sql>
-            DROP TRIGGER IF EXISTS row_updated ON subscription;
-            CREATE TRIGGER row_updated BEFORE UPDATE ON subscription FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
-        </sql>
-
-        <!-- Add audit triggers to calendar -->
-        <sql>
-            DROP TRIGGER IF EXISTS row_created ON calendar;
-            CREATE TRIGGER row_created BEFORE INSERT ON calendar FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
-        </sql>
-        <sql>
-            DROP TRIGGER IF EXISTS row_updated ON calendar;
-            CREATE TRIGGER row_updated BEFORE UPDATE ON calendar FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
-        </sql>
-
-        <!-- Add audit triggers to calendar_access -->
-        <sql>
-            DROP TRIGGER IF EXISTS row_created ON calendar_access;
-            CREATE TRIGGER row_created BEFORE INSERT ON calendar_access FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
-        </sql>
-        <sql>
-            DROP TRIGGER IF EXISTS row_updated ON calendar_access;
-            CREATE TRIGGER row_updated BEFORE UPDATE ON calendar_access FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
-        </sql>
-
-        <!-- Add audit triggers to event -->
-        <sql>
-            DROP TRIGGER IF EXISTS row_created ON event;
-            CREATE TRIGGER row_created BEFORE INSERT ON event FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
-        </sql>
-        <sql>
-            DROP TRIGGER IF EXISTS row_updated ON event;
-            CREATE TRIGGER row_updated BEFORE UPDATE ON event FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
-        </sql>
-
-        <!-- Add audit triggers to email_template -->
-        <sql>
-            DROP TRIGGER IF EXISTS row_created ON email_template;
-            CREATE TRIGGER row_created BEFORE INSERT ON email_template FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
-        </sql>
-        <sql>
-            DROP TRIGGER IF EXISTS row_updated ON email_template;
-            CREATE TRIGGER row_updated BEFORE UPDATE ON email_template FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
-        </sql>
-
-        <!-- Add audit triggers to activity -->
-        <sql>
-            DROP TRIGGER IF EXISTS row_created ON activity;
-            CREATE TRIGGER row_created BEFORE INSERT ON activity FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
-        </sql>
-        <sql>
-            DROP TRIGGER IF EXISTS row_updated ON activity;
-            CREATE TRIGGER row_updated BEFORE UPDATE ON activity FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
+            create table activity
+            (
+                activity_id integer primary key autoincrement not null,
+                account_id  integer not null,
+                type        text,
+                description text,
+                created_at  numeric default current_timestamp,
+                created_by  integer,
+                updated_at  numeric,
+                updated_by  integer,
+                foreign key (account_id) references account (account_id)
+            );
         </sql>
 
         <!-- Insert English and Français to language and a first row to Localisation -->
@@ -399,183 +211,25 @@
           INSERT INTO language (locale_id, name) VALUES ('enCa', 'English'),('frCa', 'Français');
           INSERT INTO localisation (en_ca, fr_ca) VALUES ('Account', 'Compte');
         </sql>
-    </changeSet>
 
-    <changeSet id="2" author="carl">
-        <renameColumn tableName="calendar" oldColumnName="public" newColumnName="public_calendar" />
-        <renameColumn tableName="calendar" oldColumnName="link_name_en" newColumnName="link_en"/>
-        <renameColumn tableName="calendar" oldColumnName="link_name_fr" newColumnName="link_fr"/>
-        <addUniqueConstraint tableName="calendar" columnNames="link_en"/>
-        <addUniqueConstraint tableName="calendar" columnNames="link_fr"/>
-    </changeSet>
-
-    <changeSet id="3" author="carl">
-        <addColumn tableName="calendar">
-            <column name="embed_calendar" type="boolean"/>
-        </addColumn>
-    </changeSet>
-
-    <changeSet id="4" author="carl">
         <!-- Create table tax -->
-        <createTable tableName="tax">
-            <column name="tax_id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="stripe_tax_id" type="clob"/>
-            <column name="description" type="clob"/>
-            <column name="created_at" type="timestamptz" defaultValueComputed="${now}"/>
-            <column name="created_by" type="bigint"/>
-            <column name="updated_at" type="timestamptz"/>
-            <column name="updated_by" type="bigint"/>
-        </createTable>
-        <!-- Add audit triggers to tax -->
         <sql>
-            DROP TRIGGER IF EXISTS row_created ON tax;
-            CREATE TRIGGER row_created BEFORE INSERT ON tax FOR EACH ROW EXECUTE PROCEDURE set_created_audit();
+            create table tax
+            (
+                tax_id        integer primary key autoincrement not null,
+                stripe_tax_id text,
+                description   text,
+                created_at    numeric default current_timestamp,
+                created_by    integer,
+                updated_at    numeric,
+                updated_by    integer
+            );
         </sql>
+
+        <!-- Create trial subscription price -->
         <sql>
-            DROP TRIGGER IF EXISTS row_updated ON tax;
-            CREATE TRIGGER row_updated BEFORE UPDATE ON tax FOR EACH ROW EXECUTE PROCEDURE set_updated_audit();
+            insert into price (amount) values (0);
         </sql>
-    </changeSet>
 
-    <changeSet id="5" author="mag">
-        <!-- Add not empty constraints on account email and name -->
-        <sql>
-            ALTER TABLE account ADD CONSTRAINT check_email_not_empty CHECK (email != '');
-            ALTER TABLE account ADD CONSTRAINT check_name_not_empty CHECK (name != '');
-        </sql>
-    </changeSet>
-
-    <changeSet id="6" author="mag">
-        <!-- Update trigger function to manage update audit fields -->
-        <sql>
-            CREATE OR REPLACE FUNCTION set_updated_audit() RETURNS TRIGGER
-                LANGUAGE plpgsql
-            AS
-            '
-            BEGIN
-                IF NEW.updated_by IS null THEN
-                    NEW.updated_by := 0;
-                END IF;
-                NEW.updated_at := now();
-
-                RETURN NEW;
-            END
-            '
-        </sql>
-    </changeSet>
-
-    <changeSet id="7" author="mag">
-      <!-- Update localisation copy -->
-      <sql>
-        UPDATE localisation SET
-          en_ca = 'You must enter a valid link (only letters without accents, numbers, or dashes).',
-          fr_ca = 'Vous devez entrer un lien valide (uniquement des lettres sans accent, des chiffres ou des tirets).'
-        WHERE en_ca = 'You must enter a valid link (only letters, numbers, or dashes).';
-      </sql>
-    </changeSet>
-
-    <changeSet id="8" author="mag">
-      <!-- Create trial subscription price -->
-      <sql>
-        INSERT INTO price (amount) VALUES (0);
-      </sql>
-    </changeSet>
-
-    <changeSet id="9" author="mag">
-      <!-- Create loc related to trial -->
-      <sql>
-        INSERT INTO localisation (en_ca, fr_ca) VALUES 
-        ('Free for one month', 'Gratuit pour un mois'),
-        ('You will enjoy creating calendars and inviting collaborators right away.', 'Vous pourrez immédiatement commencer à créer des calendriers et inviter des collaborateurs.'),
-        ('If some of your calendars are public, they will stop appearing in our Public calendars section.', 'Si certains de vos calendriers sont publics, ils n''apparaîtront plus dans notre section Calendriers publics.'),
-        ('You will have full access to all of Calendarium features for a whole month.', 'Vous aurez accès à toutes les fonctionnalités de Calendarium pendant un mois complet.'),
-        ('If you have embedded calendars in other websites, their embed code will stop displaying the calendar, showing instead a discreet message.', 'Si vous avez incorporé des calendriers dans d''autres sites web, leur code d''incorporation n''affichera plus le calendrier, mais plutôt un message discret.'),
-        ('Your trial ends on', 'Votre essai se termine le'),
-        ('You will NOT be charged unless you decide to subscribe.', 'Vous ne serez PAS facturé, sauf si vous décidez de vous abonner.'),
-        ('Thank you! Your Calendarium trial has now started.', 'Merci! Votre essai de Calendarium est maintenant commencé.'),
-        ('It will feel like you have all the time in the world.', 'Vous aurez l''impression d''avoir tout le temps du monde.'),
-        ('When your trial starts...', 'Quand votre essai commencera...'),
-        ('Your calendars will NOT be deleted, and if you ever decide to subscribe, they will be there for you.', 'Vos calendriers ne seront PAS supprimés et si vous décidez un jour de vous abonner, ils seront là pour vous.'),
-        ('Are you ready to start your one-month Calendarium unlimited trial?', 'Êtes-vous prêt à commencer votre essai d''un mois de Calendarium illimité?'),
-        ('You will have realised that one month flies by so fast.', 'Vous aurez constaté qu''un mois, ça passe très vite.'),
-        ('Once your trial ends...', 'Une fois votre essai terminé...'),
-        ('Start my trial', 'Commencer mon essai'),
-        ('Calendarium trial', 'Essai de Calendarium'),
-        ('Start trial', 'Commencer un essai');
-      </sql>
-    </changeSet>
-
-    <changeSet id="10" author="mag">
-      <!-- Remove unused loc -->
-      <sql>
-        DELETE FROM localisation WHERE en_ca = 'Calendar invitation for someone else';
-      </sql>
-      <!-- Create new loc -->
-      <sql>
-        INSERT INTO localisation (en_ca, fr_ca) VALUES 
-        ('Our system could not sign you in automatically after you accepted the invitation. Try signing in manually with the password you just created. You can access the sign in page by the account menu in the upper right corner. If signing in doesn''t work, contact us in the grove.', 'Notre système n''a pas pu vous connecter automatiquement après que vous ayez accepté l''invitation. Essayez de vous connecter manuellement avec le mot de passe que vous venez de créer. Vous pouvez accéder à la page de connexion en cliquant sur le menu "Compte" dans le coin supérieur droit. Si la connexion ne fonctionne pas, contactez-nous dans la clairière.'),
-        ('Your password must be at least 8 characters long.','Votre mot de passe doit comporter au moins 8 caractères.'),
-        ('If you already have an account, you can','Si vous avez déjà un compte, vous pouvez'),
-        ('sign in here','vous connecter ici'),
-        ('and then click again on the invitation link you''ve received.','et ensuite cliquer de nouveau sur le lien d''invitation que vous avez reçu.'),
-        ('This calendar invitation is no longer valid.','Cette invitation à un calendrier n''est plus valide.'),
-        ('Calendar invitation','Invitation à un calendrier'),
-        ('Your password has been changed successfully.','Votre mot de passe a été modifié avec succès.'),
-        ('Change my password','Changer mon mot de passe'),
-        ('Edit my profile','Modifier mon profil'),
-        ('Name:','Nom :'),
-        ('Email:','Courriel :'),
-        ('We didn''t recognise your current password. Make sure it is entered correctly and try again.','Nous n''avons pas reconnu votre mot de passe actuel. Assurez-vous qu''il est entré correctement et réessayez.');
-      </sql>
-    </changeSet>
-
-    <changeSet id="11" author="mag">
-      <!-- Create new loc -->
-      <sql>
-        INSERT INTO localisation (en_ca, fr_ca) VALUES 
-        ('It seems you already have an active subscription. Refresh this page to view the details of your subscription. If that error keeps popping, contact us in the grove.','Il semble que vous ayez déjà un abonnement actif. Rafraîchissez cette page pour afficher les détails de votre abonnement. Si cette erreur persiste, contactez-nous dans la clairière'),
-        ('It seems you already started a trial or you have an active subscription. Refresh this page to view the details of your subscription. If that error keeps popping, contact us in the grove.','Il semble que vous ayez déjà commencé un essai ou que vous ayez un abonnement actif. Rafraîchissez cette page pour afficher les détails de votre abonnement. Si cette erreur persiste, contactez-nous dans la clairière');
-      </sql>            
-    </changeSet>
-
-    <changeSet id="12" author="mag">
-      <!-- Add calendar setting to show author name on calendar event -->
-      <addColumn tableName="calendar">
-        <column name="show_event_author" type="boolean"/>
-      </addColumn>
-    </changeSet>
-
-    <changeSet id="13" author="mag">
-      <!-- Create new loc -->
-      <sql>
-        INSERT INTO localisation (en_ca, fr_ca) VALUES
-        ('Show event author names to collaborators','Afficher les noms des auteurs des événements pour les collaborateurs'),
-        ('When this box is checked, the name of the collaborator who created an event will be displayed on that event, visible to other collaborators of the calendar. The names will not be visible for anonymous users viewing Public calendars nor in the embedded calendar. When this box is not checked, the name of the collaborator who created an event will be visible only to you, in Manage all events, to help with event approval and communication.','Quand cette case est cochée, le nom du collaborateur qui a créé l''événement sera affiché sur cet événement, visible aux autres collaborateurs du calendrier. Les noms ne seront pas visibles pour les utilisateurs anonymes qui consultent les calendriers publics ni dans le calendrier incorporable. Lorsque cette case n''est pas cochée, le nom du collaborateur qui a créé un événement ne sera visible que pour vous, dans la section Gérer tous les événements, afin de faciliter l''approbation des événements et la communication.');
-      </sql>      
-    </changeSet>
-
-    <changeSet id="14" author="mag">
-      <!-- Create new loc -->
-      <sql>
-        INSERT INTO localisation (en_ca, fr_ca) VALUES
-        ('Welcome!','Bienvenue!'),
-        ('You don''t have any calendar yet, so this page feels a little empty for now. But it won''t always stay like this!','Vous n''avez pas encore de calendrier, cette page est donc un peu vide pour le moment. Mais elle ne restera pas toujours comme ça!'),
-        ('For now, you can have a look at the','Pour l''instant, vous pouvez jeter un coup d''œil aux'),
-        ('or if you''re ready to create your own calendars, you can','ou si vous êtes prêt à créer vos propres calendriers, vous pouvez'),
-        ('start a free Calendarium trial','commencer un essai gratuit de Calendarium'),
-        ('We hope you enjoy your time here!','Nous espérons que votre temps passé ici sera agréable!');
-      </sql>      
-    </changeSet>
-
-    <changeSet id="15" author="mag">
-        <!-- Create new loc -->
-        <sql>
-            INSERT INTO localisation (en_ca, fr_ca) VALUES
-            ('Update billing information','Mettre à jour les informations de paiement'),
-            ('Your billing information has been updated successfully.','Vos informations de paiement ont été mises à jour avec succès.'),
-            ('Our payment processing platform returned an error while updating your billing information. You may want to try again, and if that error keeps popping, contact us in the grove.','Notre plateforme de traitement des paiements a retourné une erreur. Vous pouvez essayer à nouveau de mettre à jour vos informations de paiement, et si cette erreur persiste, contactez-nous dans la clairière.');
-        </sql>
     </changeSet>
   </databaseChangeLog>

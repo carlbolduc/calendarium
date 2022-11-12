@@ -33,7 +33,6 @@ import io.dropwizard.views.ViewBundle;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.postgres.PostgresPlugin;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
@@ -68,7 +67,7 @@ public class App extends Application<Config> {
     @Override
     public void run(Config config, Environment environment) {
         final JdbiFactory jdbiFactory = new JdbiFactory();
-        final Jdbi jdbi = jdbiFactory.build(environment, config.getDatabase(), "main").installPlugin(new PostgresPlugin());
+        final Jdbi jdbi = jdbiFactory.build(environment, config.getDatabase(), "main");
         final Argon2 argon2 = Argon2Factory.create();
         final BasicAWSCredentials awsCredentials = new BasicAWSCredentials(config.getThirdPartyFactory().getAccessKey(), config.getThirdPartyFactory().getSecretKey());
         final AmazonSimpleEmailService emailClient = AmazonSimpleEmailServiceClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider((awsCredentials))).withRegion(Regions.CA_CENTRAL_1).build();
