@@ -15,9 +15,9 @@
                 language_id integer primary key autoincrement not null,
                 locale_id   text,
                 name        text,
-                created_at  numeric default current_timestamp,
+                created_at  integer,
                 created_by  integer,
-                updated_at  numeric,
+                updated_at  integer,
                 updated_by  integer
             );
         </sql>
@@ -29,9 +29,9 @@
                 localisation_id integer primary key autoincrement not null,
                 en_ca           text unique,
                 fr_ca           text,
-                created_at      numeric default current_timestamp,
+                created_at      integer,
                 created_by      integer,
-                updated_at      numeric,
+                updated_at      integer,
                 updated_by      integer
             );
         </sql>
@@ -47,10 +47,10 @@
                 language_id                 integer,
                 password_digest             text,
                 password_reset_digest       text,
-                password_reset_requested_at numeric,
-                created_at                  numeric default current_timestamp,
+                password_reset_requested_at integer,
+                created_at                  integer,
                 created_by                  integer,
-                updated_at                  numeric,
+                updated_at                  integer,
                 updated_by                  integer,
                 foreign key (language_id) references language (language_id)
             );
@@ -64,9 +64,9 @@
                 selector         text   not null,
                 validator        text   not null,
                 account_id       integer not null,
-                created_at       numeric default current_timestamp,
+                created_at       integer,
                 created_by       integer,
-                updated_at       numeric,
+                updated_at       integer,
                 updated_by       integer,
                 foreign key (account_id) references account (account_id)
             );
@@ -91,12 +91,12 @@
                 account_id      integer not null,
                 price_id        integer not null,
                 stripe_sub_id   text,
-                start_at        numeric,
-                end_at          numeric,
+                start_at        integer,
+                end_at          integer,
                 status          text,
-                created_at      numeric default current_timestamp,
+                created_at      integer,
                 created_by      integer,
-                updated_at      numeric,
+                updated_at      integer,
                 updated_by      integer,
                 foreign key (account_id) references account (account_id),
                 foreign key (price_id) references price (price_id)
@@ -121,9 +121,9 @@
                 start_week_on           text,
                 public_calendar         integer check (public_calendar IN (0, 1)),
                 event_approval_required integer check (event_approval_required IN (0, 1)),
-                created_at              numeric default current_timestamp,
+                created_at              integer,
                 created_by              integer,
-                updated_at              numeric,
+                updated_at              integer,
                 updated_by              integer,
                 embed_calendar          integer check (embed_calendar IN (0, 1)),
                 show_event_author       integer check (show_event_author IN (0, 1))
@@ -138,9 +138,9 @@
                 account_id         integer not null,
                 calendar_id        integer not null,
                 status             text,
-                created_at         numeric default current_timestamp,
+                created_at         integer,
                 created_by         integer,
-                updated_at         numeric,
+                updated_at         integer,
                 updated_by         integer,
                 foreign key (account_id) references account (account_id),
                 foreign key (calendar_id) references calendar (calendar_id)
@@ -159,14 +159,14 @@
                 name_en        text,
                 description_fr text,
                 description_en text,
-                start_at       numeric,
-                end_at         numeric,
+                start_at       integer,
+                end_at         integer,
                 all_day        integer check (all_day IN (0, 1)),
                 hyperlink_fr   text,
                 hyperlink_en   text,
-                created_at     numeric default current_timestamp,
+                created_at     integer,
                 created_by     integer,
-                updated_at     numeric,
+                updated_at     integer,
                 updated_by     integer,
                 foreign key (account_id) references account (account_id),
                 foreign key (calendar_id) references calendar (calendar_id)
@@ -183,9 +183,9 @@
                 title_en          text,
                 body_fr           text,
                 body_en           text,
-                created_at        numeric default current_timestamp,
+                created_at        integer,
                 created_by        integer,
-                updated_at        numeric,
+                updated_at        integer,
                 updated_by        integer
             );
         </sql>
@@ -198,18 +198,12 @@
                 account_id  integer not null,
                 type        text,
                 description text,
-                created_at  numeric default current_timestamp,
+                created_at  integer,
                 created_by  integer,
-                updated_at  numeric,
+                updated_at  integer,
                 updated_by  integer,
                 foreign key (account_id) references account (account_id)
             );
-        </sql>
-
-        <!-- Insert English and Français to language and a first row to Localisation -->
-        <sql>
-          INSERT INTO language (locale_id, name) VALUES ('enCa', 'English'),('frCa', 'Français');
-          INSERT INTO localisation (en_ca, fr_ca) VALUES ('Account', 'Compte');
         </sql>
 
         <!-- Create table tax -->
@@ -219,16 +213,11 @@
                 tax_id        integer primary key autoincrement not null,
                 stripe_tax_id text,
                 description   text,
-                created_at    numeric default current_timestamp,
+                created_at    integer,
                 created_by    integer,
-                updated_at    numeric,
+                updated_at    integer,
                 updated_by    integer
             );
-        </sql>
-
-        <!-- Create trial subscription price -->
-        <sql>
-            insert into price (amount) values (0);
         </sql>
 
     </changeSet>
