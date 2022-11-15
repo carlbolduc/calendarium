@@ -1,26 +1,21 @@
 package io.codebards.calendarium.resources;
 
-import java.security.NoSuchAlgorithmException;
-import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
+import de.mkammerer.argon2.Argon2;
+import io.codebards.calendarium.api.*;
+import io.codebards.calendarium.core.Account;
+import io.codebards.calendarium.core.EmailManager;
+import io.codebards.calendarium.core.Utils;
+import io.codebards.calendarium.db.Dao;
+import io.dropwizard.auth.Auth;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import io.codebards.calendarium.api.AccountToken;
-import io.codebards.calendarium.api.CalendarAccess;
-import io.codebards.calendarium.api.CalendarAccessStatus;
-import io.codebards.calendarium.api.Collaborator;
-import io.codebards.calendarium.api.InvitationResponse;
-import io.codebards.calendarium.core.EmailManager;
-import io.codebards.calendarium.core.Utils;
-import io.codebards.calendarium.core.Account;
-import io.codebards.calendarium.db.Dao;
-import de.mkammerer.argon2.Argon2;
-import io.dropwizard.auth.Auth;
+import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
 @Path("/collaborators")
 @Produces(MediaType.APPLICATION_JSON)
@@ -140,7 +135,7 @@ public class CollaboratorsResource {
             String selector = token.substring(0, 16);
             String verifier = token.substring(16);
             String validator = Utils.getHash(verifier);
-            dao.insertAccountToken(selector, validator, Instant.now(), accountId);
+            dao.insertAccountToken(selector, validator, Math.toIntExact(Instant.now().getEpochSecond()), accountId);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

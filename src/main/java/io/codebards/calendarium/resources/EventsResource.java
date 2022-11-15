@@ -136,7 +136,7 @@ public class EventsResource {
                 if (oCalendarAccess.isPresent()) {
                     // Search for calendar events
                     if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.OWNER.getStatus())) {
-                        events = dao.findAllCalendarEvents(eventsParams, eventsParams.getStartAt());
+                        events = dao.findAllCalendarEvents(eventsParams);
                     } else {
                         events = dao.findAccountCalendarEvents(auth.getAccountId(), eventsParams);
                     }

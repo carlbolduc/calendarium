@@ -1,7 +1,5 @@
 package io.codebards.calendarium.api;
 
-import java.time.Instant;
-
 public class Event {
     private long eventId;
     private long accountId;
@@ -11,8 +9,8 @@ public class Event {
     private String nameEn;
     private String descriptionFr;
     private String descriptionEn;
-    private Instant startAt;
-    private Instant endAt;
+    private Integer startAt;
+    private Integer endAt;
     private Boolean allDay;
     private String hyperlinkFr;
     private String hyperlinkEn;
@@ -84,19 +82,19 @@ public class Event {
         this.descriptionEn = descriptionEn;
     }
 
-    public Instant getStartAt() {
+    public Integer getStartAt() {
         return startAt;
     }
 
-    public void setStartAt(Instant startAt) {
+    public void setStartAt(Integer startAt) {
         this.startAt = startAt;
     }
 
-    public Instant getEndAt() {
+    public Integer getEndAt() {
         return endAt;
     }
 
-    public void setEndAt(Instant endAt) {
+    public void setEndAt(Integer endAt) {
         this.endAt = endAt;
     }
 

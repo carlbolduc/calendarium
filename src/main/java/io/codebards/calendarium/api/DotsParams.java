@@ -1,10 +1,8 @@
 package io.codebards.calendarium.api;
 
-import java.time.Instant;
-
 public class DotsParams {
     private Long calendarId;
-    private Instant startAt;
+    private Integer startAt;
     private String zoneName;
 
     public Long getCalendarId() {
@@ -15,11 +13,11 @@ public class DotsParams {
         this.calendarId = calendarId;
     }
 
-    public Instant getStartAt() {
+    public Integer getStartAt() {
         return startAt;
     }
 
-    public void setStartAt(Instant startAt) {
+    public void setStartAt(Integer startAt) {
         this.startAt = startAt;
     }
 

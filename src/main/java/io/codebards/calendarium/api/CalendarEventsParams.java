@@ -1,16 +1,14 @@
 package io.codebards.calendarium.api;
 
-import java.time.Instant;
-
 public class CalendarEventsParams {
     
-    private Instant startAt;
+    private Integer startAt;
 
-    public Instant getStartAt() {
+    public Integer getStartAt() {
         return startAt;
     }
 
-    public void setStartAt(Instant startAt) {
+    public void setStartAt(Integer startAt) {
         this.startAt = startAt;
     }
 

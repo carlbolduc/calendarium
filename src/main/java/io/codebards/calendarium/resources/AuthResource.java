@@ -1,20 +1,19 @@
 package io.codebards.calendarium.resources;
 
-import io.codebards.calendarium.api.SignUp;
-import io.codebards.calendarium.api.PasswordReset;
+import de.mkammerer.argon2.Argon2;
 import io.codebards.calendarium.api.AccountToken;
-import io.codebards.calendarium.core.EmailManager;
+import io.codebards.calendarium.api.PasswordReset;
+import io.codebards.calendarium.api.SignUp;
 import io.codebards.calendarium.core.Account;
+import io.codebards.calendarium.core.EmailManager;
 import io.codebards.calendarium.core.Utils;
 import io.codebards.calendarium.db.Dao;
-import de.mkammerer.argon2.Argon2;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Optional;
@@ -87,7 +86,7 @@ public class AuthResource {
         if (oAccount.isPresent()) {
             try {
                 String passwordResetDigest = Utils.createDigest();
-                dao.updatePasswordResetDigest(oAccount.get().getAccountId(), passwordResetDigest, Instant.now());
+                dao.updatePasswordResetDigest(oAccount.get().getAccountId(), passwordResetDigest, Math.toIntExact(Instant.now().getEpochSecond()));
                 emailManager.sendResetPasswordEmail(oAccount, passwordResetDigest);
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
@@ -104,7 +103,7 @@ public class AuthResource {
         Optional<Account> oAccount = dao.findAccountByPasswordReset(passwordReset.getId());
         if (oAccount.isPresent()
                 && oAccount.get().getPasswordResetDigest().equals(passwordReset.getId())
-                && Duration.between(oAccount.get().getPasswordResetRequestedAt(), Instant.now()).getSeconds() < 86400) {
+                && (Instant.now().getEpochSecond() - oAccount.get().getPasswordResetRequestedAt()) < 86400) {
             String token = createToken(oAccount.get().getAccountId());
             if (token != null) {
                 String passwordDigest = argon2.hash(2, 65536, 1, passwordReset.getPassword().toCharArray());
@@ -126,7 +125,7 @@ public class AuthResource {
             String selector = token.substring(0, 16);
             String verifier = token.substring(16);
             String validator = Utils.getHash(verifier);
-            dao.insertAccountToken(selector, validator, Instant.now(), accountId);
+            dao.insertAccountToken(selector, validator, Math.toIntExact(Instant.now().getEpochSecond()), accountId);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

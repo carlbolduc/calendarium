@@ -1,12 +1,10 @@
 package io.codebards.calendarium.api;
 
-import java.time.Instant;
-
 public class Subscription {
     private long subscriptionId;
     private String status;
-    private Instant startAt;
-    private Instant endAt;
+    private Integer startAt;
+    private Integer endAt;
     private String stripeSubId;
     private String product;
 
@@ -26,19 +24,19 @@ public class Subscription {
         this.status = status;
     }
 
-    public Instant getStartAt() {
+    public Integer getStartAt() {
         return startAt;
     }
 
-    public void setStartAt(Instant startAt) {
+    public void setStartAt(Integer startAt) {
         this.startAt = startAt;
     }
 
-    public Instant getEndAt() {
+    public Integer getEndAt() {
         return endAt;
     }
 
-    public void setEndAt(Instant endAt) {
+    public void setEndAt(Integer endAt) {
         this.endAt = endAt;
     }
 

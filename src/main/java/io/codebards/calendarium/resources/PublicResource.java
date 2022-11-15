@@ -92,11 +92,11 @@ public class PublicResource {
             DotsParams dotsParams = mapper.readValue(decodedQuery, DotsParams.class);
             if (dotsParams.getCalendarId() != null && dotsParams.getStartAt() != null) {
                 ZoneId zoneId = ZoneId.of(dotsParams.getZoneName());
-                ZonedDateTime dotsZonedStartAt = dotsParams.getStartAt().atZone(zoneId);
+                ZonedDateTime dotsZonedStartAt = Instant.ofEpochSecond(dotsParams.getStartAt()).atZone(zoneId);
                 // Find the upper limit for months event: the beginning of the first day of next month
                 LocalDate monthEnd = YearMonth.from(dotsZonedStartAt).atEndOfMonth();
                 Instant firstDayOfNextMonth = monthEnd.plusDays(1).atStartOfDay().atZone(zoneId).toInstant();
-                List<Event> monthEvents = dao.findMonthPublishedEvents(dotsParams.getCalendarId(), dotsZonedStartAt.toInstant(), firstDayOfNextMonth);
+                List<Event> monthEvents = dao.findMonthPublishedEvents(dotsParams.getCalendarId(), Math.toIntExact(dotsZonedStartAt.toInstant().getEpochSecond()), Math.toIntExact(firstDayOfNextMonth.getEpochSecond()));
                 dots = eventHelpers.generateDots(monthEvents, zoneId, dotsZonedStartAt, monthEnd);
             }
         } catch (JsonProcessingException e) {

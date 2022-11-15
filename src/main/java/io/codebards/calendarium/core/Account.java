@@ -3,11 +3,9 @@ package io.codebards.calendarium.core;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.codebards.calendarium.api.Subscription;
 import io.codebards.calendarium.api.SubscriptionStatus;
-
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 import java.security.Principal;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -20,8 +18,8 @@ public class Account implements Principal {
     private Long languageId;
     private String passwordDigest;
     private String passwordResetDigest;
-    private Instant passwordResetRequestedAt;
-    private Instant createdAt;
+    private Integer passwordResetRequestedAt;
+    private Integer createdAt;
     private String tokenValidator;
     private String stripeCusId;
     private Subscription subscription;
@@ -89,11 +87,11 @@ public class Account implements Principal {
         return passwordResetDigest;
     }
 
-    public Instant getPasswordResetRequestedAt() {
+    public Integer getPasswordResetRequestedAt() {
         return passwordResetRequestedAt;
     }
 
-    public void setPasswordResetRequestedAt(Instant passwordResetRequestedAt) {
+    public void setPasswordResetRequestedAt(Integer passwordResetRequestedAt) {
         this.passwordResetRequestedAt = passwordResetRequestedAt;
     }
 
@@ -103,11 +101,11 @@ public class Account implements Principal {
     }
 
 
-    public Instant getCreatedAt() {
+    public Integer getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Instant createdAt) {
+    public void setCreatedAt(Integer createdAt) {
         this.createdAt = createdAt;
     }
 

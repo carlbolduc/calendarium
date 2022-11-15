@@ -1,13 +1,11 @@
 package io.codebards.calendarium.api;
 
-import java.time.Instant;
-
 public class Collaborator {
     private long calendarAccessId;
     private String name;
     private String email;
     private String status;
-    private Instant createdAt;
+    private Integer createdAt;
 
     public void setCalendarAccessId(long calendarAccessId) {
         this.calendarAccessId = calendarAccessId;
@@ -41,11 +39,11 @@ public class Collaborator {
         this.status = status;
     }
 
-    public Instant getCreatedAt() {
+    public Integer getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Instant createdAt) {
+    public void setCreatedAt(Integer createdAt) {
         this.createdAt = createdAt;
     }
 }

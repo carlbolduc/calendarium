@@ -2,6 +2,7 @@ package io.codebards.calendarium.core;
 
 import io.codebards.calendarium.api.Event;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -13,8 +14,8 @@ public class EventHelpers {
     public List<Integer> generateDots(List<Event> events, ZoneId zoneId, ZonedDateTime dotsZonedStartAt, LocalDate monthEnd) {
         List<Integer> dots = new ArrayList<>();
         for (Event event: events) {
-            ZonedDateTime zonedStartAt = event.getStartAt().atZone(zoneId);
-            ZonedDateTime zonedEndAt = event.getEndAt().atZone(zoneId);
+            ZonedDateTime zonedStartAt = Instant.ofEpochSecond(event.getStartAt()).atZone(zoneId);
+            ZonedDateTime zonedEndAt = Instant.ofEpochSecond(event.getEndAt()).atZone(zoneId);
             // Check if start and end are in the same month
             if (zonedStartAt.getYear() == zonedEndAt.getYear() && zonedStartAt.getMonth() == zonedEndAt.getMonth()) {
                 // Start and end are in the same month

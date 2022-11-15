@@ -30,7 +30,7 @@ import java.util.Optional;
 public class CalendarsResource {
 
     private final Dao dao;
-    private EventHelpers eventHelpers;
+    private final EventHelpers eventHelpers;
 
     public CalendarsResource(Dao dao, EventHelpers eventHelpers) {
         this.dao = dao;
@@ -213,27 +213,27 @@ public class CalendarsResource {
             if (dotsParams.getCalendarId() != null && dotsParams.getStartAt() != null) {
                 List<Event> monthEvents = new ArrayList<>();
                 ZoneId zoneId = ZoneId.of(dotsParams.getZoneName());
-                ZonedDateTime dotsZonedStartAt = dotsParams.getStartAt().atZone(zoneId);
+                ZonedDateTime dotsZonedStartAt = Instant.ofEpochSecond(dotsParams.getStartAt()).atZone(zoneId);
                 // Find the upper limit for months event: the beginning of the first day of next month
                 LocalDate monthEnd = YearMonth.from(dotsZonedStartAt).atEndOfMonth();
                 Instant firstDayOfNextMonth = monthEnd.plusDays(1).atStartOfDay().atZone(zoneId).toInstant();
-                monthEvents = dao.findMonthPublishedEvents(dotsParams.getCalendarId(), dotsZonedStartAt.toInstant(), firstDayOfNextMonth);
+                monthEvents = dao.findMonthPublishedEvents(dotsParams.getCalendarId(), Math.toIntExact(dotsZonedStartAt.toInstant().getEpochSecond()), Math.toIntExact(firstDayOfNextMonth.getEpochSecond()));
 
                 List<CalendarAccess> calendarAccesses = dao.findCalendarAccesses(auth.getAccountId());
                 Optional<CalendarAccess> oCalendarAccess = calendarAccesses.stream().filter(ca -> ca.getCalendarId() == dotsParams.getCalendarId()).findAny();
 
                 if (oCalendarAccess.isPresent()) {
                     if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.OWNER.getStatus())) {
-                        monthEvents = dao.findMonthOwnerEvents(dotsParams.getCalendarId(), dotsZonedStartAt.toInstant(), firstDayOfNextMonth);
+                        monthEvents = dao.findMonthOwnerEvents(dotsParams.getCalendarId(), Math.toIntExact(dotsZonedStartAt.toInstant().getEpochSecond()), Math.toIntExact(firstDayOfNextMonth.getEpochSecond()));
                     } else if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.ACTIVE.getStatus())) {
-                        monthEvents = dao.findMonthCollaboratorEvents(dotsParams.getCalendarId(), auth.getAccountId(), dotsZonedStartAt.toInstant(), firstDayOfNextMonth);
+                        monthEvents = dao.findMonthCollaboratorEvents(dotsParams.getCalendarId(), auth.getAccountId(), Math.toIntExact(dotsZonedStartAt.toInstant().getEpochSecond()), Math.toIntExact(firstDayOfNextMonth.getEpochSecond()));
                     } else if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.INVITED.getStatus())) {
                         // Collaborator is invited but has yet to create content, process published events
-                        monthEvents = dao.findMonthPublishedEvents(dotsParams.getCalendarId(), dotsZonedStartAt.toInstant(), firstDayOfNextMonth);
+                        monthEvents = dao.findMonthPublishedEvents(dotsParams.getCalendarId(), Math.toIntExact(dotsZonedStartAt.toInstant().getEpochSecond()), Math.toIntExact(firstDayOfNextMonth.getEpochSecond()));
                     }
                 } else {
                     // Public calendar, process published events if user isn't owner or collaborator
-                    monthEvents = dao.findMonthPublishedEvents(dotsParams.getCalendarId(), dotsZonedStartAt.toInstant(), firstDayOfNextMonth);
+                    monthEvents = dao.findMonthPublishedEvents(dotsParams.getCalendarId(), Math.toIntExact(dotsZonedStartAt.toInstant().getEpochSecond()), Math.toIntExact(firstDayOfNextMonth.getEpochSecond()));
                 }
                 dots = eventHelpers.generateDots(monthEvents, zoneId, dotsZonedStartAt, monthEnd);
             }

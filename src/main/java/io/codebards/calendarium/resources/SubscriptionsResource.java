@@ -67,7 +67,7 @@ public class SubscriptionsResource {
         if (
             auth.getSubscription() == null
             || auth.getSubscription().getStripeSubId() == null
-            || auth.getSubscription().getEndAt().isBefore(Instant.now())
+            || auth.getSubscription().getEndAt() < Instant.now().getEpochSecond()
         ) {
             try {
                 Customer customer = stripeService.getCustomer(auth.getStripeCusId());
@@ -103,9 +103,9 @@ public class SubscriptionsResource {
                     // Create the subscription
                     Subscription subscription = stripeService.createSubscription(subCreateParams);
                     if (auth.getSubscription() == null) {
-                        dao.insertSubscription(auth.getAccountId(), subscription.getId(), price.getPriceId(), Instant.ofEpochSecond(subscription.getCurrentPeriodStart()), Instant.ofEpochSecond(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
+                        dao.insertSubscription(auth.getAccountId(), subscription.getId(), price.getPriceId(), Math.toIntExact(subscription.getCurrentPeriodStart()), Math.toIntExact(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
                     } else {
-                        dao.updateSubscription(auth.getSubscription().getSubscriptionId(), subscription.getId(), price.getPriceId(), Instant.ofEpochSecond(subscription.getCurrentPeriodStart()), Instant.ofEpochSecond(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
+                        dao.updateSubscription(auth.getSubscription().getSubscriptionId(), subscription.getId(), price.getPriceId(), Math.toIntExact(subscription.getCurrentPeriodStart()), Math.toIntExact(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
                     }
                     if (subscription.getLatestInvoiceObject().getPaymentIntentObject().getStatus().equals(PaymentIntentStatus.SUCCEEDED.getStatus())) {
                         // TODO: It worked, check what we must return to client
@@ -208,7 +208,7 @@ public class SubscriptionsResource {
                         if (oSubscriptionId.isPresent()) {
                             // Renew the subscription by postponing its end time
                             Subscription subscription = stripeService.getSubscription(invoice.getSubscription());
-                            dao.renewSubscription(oSubscriptionId.get(), Instant.ofEpochSecond(subscription.getCurrentPeriodEnd()));
+                            dao.renewSubscription(oSubscriptionId.get(), Math.toIntExact(subscription.getCurrentPeriodEnd()));
                         }
                     }
                 }

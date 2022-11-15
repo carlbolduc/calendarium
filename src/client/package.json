@@ -21,7 +21,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "PORT=3003 react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build && rm -rf ../main/resources/assets/* && mv build/* ../main/resources/assets/",
     "cy:open": "cypress open"
   },
