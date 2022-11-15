@@ -92,7 +92,7 @@ export default function Collaborators(props) {
   )
 
   function collaboratorActions(collaborator) {
-    let result = null;
+    let result;
     switch (collaborator.status) {
       case "active":
         result = <Button label={props.translate("Deactivate")} id="button-deactivate" onClick={() => props.deactivateCalendarAccess(props.calendar.calendarId, collaborator.calendarAccessId)} outline={true} />;
@@ -128,7 +128,7 @@ export default function Collaborators(props) {
                 <td>{c.name}</td>
                 <td>{c.email}</td>
                 <td>{props.translate(c.status)}</td>
-                <td>{DateTime.fromSeconds(c.createdAt).setLocale(getLocale(props.localeId)).toLocaleString(DateTime.DATETIME_FULL)}</td>
+                <td>{c.createdAt === null ? "" : DateTime.fromSeconds(c.createdAt).setLocale(getLocale(props.localeId)).toLocaleString(DateTime.DATETIME_FULL)}</td>
                 <td>{collaboratorActions(c)}</td>
               </tr>
             ))}
