@@ -1,5 +1,7 @@
 package io.codebards.calendarium.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class EventsParams {
     private String search;
     private Integer startAt;
@@ -45,5 +47,10 @@ public class EventsParams {
 
     public void setCalendarId(Long calendarId) {
         this.calendarId = calendarId;
+    }
+
+    @JsonIgnore
+    public String getUpperCaseSearch() {
+        return search.toUpperCase();
     }
 }

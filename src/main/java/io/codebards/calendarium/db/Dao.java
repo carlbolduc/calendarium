@@ -79,10 +79,6 @@ public interface Dao {
     @RegisterBeanMapper(Localisation.class)
     List<Localisation> findAllLocalisations();
 
-    @SqlQuery("SELECT * FROM localisation WHERE en_ca = :enCa")
-    @RegisterBeanMapper(Localisation.class)
-    Optional<Localisation> findLocalisationByEnCa(@Bind("enCa") String enCa);
-
     @SqlUpdate("INSERT INTO localisation (en_ca) VALUES (:enCa) ON CONFLICT (en_ca) DO NOTHING;")
     void insertLocalisation(@Bind("enCa") String enCa);
 
@@ -403,7 +399,29 @@ public interface Dao {
     @RegisterBeanMapper(Event.class)
     List<Event> findCalendarPublishedEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Integer startAt);
 
-    @SqlQuery("SELECT event_id, e.account_id, calendar_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, a.name author FROM event e INNER JOIN account a ON e.account_id = a.account_id WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%'))) AND (:status = '' OR status = :status) ORDER BY start_at")
+    @SqlQuery("""
+            SELECT event_id,
+                   e.account_id,
+                   calendar_id,
+                   status,
+                   name_en,
+                   name_fr,
+                   description_en,
+                   description_fr,
+                   start_at,
+                   end_at,
+                   all_day,
+                   hyperlink_en,
+                   hyperlink_fr,
+                   a.name author
+            FROM event e
+                     INNER JOIN account a ON e.account_id = a.account_id
+            WHERE ((UPPER(name_en) LIKE '%' || :upperCaseSearch || '%') OR
+                   (UPPER(name_fr) LIKE '%' || :upperCaseSearch || '%') OR
+                   (UPPER(description_en) LIKE '%' || :upperCaseSearch || '%') OR
+                   ((UPPER(description_fr) LIKE '%' || :upperCaseSearch || '%')))
+              AND (:status = '' OR status = :status)
+            ORDER BY start_at""")
     @RegisterBeanMapper(Event.class)
     List<Event> findEvents(@BindBean EventsParams eventsParams);
 
@@ -424,11 +442,11 @@ public interface Dao {
                    a.name author
             FROM event e
             INNER JOIN account a ON e.account_id = a.account_id
-            WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR
-                   (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%')))
+            WHERE ((UPPER(name_en) LIKE '%' || :upperCaseSearch || '%') OR (UPPER(name_fr) LIKE '%' || :upperCaseSearch || '%') OR
+                   (UPPER(description_en) LIKE '%' || :upperCaseSearch || '%') OR ((UPPER(description_fr) LIKE '%' || :upperCaseSearch || '%')))
               AND (:status = '' OR status = :status)
-              AND (cast(:startAt AS date) IS NULL OR end_at >= :startAt)
-              AND (cast(:endAt AS date) IS NULL OR end_at <= :endAt)
+              AND (cast(:startAt AS INTEGER) IS NULL OR end_at >= :startAt)
+              AND (cast(:endAt AS INTEGER) IS NULL OR end_at <= :endAt)
               AND calendar_id = :calendarId
             ORDER BY start_at""")
     @RegisterBeanMapper(Event.class)
@@ -451,11 +469,11 @@ public interface Dao {
                    a.name author
             FROM event e
             INNER JOIN account a ON e.account_id = a.account_id
-            WHERE ((name_en ILIKE '%' || :search || '%') OR (name_fr ILIKE '%' || :search || '%') OR
-                   (description_en ILIKE '%' || :search || '%') OR ((description_fr ILIKE '%' || :search || '%')))
+            WHERE ((UPPER(name_en) LIKE '%' || :upperCaseSearch || '%') OR (UPPER(name_fr) LIKE '%' || :upperCaseSearch || '%') OR
+                   (UPPER(description_en) LIKE '%' || :upperCaseSearch || '%') OR ((UPPER(description_fr) LIKE '%' || :upperCaseSearch || '%')))
               AND (:status = '' OR status = :status)
-              AND (cast(:startAt AS date) IS NULL OR end_at >= :startAt)
-              AND (cast(:endAt AS date) IS NULL OR end_at <= :endAt)
+              AND (cast(:startAt AS INTEGER) IS NULL OR end_at >= :startAt)
+              AND (cast(:endAt AS INTEGER) IS NULL OR end_at <= :endAt)
               AND calendar_id = :calendarId
               AND e.account_id = :accountId
             ORDER BY start_at""")
@@ -528,11 +546,12 @@ public interface Dao {
     @RegisterBeanMapper(Collaborator.class)
     List<Collaborator> findCollaboratorsByCalendar(@Bind("calendarId") long calendarId);
 
-    @SqlQuery("SELECT name, email, status, ca.created_at\n" +
-            "FROM account a\n" +
-            "INNER JOIN calendar_access ca on a.account_id = ca.account_id\n" +
-            "WHERE calendar_id = :calendarId\n" +
-            "AND a.account_id = :accountId")
+    @SqlQuery("""
+            SELECT name, email, status, ca.created_at
+            FROM account a
+            INNER JOIN calendar_access ca on a.account_id = ca.account_id
+            WHERE calendar_id = :calendarId
+            AND a.account_id = :accountId""")
     @RegisterBeanMapper(Collaborator.class)
     Optional<Collaborator> findCollaboratorByAccountId(@Bind("calendarId") long calendarId, @Bind("accountId") long accountId);
 
