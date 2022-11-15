@@ -1,4 +1,4 @@
--- Pour faire la migration, exécuter dbMigrate pour créer le fichier de bd vide, puis exécuter les selects ci-desosus un par un dans DataGrip Query Console, et copier-coller l'output dans chacune des tables SQLite
+-- Pour faire la migration, exécuter dbMigrate pour créer le fichier de bd vide, puis exécuter les selects ci-dessous un par un dans DataGrip Query Console, et copier-coller l'output dans chacune des tables SQLite
 
 -- 1. language
 select language_id,
