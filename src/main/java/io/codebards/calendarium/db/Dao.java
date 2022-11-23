@@ -342,13 +342,49 @@ public interface Dao {
     void deleteEvent(@Bind("eventId") long eventId);
 
     @SqlQuery("""
-            SELECT event_id, status, name_en, name_fr, description_en, description_fr, start_at, end_at, all_day, hyperlink_en, hyperlink_fr, e.account_id, calendar_id, a.name author
-            FROM event e
-            INNER JOIN account a ON e.account_id = a.account_id
-            WHERE calendar_id = :calendarId
-              AND end_at >= :startAt
-            ORDER BY start_at
-            LIMIT 20""")
+            SELECT *
+            FROM (SELECT event_id,
+                         status,
+                         name_en,
+                         name_fr,
+                         description_en,
+                         description_fr,
+                         start_at,
+                         end_at,
+                         all_day,
+                         hyperlink_en,
+                         hyperlink_fr,
+                         e.account_id,
+                         calendar_id,
+                         a.name author
+                  FROM event e
+                           INNER JOIN account a ON e.account_id = a.account_id
+                  WHERE calendar_id = :calendarId
+                    AND end_at >= :startAt
+                  ORDER BY start_at
+                  LIMIT 20)
+            UNION
+            SELECT *
+            FROM (SELECT event_id,
+                         status,
+                         name_en,
+                         name_fr,
+                         description_en,
+                         description_fr,
+                         start_at,
+                         end_at,
+                         all_day,
+                         hyperlink_en,
+                         hyperlink_fr,
+                         e.account_id,
+                         calendar_id,
+                         a.name author
+                  FROM event e
+                           INNER JOIN account a ON e.account_id = a.account_id
+                  WHERE calendar_id = :calendarId
+                    AND end_at < :startAt
+                  ORDER BY start_at
+                  LIMIT 20)""")
     @RegisterBeanMapper(Event.class)
     List<Event> findCalendarOwnerEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Integer startAt);
 
