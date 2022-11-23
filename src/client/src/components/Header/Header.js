@@ -29,12 +29,15 @@ export default function Header(props) {
     <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
       <div className="container-fluid">
         <button className="link-button navbar-brand" onClick={e => goTo(e, "/")}>
-          <img src="/img/logo.png" alt="Calendarium logo" height="24" className="d-inline-block align-text-top"/> Calendarium
+          <div className="row p-0 m-0">
+            <div className="col-auto ps-0 pe-1"><img src="/img/logo.png" alt="Calendarium logo" height="24" className=""/></div>
+            <div className="col p-0 mt-1">Calendarium</div>
+          </div>
         </button>
         <button className="navbar-toggler shadow-none" data-bs-toggle="collapse" data-bs-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label={props.translate("Toggle navigation")}>
           <span className="navbar-toggler-icon" />
         </button>
-        <div className="collapse navbar-collapse" id="main-navbar">
+        <div className="collapse navbar-collapse mt-1" id="main-navbar">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             {props.authenticated
               ? <li className="nav-item"><button className={navClassName("/my-calendars")} onClick={e => goTo(e, "/my-calendars")}>{props.translate("My calendars")}</button></li>
