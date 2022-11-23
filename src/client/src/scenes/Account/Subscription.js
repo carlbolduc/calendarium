@@ -131,7 +131,7 @@ export default function Subscription(props) {
       {/* ***** Calendarium trial ***** */}
       {/* Show trial option only if account has never had a trial/sub before */}
       {props.account.subscription !== null ? null : (
-      <div className="col-auto">
+      <div className="col-auto mb-5">
         <div className="card" style={{ width: "18rem" }}>
           <img
             src="/img/logo.png"
@@ -149,7 +149,7 @@ export default function Subscription(props) {
         </div>
       </div>)}
       {/* ***** Calendarium monthly ***** */}
-      <div className="col-auto">
+      <div className="col-auto mb-5">
         <div className="card" style={{ width: "18rem" }}>
           <img
             src="/img/logo.png"
