@@ -44,6 +44,10 @@ export default function Month(props) {
     const selectedDate = date.set({ day: d });
     setDate(selectedDate);
     props.selectDay(selectedDate);
+    // TODO: do this in a callback
+    setTimeout(() => {
+      document.getElementById("now").scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
+    }, 400);
   }
 
   function changeMonth(plusOrMinus) {
@@ -54,6 +58,10 @@ export default function Month(props) {
       newDate = date.minus({ months: 1 });
     }
     setDate(newDate.startOf("month"));
+    // TODO: do this in a callback
+    setTimeout(() => {
+      document.getElementById("now").scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
+    }, 400);
   }
 
   function renderHeader() {

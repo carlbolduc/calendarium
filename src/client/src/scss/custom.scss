@@ -97,3 +97,17 @@ a {
   opacity: 0;
   transition: opacity 200ms;
 }
+
+#scrollable-events-list {
+  //TODO: calculate height based on content instead of arbitrary px
+  height: calc(100vh - 500px);
+  min-height: 400px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+#scrollable-events-list::-webkit-scrollbar {
+  display: none;
+}
