@@ -9,7 +9,7 @@ export default function Header(props) {
   let history = useHistory();
 
   function navClassName(path) {
-    return location.pathname.indexOf(path) !== -1 ? "link-button nav-link active" : "link-button nav-link";
+    return location.pathname.indexOf(path) !== -1 ? "link-button nav-link active fw-bold" : "link-button nav-link";
   }
 
   function collapseMenu() {
