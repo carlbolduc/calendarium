@@ -47,15 +47,21 @@ export default function Header(props) {
             </li>
           </ul>
           <ul className="navbar-nav mb-2 mb-lg-0">
+            {!props.authenticated ?
             <li className="nav-item">
-              <a className="nav-link" href="mailto:grove@codebards.io">{props.translate("Help")}</a>
-            </li>
+              <button className={navClassName("/subscription")} onClick={e => goTo(e, "/subscription")}>{props.translate("Start trial")}</button>
+            </li> : null}
+            {!props.authenticated ?
+            <li className="nav-item">
+              <button className={navClassName("/sign-in")} onClick={e => goTo(e, "/sign-in")}>{props.translate("Sign in")}</button>
+            </li> : null}
+            {props.authenticated ?
             <Account
               authenticated={props.authenticated}
               signOut={props.signOut}
               translate={props.translate}
               goTo={goTo}
-            />
+            /> : null}
             <Language
               languages={props.languages}
               languageId={props.languageId}
@@ -63,6 +69,9 @@ export default function Header(props) {
               switchLanguage={props.switchLanguage}
               collapseMenu={collapseMenu}
             />
+            <li className="nav-item">
+              <a className="nav-link" href="mailto:grove@codebards.io">{props.translate("Help")}</a>
+            </li>
           </ul>
         </div>
       </div>

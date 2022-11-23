@@ -7,6 +7,7 @@ import Message from "../../components/Form/Message";
 import {getLocale, subscriptionStatus} from "../../services/Helpers";
 import StripeWrapper from "./StripeWrapper";
 import UpdateBillingInformationButton from "./UpdateBillingInformationButton";
+import SignUp from "../Auth/SignUp";
 
 const wantToOptions = {
   SUBSCRIBE: "subscribe",
@@ -137,17 +138,17 @@ export default function Subscription(props) {
             alt="Calendarium logo"
             width="100%"
             height="180"
-            className="card-img-top"
+            className="card-img-top opacity-50"
           />
           <div className="card-body">
             <h5 className="card-title">{props.translate("Calendarium trial")}</h5>
-            <h6 className="card-subtitle mb-2 text-muted">{props.translate("Free for one month")}</h6>
-            <p className="card-text">{props.translate("Includes unlimited calendars and unlimited collaborators.")}</p>
+            <h6 className="card-subtitle mb-2 text-muted">{props.translate("One month free - no credit card")}</h6>
+            <p className="card-text">{props.translate("Invite up to 2 collaborators and create 1 calendar.")}</p>
             <Button label={props.translate("Start trial")} type="button" id="button-subscribe" onClick={e => wantToStartTrial(e)} />
           </div>
         </div>
       </div>)}
-      {/* ***** Calendarium unlimited ***** */}
+      {/* ***** Calendarium monthly ***** */}
       <div className="col-auto">
         <div className="card" style={{ width: "18rem" }}>
           <img
@@ -158,9 +159,9 @@ export default function Subscription(props) {
             className="card-img-top"
           />
           <div className="card-body">
-            <h5 className="card-title">{props.translate("Calendarium unlimited")}</h5>
-            <h6 className="card-subtitle mb-2 text-muted">{props.translate("$600 CAD per year")}</h6>
-            <p className="card-text">{props.translate("Includes unlimited calendars and unlimited collaborators.")}</p>
+            <h5 className="card-title">{props.translate("Calendarium monthly")}</h5>
+            <h6 className="card-subtitle mb-2 text-muted">{props.translate("$10 CAD per month")}</h6>
+            <p className="card-text">{props.translate("Invite up to 20 collaborators and create unlimited calendars.")}</p>
             <Button label={props.translate("Subscribe")} type="button" id="button-subscribe" onClick={e => wantToSubscribe(e)} />
           </div>
         </div>
@@ -275,6 +276,11 @@ export default function Subscription(props) {
         result = (
           <>
             {productPresentation}
+
+            {/* TODO: update sign up form to fit embedded in the start trial or subscribe flow  while not authenticated */}
+            {!props.authenticated ?
+            <SignUp signUp={props.signUp} authenticated={props.authenticated} translate={props.translate} /> : null}
+
             <StripeWrapper
               createSubscription={createSubscription}
               cancel={() => setWantTo("")}
@@ -289,21 +295,26 @@ export default function Subscription(props) {
           <>
             {productPresentation}
             <div>
-              <h5>{props.translate("Are you ready to start your one-month Calendarium unlimited trial?")}</h5>
+              <h5>{props.translate("Are you ready to start your one-month Calendarium trial?")}</h5>
               <p>{props.translate("When your trial starts...")}</p>
               <ul>
-                <li>{props.translate("You will enjoy creating calendars and inviting collaborators right away.")}</li>
+                <li>{props.translate("You will enjoy creating a calendar and inviting collaborators right away.")}</li>
                 <li>{props.translate("You will have full access to all of Calendarium features for a whole month.")}</li>
                 <li>{props.translate("It will feel like you have all the time in the world.")}</li>
               </ul>
               <p>{props.translate("Once your trial ends...")}</p>
               <ul>
                 <li>{props.translate("You will NOT be charged unless you decide to subscribe.")}</li>
-                <li>{props.translate("Your calendars will NOT be deleted, and if you ever decide to subscribe, they will be there for you.")}</li>
-                <li>{props.translate("If some of your calendars are public, they will stop appearing in our Public calendars section.")}</li>
-                <li>{props.translate("If you have embedded calendars in other websites, their embed code will stop displaying the calendar, showing instead a discreet message.")}</li>
-                <li>{props.translate("You will have realised that one month flies by so fast.")}</li>
+                <li>{props.translate("Your calendar will NOT be deleted, and if you ever decide to subscribe, it will be there for you.")}</li>
+                <li>{props.translate("If your calendar is public, it will stop appearing in our Public calendars section.")}</li>
+                <li>{props.translate("If you have embedded your calendar in other websites, its embed code will stop displaying the calendar, showing instead a discreet message.")}</li>
+                <li>{props.translate("You will have realized that one month flies by so fast.")}</li>
               </ul>
+
+              {/* TODO: update sign up form to fit embedded in the start trial or subscribe flow while not authenticated */}
+              {!props.authenticated ?
+              <SignUp signUp={props.signUp} authenticated={props.authenticated} translate={props.translate} /> : null}
+
               <Button label={props.translate("Never mind")} type="button" id="button-never-mind" onClick={() => setWantTo("")} outline={true} />
               <Button label={props.translate("Start my trial")} type="button" id="button-start-trial" onClick={e => startTrial(e)} />
             </div>
@@ -331,11 +342,10 @@ export default function Subscription(props) {
       {renderMain()}
     </article>
   ) : (
-    <Redirect
-      to={{
-        pathname: "/sign-in",
-        state: { from: "/subscription" }
-      }}
-    />
+    <article>
+      <h1>{props.translate("Start trial or subscribe")}</h1>
+      <Message result={result} origin={messageOrigin} translate={props.translate} />
+      {renderMain()}
+    </article>
   );
 }
