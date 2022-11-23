@@ -18,8 +18,7 @@ select localisation_id,
        created_by,
        EXTRACT(EPOCH FROM updated_at) AS updated_at,
        updated_by
-from localisation
-where localisation_id <> 1;
+from localisation;
 
 -- 3. account
 select account_id,
