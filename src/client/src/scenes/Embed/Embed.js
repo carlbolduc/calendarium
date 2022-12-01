@@ -83,6 +83,7 @@ export default function Embed(props) {
           </div>
           <div className="col-12 col-md">
             <EventsList
+              selectedDate={selectedDate}
               events={props.events}
               noEventsMessage={props.translate("There are no events on or after the selected date.")}
               account={props.account}

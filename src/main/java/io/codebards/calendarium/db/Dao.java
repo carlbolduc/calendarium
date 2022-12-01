@@ -362,7 +362,7 @@ public interface Dao {
                   WHERE calendar_id = :calendarId
                     AND end_at >= :startAt
                   ORDER BY start_at
-                  LIMIT 20)
+                  LIMIT 10)
             UNION
             SELECT *
             FROM (SELECT event_id,
@@ -384,7 +384,7 @@ public interface Dao {
                   WHERE calendar_id = :calendarId
                     AND end_at < :startAt
                   ORDER BY start_at
-                  LIMIT 20)""")
+                  LIMIT 10)""")
     @RegisterBeanMapper(Event.class)
     List<Event> findCalendarOwnerEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Integer startAt);
 
@@ -438,24 +438,45 @@ public interface Dao {
     List<Event> findCollaboratorEvents(@Bind("accountId") long accountId, @Bind("calendarId") long calendarId, @Bind("startAt") Integer startAt);
 
     @SqlQuery("""
-            SELECT event_id,
-                   status,
-                   name_en,
-                   name_fr,
-                   description_en,
-                   description_fr,
-                   start_at,
-                   end_at,
-                   all_day,
-                   hyperlink_en,
-                   hyperlink_fr,
-                   calendar_id
-            FROM event
-            WHERE calendar_id = :calendarId
-              AND status = 'published'
-              AND end_at >= :startAt
-            ORDER BY start_at
-            LIMIT 20""")
+            SELECT *
+            FROM (SELECT event_id,
+                         status,
+                         name_en,
+                         name_fr,
+                         description_en,
+                         description_fr,
+                         start_at,
+                         end_at,
+                         all_day,
+                         hyperlink_en,
+                         hyperlink_fr,
+                         calendar_id
+                  FROM event
+                  WHERE calendar_id = :calendarId
+                    AND status = 'published'
+                    AND end_at >= :startAt
+                  ORDER BY start_at
+                  LIMIT 10)
+            UNION
+            SELECT *
+            FROM (SELECT event_id,
+                         status,
+                         name_en,
+                         name_fr,
+                         description_en,
+                         description_fr,
+                         start_at,
+                         end_at,
+                         all_day,
+                         hyperlink_en,
+                         hyperlink_fr,
+                         calendar_id
+                  FROM event
+                  WHERE calendar_id = :calendarId
+                    AND status = 'published'
+                    AND end_at < :startAt
+                  ORDER BY start_at
+                  LIMIT 10)""")
     @RegisterBeanMapper(Event.class)
     List<Event> findCalendarPublishedEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Integer startAt);
 
