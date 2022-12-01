@@ -101,7 +101,7 @@ export default function EventsList(props) {
   return props.events.length === 0 ? (
     <div>{props.noEventsMessage}</div>
     ) : (
-    <div id="scrollable-events-list">
+    <div id="">
       {pastEvents}
       <div id="now" className="fw-bold text-center text-uppercase mb-3 h2">
         {props.selectedDate.setLocale(locale).toLocaleString(DateTime.DATE_HUGE)}

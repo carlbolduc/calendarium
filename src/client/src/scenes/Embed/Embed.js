@@ -70,7 +70,7 @@ export default function Embed(props) {
     } else {
       result = (
         <div className="row justify-content-center">
-          <div className="col-12 col-md-auto">
+          <div className="col-12 col-md-auto sticky-top">
             <Month
               startWeekOn={props.calendar.startWeekOn}
               selectedDate={selectedDate}

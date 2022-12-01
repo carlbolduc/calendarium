@@ -1,3 +1,4 @@
+import "./Month.scss";
 import React from "react";
 import { useState, useEffect } from "react";
 import { DateTime, Info } from "luxon";
@@ -69,12 +70,12 @@ export default function Month(props) {
     const locale = getLocale(props.localeId);
     const weekdayRowClassName = props.secondaryColor === undefined || props.secondaryColor === "#ffffff" 
       ? "text-muted" 
-      : `${textColor(props.secondaryColor)}`;
+      : `${textColor(props.secondaryColor)}`
     const weekdayRowStyle = props.secondaryColor === undefined 
-      ? null 
+      ? null
       : { backgroundColor: props.secondaryColor };
     const monthRowTextColor = props.primaryColor === undefined 
-      ? null 
+      ? null
       : textColor(props.primaryColor);
     const monthRowStyle = props.primaryColor === undefined 
       ? null 
@@ -131,7 +132,7 @@ export default function Month(props) {
   ));
 
   return (
-    <table className="table table-bordered text-center" ref={ref}>
+    <table className="table table-bordered text-center sticky-top" ref={ref}>
       {renderHeader()}
       <tbody>
         {month}
