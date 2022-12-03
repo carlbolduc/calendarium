@@ -13,7 +13,7 @@ export default function Week(props) {
       selectedDate={props.selectedDate}
       primaryColor={props.primaryColor}
       secondaryColor={props.secondaryColor}
-      showDot={props.dots.indexOf(d) !== -1}
+      showDot={d !== null ? props.dots.indexOf(d.monthDay) !== -1 : false}
     />
   ));
 
