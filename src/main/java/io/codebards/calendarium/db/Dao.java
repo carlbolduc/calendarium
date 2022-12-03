@@ -394,10 +394,13 @@ public interface Dao {
             WHERE calendar_id = :calendarId
               AND status = 'published'
               AND end_at >= :startAt
-            ORDER BY start_at
+            ORDER BY CASE
+              WHEN showPastEvents IS TRUE THEN start_at DESC
+              ELSE start_at
+            END
             LIMIT 20""")
     @RegisterBeanMapper(Event.class)
-    List<Event> findCalendarPublishedEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Integer startAt);
+    List<Event> findCalendarPublishedEvents(@Bind("calendarId") long calendarId, @Bind("startAt") Integer startAt, @Bind("showPastEvents") Boolean showPastEvents);
 
     @SqlQuery("""
             SELECT event_id,

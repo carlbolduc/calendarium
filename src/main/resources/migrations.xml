@@ -221,4 +221,11 @@
         </sql>
 
     </changeSet>
+
+    <changeSet id="2" author="carl">
+        <!-- Add option to show past or future events -->
+        <sql>
+            ALTER TABLE calendar ADD COLUMN show_past_events integer check (show_past_events IN (0, 1)) NOT NULL DEFAULT 0;
+        </sql>
+    </changeSet>
   </databaseChangeLog>

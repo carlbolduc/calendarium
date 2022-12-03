@@ -18,6 +18,8 @@ public class Calendar {
     private Boolean eventApprovalRequired = true;
     private Boolean showEventAuthor = false;
     private String access;
+
+    private Boolean showPastEvents = false;
     private long createdBy;
     private long updatedBy;
 
@@ -173,4 +175,11 @@ public class Calendar {
         this.updatedBy = updatedBy;
     }
 
+    public Boolean getShowPastEvents() {
+        return showPastEvents;
+    }
+
+    public void setShowPastEvents(Boolean showPastEvents) {
+        this.showPastEvents = showPastEvents;
+    }
 }
