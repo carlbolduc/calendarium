@@ -15,10 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.nio.charset.StandardCharsets;
 import java.time.*;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Path("/public")
 @Produces(MediaType.APPLICATION_JSON)
@@ -74,6 +71,8 @@ public class PublicResource {
                 CalendarEventsParams calendarEventsParams = mapper.readValue(decodedQuery, CalendarEventsParams.class);
                 // We return published events if calendar is either embeddable or public
                 events = dao.findCalendarPublishedEvents(calendarId, calendarEventsParams.getStartAt());
+                Collections.sort(events);
+                Collections.reverse(events);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
