@@ -32,7 +32,7 @@ export default function Month(props) {
       if (mobile) {
         let day = date.startOf("week");
         while (week.length < 7) {
-          week.push({monthDay: day.day, currentMonth: day.month === props.selectedDate.month});
+          week.push(day);
           day = day.plus({days: 1})
         }
         result.push(week);
@@ -44,7 +44,8 @@ export default function Month(props) {
             week.push(null);
             dayOfWeek = nextWeekDay(dayOfWeek);
           }
-          week.push({monthDay: i+1, currentMonth: true});
+          const day =  startOfMonth.plus({days: i});
+          week.push(day);
           if (week.length === 7) {
             result.push(week);
             week = [];
@@ -62,8 +63,8 @@ export default function Month(props) {
   }, [date, props.startWeekOn, mobile]);
 
   function selectDay(d) {
-    const selectedDate = date.set({ day: d });
-    setDate(selectedDate);
+    const selectedDate = d;
+    setDate(d);
     props.selectDay(selectedDate);
     // TODO: do this in a callback
     setTimeout(() => {

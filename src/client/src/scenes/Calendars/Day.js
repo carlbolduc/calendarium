@@ -4,15 +4,15 @@ import {textColor} from "../../services/Helpers";
 export default function Day(props) {
 
   function selectDay() {
-    if (props.day !== null) {
-      props.selectDay(props.day.monthDay);
+    if (props.day !== null && props.selectedDate.day !== props.day.day) {
+      props.selectDay(props.day);
     }
   }
   function dayClassName() {
     let result = "";
     if (props.day !== null) {
-      if (props.day.currentMonth) {
-        if (props.selectedDate.day === props.day.monthDay) {
+      if (props.day.month === props.selectedDate.month) {
+        if (props.selectedDate.day === props.day.day) {
           if (props.primaryColor === undefined || props.primaryColor === "#ffffff") {
             result = "table-primary";
           } else {
@@ -30,7 +30,7 @@ export default function Day(props) {
     let result = "d-none";
     if (props.day !== null) {
       if (props.showDot && props.primaryColor !== undefined) {
-        if (props.selectedDate.day === props.day.monthDay) {
+        if (props.selectedDate.day === props.day.day) {
           result = props.primaryColor === "#ffffff" ? "d-block" : `d-block ${textColor(props.primaryColor)}`
         } else {
           result = "d-block";
@@ -43,16 +43,14 @@ export default function Day(props) {
   function dayStyle() {
     let result = {};
     if (props.day !== null) {
-      if (props.day.currentMonth) {
-        if (props.selectedDate.day === props.day.monthDay) {
-          if (props.primaryColor === undefined || props.primaryColor === "#ffffff") {
-            result = { cursor: "pointer" };
-          } else {
-            result = { cursor: "pointer", backgroundColor: props.primaryColor };
-          }
+      if (props.selectedDate.day === props.day.day) {
+        if (props.primaryColor === undefined || props.primaryColor === "#ffffff") {
+          result = { };
         } else {
-          result = { cursor: "pointer" };
+          result = { backgroundColor: props.primaryColor };
         }
+      } else {
+        result = { cursor: "pointer" };
       }
     }
     return result;
@@ -74,7 +72,7 @@ export default function Day(props) {
 
   return (
     <td className={dayClassName()} style={dayStyle()} onMouseDown={selectDay} onMouseUp={props.hide}>
-      {props.day !== null ? props.day.monthDay : null}
+      {props.day !== null ? props.day.day : null}
       <div className={dotClassName()} style={dotStyle()}>.</div>
     </td>
   )
