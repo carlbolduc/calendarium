@@ -101,12 +101,16 @@ export default function EventsList(props) {
   return props.events.length === 0 ? (
     <div>{props.noEventsMessage}</div>
     ) : (
-    <div id="">
-      {pastEvents}
-      <div id="now" className="fw-bold text-center text-uppercase mb-3 h2">
-        {props.selectedDate.setLocale(locale).toLocaleString(DateTime.DATE_HUGE)}
-      </div>
+    <div>
+      <div id="top-gradient"></div>
       {futureEvents}
+      <article id="now" className="card text-bg-light fw-bold text-center text-uppercase mb-3">
+        <div className="card-body">
+          {props.selectedDate.setLocale(locale).toLocaleString(DateTime.DATE_HUGE)}
+        </div>
+      </article>
+      {pastEvents}
+      <div id="bottom-gradient"></div>
     </div>
   );
 
