@@ -102,7 +102,7 @@ export default function EventsList(props) {
     <div>{props.noEventsMessage}</div>
     ) : (
     <div>
-      <div id="top-gradient"></div>
+      {props.isEmbedded ? <div id="top-gradient"></div> : null}
       {futureEvents}
       <article id="now" className="card text-bg-light fw-bold text-center text-uppercase mb-3">
         <div className="card-body">
@@ -110,7 +110,7 @@ export default function EventsList(props) {
         </div>
       </article>
       {pastEvents}
-      <div id="bottom-gradient"></div>
+      {props.isEmbedded ? <div id="bottom-gradient"></div> : null}
     </div>
   );
 

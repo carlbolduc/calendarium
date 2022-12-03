@@ -251,7 +251,7 @@ export default function Calendar(props) {
           </div>
           <div className="mt-4 px-0">
             <div className="row justify-content-center">
-              <div className="col-12 col-md-auto">
+              <div className="month col-12 col-md-auto sticky-top">
                 <Month
                   startWeekOn={props.calendar.startWeekOn}
                   selectedDate={selectedDate}
