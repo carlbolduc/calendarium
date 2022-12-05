@@ -19,6 +19,30 @@ const wantToOptions = {
   REACTIVATE: "reactivate",
 }
 
+const productNames = {
+  TRIAL: "Calendarium trial",
+  MONTHLY: "Calendarium monthly",
+  UNLIMITED: "Calendarium unlimited",
+}
+
+const productPrices = {
+  TRIAL: "One month free - no credit card",
+  MONTHLY: "$10 CAD per month",
+  UNLIMITED: "$600 CAD per year",
+}
+
+const productDescriptions = {
+  TRIAL: "Invite up to 2 collaborators and create 1 calendar.",
+  MONTHLY: "Invite up to 20 collaborators and create unlimited calendars.",
+  UNLIMITED: "Calendarium unlimited",
+}
+
+const productMaxUsers = {
+  TRIAL: 2,
+  MONTHLY: 20,
+  UNLIMITED: 0,
+}
+
 export default function Subscription(props) {
   const location = useLocation();
   const [wantTo, setWantTo] = useState("");
@@ -145,9 +169,9 @@ export default function Subscription(props) {
             className="card-img-top opacity-50"
           />
           <div className="card-body">
-            <h5 className="card-title">{props.translate("Calendarium trial")}</h5>
-            <h6 className="card-subtitle mb-2 text-muted">{props.translate("One month free - no credit card")}</h6>
-            <p className="card-text">{props.translate("Invite up to 2 collaborators and create 1 calendar.")}</p>
+            <h5 className="card-title">{props.translate(productNames.TRIAL)}</h5>
+            <h6 className="card-subtitle mb-2 text-muted">{props.translate(productPrices.TRIAL)}</h6>
+            <p className="card-text">{props.translate(productDescriptions.TRIAL)}</p>
             <Button label={props.translate("Start trial")} type="button" id="button-subscribe" onClick={e => wantToStartTrial(e)} />
           </div>
         </div>
@@ -163,9 +187,9 @@ export default function Subscription(props) {
             className="card-img-top"
           />
           <div className="card-body">
-            <h5 className="card-title">{props.translate("Calendarium monthly")}</h5>
-            <h6 className="card-subtitle mb-2 text-muted">{props.translate("$10 CAD per month")}</h6>
-            <p className="card-text">{props.translate("Invite up to 20 collaborators and create unlimited calendars.")}</p>
+            <h5 className="card-title">{props.translate(productNames.MONTHLY)}</h5>
+            <h6 className="card-subtitle mb-2 text-muted">{props.translate(productPrices.MONTHLY)}</h6>
+            <p className="card-text">{props.translate(productDescriptions.MONTHLY)}</p>
             <Button label={props.translate("Subscribe")} type="button" id="button-subscribe" onClick={e => wantToSubscribe(e)} />
           </div>
         </div>
@@ -223,8 +247,26 @@ export default function Subscription(props) {
   }
 
   function subscriptionDetails() {
-    const product = props.account.subscription.product === "trial" ? "Calendarium trial" : "Calendarium unlimited";
-    const price = props.account.subscription.product === "trial" ? "Free for one month" : "$600 CAD per year";
+    let product = "";
+    let price = "";
+    let maxUsers = 0;
+    switch (props.account.subscription.product) {
+      case "trial":
+        product = productNames.TRIAL;
+        price = productPrices.TRIAL;
+        maxUsers = productMaxUsers.TRIAL;
+        break;
+      case "monthly":
+        product = productNames.MONTHLY;
+        price = productPrices.MONTHLY;
+        maxUsers = productMaxUsers.MONTHLY;
+        break;
+      case "unlimited":
+        product = productNames.UNLIMITED;
+        price = productPrices.UNLIMITED;
+        maxUsers = productMaxUsers.UNLIMITED;
+        break;
+    }
     return (
       <>
         <div>
@@ -232,6 +274,9 @@ export default function Subscription(props) {
           <h5 className="mt-4">{props.translate(product)}</h5>
           <p>{props.translate(price)}</p>
           {subscriptionEndAt()}
+          <h5 className="mt-4">{props.translate("Your users")}</h5>
+          <p>Number of active and invited users: {props.account.activeUsers}</p>
+          <p>Number of remaining users: {maxUsers > 0 ? maxUsers - props.account.activeUsers : props.translate("unlimited")}</p>
         </div>
         {subscriptionActions()}
       </>
