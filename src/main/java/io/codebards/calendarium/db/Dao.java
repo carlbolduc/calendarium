@@ -120,8 +120,8 @@ public interface Dao {
     @RegisterBeanMapper(Tax.class)
     List<Tax> findTaxes();
 
-    @SqlUpdate("INSERT INTO subscription (account_id, stripe_sub_id, price_id, start_at, end_at, status, created_by) VALUES (:accountId, :stripeSubId, :priceId, :startAt, :endAt, :status, :createdBy)")
-    void insertSubscription(@Bind("accountId") long accountId, @Bind("stripeSubId") String stripeSubId, @Bind("priceId") long priceId, @Bind("startAt") Integer startAt, @Bind("endAt") Integer endAt, @Bind("status") String status, @Bind("createdBy") long createdBy);
+    @SqlUpdate("INSERT INTO subscription (account_id, stripe_sub_id, price_id, start_at, end_at, status, created_at, created_by) VALUES (:accountId, :stripeSubId, :priceId, :startAt, :endAt, :status, :createdAt, :createdBy)")
+    void insertSubscription(@Bind("accountId") long accountId, @Bind("stripeSubId") String stripeSubId, @Bind("priceId") long priceId, @Bind("startAt") Integer startAt, @Bind("endAt") Integer endAt, @Bind("status") String status, @Bind("createdAt") Integer createdAt, @Bind("createdBy") long createdBy);
 
     @SqlUpdate("UPDATE subscription SET stripe_sub_id = :stripeSubId, price_id = :priceId, start_at = :startAt, end_at = :endAt, status = :status, updated_by = :updatedBy WHERE subscription_id = :subscriptionId")
     void updateSubscription(@Bind("subscriptionId") long subscriptionId, @Bind("stripeSubId") String stripeSubId, @Bind("priceId") long priceId, @Bind("startAt") Integer startAt, @Bind("endAt") Integer endAt, @Bind("status") String status, @Bind("updatedBy") long updatedBy);

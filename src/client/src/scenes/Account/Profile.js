@@ -52,7 +52,6 @@ export default function Profile(props) {
     setShowEditProfileForm(false)
   }
 
-  debugger
   const memberSince = props.account ? (
     <p>{props.translate("Member since")} {DateTime.fromSeconds(props.account.createdAt).setLocale(getLocale(props.localeId)).toLocaleString(DateTime.DATETIME_FULL)}</p>
   ) : null;
