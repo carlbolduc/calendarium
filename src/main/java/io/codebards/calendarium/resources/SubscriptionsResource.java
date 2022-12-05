@@ -46,6 +46,7 @@ public class SubscriptionsResource {
     }
 
     @POST
+    @Path("/trials")
     public Response createTrial(@Auth Account auth) {
         Response response;
         if (auth.getSubscription() == null) {
@@ -53,7 +54,7 @@ public class SubscriptionsResource {
             Instant in30Days = LocalDateTime.from(now.atZone(ZoneId.of("UTC"))).plusDays(30).atZone(ZoneId.of("UTC")).toInstant();
             Price price = dao.findPrice(0);
             // Create the subscription
-            dao.insertSubscription(auth.getAccountId(), null, price.getPriceId(), Math.toIntExact(now.getEpochSecond()), Math.toIntExact(in30Days.getEpochSecond()), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
+            dao.insertSubscription(auth.getAccountId(), null, price.getPriceId(), Math.toIntExact(now.getEpochSecond()), Math.toIntExact(in30Days.getEpochSecond()), SubscriptionStatus.ACTIVE.getStatus(), Math.toIntExact(now.getEpochSecond()), auth.getAccountId());
             response = Response.ok().build();
         } else {
             response = Response.status(Response.Status.FORBIDDEN).build();
@@ -122,7 +123,8 @@ public class SubscriptionsResource {
                     // Create the subscription
                     Subscription subscription = stripeService.createSubscription(subCreateParams);
                     if (auth.getSubscription() == null) {
-                        dao.insertSubscription(auth.getAccountId(), subscription.getId(), price.getPriceId(), Math.toIntExact(subscription.getCurrentPeriodStart()), Math.toIntExact(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
+                        Instant now = Instant.now();
+                        dao.insertSubscription(auth.getAccountId(), subscription.getId(), price.getPriceId(), Math.toIntExact(subscription.getCurrentPeriodStart()), Math.toIntExact(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), Math.toIntExact(now.getEpochSecond()), auth.getAccountId());
                     } else {
                         dao.updateSubscription(auth.getSubscription().getSubscriptionId(), subscription.getId(), price.getPriceId(), Math.toIntExact(subscription.getCurrentPeriodStart()), Math.toIntExact(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
                     }

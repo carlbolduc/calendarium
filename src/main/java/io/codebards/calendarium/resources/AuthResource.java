@@ -62,8 +62,9 @@ public class AuthResource {
             response = Response.status(Response.Status.CONFLICT).build();
         } else {
             // Create the Calendarium account
+            Instant now = Instant.now();
             String passwordDigest = argon2.hash(2, 65536, 1, paidSignUp.getSignUp().getPassword().toCharArray());
-            long accountId = dao.insertAccount(paidSignUp.getSignUp().getEmail(), paidSignUp.getSignUp().getName(), paidSignUp.getSignUp().getLanguageId(), passwordDigest, 0);
+            long accountId = dao.insertAccount(paidSignUp.getSignUp().getEmail(), paidSignUp.getSignUp().getName(), paidSignUp.getSignUp().getLanguageId(), passwordDigest, Math.toIntExact(now.getEpochSecond()), 0);
             String token = createToken(accountId);
             if (token != null) {
                 AccountToken accountToken = new AccountToken(accountId, token);
@@ -101,7 +102,7 @@ public class AuthResource {
                     }
                     // Create the subscription
                     Subscription subscription = stripeService.createSubscription(subCreateParams);
-                    dao.insertSubscription(accountId, subscription.getId(), price.getPriceId(), Math.toIntExact(subscription.getCurrentPeriodStart()), Math.toIntExact(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), accountId);
+                    dao.insertSubscription(accountId, subscription.getId(), price.getPriceId(), Math.toIntExact(subscription.getCurrentPeriodStart()), Math.toIntExact(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), Math.toIntExact(now.getEpochSecond()), accountId);
                     if (subscription.getLatestInvoiceObject().getPaymentIntentObject().getStatus().equals(PaymentIntentStatus.SUCCEEDED.getStatus())) {
                         // TODO: It worked, check what we must return to client
                         // Check with Stripe if it's possible to get a subscription that is not succeeded when we reach this step
@@ -126,16 +127,16 @@ public class AuthResource {
         if (oAccount.isPresent()) {
             response = Response.status(Response.Status.CONFLICT).build();
         } else {
+            Instant now = Instant.now();
             String passwordDigest = argon2.hash(2, 65536, 1, signUp.getPassword().toCharArray());
-            long accountId = dao.insertAccount(signUp.getEmail(), signUp.getName(), signUp.getLanguageId(), passwordDigest, 0);
+            long accountId = dao.insertAccount(signUp.getEmail(), signUp.getName(), signUp.getLanguageId(), passwordDigest, Math.toIntExact(now.getEpochSecond()), 0);
             String token = createToken(accountId);
             if (token != null) {
                 AccountToken accountToken = new AccountToken(accountId, token);
-                Instant now = Instant.now();
                 Instant in30Days = LocalDateTime.from(now.atZone(ZoneId.of("UTC"))).plusDays(30).atZone(ZoneId.of("UTC")).toInstant();
                 Price price = dao.findPrice(0);
                 // Create the trial
-                dao.insertSubscription(accountId, null, price.getPriceId(), Math.toIntExact(now.getEpochSecond()), Math.toIntExact(in30Days.getEpochSecond()), SubscriptionStatus.ACTIVE.getStatus(), accountId);
+                dao.insertSubscription(accountId, null, price.getPriceId(), Math.toIntExact(now.getEpochSecond()), Math.toIntExact(in30Days.getEpochSecond()), SubscriptionStatus.ACTIVE.getStatus(), Math.toIntExact(now.getEpochSecond()), accountId);
                 response = Response.status(Response.Status.CREATED).entity(accountToken).build();
             } else {
                 response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
