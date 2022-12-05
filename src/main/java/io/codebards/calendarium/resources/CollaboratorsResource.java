@@ -54,7 +54,8 @@ public class CollaboratorsResource {
         } else {
             // if account doesn't exist, create it, with the language of the account that is
             // inviting and a null password
-            accountId = dao.insertAccount(collaborator.getEmail(), collaborator.getName(), auth.getLanguageId(), null, auth.getAccountId());
+            Instant now = Instant.now();
+            accountId = dao.insertAccount(collaborator.getEmail(), collaborator.getName(), auth.getLanguageId(), null, Math.toIntExact(now.getEpochSecond()), auth.getAccountId());
             oAccount = dao.findAccountById(accountId);
         }
 

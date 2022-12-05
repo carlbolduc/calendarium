@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Link, Redirect } from "react-router-dom";
-import { DateTime } from "luxon";
+import React, {useEffect, useState} from "react";
+import {Redirect} from "react-router-dom";
+import {DateTime} from "luxon";
 import Input from "../../components/Form/Input";
 import Button from "../../components/Form/Button";
 import Message from "../../components/Form/Message";
-import { emailValid, textValid, getLocale } from "../../services/Helpers";
+import {emailValid, getLocale, textValid} from "../../services/Helpers";
 import InvalidFeedback from "../../components/Form/InvalidFeedback";
 import ProfilePassword from "./ProfilePassword";
 
@@ -52,6 +52,7 @@ export default function Profile(props) {
     setShowEditProfileForm(false)
   }
 
+  debugger
   const memberSince = props.account ? (
     <p>{props.translate("Member since")} {DateTime.fromSeconds(props.account.createdAt).setLocale(getLocale(props.localeId)).toLocaleString(DateTime.DATETIME_FULL)}</p>
   ) : null;

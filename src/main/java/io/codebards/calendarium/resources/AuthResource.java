@@ -62,8 +62,9 @@ public class AuthResource {
             response = Response.status(Response.Status.CONFLICT).build();
         } else {
             // Create the Calendarium account
+            Instant now = Instant.now();
             String passwordDigest = argon2.hash(2, 65536, 1, paidSignUp.getSignUp().getPassword().toCharArray());
-            long accountId = dao.insertAccount(paidSignUp.getSignUp().getEmail(), paidSignUp.getSignUp().getName(), paidSignUp.getSignUp().getLanguageId(), passwordDigest, 0);
+            long accountId = dao.insertAccount(paidSignUp.getSignUp().getEmail(), paidSignUp.getSignUp().getName(), paidSignUp.getSignUp().getLanguageId(), passwordDigest, Math.toIntExact(now.getEpochSecond()), 0);
             String token = createToken(accountId);
             if (token != null) {
                 AccountToken accountToken = new AccountToken(accountId, token);
@@ -126,12 +127,12 @@ public class AuthResource {
         if (oAccount.isPresent()) {
             response = Response.status(Response.Status.CONFLICT).build();
         } else {
+            Instant now = Instant.now();
             String passwordDigest = argon2.hash(2, 65536, 1, signUp.getPassword().toCharArray());
-            long accountId = dao.insertAccount(signUp.getEmail(), signUp.getName(), signUp.getLanguageId(), passwordDigest, 0);
+            long accountId = dao.insertAccount(signUp.getEmail(), signUp.getName(), signUp.getLanguageId(), passwordDigest, Math.toIntExact(now.getEpochSecond()), 0);
             String token = createToken(accountId);
             if (token != null) {
                 AccountToken accountToken = new AccountToken(accountId, token);
-                Instant now = Instant.now();
                 Instant in30Days = LocalDateTime.from(now.atZone(ZoneId.of("UTC"))).plusDays(30).atZone(ZoneId.of("UTC")).toInstant();
                 Price price = dao.findPrice(0);
                 // Create the trial

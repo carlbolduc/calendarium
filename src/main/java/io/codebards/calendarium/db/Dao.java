@@ -24,9 +24,9 @@ public interface Dao {
     @RegisterBeanMapper(Account.class)
     Account findAccount(@Bind("accountId") long accountId);
 
-    @SqlUpdate("INSERT INTO account (email, name, language_id, password_digest, created_by) VALUES (:email, :name, :languageId, :passwordDigest, :createdBy)")
+    @SqlUpdate("INSERT INTO account (email, name, language_id, password_digest, created_at, created_by) VALUES (:email, :name, :languageId, :passwordDigest, :now, :createdBy)")
     @GetGeneratedKeys
-    long insertAccount(@Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId, @Bind("passwordDigest") String passwordDigest, @Bind("createdBy") long createdBy);
+    long insertAccount(@Bind("email") String email, @Bind("name") String name, @Bind("languageId") Long languageId, @Bind("passwordDigest") String passwordDigest, @Bind("now") Integer now, @Bind("createdBy") long createdBy);
 
     @SqlQuery("""
             SELECT a.account_id, a.email, a.name, a.language_id, a.stripe_cus_id, at.validator

@@ -46,6 +46,7 @@ public class SubscriptionsResource {
     }
 
     @POST
+    @Path("/trials")
     public Response createTrial(@Auth Account auth) {
         Response response;
         if (auth.getSubscription() == null) {
