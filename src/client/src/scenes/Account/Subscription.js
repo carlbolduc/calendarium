@@ -250,9 +250,9 @@ export default function Subscription(props) {
           <h5 className="mt-4">{props.translate(product)}</h5>
           <p>{props.translate(price)}</p>
           {subscriptionEndAt()}
-          <h5 className="mt-4">{props.translate("Your collaborators")}</h5>
-          <p>Number of active and invited collaborators: {props.account.activeUsers}</p>
-          <p>Number of remaining collaborators: {maxUsers > 0 ? maxUsers - props.account.activeUsers : props.translate("unlimited")}</p>
+          <h5 className="mt-4">{props.translate("My collaborators")}</h5>
+          <p>{props.translate("Number of active and invited collaborators:")} {props.account.activeUsers}</p>
+          <p>{props.translate("Number of remaining available collaborators:")} {maxUsers > 0 ? maxUsers - props.account.activeUsers : props.translate("unlimited")}</p>
         </div>
         {subscriptionActions()}
       </>

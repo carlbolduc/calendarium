@@ -42,11 +42,10 @@ export default function StripeForm(props) {
 
   return (
     <form onSubmit={handleSubmit} id="form-subscribe">
-      <p>{props.translate("You're ready for Calendarium unlimited! Enter your payment info below.")}</p>
-      <h5>{props.translate("Credit card details")}</h5>
-      <div className="row mb-3">
+      <h5 className="mt-4">{props.translate("Credit card details")}</h5>
+      <div className="row">
         <div className="col">
-          <div className="card-element mt-3">
+          <div className="card-element">
             <CardElement
               // @ts-ignore
               options={CARD_OPTIONS} />
@@ -56,9 +55,9 @@ export default function StripeForm(props) {
           </div>
         </div>
       </div>
-      <Button label={props.translate("Cancel")} type="button" id="button-cancel" onClick={props.cancel} disabled={working} outline={true} />
+      <Button label={props.translate("Never mind")} type="button" id="button-cancel" onClick={props.cancel} disabled={working} outline={true} />
       <Button label={props.translate("Subscribe")} type="submit" id="button-subscribe" working={working} disabled={!stripe} />
-      <p><span className="fw-bold">{props.translate("You will be charged $600 CAD now, plus any applicable* sales taxes")}</span>, {props.translate("and then each year until you cancel your subscription.")}</p>
+      <p><span className="fw-bold">{props.translate("You will be charged $10 CAD now, plus any applicable* sales taxes")}</span>, {props.translate("and then each month until you cancel your subscription.")}</p>
       <small className="fst-italic">{props.translate("*We currently charge sales taxes only to Canadian customers.")}</small>
     </form>
   );

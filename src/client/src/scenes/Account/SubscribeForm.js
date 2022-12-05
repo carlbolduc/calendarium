@@ -138,11 +138,11 @@ export default function SubscribeForm(props) {
               invalidFeedback={invalidTermsAndConditions ? <InvalidFeedback feedback={props.translate("You must agree to the terms of service.")} /> : null}
             />
           </div>
-          <div className="col-sm col-12 ps-sm-0">
+          <div className="col-md col-12 ps-md-1">
             <p>{props.translate("They can be read ")}&nbsp;<a href="http://codebards.io/policies/terms/" target="_blank" rel="noreferrer">{props.translate("here")}</a>.</p>
           </div>
         </div>
-        <Button label={props.translate("Never mind")} type="button" id="button-never-mind" onClick={props.cancel} outline={true} />
+        <Button label={props.translate("Never mind")} type="button" id="button-never-mind" onClick={props.cancel} disabled={working} outline={true} />
         <Button label={props.translate("Subscribe")} type="submit" id="button-sign-up" working={working} />
         <p><span className="fw-bold">{props.translate("You will be charged $10 CAD now, plus any applicable* sales taxes")}</span>, {props.translate("and then each month until you cancel your subscription.")}</p>
         <small className="fst-italic">{props.translate("*We currently charge sales taxes only to Canadian customers.")}</small>
