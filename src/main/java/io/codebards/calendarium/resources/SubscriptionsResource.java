@@ -75,7 +75,7 @@ public class SubscriptionsResource {
                     // Set the default payment method on the customer
                     PaymentMethod paymentMethod = stripeService.setPaymentMethod(customer, paymentMethodDetails.getId());
                     // Get price id from database
-                    Price price = dao.findPrice(600);
+                    Price price = dao.findPrice(10);
                     SubscriptionCreateParams subCreateParams;
                     if (paymentMethod.getCard().getCountry().equals("CA")) {
                         List<Tax> taxesToCharge = new ArrayList<>();
