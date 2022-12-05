@@ -202,3 +202,28 @@ export const CARD_OPTIONS = {
     }
   }
 };
+
+// Centralize product details
+export const productNames = {
+  TRIAL: "Calendarium trial",
+  MONTHLY: "Calendarium monthly",
+  UNLIMITED: "Calendarium unlimited",
+}
+
+export const productPrices = {
+  TRIAL: "One month free - no credit card",
+  MONTHLY: "$10 CAD per month",
+  UNLIMITED: "$600 CAD per year",
+}
+
+export const productDescriptions = {
+  TRIAL: "Invite up to 2 collaborators and create 1 calendar.",
+  MONTHLY: "Invite up to 20 collaborators and create unlimited calendars.",
+  UNLIMITED: "Calendarium unlimited",
+}
+
+export const productMaxUsers = {
+  TRIAL: 2,
+  MONTHLY: 20,
+  UNLIMITED: 0,
+}

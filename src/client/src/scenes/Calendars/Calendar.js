@@ -120,6 +120,7 @@ export default function Calendar(props) {
       inviteCollaborator={props.inviteCollaborator}
       deactivateCalendarAccess={props.deactivateCalendarAccess}
       activateCalendarAccess={props.activateCalendarAccess}
+      account={props.account}
     />
   );
 

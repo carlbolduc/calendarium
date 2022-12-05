@@ -5,7 +5,7 @@ import {DateTime} from "luxon";
 import Button from "../../components/Form/Button";
 import FeaturesList from "../../components/Content/FeaturesList";
 import Message from "../../components/Form/Message";
-import {getLocale, subscriptionStatus} from "../../services/Helpers";
+import {getLocale, subscriptionStatus, productNames, productPrices, productDescriptions, productMaxUsers} from "../../services/Helpers";
 import StripeWrapper from "./StripeWrapper";
 import UpdateBillingInformationButton from "./UpdateBillingInformationButton";
 import TrialForm from "../Auth/TrialForm";
@@ -17,30 +17,6 @@ const wantToOptions = {
   START_TRIAL: "start trial",
   CANCEL: "cancel",
   REACTIVATE: "reactivate",
-}
-
-const productNames = {
-  TRIAL: "Calendarium trial",
-  MONTHLY: "Calendarium monthly",
-  UNLIMITED: "Calendarium unlimited",
-}
-
-const productPrices = {
-  TRIAL: "One month free - no credit card",
-  MONTHLY: "$10 CAD per month",
-  UNLIMITED: "$600 CAD per year",
-}
-
-const productDescriptions = {
-  TRIAL: "Invite up to 2 collaborators and create 1 calendar.",
-  MONTHLY: "Invite up to 20 collaborators and create unlimited calendars.",
-  UNLIMITED: "Calendarium unlimited",
-}
-
-const productMaxUsers = {
-  TRIAL: 2,
-  MONTHLY: 20,
-  UNLIMITED: 0,
 }
 
 export default function Subscription(props) {

@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { decideWhatToDisplay, getLocale, textValid, emailValid } from "../../services/Helpers";
+import { decideWhatToDisplay, getLocale, textValid, emailValid, productMaxUsers } from "../../services/Helpers";
 import { DateTime } from "luxon";
 import Button from "../../components/Form/Button";
 import Input from "../../components/Form/Input";
@@ -50,10 +50,33 @@ export default function Collaborators(props) {
   const calendarName = decideWhatToDisplay(props.localeId, props.calendar.enableEn, props.calendar.enableFr, props.calendar.nameEn, props.calendar.nameFr);
   const title = `${props.translate("Collaborators of")} ${calendarName}`;
 
+  function inviteCollaboratorButton() {
+    let result = null;
+    let maxUsers = 0;
+    switch (props.account.subscription.product) {
+      case "trial":
+        maxUsers = productMaxUsers.TRIAL;
+        break;
+      case "monthly":
+        maxUsers = productMaxUsers.MONTHLY;
+        break;
+      case "unlimited":
+        maxUsers = productMaxUsers.UNLIMITED;
+        break;
+    }
+    // Show Invite collaborator button when collaborator limit isn't reached
+    if (maxUsers === 0 || maxUsers > props.account.activeUsers) {
+      result = (
+        <Button label={props.translate("Invite collaborator")} id="button-invite-collaborator" type="button" dataBsToggle="collapse" dataBsTarget="#invite-collaborator" ariaExpanded="false" ariaControls="invite-collaborator" outline={true} />
+      );
+    }
+    return result;
+  }
+
   const actionButtonsZone = (
     <div className="mb-4">
       <Button label={props.translate("Back to calendar")} id="button-cancel" onClick={props.cancel} outline={true} />
-      <Button label={props.translate("Invite collaborator")} id="button-invite-collaborator" type="button" dataBsToggle="collapse" dataBsTarget="#invite-collaborator" ariaExpanded="false" ariaControls="invite-collaborator" outline={true} />
+      {inviteCollaboratorButton()}
     </div>
   );
 
