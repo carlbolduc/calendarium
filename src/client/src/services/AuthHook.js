@@ -44,6 +44,9 @@ export function useAuth() {
     // Validate that the email is available
     axios.post(`${process.env.REACT_APP_API}/auth/sign-up-validation`, data.signUp).then(() => {
       // Email is available, proceed with sign up and subscribe
+      // set currently active locale as the language id for the new account
+      data.signUp["languageId"] = account.languageId;
+      debugger
       axios.post(`${process.env.REACT_APP_API}/auth/sign-up-and-subscribe`, data).then(signUpRes => {
         saveToken(signUpRes.data.token);
         if (cb) {

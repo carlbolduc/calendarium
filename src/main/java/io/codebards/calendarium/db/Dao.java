@@ -103,6 +103,7 @@ public interface Dao {
             CASE
                 WHEN p.amount = 600 THEN 'unlimited'
                 WHEN p.amount = 0 THEN 'trial'
+                WHEN p.amount = 10 THEN 'monthly'
                 ELSE 'unknown'
                 END AS product
             FROM subscription s
