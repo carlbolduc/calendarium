@@ -71,7 +71,7 @@ export default function SubscribeForm(props) {
 
   return (
     <article>
-      <h5>{props.translate("Account details")}</h5>
+      <h5 className="mt-4">{props.translate("Account details")}</h5>
       <Message result={result} origin="signUp" translate={props.translate} />
       <form onSubmit={handleSubmit} id="form-sign-up" noValidate>
         <Input
@@ -110,10 +110,10 @@ export default function SubscribeForm(props) {
           }}
           invalidFeedback={invalidPassword ? <InvalidFeedback feedback={props.translate("Your password must be at least 8 characters long.")} /> : null}
         />
-        <h5>{props.translate("Credit card details")}</h5>
+        <h5 className="mt-4">{props.translate("Credit card details")}</h5>
         <div className="row">
           <div className="col">
-            <div className="card-element mt-3">
+            <div className="card-element">
               <CardElement
                 // @ts-ignore
                 options={CARD_OPTIONS} />
@@ -124,7 +124,7 @@ export default function SubscribeForm(props) {
           </div>
         </div>
 
-        <div className="row">
+        <div className="row mt-4">
           <div className="col-sm-auto col-12 pe-sm-0">
             <Checkbox
               label={props.translate("I agree to the terms of service.")}

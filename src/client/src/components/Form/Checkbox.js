@@ -3,18 +3,20 @@ import Info from "../Icons/Info";
 
 export default function Checkbox(props) {
   const infoButton = props.info ? (
-    <button
-      className="btn text-secondary btn-icon p-0"
-      type="button"
-      id="button-help"
-      data-bs-toggle="collapse"
-      data-bs-target={`#collapse-help-${props.id}`}
-      aria-expanded="false"
-      aria-controls={`collapse-help-${props.id}`}
-      tabIndex={-1}
-    >
-      <Info />
-    </button>
+    <div className="col ps-0">
+      <button
+        className="btn text-secondary btn-icon p-0"
+        type="button"
+        id="button-help"
+        data-bs-toggle="collapse"
+        data-bs-target={`#collapse-help-${props.id}`}
+        aria-expanded="false"
+        aria-controls={`collapse-help-${props.id}`}
+        tabIndex={-1}
+      >
+        <Info />
+      </button>
+    </div>
   ) : null;
 
   const infoText = props.info ? (
@@ -26,7 +28,7 @@ export default function Checkbox(props) {
   return (
     <>
       <div className="row">
-        <div className="col-auto pe-0">
+        <div className="col-auto">
           <div className="form-check mb-3">
             <input
               className="form-check-input"
@@ -45,9 +47,7 @@ export default function Checkbox(props) {
             {props.invalidFeedback}
           </div>
         </div>
-        <div className="col">
-          {infoButton}
-        </div>
+        {infoButton}
       </div>
       {infoText}
     </>

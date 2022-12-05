@@ -247,10 +247,10 @@ export default function Subscription(props) {
       <>
         <div>
           <p>{props.translate("Here are the details about your subscription.")}</p>
-          <h5 className="mt-4 mb-3">{props.translate(product)}</h5>
+          <h5 className="mt-4">{props.translate(product)}</h5>
           <p>{props.translate(price)}</p>
           {subscriptionEndAt()}
-          <h5 className="mt-4 mb-3">{props.translate("Your collaborators")}</h5>
+          <h5 className="mt-4">{props.translate("Your collaborators")}</h5>
           <p>Number of active and invited collaborators: {props.account.activeUsers}</p>
           <p>Number of remaining collaborators: {maxUsers > 0 ? maxUsers - props.account.activeUsers : props.translate("unlimited")}</p>
         </div>
@@ -272,7 +272,7 @@ export default function Subscription(props) {
         // Show cancel info
         result = (
           <div>
-            <h5>{props.translate("Are you sure you want to cancel your subscription?")}</h5>
+            <h5 className="mt-4">{props.translate("Are you sure you want to cancel your subscription?")}</h5>
             <p>{props.translate("When you cancel...")}</p>
             <ul>
               <li>{props.translate("You won't be billed again.")}</li>
@@ -286,7 +286,7 @@ export default function Subscription(props) {
         // Show reactivate info
         result = (
           <div>
-            <h5>{props.translate("Are you sure you want to reactivate your subscription?")}</h5>
+            <h5 className="mt-4">{props.translate("Are you sure you want to reactivate your subscription?")}</h5>
             <p>{props.translate("When you reactivate...")}</p>
             <ul>
               <li>{props.translate("You will be charged at the end of your current subscription cycle, on")} {endAt}.</li>
@@ -324,7 +324,7 @@ export default function Subscription(props) {
           <>
             {productPresentation}
             <div>
-              <h5>{props.translate("Are you ready to start your one-month Calendarium trial?")}</h5>
+              <h5>{props.translate("Are you ready to start your free one-month Calendarium trial?")}</h5>
               <p>{props.translate("When your trial starts...")}</p>
               <ul>
                 <li>{props.translate("You will enjoy creating a calendar and inviting collaborators right away.")}</li>

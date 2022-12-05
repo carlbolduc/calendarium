@@ -3,18 +3,20 @@ import Info from "../Icons/Info";
 
 export default function Input(props) {
   const infoButton = props.info ? (
-    <button
-      className="btn text-secondary btn-icon p-0"
-      type="button"
-      id="button-help"
-      data-bs-toggle="collapse"
-      data-bs-target={`#collapse-help-${props.id}`}
-      aria-expanded="false"
-      aria-controls={`collapse-help-${props.id}`}
-      tabIndex={-1}
-    >
-      <Info />
-    </button>
+    <div className="col-auto ps-0">
+      <button
+        className="btn text-secondary btn-icon p-0"
+        type="button"
+        id="button-help"
+        data-bs-toggle="collapse"
+        data-bs-target={`#collapse-help-${props.id}`}
+        aria-expanded="false"
+        aria-controls={`collapse-help-${props.id}`}
+        tabIndex={-1}
+      >
+        <Info />
+      </button>
+    </div>
   ) : null;
 
   const infoText = props.info ? (
@@ -59,7 +61,7 @@ export default function Input(props) {
       // This is for input types: text, email, password
       <>
         <div className="row">
-          <div className="col pe-0">
+          <div className="col">
             <div className="form-floating mb-3">
               <input
                 type={props.type}
@@ -82,9 +84,7 @@ export default function Input(props) {
               {props.invalidFeedback}
             </div>
           </div>
-          <div className="col-auto">
-            {infoButton}
-          </div>
+          {infoButton}
         </div>
         {infoText}
       </>

@@ -45,7 +45,7 @@ export default function TrialForm(props) {
 
   return (
     <article>
-      <h5>{props.translate("Account details")}</h5>
+      <h5 className="mt-4">{props.translate("Account details")}</h5>
       <Message result={result} origin="signUp" translate={props.translate} />
       <form onSubmit={handleSubmit} id="form-sign-up" noValidate>
         <Input

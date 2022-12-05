@@ -65,7 +65,7 @@ export default function AcceptInvitation(props) {
   ) : (
     // If user is new, display more extensive instructions
     <>
-      <h5>{props.translate("Welcome to Calendarium.")}</h5>
+      <h5 className="mt-4">{props.translate("Welcome to Calendarium.")}</h5>
       <p>{props.translate("You have been invited to collaborate to a calendar. The email associated with your account is the email at which you receive your invitation. If you want to change it, you will be able to do so later in your account profile.")}</p>
       <p>{props.translate("To complete your account creation, enter a password for your account, then accept the invitation to get started.")}</p>
     </>
