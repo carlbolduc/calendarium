@@ -9,10 +9,7 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 import io.codebards.calendarium.api.Language;
 import io.codebards.calendarium.auth.CalendariumAuthorizer;
 import io.codebards.calendarium.auth.TokenAuthenticator;
-import io.codebards.calendarium.core.EmailManager;
-import io.codebards.calendarium.core.EventHelpers;
-import io.codebards.calendarium.core.StripeService;
-import io.codebards.calendarium.core.Account;
+import io.codebards.calendarium.core.*;
 import io.codebards.calendarium.db.Dao;
 import io.codebards.calendarium.resources.*;
 import de.mkammerer.argon2.Argon2;
@@ -59,7 +56,7 @@ public class App extends Application<Config> {
                 return config.getDatabase();
             }
         });
-        bootstrap.addBundle(new ViewBundle());
+        bootstrap.addBundle(new ViewBundle<>());
         bootstrap.addBundle(new UrlRewriteBundle());
         bootstrap.addBundle(new AssetsBundle("/assets/", "/", "index.html"));
     }
@@ -72,7 +69,6 @@ public class App extends Application<Config> {
         final BasicAWSCredentials awsCredentials = new BasicAWSCredentials(config.getThirdPartyFactory().getAccessKey(), config.getThirdPartyFactory().getSecretKey());
         final AmazonSimpleEmailService emailClient = AmazonSimpleEmailServiceClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider((awsCredentials))).withRegion(Regions.CA_CENTRAL_1).build();
 //        final AmazonS3 fileClient = AmazonS3ClientBuilder.standard().withRegion(Regions.CA_CENTRAL_1).withCredentials(new AWSStaticCredentialsProvider(awsCredentials)).build();
-
         final Dao dao = jdbi.onDemand(Dao.class);
         List<Language> allLanguages = dao.findAllLanguages();
         final EmailManager emailManager = new EmailManager(emailClient, config.getThirdPartyFactory().getBaseUrl(), allLanguages, dao);
@@ -80,7 +76,7 @@ public class App extends Application<Config> {
         final EventHelpers eventHelpers = new EventHelpers();
         final OpsResource opsResource = new OpsResource(dao);
         final BotResource botResource = new BotResource(dao);
-        final AuthResource authResource = new AuthResource(dao, argon2, emailManager);
+        final AuthResource authResource = new AuthResource(dao, argon2, emailManager, stripeService);
         final AccountsResource accountsResource = new AccountsResource(dao, argon2, stripeService);
         final LocalisationsResource localisationsResource = new LocalisationsResource(dao);
         final SubscriptionsResource subscriptionsResource = new SubscriptionsResource(dao, stripeService, config.getThirdPartyFactory().getStripeWebhookSecret());

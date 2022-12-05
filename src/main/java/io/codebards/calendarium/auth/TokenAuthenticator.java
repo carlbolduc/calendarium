@@ -10,7 +10,6 @@ import java.util.Optional;
 
 public class TokenAuthenticator implements Authenticator<String, Account> {
     private final Dao dao;
-
     public TokenAuthenticator(Dao dao) {
         this.dao = dao;
     }

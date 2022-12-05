@@ -173,11 +173,32 @@ export function sameDay(d1, d2) {
   );
 }
 
-  // Try to sort calendars according to the current localeId, fallback to alternative language when sorting if current localeId isn't enabled
-  export function sortedCalendars(calendars, localeId) {
-    if (localeId === "frCa") {
-      return calendars.sort((a, b) => (a.enableFr ? a.nameFr : a.nameEn).localeCompare((b.enableFr ? b.nameFr : b.nameEn)));
-    } else {
-      return calendars.sort((a, b) => (a.enableEn ? a.nameEn : a.nameFr).localeCompare((b.enableEn ? b.nameEn : b.nameFr)));
+// Try to sort calendars according to the current localeId, fallback to alternative language when sorting if current localeId isn't enabled
+export function sortedCalendars(calendars, localeId) {
+  if (localeId === "frCa") {
+    return calendars.sort((a, b) => (a.enableFr ? a.nameFr : a.nameEn).localeCompare((b.enableFr ? b.nameFr : b.nameEn)));
+  } else {
+    return calendars.sort((a, b) => (a.enableEn ? a.nameEn : a.nameFr).localeCompare((b.enableEn ? b.nameEn : b.nameFr)));
+  }
+}
+
+// Centralize the options for the Stripe credit card field
+export const CARD_OPTIONS = {
+  iconStyle: "solid",
+  style: {
+    base: {
+      iconColor: "#6C757D",
+      color: "#212529",
+      fontWeight: 400,
+      fontFamily: "sans-serif",
+      fontSize: "16px",
+      fontSmoothing: "antialiased",
+      ":-webkit-autofill": {
+        color: "#212529"
+      },
+      "::placeholder": {
+        color: "#6C757D"
+      }
     }
   }
+};

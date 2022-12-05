@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Redirect, useLocation} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import {DateTime} from "luxon";
 import Button from "../../components/Form/Button";
 import FeaturesList from "../../components/Content/FeaturesList";
@@ -8,6 +8,8 @@ import {getLocale, subscriptionStatus} from "../../services/Helpers";
 import StripeWrapper from "./StripeWrapper";
 import UpdateBillingInformationButton from "./UpdateBillingInformationButton";
 import SignUp from "../Auth/SignUp";
+import SubscribeForm from "./SubscribeForm";
+import StripeForm from "./StripeForm";
 
 const wantToOptions = {
   SUBSCRIBE: "subscribe",
@@ -276,16 +278,19 @@ export default function Subscription(props) {
         result = (
           <>
             {productPresentation}
-
-            {/* TODO: update sign up form to fit embedded in the start trial or subscribe flow  while not authenticated */}
-            {!props.authenticated ?
-            <SignUp signUp={props.signUp} authenticated={props.authenticated} translate={props.translate} /> : null}
-
             <StripeWrapper
-              createSubscription={createSubscription}
-              cancel={() => setWantTo("")}
-              localeId={props.localeId}
-              translate={props.translate}
+              element={props.authenticated ? (
+                <StripeForm
+                  createSubscription={createSubscription}
+                  cancel={() => setWantTo("")}
+                  translate={props.translate}
+                />
+              ) : (
+                <SubscribeForm
+                  translate={props.translate}
+                  signUpAndSubscribe={props.signUpAndSubscribe}
+                />
+              )}
             />
           </>
         );

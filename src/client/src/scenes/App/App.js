@@ -28,6 +28,7 @@ export default function App() {
     account,
     authenticated,
     signUp,
+    signUpAndSubscribe,
     signIn,
     signOut,
     getAccount,
@@ -152,6 +153,7 @@ export default function App() {
                   cancelSubscription={cancelSubscription}
                   reactivateSubscription={reactivateSubscription}
                   startTrial={startTrial}
+                  signUpAndSubscribe={signUpAndSubscribe}
                   updatePaymentMethod={updatePaymentMethod}
                 />
               </Route>

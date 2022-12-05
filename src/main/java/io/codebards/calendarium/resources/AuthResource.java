@@ -1,11 +1,15 @@
 package io.codebards.calendarium.resources;
 
+import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
+import com.stripe.model.PaymentMethod;
+import com.stripe.model.Subscription;
+import com.stripe.param.SubscriptionCreateParams;
 import de.mkammerer.argon2.Argon2;
-import io.codebards.calendarium.api.AccountToken;
-import io.codebards.calendarium.api.PasswordReset;
-import io.codebards.calendarium.api.SignUp;
+import io.codebards.calendarium.api.*;
 import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.core.EmailManager;
+import io.codebards.calendarium.core.StripeService;
 import io.codebards.calendarium.core.Utils;
 import io.codebards.calendarium.db.Dao;
 
@@ -15,8 +19,8 @@ import javax.ws.rs.core.Response;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
-import java.util.Base64;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Path("/auth")
 @Produces(MediaType.APPLICATION_JSON)
@@ -25,11 +29,91 @@ public class AuthResource {
     private final Dao dao;
     private final Argon2 argon2;
     private final EmailManager emailManager;
+    private final StripeService stripeService;
 
-    public AuthResource(Dao dao, Argon2 argon2, EmailManager emailManager) {
+    public AuthResource(Dao dao, Argon2 argon2, EmailManager emailManager, StripeService stripeService) {
         this.dao = dao;
         this.argon2 = argon2;
         this.emailManager = emailManager;
+        this.stripeService = stripeService;
+    }
+
+    @POST
+    @Path("/sign-up-validation")
+    public Response signUpValidation(SignUp signUp) {
+        Response response;
+        Optional<Account> oAccount = dao.findAccountByEmail(signUp.getEmail());
+        if (oAccount.isPresent()) {
+            response = Response.status(Response.Status.CONFLICT).build();
+        } else {
+            response = Response.ok().build();
+        }
+        return response;
+    }
+
+    @POST
+    @Path("/sign-up-and-subscribe")
+    public Response signUpAndSubscribe(PaidSignUp paidSignUp) {
+        Response response;
+        Optional<Account> oAccount = dao.findAccountByEmail(paidSignUp.getSignUp().getEmail());
+        if (oAccount.isPresent()) {
+            response = Response.status(Response.Status.CONFLICT).build();
+        } else {
+            // Create the Calendarium account
+            String passwordDigest = argon2.hash(2, 65536, 1, paidSignUp.getSignUp().getPassword().toCharArray());
+            long accountId = dao.insertAccount(paidSignUp.getSignUp().getEmail(), paidSignUp.getSignUp().getName(), paidSignUp.getSignUp().getLanguageId(), passwordDigest, 0);
+            String token = createToken(accountId);
+            if (token != null) {
+                AccountToken accountToken = new AccountToken(accountId, token);
+                // Create the Stripe customer
+                try {
+                    Customer customer = stripeService.createCustomer(paidSignUp.getSignUp().getEmail(), paidSignUp.getSignUp().getName());
+                    dao.setStripeCusId(accountId, customer.getId());
+                    // Set the default payment method on the customer
+                    PaymentMethod paymentMethod = stripeService.setPaymentMethod(customer, paidSignUp.getPaymentMethodDetails().getId());
+                    // Get price id from database
+                    Price price = dao.findPrice(10);
+                    SubscriptionCreateParams subCreateParams;
+                    if (paymentMethod.getCard().getCountry().equals("CA")) {
+                        List<Tax> taxesToCharge = new ArrayList<>();
+                        String postalCode = paymentMethod.getBillingDetails().getAddress().getPostalCode();
+                        if (postalCode != null) {
+                            List<Tax> taxes = dao.findTaxes();
+                            List<String> taxRateDescriptions = Utils.getTaxRateDescriptions(postalCode);
+                            taxesToCharge = taxes.stream().filter(t -> taxRateDescriptions.contains(t.getDescription())).collect(Collectors.toList());
+                        }
+                        subCreateParams = SubscriptionCreateParams
+                                .builder()
+                                .addItem(SubscriptionCreateParams.Item.builder().setPrice(price.getStripePriceId()).build())
+                                .setCustomer(customer.getId())
+                                .addAllExpand(Collections.singletonList("latest_invoice.payment_intent"))
+                                .addAllDefaultTaxRate(taxesToCharge.stream().map(Tax::getStripeTaxId).collect(Collectors.toList()))
+                                .build();
+                    } else {
+                        subCreateParams = SubscriptionCreateParams
+                                .builder()
+                                .addItem(SubscriptionCreateParams.Item.builder().setPrice(price.getStripePriceId()).build())
+                                .setCustomer(customer.getId())
+                                .addAllExpand(Collections.singletonList("latest_invoice.payment_intent"))
+                                .build();
+                    }
+                    // Create the subscription
+                    Subscription subscription = stripeService.createSubscription(subCreateParams);
+                    dao.insertSubscription(accountId, subscription.getId(), price.getPriceId(), Math.toIntExact(subscription.getCurrentPeriodStart()), Math.toIntExact(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), accountId);
+                    if (subscription.getLatestInvoiceObject().getPaymentIntentObject().getStatus().equals(PaymentIntentStatus.SUCCEEDED.getStatus())) {
+                        // TODO: It worked, check what we must return to client
+                        // Check with Stripe if it's possible to get a subscription that is not succeeded when we reach this step
+                    }
+                    response = Response.ok(accountToken).build();
+                } catch (StripeException e) {
+                    // Stripe failed to create the customer, client should ask the customer to retry
+                    response = Response.serverError().build();
+                }
+            } else {
+                response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            }
+        }
+        return response;
     }
 
     @POST

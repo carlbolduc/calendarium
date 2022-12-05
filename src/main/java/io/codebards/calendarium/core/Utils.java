@@ -3,10 +3,7 @@ package io.codebards.calendarium.core;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Base64;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 public class Utils {
 
@@ -78,6 +75,29 @@ public class Utils {
         public RandomString() {
             this(32);
         }
+    }
+
+    public static List<String> getTaxRateDescriptions(String postalCode) {
+        List<String> taxRateDescriptions = new ArrayList<>();
+        switch (postalCode.toLowerCase().charAt(0)) {
+            case 'a', 'b', 'c', 'e' ->
+                // NL, NS, PE, NB
+                    taxRateDescriptions.add("HST15");
+            case 'g', 'h', 'j' -> {
+                // QC
+                taxRateDescriptions.add("GST");
+                taxRateDescriptions.add("QST");
+            }
+            case 'k', 'l', 'm', 'n', 'p' ->
+                // ON
+                    taxRateDescriptions.add("HST13");
+            case 'r', 's', 't', 'v', 'x', 'y' ->
+                // MP, SK, AB, BC, NUNT, YT
+                    taxRateDescriptions.add("HST15");
+            default -> {
+            }
+        }
+        return taxRateDescriptions;
     }
 
 }

@@ -12,6 +12,7 @@ import io.codebards.calendarium.api.Price;
 import io.codebards.calendarium.api.*;
 import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.core.StripeService;
+import io.codebards.calendarium.core.Utils;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
 
@@ -48,7 +49,7 @@ public class SubscriptionsResource {
     public Response createStripeCustomer(@Auth Account auth) {
         Response response;
         try {
-            Customer customer = stripeService.createCustomer(auth);
+            Customer customer = stripeService.createCustomer(auth.getEmail(), auth.getName());
             dao.setStripeCusId(auth.getAccountId(), customer.getId());
             // Customer successfully created, client should fetch the account again to obtain the stripe customer id
             response = Response.ok().build();
@@ -82,7 +83,7 @@ public class SubscriptionsResource {
                         String postalCode = paymentMethod.getBillingDetails().getAddress().getPostalCode();
                         if (postalCode != null) {
                             List<Tax> taxes = dao.findTaxes();
-                            List<String> taxRateDescriptions = getTaxRateDescriptions(postalCode);
+                            List<String> taxRateDescriptions = Utils.getTaxRateDescriptions(postalCode);
                             taxesToCharge = taxes.stream().filter(t -> taxRateDescriptions.contains(t.getDescription())).collect(Collectors.toList());
                         }
                         subCreateParams = SubscriptionCreateParams
@@ -219,26 +220,4 @@ public class SubscriptionsResource {
         return Response.ok().build();
     }
 
-    private List<String> getTaxRateDescriptions(String postalCode) {
-        List<String> taxRateDescriptions = new ArrayList<>();
-        switch (postalCode.toLowerCase().charAt(0)) {
-            case 'a', 'b', 'c', 'e' ->
-                    // NL, NS, PE, NB
-                    taxRateDescriptions.add("HST15");
-            case 'g', 'h', 'j' -> {
-                // QC
-                taxRateDescriptions.add("GST");
-                taxRateDescriptions.add("QST");
-            }
-            case 'k', 'l', 'm', 'n', 'p' ->
-                    // ON
-                    taxRateDescriptions.add("HST13");
-            case 'r', 's', 't', 'v', 'x', 'y' ->
-                    // MP, SK, AB, BC, NUNT, YT
-                    taxRateDescriptions.add("HST15");
-            default -> {
-            }
-        }
-        return taxRateDescriptions;
-    }
 }

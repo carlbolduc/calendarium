@@ -1,8 +1,5 @@
 package io.codebards.calendarium.core;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
@@ -15,6 +12,9 @@ import com.stripe.param.PaymentMethodAttachParams;
 import com.stripe.param.SubscriptionCreateParams;
 import com.stripe.param.SubscriptionUpdateParams;
 import com.stripe.param.checkout.SessionCreateParams;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class StripeService {
     private final String env;
@@ -30,11 +30,11 @@ public class StripeService {
         return Customer.retrieve(customerId);
     }
 
-    public Customer createCustomer(Account account) throws StripeException {
+    public Customer createCustomer(String email, String name) throws StripeException {
         Stripe.apiKey = stripeApiKey;
         Map<String, Object> params = new HashMap<>();
-        params.put("email", account.getEmail());
-        params.put("name", account.getName());
+        params.put("email", email);
+        params.put("name", name);
         return Customer.create(params);
     }
 

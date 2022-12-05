@@ -40,6 +40,26 @@ export function useAuth() {
     }
   }, [token, getAccount]);
 
+  const signUpAndSubscribe = useCallback((data, cb) => {
+    // Validate that the email is available
+    axios.post(`${process.env.REACT_APP_API}/auth/sign-up-validation`, data.signUp).then(() => {
+      // Email is available, proceed with sign up and subscribe
+      axios.post(`${process.env.REACT_APP_API}/auth/sign-up-and-subscribe`, data).then(signUpRes => {
+        saveToken(signUpRes.data.token);
+        if (cb) {
+          const result = {
+            success: true
+          }
+          cb(result);
+        }
+      }).catch(err => {
+        errorCallback(err, cb);
+      });
+    }).catch(err => {
+      errorCallback(err, cb);
+    });
+  }, []);
+
   const signUp = useCallback((data, cb) => {
     // set currently active locale as the language id for the new account
     data["languageId"] = account.languageId;
@@ -197,5 +217,5 @@ export function useAuth() {
 
 
 
-  return {token, account, authenticated, signUp, signIn, signOut, getAccount, updateAccount, updateAccountLanguageId, updateAccountPassword, createPasswordReset, resetPassword, saveToken};
+  return {token, account, authenticated, signUp, signUpAndSubscribe, signIn, signOut, getAccount, updateAccount, updateAccountLanguageId, updateAccountPassword, createPasswordReset, resetPassword, saveToken};
 }

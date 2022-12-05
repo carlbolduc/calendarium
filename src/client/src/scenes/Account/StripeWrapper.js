@@ -1,7 +1,7 @@
 import React from "react";
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import SubscribeForm from "./SubscribeForm";
+import PropTypes from "prop-types";
+import {Elements} from "@stripe/react-stripe-js";
+import {loadStripe} from "@stripe/stripe-js";
 
 export default function StripeWrapper(props) {
   const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK, {
@@ -9,11 +9,11 @@ export default function StripeWrapper(props) {
   });
   return (
     <Elements stripe={stripePromise}>
-      <SubscribeForm
-        createSubscription={props.createSubscription}
-        cancel={props.cancel}
-        translate={props.translate}
-      />
+      {props.element}
     </Elements>
   );
+}
+
+StripeWrapper.propTypes = {
+  element: PropTypes.element,
 }
