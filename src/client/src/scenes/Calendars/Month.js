@@ -1,49 +1,75 @@
+import "./Month.scss";
 import React from "react";
 import { useState, useEffect } from "react";
-import { DateTime, Info } from "luxon";
+import { DateTime } from "luxon";
 import useComponentBlur from "../../services/ComponentBlurHook";
-import { dayNumber, getLocale, nextWeekDay, uuidv4, textColor } from "../../services/Helpers";
+import { dayNumber, nextWeekDay, uuidv4 } from "../../services/Helpers";
 import Week from "./Week";
-import ArrowLeft from "../../components/Icons/ArrowLeft";
-import ArrowRight from "../../components/Icons/ArrowRight";
+import MonthHeader from "./MonthHeader";
 
 export default function Month(props) {
   const { ref } = useComponentBlur(props.hide !== undefined ? props.hide : null);
   const [date, setDate] = useState(DateTime.now());
   const [weeks, setWeeks] = useState([]);
+  const [width, setWidth] = useState(window.innerWidth);
+  const mobile = width <= 768;
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+    window.addEventListener('resize', handleWindowSizeChange);
+    return () => {
+      window.removeEventListener('resize', handleWindowSizeChange);
+    }
+  }, []);
 
   useEffect(() => {
     if (date !== null) {
       const result = [];
       let week = [];
       let dayOfWeek = dayNumber(props.startWeekOn);
-      const monthStartWeekday = date.startOf("month").weekday;
-      for (let i = 0; i < date.daysInMonth; i++) {
-        // Prepend empty days
-        while (dayOfWeek !== monthStartWeekday) {
-          week.push(null);
-          dayOfWeek = nextWeekDay(dayOfWeek);
+      if (mobile) {
+        let day = date.startOf("week");
+        while (week.length < 7) {
+          week.push(day);
+          day = day.plus({days: 1})
         }
-        week.push(i + 1);
-        if (week.length === 7) {
-          result.push(week);
-          week = [];
-        } else if (i === date.daysInMonth - 1) {
-          while (week.length < 7) {
+        result.push(week);
+      } else {
+        const startOfMonth = date.startOf("month");
+        for (let i = 0; i < date.daysInMonth; i++) {
+          // Prepend empty days
+          while (dayOfWeek !== startOfMonth.weekday) {
             week.push(null);
+            dayOfWeek = nextWeekDay(dayOfWeek);
           }
-          result.push(week);
+          const day =  startOfMonth.plus({days: i});
+          week.push(day);
+          if (week.length === 7) {
+            result.push(week);
+            week = [];
+          } else if (i === date.daysInMonth - 1) {
+            while (week.length < 7) {
+              week.push(null);
+            }
+            result.push(week);
+          }
         }
       }
       setWeeks(result);
       props.selectDay(date);
     }
-  }, [date, props.startWeekOn]);
+  }, [date, props.startWeekOn, mobile]);
 
   function selectDay(d) {
-    const selectedDate = date.set({ day: d });
-    setDate(selectedDate);
+    const selectedDate = d;
+    setDate(d);
     props.selectDay(selectedDate);
+    // TODO: do this in a callback
+    setTimeout(() => {
+      document.getElementById("now").scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
+    }, 400);
   }
 
   function changeMonth(plusOrMinus) {
@@ -54,62 +80,27 @@ export default function Month(props) {
       newDate = date.minus({ months: 1 });
     }
     setDate(newDate.startOf("month"));
+    // TODO: do this in a callback
+    setTimeout(() => {
+      document.getElementById("now").scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
+    }, 400);
   }
 
-  function renderHeader() {
-    const dayOfWeek = dayNumber(props.startWeekOn);
-    const locale = getLocale(props.localeId);
-    const weekdayRowClassName = props.secondaryColor === undefined || props.secondaryColor === "#ffffff" 
-      ? "text-muted" 
-      : `${textColor(props.secondaryColor)}`;
-    const weekdayRowStyle = props.secondaryColor === undefined 
-      ? null 
-      : { backgroundColor: props.secondaryColor };
-    const monthRowTextColor = props.primaryColor === undefined 
-      ? null 
-      : textColor(props.primaryColor);
-    const monthRowStyle = props.primaryColor === undefined 
-      ? null 
-      : { backgroundColor: props.primaryColor };
-    return (
-      <thead>
-        <tr className={monthRowTextColor} style={monthRowStyle}>
-          <th className="border-0 p-1">
-            <button
-              className={`btn ${monthRowTextColor} btn-icon p-0`}
-              type="button"
-              id="button-arrow-left"
-              onClick={() => changeMonth("minus")}
-            >
-              <ArrowLeft />
-            </button>
-          </th>
-          <th className="border-0 p-1" colSpan={5}>{date.setLocale(getLocale(props.localeId)).monthLong} {date.year}</th>
-          <th className="border-0 p-1">
-            <button
-              className={`btn ${monthRowTextColor} btn-icon p-0`}
-              type="button"
-              id="button-arrow-left"
-              onClick={() => changeMonth("plus")}
-            >
-              <ArrowRight />
-            </button>
-          </th>
-        </tr>
-        <tr className={weekdayRowClassName} style={weekdayRowStyle}>
-          <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[dayOfWeek - 1]}</th>
-          <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[dayOfWeek % 7]}</th>
-          <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 1) % 7]}</th>
-          <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 2) % 7]}</th>
-          <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 3) % 7]}</th>
-          <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 4) % 7]}</th>
-          <th className="fw-normal">{Info.weekdays("narrow", { locale: locale })[(dayOfWeek + 5) % 7]}</th>
-        </tr>
-      </thead>
-    );
+  function changeWeek(plusOrMinus) {
+    let newDate;
+    if (plusOrMinus === "plus") {
+      newDate = date.plus({ weeks: 1 });
+    } else if (plusOrMinus === "minus") {
+      newDate = date.minus({ weeks: 1 });
+    }
+    setDate(newDate);
+    // TODO: do this in a callback
+    setTimeout(() => {
+      document.getElementById("now").scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
+    }, 400);
   }
 
-  const month = weeks.map(week => (
+  const calendar = weeks.map(week => (
     <Week
       key={uuidv4()}
       days={week}
@@ -123,10 +114,17 @@ export default function Month(props) {
   ));
 
   return (
-    <table className="table table-bordered text-center" ref={ref}>
-      {renderHeader()}
+    <table className="table table-bordered text-center sticky-top" ref={ref}>
+      <MonthHeader
+        localeId={props.localeId}
+        startWeekOn={props.startWeekOn}
+        primaryColor={props.primaryColor}
+        secondaryColor={props.secondaryColor}
+        date={date}
+        change={mobile ? changeWeek : changeMonth}
+      />
       <tbody>
-        {month}
+        {calendar}
       </tbody>
     </table>
   );

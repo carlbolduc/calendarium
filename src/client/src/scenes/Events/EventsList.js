@@ -1,7 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Event from "./Event";
-import { eventStatus } from "../../services/Helpers";
+import { eventStatus, getLocale } from "../../services/Helpers";
+import {DateTime} from "luxon";
 
 export default function EventsList(props) {
 
@@ -49,7 +50,7 @@ export default function EventsList(props) {
     });
   }
 
-  const events = props.events.map(e => (
+  const pastEvents = props.events.filter(e => e.endAt < props.selectedDate.toSeconds()).map(e => (
     <Event
       key={e.eventId}
       event={e}
@@ -59,7 +60,7 @@ export default function EventsList(props) {
       translate={props.translate}
       enableEn={props.calendar.enableEn}
       enableFr={props.calendar.enableFr}
-      primaryColor={props.calendar.primaryColor}      
+      primaryColor={props.calendar.primaryColor}
       showStatus={props.showStatus}
       showButtons={props.showButtons}
       isEmbedded={props.isEmbedded}
@@ -72,15 +73,51 @@ export default function EventsList(props) {
     />
   ));
 
+  const futureEvents = props.events.filter(e => e.endAt >= props.selectedDate.toSeconds()).map(e => (
+    <Event
+      key={e.eventId}
+      event={e}
+      account={props.account}
+      calendar={props.calendar}
+      localeId={props.localeId}
+      translate={props.translate}
+      enableEn={props.calendar.enableEn}
+      enableFr={props.calendar.enableFr}
+      primaryColor={props.calendar.primaryColor}
+      showStatus={props.showStatus}
+      showButtons={props.showButtons}
+      isEmbedded={props.isEmbedded}
+      edit={props.edit}
+      sendForApproval={sendForApproval}
+      publishEvent={publishEvent}
+      unpublishEvent={unpublishEvent}
+      approveEvent={approveEvent}
+      delete={deleteEvent}
+    />
+  ));
+
+  const locale = getLocale(props.localeId);
+
   return props.events.length === 0 ? (
     <div>{props.noEventsMessage}</div>
     ) : (
-    <div>{events}</div>
+    <div>
+      {props.isEmbedded ? <div id="top-gradient"></div> : null}
+      {futureEvents}
+      <article id="now" className="card text-bg-light fw-bold text-center text-uppercase mb-3">
+        <div className="card-body">
+          {props.selectedDate.setLocale(locale).toLocaleString(DateTime.DATE_HUGE)}
+        </div>
+      </article>
+      {pastEvents}
+      {props.isEmbedded ? <div id="bottom-gradient"></div> : null}
+    </div>
   );
 
 }
 
 EventsList.propTypes = {
+  selectedDate: PropTypes.object.isRequired,
   events: PropTypes.array.isRequired,
   noEventsMessage: PropTypes.string.isRequired,
   account: PropTypes.object,

@@ -39,7 +39,7 @@ export default function Calendar(props) {
         // We do nothing with the result.
         // TODO: should we display the error if there is one (there should never be one)
       });
-      const dotsQ = encodeObject({ 
+      const dotsQ = encodeObject({
         calendarId: props.calendar.calendarId,
         startAt: selectedDate.startOf("month").startOf("day").toSeconds(),
         zoneName: selectedDate.zoneName
@@ -251,7 +251,7 @@ export default function Calendar(props) {
           </div>
           <div className="mt-4 px-0">
             <div className="row justify-content-center">
-              <div className="col-12 col-md-auto">
+              <div className="month col-12 col-md-auto sticky-top">
                 <Month
                   startWeekOn={props.calendar.startWeekOn}
                   selectedDate={selectedDate}
@@ -264,6 +264,7 @@ export default function Calendar(props) {
               </div>
               <div className="col-12 col-md">
                 <EventsList
+                  selectedDate={selectedDate}
                   events={props.events}
                   noEventsMessage={props.translate("There are no events on or after the selected date.")}
                   account={props.account}

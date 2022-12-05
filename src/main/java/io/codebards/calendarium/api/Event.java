@@ -1,6 +1,6 @@
 package io.codebards.calendarium.api;
 
-public class Event {
+public class Event implements Comparable<Event> {
     private long eventId;
     private long accountId;
     private long calendarId;
@@ -144,5 +144,10 @@ public class Event {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    @Override
+    public int compareTo(Event other) {
+        return startAt.compareTo(other.startAt);
     }
 }

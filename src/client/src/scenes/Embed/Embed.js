@@ -70,7 +70,7 @@ export default function Embed(props) {
     } else {
       result = (
         <div className="row justify-content-center">
-          <div className="col-12 col-md-auto">
+          <div className="month col-12 col-md-auto sticky-top">
             <Month
               startWeekOn={props.calendar.startWeekOn}
               selectedDate={selectedDate}
@@ -83,6 +83,7 @@ export default function Embed(props) {
           </div>
           <div className="col-12 col-md">
             <EventsList
+              selectedDate={selectedDate}
               events={props.events}
               noEventsMessage={props.translate("There are no events on or after the selected date.")}
               account={props.account}
@@ -101,7 +102,7 @@ export default function Embed(props) {
   }
 
   return (
-    <div className="container mt-4 px-0">
+    <div className="container mt-0 px-0">
       {main()}
     </div>
   );

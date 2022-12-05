@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.codebards.calendarium.api.*;
+import io.codebards.calendarium.api.Calendar;
 import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.core.EventHelpers;
 import io.codebards.calendarium.db.Dao;
@@ -18,11 +19,7 @@ import io.dropwizard.auth.Auth;
 
 import java.nio.charset.StandardCharsets;
 import java.time.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Path("/calendars")
 @Produces(MediaType.APPLICATION_JSON)
@@ -183,15 +180,23 @@ public class CalendarsResource {
                 if (oCalendarAccess.isPresent()) {
                     if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.OWNER.getStatus())) {
                         events = dao.findCalendarOwnerEvents(calendarId, calendarEventsParams.getStartAt());
+                        Collections.sort(events);
+                        Collections.reverse(events);
                     } else if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.ACTIVE.getStatus())) {
                         events = dao.findCollaboratorEvents(auth.getAccountId(), calendarId, calendarEventsParams.getStartAt());
+                        Collections.sort(events);
+                        Collections.reverse(events);
                     } else if (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.INVITED.getStatus())) {
                         // Collaborator is invited but has yet to create content, show them published events
                         events = dao.findCalendarPublishedEvents(calendarId, calendarEventsParams.getStartAt());
+                        Collections.sort(events);
+                        Collections.reverse(events);
                     }
                 } else {
                     // Public calendar, show events even if user isn't owner or collaborator
                     events = dao.findCalendarPublishedEvents(calendarId, calendarEventsParams.getStartAt());
+                    Collections.sort(events);
+                    Collections.reverse(events);
                 }
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
@@ -217,7 +222,6 @@ public class CalendarsResource {
                 // Find the upper limit for months event: the beginning of the first day of next month
                 LocalDate monthEnd = YearMonth.from(dotsZonedStartAt).atEndOfMonth();
                 Instant firstDayOfNextMonth = monthEnd.plusDays(1).atStartOfDay().atZone(zoneId).toInstant();
-                monthEvents = dao.findMonthPublishedEvents(dotsParams.getCalendarId(), Math.toIntExact(dotsZonedStartAt.toInstant().getEpochSecond()), Math.toIntExact(firstDayOfNextMonth.getEpochSecond()));
 
                 List<CalendarAccess> calendarAccesses = dao.findCalendarAccesses(auth.getAccountId());
                 Optional<CalendarAccess> oCalendarAccess = calendarAccesses.stream().filter(ca -> ca.getCalendarId() == dotsParams.getCalendarId()).findAny();
