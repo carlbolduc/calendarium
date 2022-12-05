@@ -62,6 +62,9 @@ export default function Header(props) {
               translate={props.translate}
               goTo={goTo}
             /> : null}
+            <li className="nav-item">
+              <a className="nav-link" href="mailto:grove@codebards.io">{props.translate("Help")}</a>
+            </li>
             <Language
               languages={props.languages}
               languageId={props.languageId}
@@ -69,9 +72,6 @@ export default function Header(props) {
               switchLanguage={props.switchLanguage}
               collapseMenu={collapseMenu}
             />
-            <li className="nav-item">
-              <a className="nav-link" href="mailto:grove@codebards.io">{props.translate("Help")}</a>
-            </li>
           </ul>
         </div>
       </div>
