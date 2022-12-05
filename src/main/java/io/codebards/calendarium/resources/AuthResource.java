@@ -19,6 +19,8 @@ import javax.ws.rs.core.Response;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -129,6 +131,11 @@ public class AuthResource {
             String token = createToken(accountId);
             if (token != null) {
                 AccountToken accountToken = new AccountToken(accountId, token);
+                Instant now = Instant.now();
+                Instant in30Days = LocalDateTime.from(now.atZone(ZoneId.of("UTC"))).plusDays(30).atZone(ZoneId.of("UTC")).toInstant();
+                Price price = dao.findPrice(0);
+                // Create the trial
+                dao.insertSubscription(accountId, null, price.getPriceId(), Math.toIntExact(now.getEpochSecond()), Math.toIntExact(in30Days.getEpochSecond()), SubscriptionStatus.ACTIVE.getStatus(), accountId);
                 response = Response.status(Response.Status.CREATED).entity(accountToken).build();
             } else {
                 response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

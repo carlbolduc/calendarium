@@ -142,7 +142,7 @@ export function useSubscription(token, account, getAccount) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        url: `${process.env.REACT_APP_API}/trials`,
+        url: `${process.env.REACT_APP_API}/subscriptions/trials`,
       })
         .then(() => {
           // Success, fetch account to retrieve the trial subscription

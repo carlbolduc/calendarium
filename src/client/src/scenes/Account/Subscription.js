@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import PropTypes from "prop-types";
 import {useLocation} from "react-router-dom";
 import {DateTime} from "luxon";
 import Button from "../../components/Form/Button";
@@ -7,7 +8,7 @@ import Message from "../../components/Form/Message";
 import {getLocale, subscriptionStatus} from "../../services/Helpers";
 import StripeWrapper from "./StripeWrapper";
 import UpdateBillingInformationButton from "./UpdateBillingInformationButton";
-import SignUp from "../Auth/SignUp";
+import TrialForm from "../Auth/TrialForm";
 import SubscribeForm from "./SubscribeForm";
 import StripeForm from "./StripeForm";
 
@@ -44,7 +45,8 @@ export default function Subscription(props) {
   function wantToSubscribe(e) {
     e.preventDefault();
     setWantTo(wantToOptions.SUBSCRIBE);
-    if (!props.customerCreated) {
+    // For people who already have an account, we create a customer (this step is not necessary for anonymous users)
+    if (props.authenticated && !props.customerCreated) {
       props.createCustomer(result => {
         if (result.success) {
           console.log("Customer created, show stripe form.");
@@ -288,6 +290,7 @@ export default function Subscription(props) {
               ) : (
                 <SubscribeForm
                   translate={props.translate}
+                  cancel={() => setWantTo("")}
                   signUpAndSubscribe={props.signUpAndSubscribe}
                 />
               )}
@@ -315,13 +318,15 @@ export default function Subscription(props) {
                 <li>{props.translate("If you have embedded your calendar in other websites, its embed code will stop displaying the calendar, showing instead a discreet message.")}</li>
                 <li>{props.translate("You will have realized that one month flies by so fast.")}</li>
               </ul>
-
-              {/* TODO: update sign up form to fit embedded in the start trial or subscribe flow while not authenticated */}
-              {!props.authenticated ?
-              <SignUp signUp={props.signUp} authenticated={props.authenticated} translate={props.translate} /> : null}
-
-              <Button label={props.translate("Never mind")} type="button" id="button-never-mind" onClick={() => setWantTo("")} outline={true} />
-              <Button label={props.translate("Start my trial")} type="button" id="button-start-trial" onClick={e => startTrial(e)} />
+              {props.authenticated ? (
+                <>
+                  <Button label={props.translate("Never mind")} type="button" id="button-never-mind" onClick={() => setWantTo("")} outline={true} />
+                  <Button label={props.translate("Start my trial")} type="button" id="button-start-trial" onClick={e => startTrial(e)} />
+                </>
+                ) : (
+                  <TrialForm cancel={() => setWantTo("")} signUp={props.signUp} translate={props.translate} />
+                )
+              }
             </div>
           </>
         );
@@ -353,4 +358,21 @@ export default function Subscription(props) {
       {renderMain()}
     </article>
   );
+}
+
+Subscription.propTypes = {
+  authenticated: PropTypes.bool,
+  customerCreated: PropTypes.bool,
+  subscribed: PropTypes.bool,
+  account: PropTypes.object,
+  createCustomer: PropTypes.func,
+  createCheckoutSession: PropTypes.func,
+  createSubscription: PropTypes.func,
+  cancelSubscription: PropTypes.func,
+  reactivateSubscription: PropTypes.func,
+  signUp: PropTypes.func,
+  startTrial: PropTypes.func,
+  signUpAndSubscribe: PropTypes.func,
+  updatePaymentMethod: PropTypes.func,
+  translate: PropTypes.func,
 }

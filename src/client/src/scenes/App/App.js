@@ -1,14 +1,13 @@
-import React, { useCallback } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { useLoc } from "../../services/LocHook";
-import { useAuth } from "../../services/AuthHook";
-import { useSubscription } from "../../services/SubscriptionHook";
-import { useCalendar } from "../../services/CalendarHook";
-import { useEvent } from "../../services/EventHook";
-import { useDot } from "../../services/DotHook";
-import { useCollaborator } from "../../services/CollaboratorHook";
+import React, {useCallback} from "react";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {useLoc} from "../../services/LocHook";
+import {useAuth} from "../../services/AuthHook";
+import {useSubscription} from "../../services/SubscriptionHook";
+import {useCalendar} from "../../services/CalendarHook";
+import {useEvent} from "../../services/EventHook";
+import {useDot} from "../../services/DotHook";
+import {useCollaborator} from "../../services/CollaboratorHook";
 import Header from "../../components/Header/Header";
-import SignUp from "../Auth/SignUp";
 import SignIn from "../Auth/SignIn";
 import ForgotPassword from "../Auth/ForgotPassword";
 import Home from "../Home/Home";
@@ -27,9 +26,9 @@ export default function App() {
     token,
     account,
     authenticated,
-    signUp,
     signUpAndSubscribe,
     signIn,
+    signUp,
     signOut,
     getAccount,
     updateAccount,
@@ -108,13 +107,6 @@ export default function App() {
                   translate={translate}
                 />
               </Route>
-              <Route exact path="/sign-up">
-                <SignUp
-                  signUp={signUp}
-                  authenticated={authenticated}
-                  translate={translate}
-                />
-              </Route>
               <Route exact path="/forgot-password">
                 <ForgotPassword
                   createPasswordReset={createPasswordReset}
@@ -153,6 +145,7 @@ export default function App() {
                   cancelSubscription={cancelSubscription}
                   reactivateSubscription={reactivateSubscription}
                   startTrial={startTrial}
+                  signUp={signUp}
                   signUpAndSubscribe={signUpAndSubscribe}
                   updatePaymentMethod={updatePaymentMethod}
                 />

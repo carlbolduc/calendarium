@@ -23,6 +23,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +43,22 @@ public class SubscriptionsResource {
         this.dao = dao;
         this.stripeService = stripeService;
         this.stripeWebhookSecret = stripeWebhookSecret;
+    }
+
+    @POST
+    public Response createTrial(@Auth Account auth) {
+        Response response;
+        if (auth.getSubscription() == null) {
+            Instant now = Instant.now();
+            Instant in30Days = LocalDateTime.from(now.atZone(ZoneId.of("UTC"))).plusDays(30).atZone(ZoneId.of("UTC")).toInstant();
+            Price price = dao.findPrice(0);
+            // Create the subscription
+            dao.insertSubscription(auth.getAccountId(), null, price.getPriceId(), Math.toIntExact(now.getEpochSecond()), Math.toIntExact(in30Days.getEpochSecond()), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
+            response = Response.ok().build();
+        } else {
+            response = Response.status(Response.Status.FORBIDDEN).build();
+        }
+        return response;
     }
 
     @RolesAllowed({"USER"})

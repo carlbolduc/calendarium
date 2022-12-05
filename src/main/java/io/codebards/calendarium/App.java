@@ -5,15 +5,17 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
-
+import de.mkammerer.argon2.Argon2;
+import de.mkammerer.argon2.Argon2Factory;
 import io.codebards.calendarium.api.Language;
 import io.codebards.calendarium.auth.CalendariumAuthorizer;
 import io.codebards.calendarium.auth.TokenAuthenticator;
-import io.codebards.calendarium.core.*;
+import io.codebards.calendarium.core.Account;
+import io.codebards.calendarium.core.EmailManager;
+import io.codebards.calendarium.core.EventHelpers;
+import io.codebards.calendarium.core.StripeService;
 import io.codebards.calendarium.db.Dao;
 import io.codebards.calendarium.resources.*;
-import de.mkammerer.argon2.Argon2;
-import de.mkammerer.argon2.Argon2Factory;
 import io.dropwizard.Application;
 import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.auth.AuthDynamicFeature;
@@ -80,7 +82,6 @@ public class App extends Application<Config> {
         final AccountsResource accountsResource = new AccountsResource(dao, argon2, stripeService);
         final LocalisationsResource localisationsResource = new LocalisationsResource(dao);
         final SubscriptionsResource subscriptionsResource = new SubscriptionsResource(dao, stripeService, config.getThirdPartyFactory().getStripeWebhookSecret());
-        final TrialsResource trialsResource = new TrialsResource(dao);
         final CalendarsResource calendarsResource = new CalendarsResource(dao, eventHelpers);
         final PublicResource publicResource = new PublicResource(dao, eventHelpers);
         final EventsResource eventsResource = new EventsResource(dao);
@@ -104,7 +105,6 @@ public class App extends Application<Config> {
         environment.jersey().register(accountsResource);
         environment.jersey().register(localisationsResource);
         environment.jersey().register(subscriptionsResource);
-        environment.jersey().register(trialsResource);
         environment.jersey().register(calendarsResource);
         environment.jersey().register(publicResource);
         environment.jersey().register(eventsResource);

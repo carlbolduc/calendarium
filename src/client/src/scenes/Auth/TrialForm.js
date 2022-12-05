@@ -1,16 +1,15 @@
 import React, {useState} from "react";
 import PropTypes from "prop-types";
-import Message from "../../components/Form/Message";
+import {Link} from "react-router-dom";
+import {emailValid, passwordValid, textValid} from "../../services/Helpers";
 import Input from "../../components/Form/Input";
-import InvalidFeedback from "../../components/Form/InvalidFeedback";
-import Checkbox from "../../components/Form/Checkbox";
 import Button from "../../components/Form/Button";
-import {CardElement, useElements, useStripe} from "@stripe/react-stripe-js";
-import {CARD_OPTIONS, emailValid, passwordValid, textValid} from "../../services/Helpers";
+import Checkbox from "../../components/Form/Checkbox";
+import Message from "../../components/Form/Message";
+import InvalidFeedback from "../../components/Form/InvalidFeedback";
 
-export default function SubscribeForm(props) {
-  const stripe = useStripe();
-  const elements = useElements();
+export default function TrialForm(props) {
+  const signUp = props.signUp;
   const [name, setName] = useState("")
   const [invalidName, setInvalidName] = useState(false);
   const [email, setEmail] = useState("");
@@ -22,52 +21,27 @@ export default function SubscribeForm(props) {
   const [working, setWorking] = useState(false);
   const [result, setResult] = useState("");
 
-  const handleSubmit = async (event) => {
-    // Block native form submission.
-    event.preventDefault();
-
-    if (!stripe || !elements) {
-      // Stripe.js has not loaded yet. Make sure to disable form submission until Stripe.js has loaded.
-      return;
-    }
-
+  function handleSubmit(e) {
+    e.preventDefault();
     if (textValid(name) && emailValid(email) && passwordValid(password) && termsConditions) {
-      // Account details are valid, start to work
       setWorking(true);
-
-      // Get a reference to a mounted CardElement.
-      const cardElement = elements.getElement(CardElement);
-
-      // Use your card Element with other Stripe.js APIs
-      const { error, paymentMethod } = await stripe.createPaymentMethod({
-        type: "card",
-        card: cardElement,
-      });
-
-      if (error) {
-        // Stripe error
-        console.log("[error]", error);
-        setWorking(false);
-      } else {
-        // Account is valid, and we have a payment method, we can attempt to subscribe
-        props.signUpAndSubscribe({
-          signUp: {
-            "name": name,
-            "email": email,
-            "password": password
-          },
-          paymentMethodDetails: paymentMethod
-        }, () => {
+      signUp({
+        "name": name,
+        "email": email,
+        "password": password
+      }, result => {
+        if (!result.success) {
+          setResult(result);
           setWorking(false);
-        });
-      }
+        }
+      });
     } else {
       if (!textValid(name)) setInvalidName(true);
       if (!emailValid(email)) setInvalidEmail(true);
       if (!passwordValid(password)) setInvalidPassword(true);
       if (!termsConditions) setInvalidTermsAndConditions(true);
     }
-  };
+  }
 
   return (
     <article>
@@ -110,20 +84,6 @@ export default function SubscribeForm(props) {
           }}
           invalidFeedback={invalidPassword ? <InvalidFeedback feedback={props.translate("Your password must be at least 8 characters long.")} /> : null}
         />
-        <h5>{props.translate("Credit card details")}</h5>
-        <div className="row">
-          <div className="col">
-            <div className="card-element mt-3">
-              <CardElement
-                // @ts-ignore
-                options={CARD_OPTIONS} />
-            </div>
-            <div id="powered-by-stripe">
-              <a href="https://stripe.com/" target="_blank" rel="noreferrer" tabIndex={-1}><img src="/img/stripe.svg" alt="Powered by Stripe" /></a>
-            </div>
-          </div>
-        </div>
-
         <div className="row">
           <div className="col-sm-auto col-12 pe-sm-0">
             <Checkbox
@@ -143,16 +103,15 @@ export default function SubscribeForm(props) {
           </div>
         </div>
         <Button label={props.translate("Never mind")} type="button" id="button-never-mind" onClick={props.cancel} outline={true} />
-        <Button label={props.translate("Subscribe")} type="submit" id="button-sign-up" working={working} />
-        <p><span className="fw-bold">{props.translate("You will be charged $10 CAD now, plus any applicable* sales taxes")}</span>, {props.translate("and then each month until you cancel your subscription.")}</p>
-        <small className="fst-italic">{props.translate("*We currently charge sales taxes only to Canadian customers.")}</small>
+        <Button label={props.translate("Start my trial")} type="submit" id="button-start-trial" working={working} />
       </form>
+      <p className="small">{props.translate("Already have an account? Sign in")} <Link to="/sign-in">{props.translate("here")}</Link>.</p>
     </article>
   );
 }
 
-SubscribeForm.propTypes = {
+TrialForm.propTypes = {
   translate: PropTypes.func,
   cancel: PropTypes.func,
-  signUpAndSubscribe: PropTypes.func
+  signUp: PropTypes.func,
 }
