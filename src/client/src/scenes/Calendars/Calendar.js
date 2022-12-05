@@ -260,6 +260,7 @@ export default function Calendar(props) {
                   primaryColor={props.calendar.primaryColor}
                   secondaryColor={props.calendar.secondaryColor}
                   dots={props.dots}
+                  isEmbedded={false}
                 />
               </div>
               <div className="col-12 col-md">
@@ -279,6 +280,7 @@ export default function Calendar(props) {
                   showStatus={false}
                   showButtons={true}
                   refreshEvents={refreshEvents}
+                  isEmbedded={false}
                 />
               </div>
             </div>

@@ -70,7 +70,7 @@ export default function Embed(props) {
     } else {
       result = (
         <div className="row justify-content-center">
-          <div className="month col-12 col-md-auto sticky-top">
+          <div id="month-embed-container" className="month col-12 col-md-auto sticky-top">
             <Month
               startWeekOn={props.calendar.startWeekOn}
               selectedDate={selectedDate}
@@ -79,9 +79,10 @@ export default function Embed(props) {
               primaryColor={props.calendar.primaryColor}
               secondaryColor={props.calendar.secondaryColor}
               dots={props.dots}
-            />
+              isEmbedded={true}
+              />
           </div>
-          <div className="col-12 col-md">
+          <div id="events-embed-container" className="col-12 col-md">
             <EventsList
               selectedDate={selectedDate}
               events={props.events}

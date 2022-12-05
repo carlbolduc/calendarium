@@ -114,7 +114,7 @@ export default function Month(props) {
   ));
 
   return (
-    <table className="table table-bordered text-center sticky-top" ref={ref}>
+    <table id={props.isEmbedded ? "month-embed" : "month-inapp"} className="table table-bordered text-center sticky-top" ref={ref}>
       <MonthHeader
         localeId={props.localeId}
         startWeekOn={props.startWeekOn}
