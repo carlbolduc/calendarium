@@ -42,6 +42,16 @@ export default function Subscription(props) {
     }
   }, []);
 
+  useEffect(() => {
+    if (
+      props.subscribed &&
+      DateTime.fromSeconds(props.account.subscription.endAt) >= DateTime.now() &&
+      [wantToOptions.SUBSCRIBE, wantToOptions.START_TRIAL, wantToOptions.REACTIVATE].indexOf(wantTo) !== -1
+    ) {
+      setWantTo("");
+    }
+  }, [props.subscribed, props.account.subscription]);
+
   function wantToSubscribe(e) {
     e.preventDefault();
     setWantTo(wantToOptions.SUBSCRIBE);
