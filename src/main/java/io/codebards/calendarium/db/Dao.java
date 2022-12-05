@@ -656,6 +656,21 @@ public interface Dao {
     @RegisterBeanMapper(CalendarAccess.class)
     void updateCalendarAccessStatus(@Bind("calendarAccessId") long calendarAccessId, @Bind("calendarId") long calendarId, @Bind("status") String status, @Bind("updatedBy") long updatedBy);
 
+    // Get the number of active and invited accounts that have access to calendars that the user is owner of
+    @SqlQuery("""
+        SELECT COUNT(a.account_id) AS active_users FROM account a
+        WHERE a.account_id IN
+            (SELECT ca.account_id FROM calendar_access ca
+            WHERE ca.status IN ('active', 'invited')
+            AND ca.calendar_id IN
+                (SELECT ca.calendar_id FROM account a
+                INNER JOIN calendar_access ca ON a.account_id = ca.account_id
+                WHERE a.account_id = :accountId
+                AND ca.status = 'owner'))
+        """)
+    @RegisterBeanMapper(Account.class)
+    long findNumberOfActiveUsers(@Bind("accountId") long accountId);
+    
 
     // ******************** Email Template ********************
 

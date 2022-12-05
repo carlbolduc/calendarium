@@ -23,6 +23,7 @@ public class Account implements Principal {
     private String tokenValidator;
     private String stripeCusId;
     private Subscription subscription;
+    private long activeUsers;
 
     public long getAccountId() {
         return accountId;
@@ -137,4 +138,11 @@ public class Account implements Principal {
         return new HashSet<>(roles);
     }
 
+    public long getActiveUsers() {
+        return activeUsers;
+    }
+
+    public void setActiveUsers(long activeUsers) {
+        this.activeUsers = activeUsers;
+    }
 }

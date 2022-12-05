@@ -40,6 +40,8 @@ public class AccountsResource {
         if (oAccount.isPresent()) {
             // Set subscription information
             oAccount.get().setSubscription(dao.findSubscriptionByAccountId(auth.getAccountId()));
+            // Set number of active users
+            oAccount.get().setActiveUsers(dao.findNumberOfActiveUsers(auth.getAccountId()));
             response = Response.status(Response.Status.OK).entity(oAccount.get()).build();
         }
         return response;
