@@ -53,21 +53,30 @@ export default function MyCalendars(props) {
     return result;
   }
 
-  const newCalendarButton = props.subscribed ? (
-    <Button
-      label={props.translate("New calendar")}
-      id="button-new-calendar"
-      outline={true}
-      onClick={() => {
-        setShowCalendarForm(true);
-        setCalendarFormResult(null);
-      }}
-    />
-  ) : null;
+  function newCalendarButton() {
+    let result = null;
+    // Show New calendar button to subscribed users, and to trial users who haven't created a calendar yet
+    if (props.subscribed) {
+      if ((props.account.subscription.product !== "trial") || (props.account.subscription.product === "trial" && props.calendars.length < 1)) {
+        result = (
+          <Button
+            label={props.translate("New calendar")}
+            id="button-new-calendar"
+            outline={true}
+            onClick={() => {
+              setShowCalendarForm(true);
+              setCalendarFormResult(null);
+            }}
+          />
+        );
+      }
+    }
+    return result;
+  }
 
   const actionButtonsZone = showCalendarForm ? null : (
     <div className="mb-4">
-      {newCalendarButton}
+      {newCalendarButton()}
     </div>
   );
 
