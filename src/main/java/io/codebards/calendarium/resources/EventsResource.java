@@ -147,6 +147,8 @@ public class EventsResource {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        Collections.sort(events);
+        Collections.reverse(events);
         return events;
     }
 
