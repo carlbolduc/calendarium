@@ -25,6 +25,15 @@ export default function Month(props) {
   }, []);
 
   useEffect(() => {
+    setTimeout(() => {
+      const now = document.getElementById("now");
+      if (now !== null) {
+        now.scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
+      }
+    }, 200);
+  }, [props.selectedDate]);
+
+  useEffect(() => {
     if (date !== null) {
       const result = [];
       let week = [];
@@ -66,13 +75,6 @@ export default function Month(props) {
     const selectedDate = d;
     setDate(d);
     props.selectDay(selectedDate);
-    // TODO: do this in a callback
-    setTimeout(() => {
-      const now = document.getElementById("now");
-      if (now !== null) {
-        now.scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
-      }
-    }, 400);
   }
 
   function changeMonth(plusOrMinus) {
@@ -83,13 +85,6 @@ export default function Month(props) {
       newDate = date.minus({ months: 1 });
     }
     setDate(newDate.startOf("month"));
-    // TODO: do this in a callback
-    setTimeout(() => {
-      const now = document.getElementById("now");
-      if (now !== null) {
-        now.scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
-      }
-    }, 400);
   }
 
   function changeWeek(plusOrMinus) {
@@ -100,13 +95,6 @@ export default function Month(props) {
       newDate = date.minus({ weeks: 1 });
     }
     setDate(newDate);
-    // TODO: do this in a callback
-    setTimeout(() => {
-      const now = document.getElementById("now");
-      if (now !== null) {
-        now.scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
-      }
-    }, 400);
   }
 
   const calendar = weeks.map(week => (
