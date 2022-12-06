@@ -32,7 +32,7 @@ export default function EventsSearch(props) {
     });
   }, [props.calendar.calendarId, endDate, search, startDate, status]);
 
-  // Perform search immidiately when the search form is shown
+  // Perform search immediately when the search form is shown
   useEffect(() => {
     if (initialLoad) {
       setInitialLoad(false);
@@ -156,6 +156,7 @@ export default function EventsSearch(props) {
         {searchButton}
       </form>
       <EventsList
+        selectedDate={DateTime.now()}
         events={props.events}
         noEventsMessage={props.translate("There are no events matching these search criteria.")}
         account={props.account}

@@ -68,7 +68,10 @@ export default function Month(props) {
     props.selectDay(selectedDate);
     // TODO: do this in a callback
     setTimeout(() => {
-      document.getElementById("now").scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
+      const now = document.getElementById("now");
+      if (now !== null) {
+        now.scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
+      }
     }, 400);
   }
 
@@ -82,7 +85,10 @@ export default function Month(props) {
     setDate(newDate.startOf("month"));
     // TODO: do this in a callback
     setTimeout(() => {
-      document.getElementById("now").scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
+      const now = document.getElementById("now");
+      if (now !== null) {
+        now.scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
+      }
     }, 400);
   }
 
@@ -96,7 +102,10 @@ export default function Month(props) {
     setDate(newDate);
     // TODO: do this in a callback
     setTimeout(() => {
-      document.getElementById("now").scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
+      const now = document.getElementById("now");
+      if (now !== null) {
+        now.scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
+      }
     }, 400);
   }
 
