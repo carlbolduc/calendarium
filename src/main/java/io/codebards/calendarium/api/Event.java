@@ -14,7 +14,9 @@ public class Event implements Comparable<Event> {
     private Boolean allDay;
     private String hyperlinkFr;
     private String hyperlinkEn;
+    private Integer createdAt;
     private long createdBy;
+    private Integer updatedAt;
     private long updatedBy;
     private String author;
 
@@ -150,4 +152,21 @@ public class Event implements Comparable<Event> {
     public int compareTo(Event other) {
         return startAt.compareTo(other.startAt);
     }
+
+    public Integer getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Integer createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Integer getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Integer updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
 }

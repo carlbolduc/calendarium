@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 
 import com.stripe.exception.StripeException;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @RolesAllowed({"USER"})
@@ -60,7 +61,7 @@ public class AccountsResource {
             }
         }
         if (canUpdate) {
-            dao.updateAccount(auth.getAccountId(), accountUpdate.getEmail(), accountUpdate.getName(), auth.getAccountId());
+            dao.updateAccount(auth.getAccountId(), accountUpdate.getEmail(), accountUpdate.getName(), Math.toIntExact(Instant.now().getEpochSecond()), auth.getAccountId());
             try {
                 stripeService.updateCustomer(auth.getStripeCusId(), accountUpdate.getEmail(), accountUpdate.getName());
             } catch (StripeException e) {
@@ -74,7 +75,7 @@ public class AccountsResource {
     @PUT
     @Path("/{accountId}/language")
     public Account putAccountPassword(@Auth Account auth, LanguageUpdate languageUpdate) {
-        dao.updateAccountLanguage(auth.getAccountId(), languageUpdate.getLanguageId(), auth.getAccountId());
+        dao.updateAccountLanguage(auth.getAccountId(), languageUpdate.getLanguageId(), Math.toIntExact(Instant.now().getEpochSecond()), auth.getAccountId());
         return buildAccount(auth.getAccountId());
     }
 
@@ -85,7 +86,7 @@ public class AccountsResource {
         String passwordDigest = dao.findPasswordDigest(auth.getAccountId());
         if (argon2.verify(passwordDigest, passwordUpdate.getCurrentPassword().toCharArray())) {
             String newPasswordDigest = argon2.hash(2, 65536, 1, passwordUpdate.getNewPassword().toCharArray());
-            dao.updateAccountPassword(auth.getAccountId(), newPasswordDigest, auth.getAccountId());
+            dao.updateAccountPassword(auth.getAccountId(), newPasswordDigest, Math.toIntExact(Instant.now().getEpochSecond()), auth.getAccountId());
             response = Response.noContent().build();
         }
         return response;

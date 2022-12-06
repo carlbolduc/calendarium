@@ -13,6 +13,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.*;
 
 @RolesAllowed({"USER"})
@@ -39,6 +40,7 @@ public class EventsResource {
         Optional<CalendarAccess> oCalendarAccess = calendarAccesses.stream().filter(ca -> ca.getCalendarId() == event.getCalendarId()).findAny();
         if (oCalendarAccess.isPresent()) {
             event.setAccountId(auth.getAccountId());
+            event.setCreatedAt(Math.toIntExact(Instant.now().getEpochSecond()));
             event.setCreatedBy(auth.getAccountId());
             dao.insertEvent(event);
             // event created, return 200 OK
@@ -153,11 +155,13 @@ public class EventsResource {
         Response response = Response.status(Response.Status.UNAUTHORIZED).build();
         if (calendarAccess.getStatus().equals(CalendarAccessStatus.OWNER.getStatus())) {
             // We can update the event
+            event.setUpdatedAt(Math.toIntExact(Instant.now().getEpochSecond()));
             event.setUpdatedBy(updatedBy);
             dao.updateEvent(event);
             // event updated, return 200 OK
             response = Response.ok().build();
         } else if (calendarAccess.getStatus().equals(CalendarAccessStatus.ACTIVE.getStatus())) {
+            event.setUpdatedAt(Math.toIntExact(Instant.now().getEpochSecond()));
             event.setUpdatedBy(updatedBy);
             dao.updateEvent(event);
             // event updated, return 200 OK

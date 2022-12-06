@@ -122,11 +122,11 @@ public class SubscriptionsResource {
                     }
                     // Create the subscription
                     Subscription subscription = stripeService.createSubscription(subCreateParams);
+                    Integer now = Math.toIntExact(Instant.now().getEpochSecond());
                     if (auth.getSubscription() == null) {
-                        Instant now = Instant.now();
-                        dao.insertSubscription(auth.getAccountId(), subscription.getId(), price.getPriceId(), Math.toIntExact(subscription.getCurrentPeriodStart()), Math.toIntExact(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), Math.toIntExact(now.getEpochSecond()), auth.getAccountId());
+                        dao.insertSubscription(auth.getAccountId(), subscription.getId(), price.getPriceId(), Math.toIntExact(subscription.getCurrentPeriodStart()), Math.toIntExact(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), now, auth.getAccountId());
                     } else {
-                        dao.updateSubscription(auth.getSubscription().getSubscriptionId(), subscription.getId(), price.getPriceId(), Math.toIntExact(subscription.getCurrentPeriodStart()), Math.toIntExact(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
+                        dao.updateSubscription(auth.getSubscription().getSubscriptionId(), subscription.getId(), price.getPriceId(), Math.toIntExact(subscription.getCurrentPeriodStart()), Math.toIntExact(subscription.getCurrentPeriodEnd()), SubscriptionStatus.ACTIVE.getStatus(), now, auth.getAccountId());
                     }
                     if (subscription.getLatestInvoiceObject().getPaymentIntentObject().getStatus().equals(PaymentIntentStatus.SUCCEEDED.getStatus())) {
                         // TODO: It worked, check what we must return to client
@@ -156,9 +156,9 @@ public class SubscriptionsResource {
             try {
                 stripeService.updateSubscription(auth.getSubscription().getStripeSubId(), update.getCancelAtPeriodEnd());
                 if (update.getCancelAtPeriodEnd()) {
-                    dao.updateSubscriptionStatus(auth.getSubscription().getStripeSubId(), SubscriptionStatus.CANCELED.getStatus(), auth.getAccountId());
+                    dao.updateSubscriptionStatus(auth.getSubscription().getStripeSubId(), SubscriptionStatus.CANCELED.getStatus(), Math.toIntExact(Instant.now().getEpochSecond()), auth.getAccountId());
                 } else {
-                    dao.updateSubscriptionStatus(auth.getSubscription().getStripeSubId(), SubscriptionStatus.ACTIVE.getStatus(), auth.getAccountId());
+                    dao.updateSubscriptionStatus(auth.getSubscription().getStripeSubId(), SubscriptionStatus.ACTIVE.getStatus(), Math.toIntExact(Instant.now().getEpochSecond()), auth.getAccountId());
                 }
             } catch (StripeException e) {
                 e.printStackTrace();
@@ -229,7 +229,7 @@ public class SubscriptionsResource {
                         if (oSubscriptionId.isPresent()) {
                             // Renew the subscription by postponing its end time
                             Subscription subscription = stripeService.getSubscription(invoice.getSubscription());
-                            dao.renewSubscription(oSubscriptionId.get(), Math.toIntExact(subscription.getCurrentPeriodEnd()));
+                            dao.renewSubscription(oSubscriptionId.get(), Math.toIntExact(subscription.getCurrentPeriodEnd()), Math.toIntExact(Instant.now().getEpochSecond()));
                         }
                     }
                 }

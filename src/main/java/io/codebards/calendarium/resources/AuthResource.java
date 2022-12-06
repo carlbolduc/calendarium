@@ -199,7 +199,7 @@ public class AuthResource {
             String token = createToken(oAccount.get().getAccountId());
             if (token != null) {
                 String passwordDigest = argon2.hash(2, 65536, 1, passwordReset.getPassword().toCharArray());
-                dao.updatePasswordDigest(oAccount.get().getAccountId(), passwordDigest, 0);
+                dao.updatePasswordDigest(oAccount.get().getAccountId(), passwordDigest, Math.toIntExact(Instant.now().getEpochSecond()));
                 AccountToken accountToken = new AccountToken(oAccount.get().getAccountId(), token);
                 response = Response.status(Response.Status.OK).entity(accountToken).build();
             } else {

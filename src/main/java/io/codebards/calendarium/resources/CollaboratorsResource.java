@@ -66,7 +66,7 @@ public class CollaboratorsResource {
             response = Response.status(Response.Status.CONFLICT).build();
         } else {
             // else create a calendar access for this collaborator, with status invited, and send the invitation email
-            long calendarAccessId = dao.insertCalendarAccess(accountId, calendarId, CalendarAccessStatus.INVITED.getStatus(), auth.getAccountId());
+            long calendarAccessId = dao.insertCalendarAccess(accountId, calendarId, CalendarAccessStatus.INVITED.getStatus(), Math.toIntExact(Instant.now().getEpochSecond()), auth.getAccountId());
             emailManager.sendCollaboratorInvitation(oAccount, calendarAccessId, calendarId, auth.getAccountId());
             // TODO: implement email sending error in emailManager and return a response accordingly
 
@@ -99,7 +99,7 @@ public class CollaboratorsResource {
             if (oAccount.isPresent()) {
                 String passwordDigest = argon2.hash(2, 65536, 1, invitationResponse.getPassword().toCharArray());
                 // TODO: check if we can use another method here
-                dao.updateAccountAndPassword(oAccount.get().getAccountId(), oAccount.get().getEmail(), oAccount.get().getName(), oAccount.get().getLanguageId(), passwordDigest, oAccount.get().getAccountId());
+                dao.updateAccountAndPassword(oAccount.get().getAccountId(), oAccount.get().getEmail(), oAccount.get().getName(), oAccount.get().getLanguageId(), passwordDigest, Math.toIntExact(Instant.now().getEpochSecond()), oAccount.get().getAccountId());
                 String token = createToken(oAccount.get().getAccountId());
                 if (token != null) {
                     AccountToken accountToken = new AccountToken(oAccount.get().getAccountId(), token);
@@ -112,7 +112,7 @@ public class CollaboratorsResource {
             }
         }
         // change calendar access status to active
-        dao.acceptCalendarInvitation(invitationResponse.getCalendarAccessId(), invitationResponse.getCalendarId(), oAccount.get().getAccountId());
+        dao.acceptCalendarInvitation(invitationResponse.getCalendarAccessId(), invitationResponse.getCalendarId(), Math.toIntExact(Instant.now().getEpochSecond()), oAccount.get().getAccountId());
         // send email that invitation is accepted to calendar owner
         emailManager.sendCalendarInvitationAccepted(oAccount, invitationResponse.getCalendarId(), dao.findCalendarOwnerAccountId(invitationResponse.getCalendarId()));
 
@@ -123,7 +123,7 @@ public class CollaboratorsResource {
     @Path("/{calendarId}/{calendarAccessId}")
     public Response putCalendarAccess(@Auth Account auth, @PathParam("calendarId") long calendarId, @PathParam("calendarAccessId") long calendarAccessId, String status) {
         // TODO: implement failure checks and adjust response accordingly
-        dao.updateCalendarAccessStatus(calendarAccessId, calendarId, status, auth.getAccountId());
+        dao.updateCalendarAccessStatus(calendarAccessId, calendarId, status, Math.toIntExact(Instant.now().getEpochSecond()), auth.getAccountId());
         List<Collaborator> collaborators = dao.findCollaboratorsByCalendar(calendarId);
         return Response.status(Response.Status.OK).entity(collaborators).build();
     }

@@ -18,7 +18,9 @@ public class Calendar {
     private Boolean eventApprovalRequired = true;
     private Boolean showEventAuthor = false;
     private String access;
+    private Integer createdAt;
     private long createdBy;
+    private Integer updatedAt;
     private long updatedBy;
 
     public long getCalendarId() {
@@ -171,6 +173,22 @@ public class Calendar {
 
     public void setUpdatedBy(long updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public Integer getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Integer createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Integer getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Integer updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }

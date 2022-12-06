@@ -96,8 +96,10 @@ public class CalendarsResource {
         ) {
             try {
                 calendar.setCreatedBy(auth.getAccountId());
+                Integer now = Math.toIntExact(Instant.now().getEpochSecond());
+                calendar.setCreatedAt(now);
                 long calendarId = dao.insertCalendar(auth.getAccountId(), calendar);
-                dao.insertCalendarAccess(auth.getAccountId(), calendarId, CalendarAccessStatus.OWNER.getStatus(), auth.getAccountId());
+                dao.insertCalendarAccess(auth.getAccountId(), calendarId, CalendarAccessStatus.OWNER.getStatus(), now, auth.getAccountId());
                 response = Response.noContent().build();
             } catch (Exception e) {
                 // Unique constraint will cause insert to fail
@@ -119,6 +121,7 @@ public class CalendarsResource {
                 (calendar.getEnableFr() != null && !reservedWords().contains(calendar.getLinkFr()))
             ) {
                 try {
+                    calendar.setUpdatedAt(Math.toIntExact(Instant.now().getEpochSecond()));
                     calendar.setUpdatedBy(auth.getAccountId());
                     dao.updateCalendar(auth.getAccountId(), calendarId, calendar);
                     // check if calendar exists after update
