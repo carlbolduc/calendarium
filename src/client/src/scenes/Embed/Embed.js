@@ -103,7 +103,7 @@ export default function Embed(props) {
   }
 
   return (
-    <div className="container mt-0 px-0">
+    <div id="embed" className="container mt-0">
       {main()}
     </div>
   );
