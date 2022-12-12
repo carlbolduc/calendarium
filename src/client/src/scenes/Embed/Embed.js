@@ -105,6 +105,7 @@ export default function Embed(props) {
   return (
     <div id="embed" className="container mt-0">
       {main()}
+      <span data-iframe-height></span>
     </div>
   );
 

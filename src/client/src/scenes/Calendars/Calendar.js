@@ -229,7 +229,7 @@ export default function Calendar(props) {
     } else {
       // We're viewing the calendar details and events
       result = (
-        <article>
+        <article id="calendar-details-and-events">
           <h1>
             {decideWhatToDisplay(
               props.localeId,

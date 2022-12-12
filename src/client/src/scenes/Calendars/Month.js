@@ -25,12 +25,15 @@ export default function Month(props) {
   }, []);
 
   useEffect(() => {
-    setTimeout(() => {
-      const now = document.getElementById("now");
-      if (now !== null) {
-        now.scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
-      }
-    }, 200);
+    const page = document.getElementById("calendar-details-and-events");
+    if (page !== null) {
+      setTimeout(() => {
+        const now = document.getElementById("now");
+        if (now !== null) {
+          now.scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
+        }
+      }, 200);
+    }
   }, [props.selectedDate]);
 
   useEffect(() => {
