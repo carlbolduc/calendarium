@@ -217,6 +217,7 @@ export default function App() {
                 <Home
                   authenticated={authenticated}
                   translate={translate}
+                  languageId={account.languageId}
                 />
               </Route>
             </Switch>

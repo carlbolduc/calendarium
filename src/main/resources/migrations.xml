@@ -221,4 +221,13 @@
         </sql>
 
     </changeSet>
+    <changeSet id="2" author="mag">
+        <sql>
+            insert into localisation (en_ca, fr_ca) values
+            ('Calendarium is a collaborative online calendar for people and organizations who want to privately or publicly share event dates and details.','Calendarium est un calendrier collaboratif en ligne pour les personnes et les organisations qui souhaitent partager en privé ou en public les dates et les détails de leurs événements.'),
+            ('Here is a real life example of an embedded calendar','Voici un exemple concret d''un calendrier intégré'),
+            ('Try Calendarium for free','Essayez Calendarium gratuitement'),
+            ('No credit card required. Cancel anytime.','Sans carte de crédit. Annulez à tout moment.');
+        </sql>
+    </changeSet>
   </databaseChangeLog>
