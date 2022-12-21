@@ -111,3 +111,24 @@ a {
 #scrollable-events-list::-webkit-scrollbar {
   display: none;
 }
+
+#calendarium-container {
+  background-color: transparent;
+  border: 0 none transparent;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  margin-top: 45px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+#start-trial-button {
+  opacity: 0.95;
+}
+
+#start-trial-button:hover {
+  opacity: 1;
+}

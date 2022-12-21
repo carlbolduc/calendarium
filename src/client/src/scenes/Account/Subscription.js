@@ -32,6 +32,10 @@ export default function Subscription(props) {
     const sessionId = query.get("session-id");
     if (sessionId === null) {
       setWorking(false);
+      const p = query.get("p");
+      if (p === "trial") {
+        setWantTo(wantToOptions.START_TRIAL);
+      }
     } else {
       // Try to update billing info information using the checkout session id
       setMessageOrigin("updateBillingInformation");
