@@ -1,22 +1,20 @@
 package io.codebards.calendarium.resources;
 
-import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import io.codebards.calendarium.api.*;
 import io.codebards.calendarium.api.Calendar;
+import io.codebards.calendarium.api.*;
 import io.codebards.calendarium.core.Account;
 import io.codebards.calendarium.core.EventHelpers;
 import io.codebards.calendarium.db.Dao;
 import io.dropwizard.auth.Auth;
 
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import java.nio.charset.StandardCharsets;
 import java.time.*;
 import java.util.*;
@@ -36,7 +34,7 @@ public class CalendarsResource {
 
     @GET
     public List<Calendar> getCalendars(@Auth Account auth) {
-        return dao.findCalendars(auth.getAccountId());
+        return dao.findCalendars(auth.getAccountId(), Math.toIntExact(Instant.now().getEpochSecond()));
     }
 
     @GET
@@ -44,7 +42,7 @@ public class CalendarsResource {
     @Path("/{link}")
     public Response getCalendar(@Auth Account auth, @PathParam("link") String link) {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
-        Optional<Calendar> oCalendar = dao.findCalendarByLink(auth.getAccountId(), link);
+        Optional<Calendar> oCalendar = dao.findCalendarByLink(auth.getAccountId(), link, Math.toIntExact(Instant.now().getEpochSecond()));
         if (oCalendar.isPresent()) {
             if (oCalendar.get().getPublicCalendar()) {
                 response = Response.ok(oCalendar.get()).build();
@@ -131,7 +129,7 @@ public class CalendarsResource {
                     } else {
                         linkToUse = calendar.getLinkFr();
                     }
-                    Optional<Calendar> oCalendar = dao.findCalendarByLink(auth.getAccountId(), linkToUse);
+                    Optional<Calendar> oCalendar = dao.findCalendarByLink(auth.getAccountId(), linkToUse, Math.toIntExact(Instant.now().getEpochSecond()));
                     if (oCalendar.isPresent()) {
                         // the update went according to plan, return 200 OK
                         response = Response.ok(oCalendar.get()).build();
