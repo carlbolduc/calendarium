@@ -66,7 +66,7 @@ public class CalendarsResource {
             }
         } else {
             // User might not have access and calendar may be public
-            oCalendar = dao.findPublicCalendarByLink(link);
+            oCalendar = dao.findPublicCalendarByLink(link, Math.toIntExact(Instant.now().getEpochSecond()));
             if (oCalendar.isPresent()) {
                 response = Response.ok(oCalendar.get()).build();
             }

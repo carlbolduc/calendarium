@@ -176,7 +176,7 @@ public interface Dao {
                   INNER JOIN subscription s on a.account_id = s.account_id
             WHERE public_calendar IS TRUE AND s.end_at > :now""")
     @RegisterBeanMapper(Calendar.class)
-    List<Calendar> findPublicCalendars(@Bind("now") Integer now);
+    List<Calendar> findPublicCalendars(@Bind("now") int now);
 
     @SqlQuery("""
             SELECT calendar_id,
@@ -226,27 +226,60 @@ public interface Dao {
     Optional<Calendar> findCalendarByLink(@Bind("accountId") long accountId, @Bind("link") String link);
 
     @SqlQuery("""
-            SELECT calendar_id,
-                   enable_en,
-                   enable_fr,
-                   name_en,
-                   name_fr,
-                   description_en,
-                   description_fr,
-                   link_en,
-                   link_fr,
-                   start_week_on,
-                   primary_color,
-                   secondary_color,
-                   embed_calendar,
-                   public_calendar,
-                   event_approval_required,
-                   show_event_author,
+            SELECT c.calendar_id,
+                   c.enable_en,
+                   c.enable_fr,
+                   c.name_en,
+                   c.name_fr,
+                   c.description_en,
+                   c.description_fr,
+                   c.link_en,
+                   c.link_fr,
+                   c.start_week_on,
+                   c.primary_color,
+                   c.secondary_color,
+                   c.embed_calendar,
+                   c.public_calendar,
+                   c.event_approval_required,
+                   c.show_event_author,
                    '' AS access
-            FROM calendar
-            WHERE (link_en = :link OR link_fr = :link) AND public_calendar IS TRUE""")
+            FROM calendar c
+                     INNER JOIN calendar_access ca on c.calendar_id = ca.calendar_id
+                     INNER JOIN account a on a.account_id = ca.account_id
+                     INNER JOIN subscription s on a.account_id = s.account_id
+            WHERE (link_en = :link OR link_fr = :link)
+              AND public_calendar IS TRUE
+              AND s.end_at > :now""")
     @RegisterBeanMapper(Calendar.class)
-	Optional<Calendar> findPublicCalendarByLink(@Bind("link") String link);
+	Optional<Calendar> findPublicCalendarByLink(@Bind("link") String link, @Bind("now") int now);
+
+    @SqlQuery("""
+            SELECT c.calendar_id,
+                   c.enable_en,
+                   c.enable_fr,
+                   c.name_en,
+                   c.name_fr,
+                   c.description_en,
+                   c.description_fr,
+                   c.link_en,
+                   c.link_fr,
+                   c.start_week_on,
+                   c.primary_color,
+                   c.secondary_color,
+                   c.embed_calendar,
+                   c.public_calendar,
+                   c.event_approval_required,
+                   c.show_event_author
+            FROM calendar c
+                     INNER JOIN calendar_access ca on c.calendar_id = ca.calendar_id
+                     INNER JOIN account a on a.account_id = ca.account_id
+                     INNER JOIN subscription s on a.account_id = s.account_id
+            WHERE c.calendar_id = :calendarId
+              AND embed_calendar IS TRUE
+              AND s.end_at > :now""")
+    @RegisterBeanMapper(Calendar.class)
+    Optional<Calendar> findEmbeddedCalendar(@Bind("calendarId") long calendarId, @Bind("now") int now);
+
 
     @SqlQuery("""
             SELECT c.calendar_id,
