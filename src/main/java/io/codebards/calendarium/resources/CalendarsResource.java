@@ -92,15 +92,25 @@ public class CalendarsResource {
             (calendar.getEnableEn() != null && !reservedWords().contains(calendar.getLinkEn())) &&
             (calendar.getEnableFr() != null && !reservedWords().contains(calendar.getLinkFr()))
         ) {
-            try {
-                calendar.setCreatedBy(auth.getAccountId());
-                Integer now = Math.toIntExact(Instant.now().getEpochSecond());
-                calendar.setCreatedAt(now);
-                long calendarId = dao.insertCalendar(auth.getAccountId(), calendar);
-                dao.insertCalendarAccess(auth.getAccountId(), calendarId, CalendarAccessStatus.OWNER.getStatus(), now, auth.getAccountId());
-                response = Response.noContent().build();
-            } catch (Exception e) {
-                // Unique constraint will cause insert to fail
+            // Prevent trial users from creating more than 1 calendar
+            boolean canCreate = true;
+            if (auth.getSubscription().getProduct().equals("trial")) {
+                int ownerCalendarCount = dao.findOwnerCalendarCount(auth.getAccountId());
+                if (ownerCalendarCount > 0) {
+                    canCreate = false;
+                }
+            }
+            if (canCreate) {
+                try {
+                    calendar.setCreatedBy(auth.getAccountId());
+                    Integer now = Math.toIntExact(Instant.now().getEpochSecond());
+                    calendar.setCreatedAt(now);
+                    long calendarId = dao.insertCalendar(auth.getAccountId(), calendar);
+                    dao.insertCalendarAccess(auth.getAccountId(), calendarId, CalendarAccessStatus.OWNER.getStatus(), now, auth.getAccountId());
+                    response = Response.noContent().build();
+                } catch (Exception e) {
+                    // Unique constraint will cause insert to fail
+                }
             }
         }
         return response;

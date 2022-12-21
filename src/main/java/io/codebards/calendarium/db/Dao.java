@@ -135,6 +135,14 @@ public interface Dao {
     // ******************** Calendar ********************
 
     @SqlQuery("""
+            SELECT COUNT(c.calendar_id) AS count
+            FROM calendar c
+                     INNER JOIN calendar_access ca on c.calendar_id = ca.calendar_id
+            WHERE ca.status = 'owner'
+              AND ca.account_id = :accountId""")
+    int findOwnerCalendarCount(@Bind("accountId") long accountId);
+
+    @SqlQuery("""
         SELECT DISTINCT c.calendar_id,
                         c.enable_en,
                         c.enable_fr,
@@ -724,5 +732,4 @@ public interface Dao {
             WHERE name = :name""")
     @RegisterBeanMapper(EmailTemplate.class)
     Optional<EmailTemplate> findEmailTemplateByName(@Bind("name") String name);
-
 }
