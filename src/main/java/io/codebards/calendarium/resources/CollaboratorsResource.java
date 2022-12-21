@@ -44,35 +44,49 @@ public class CollaboratorsResource {
     @Path("/{calendarId}")
     public Response inviteCollaborator(@Auth Account auth, @PathParam("calendarId") long calendarId, Collaborator collaborator) {
         Response response;
-
-        // check if account already exists
-        Optional<Account> oAccount = dao.findAccountByEmail(collaborator.getEmail());
-        long accountId;
-        if (oAccount.isPresent()) {
-            // if account exists, get its account id
-            accountId = oAccount.get().getAccountId();
-        } else {
-            // if account doesn't exist, create it, with the language of the account that is
-            // inviting and a null password
-            Instant now = Instant.now();
-            accountId = dao.insertAccount(collaborator.getEmail(), collaborator.getName(), auth.getLanguageId(), null, Math.toIntExact(now.getEpochSecond()), auth.getAccountId());
-            oAccount = dao.findAccountById(accountId);
+        boolean canInvite = true;
+        List<Collaborator> collaborators = dao.findCollaboratorsByCalendar(calendarId);
+        if (collaborators.size() > 2) {
+           if (auth.getSubscription().getProduct().equals("trial")) {
+               // On the trial, you have the right to invite two people, so three total calendar accesses
+               canInvite = false;
+           } else if (collaborators.size() > 20) {
+               // On the subscription, you have the right to invite twenty people, so twenty-one total calendar accesses
+               canInvite = false;
+           }
         }
+        if (canInvite) {
+            // check if account already exists
+            Optional<Account> oAccount = dao.findAccountByEmail(collaborator.getEmail());
+            long accountId;
+            if (oAccount.isPresent()) {
+                // if account exists, get its account id
+                accountId = oAccount.get().getAccountId();
+            } else {
+                // if account doesn't exist, create it, with the language of the account that is
+                // inviting and a null password
+                Instant now = Instant.now();
+                accountId = dao.insertAccount(collaborator.getEmail(), collaborator.getName(), auth.getLanguageId(), null, Math.toIntExact(now.getEpochSecond()), auth.getAccountId());
+                oAccount = dao.findAccountById(accountId);
+            }
 
-        // check if account already is a collaborator on that calendar
-        Optional<Collaborator> oCollaborator = dao.findCollaboratorByAccountId(calendarId, accountId);
-        if (oCollaborator.isPresent()) {
-            // if it is already there, return 409 Conflict
-            response = Response.status(Response.Status.CONFLICT).build();
+            // check if account already is a collaborator on that calendar
+            Optional<Collaborator> oCollaborator = dao.findCollaboratorByAccountId(calendarId, accountId);
+            if (oCollaborator.isPresent()) {
+                // if it is already there, return 409 Conflict
+                response = Response.status(Response.Status.CONFLICT).build();
+            } else {
+                // else create a calendar access for this collaborator, with status invited, and send the invitation email
+                long calendarAccessId = dao.insertCalendarAccess(accountId, calendarId, CalendarAccessStatus.INVITED.getStatus(), Math.toIntExact(Instant.now().getEpochSecond()), auth.getAccountId());
+                emailManager.sendCollaboratorInvitation(oAccount, calendarAccessId, calendarId, auth.getAccountId());
+                // TODO: implement email sending error in emailManager and return a response accordingly
+
+                // invitation is sent, return 201 Created
+                collaborators = dao.findCollaboratorsByCalendar(calendarId);
+                response = Response.status(Response.Status.CREATED).entity(collaborators).build();
+            }
         } else {
-            // else create a calendar access for this collaborator, with status invited, and send the invitation email
-            long calendarAccessId = dao.insertCalendarAccess(accountId, calendarId, CalendarAccessStatus.INVITED.getStatus(), Math.toIntExact(Instant.now().getEpochSecond()), auth.getAccountId());
-            emailManager.sendCollaboratorInvitation(oAccount, calendarAccessId, calendarId, auth.getAccountId());
-            // TODO: implement email sending error in emailManager and return a response accordingly
-
-            // invitation is sent, return 201 Created
-            List<Collaborator> collaborators = dao.findCollaboratorsByCalendar(calendarId);
-            response = Response.status(Response.Status.CREATED).entity(collaborators).build();
+            response = Response.status(Response.Status.FORBIDDEN).build();
         }
         return response;
     }
