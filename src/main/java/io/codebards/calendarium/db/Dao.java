@@ -158,22 +158,25 @@ public interface Dao {
     List<Calendar> findCalendars(@Bind("accountId") long accountId);
 
     @SqlQuery("""
-            SELECT calendar_id,
-                   enable_en,
-                   enable_fr,
-                   name_en,
-                   name_fr,
-                   description_en,
-                   description_fr,
-                   link_en,
-                   link_fr,
-                   start_week_on,
-                   primary_color,
-                   secondary_color
-            FROM calendar
-            WHERE public_calendar IS TRUE""")
+            SELECT DISTINCT c.calendar_id,
+                c.enable_en,
+                c.enable_fr,
+                c.name_en,
+                c.name_fr,
+                c.description_en,
+                c.description_fr,
+                c.link_en,
+                c.link_fr,
+                c.start_week_on,
+                c.primary_color,
+                c.secondary_color
+            FROM calendar c
+                  INNER JOIN calendar_access ca on c.calendar_id = ca.calendar_id
+                  INNER JOIN account a on a.account_id = ca.account_id
+                  INNER JOIN subscription s on a.account_id = s.account_id
+            WHERE public_calendar IS TRUE AND s.end_at > :now""")
     @RegisterBeanMapper(Calendar.class)
-    List<Calendar> findPublicCalendars();
+    List<Calendar> findPublicCalendars(@Bind("now") Integer now);
 
     @SqlQuery("""
             SELECT calendar_id,

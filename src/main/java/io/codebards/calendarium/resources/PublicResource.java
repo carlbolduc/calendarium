@@ -33,7 +33,7 @@ public class PublicResource {
     @GET
     @Path("/calendars")
     public List<Calendar> getPublicCalendars() {
-        return dao.findPublicCalendars();
+        return dao.findPublicCalendars(Math.toIntExact(Instant.now().getEpochSecond()));
     }
 
     @GET
