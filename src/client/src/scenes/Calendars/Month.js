@@ -1,11 +1,11 @@
-import "./Month.scss";
-import React from "react";
-import { useState, useEffect } from "react";
-import { DateTime } from "luxon";
-import useComponentBlur from "../../services/ComponentBlurHook";
-import { dayNumber, nextWeekDay, uuidv4 } from "../../services/Helpers";
-import Week from "./Week";
-import MonthHeader from "./MonthHeader";
+import './Month.scss';
+import React from 'react';
+import { useState, useEffect } from 'react';
+import { DateTime } from 'luxon';
+import useComponentBlur from '../../services/ComponentBlurHook';
+import { dayNumber, nextWeekDay, uuidv4 } from '../../services/Helpers';
+import Week from './Week';
+import MonthHeader from './MonthHeader';
 
 export default function Month(props) {
   const { ref } = useComponentBlur(props.hide !== undefined ? props.hide : null);
@@ -21,14 +21,14 @@ export default function Month(props) {
     window.addEventListener('resize', handleWindowSizeChange);
     return () => {
       window.removeEventListener('resize', handleWindowSizeChange);
-    }
+    };
   }, []);
 
   useEffect(() => {
-    const page = document.getElementById("calendar-details-and-events");
+    const page = document.getElementById('calendar-details-and-events');
     if (page !== null) {
       setTimeout(() => {
-        const now = document.getElementById("now");
+        const now = document.getElementById('now');
         if (now !== null) {
           now.scrollIntoView({ behavior: 'smooth' /*or auto*/, block: 'center' });
         }
@@ -42,21 +42,27 @@ export default function Month(props) {
       let week = [];
       let dayOfWeek = dayNumber(props.startWeekOn);
       if (mobile) {
-        let day = date.startOf("week");
+        // find the date of the first day of current week based on the calendar settings props.startWeekOn
+        const currentDayOfWeek = date.weekday;
+        const startDayOfWeek = dayNumber(props.startWeekOn);
+        const daysToSubtract = currentDayOfWeek < startDayOfWeek ? 7 - (startDayOfWeek - currentDayOfWeek) : currentDayOfWeek - startDayOfWeek;
+        debugger;
+        let day = date.minus({ days: daysToSubtract });
+
         while (week.length < 7) {
           week.push(day);
-          day = day.plus({days: 1})
+          day = day.plus({ days: 1 });
         }
         result.push(week);
       } else {
-        const startOfMonth = date.startOf("month");
+        const startOfMonth = date.startOf('month');
         for (let i = 0; i < date.daysInMonth; i++) {
           // Prepend empty days
           while (dayOfWeek !== startOfMonth.weekday) {
             week.push(null);
             dayOfWeek = nextWeekDay(dayOfWeek);
           }
-          const day =  startOfMonth.plus({days: i});
+          const day = startOfMonth.plus({ days: i });
           week.push(day);
           if (week.length === 7) {
             result.push(week);
@@ -82,25 +88,25 @@ export default function Month(props) {
 
   function changeMonth(plusOrMinus) {
     let newDate;
-    if (plusOrMinus === "plus") {
+    if (plusOrMinus === 'plus') {
       newDate = date.plus({ months: 1 });
-    } else if (plusOrMinus === "minus") {
+    } else if (plusOrMinus === 'minus') {
       newDate = date.minus({ months: 1 });
     }
-    setDate(newDate.startOf("month"));
+    setDate(newDate.startOf('month'));
   }
 
   function changeWeek(plusOrMinus) {
     let newDate;
-    if (plusOrMinus === "plus") {
+    if (plusOrMinus === 'plus') {
       newDate = date.plus({ weeks: 1 });
-    } else if (plusOrMinus === "minus") {
+    } else if (plusOrMinus === 'minus') {
       newDate = date.minus({ weeks: 1 });
     }
     setDate(newDate);
   }
 
-  const calendar = weeks.map(week => (
+  const calendar = weeks.map((week) => (
     <Week
       key={uuidv4()}
       days={week}
@@ -114,7 +120,7 @@ export default function Month(props) {
   ));
 
   return (
-    <table id={props.isEmbedded ? "month-embed" : "month-inapp"} className="table table-bordered text-center sticky-top" ref={ref}>
+    <table id={props.isEmbedded ? 'month-embed' : 'month-inapp'} className="table table-bordered text-center sticky-top" ref={ref}>
       <MonthHeader
         localeId={props.localeId}
         startWeekOn={props.startWeekOn}
@@ -123,9 +129,7 @@ export default function Month(props) {
         date={date}
         change={mobile ? changeWeek : changeMonth}
       />
-      <tbody>
-        {calendar}
-      </tbody>
+      <tbody>{calendar}</tbody>
     </table>
   );
 }
