@@ -2,6 +2,6 @@
 <html>
     <body>
         <!-- calls getMessage() and sanitizes it -->
-        <h1>Hello, ${message}!</h1>
+        <h1>Calendarium is a collaborative online calendar for people and organizations who want to privately or publicly share event dates and details.</h1>
     </body>
 </html>

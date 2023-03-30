@@ -16,7 +16,7 @@ public class BotResource {
 
     @GET
     public BotView getMessage() {
-        return new BotView("monsieur Gro");
+        return new BotView("");
     }
 
 }
