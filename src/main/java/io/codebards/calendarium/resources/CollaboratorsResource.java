@@ -57,7 +57,7 @@ public class CollaboratorsResource {
         }
         if (canInvite) {
             // check if account already exists
-            Optional<Account> oAccount = dao.findAccountByEmail(collaborator.getEmail());
+            Optional<Account> oAccount = dao.findAccountByEmail(collaborator.getEmail().toLowerCase());
             long accountId;
             if (oAccount.isPresent()) {
                 // if account exists, get its account id
@@ -66,7 +66,7 @@ public class CollaboratorsResource {
                 // if account doesn't exist, create it, with the language of the account that is
                 // inviting and a null password
                 Instant now = Instant.now();
-                accountId = dao.insertAccount(collaborator.getEmail(), collaborator.getName(), auth.getLanguageId(), null, Math.toIntExact(now.getEpochSecond()), auth.getAccountId());
+                accountId = dao.insertAccount(collaborator.getEmail().toLowerCase(), collaborator.getName(), auth.getLanguageId(), null, Math.toIntExact(now.getEpochSecond()), auth.getAccountId());
                 oAccount = dao.findAccountById(accountId);
             }
 
@@ -113,7 +113,7 @@ public class CollaboratorsResource {
             if (oAccount.isPresent()) {
                 String passwordDigest = argon2.hash(2, 65536, 1, invitationResponse.getPassword().toCharArray());
                 // TODO: check if we can use another method here
-                dao.updateAccountAndPassword(oAccount.get().getAccountId(), oAccount.get().getEmail(), oAccount.get().getName(), oAccount.get().getLanguageId(), passwordDigest, Math.toIntExact(Instant.now().getEpochSecond()), oAccount.get().getAccountId());
+                dao.updateAccountAndPassword(oAccount.get().getAccountId(), oAccount.get().getEmail().toLowerCase(), oAccount.get().getName(), oAccount.get().getLanguageId(), passwordDigest, Math.toIntExact(Instant.now().getEpochSecond()), oAccount.get().getAccountId());
                 String token = createToken(oAccount.get().getAccountId());
                 if (token != null) {
                     AccountToken accountToken = new AccountToken(oAccount.get().getAccountId(), token);

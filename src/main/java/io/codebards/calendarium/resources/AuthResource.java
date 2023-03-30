@@ -44,7 +44,7 @@ public class AuthResource {
     @Path("/sign-up-validation")
     public Response signUpValidation(SignUp signUp) {
         Response response;
-        Optional<Account> oAccount = dao.findAccountByEmail(signUp.getEmail());
+        Optional<Account> oAccount = dao.findAccountByEmail(signUp.getEmail().toLowerCase());
         if (oAccount.isPresent()) {
             response = Response.status(Response.Status.CONFLICT).build();
         } else {
@@ -57,20 +57,20 @@ public class AuthResource {
     @Path("/sign-up-and-subscribe")
     public Response signUpAndSubscribe(PaidSignUp paidSignUp) {
         Response response;
-        Optional<Account> oAccount = dao.findAccountByEmail(paidSignUp.getSignUp().getEmail());
+        Optional<Account> oAccount = dao.findAccountByEmail(paidSignUp.getSignUp().getEmail().toLowerCase());
         if (oAccount.isPresent()) {
             response = Response.status(Response.Status.CONFLICT).build();
         } else {
             // Create the Calendarium account
             Instant now = Instant.now();
             String passwordDigest = argon2.hash(2, 65536, 1, paidSignUp.getSignUp().getPassword().toCharArray());
-            long accountId = dao.insertAccount(paidSignUp.getSignUp().getEmail(), paidSignUp.getSignUp().getName(), paidSignUp.getSignUp().getLanguageId(), passwordDigest, Math.toIntExact(now.getEpochSecond()), 0);
+            long accountId = dao.insertAccount(paidSignUp.getSignUp().getEmail().toLowerCase(), paidSignUp.getSignUp().getName(), paidSignUp.getSignUp().getLanguageId(), passwordDigest, Math.toIntExact(now.getEpochSecond()), 0);
             String token = createToken(accountId);
             if (token != null) {
                 AccountToken accountToken = new AccountToken(accountId, token);
                 // Create the Stripe customer
                 try {
-                    Customer customer = stripeService.createCustomer(paidSignUp.getSignUp().getEmail(), paidSignUp.getSignUp().getName());
+                    Customer customer = stripeService.createCustomer(paidSignUp.getSignUp().getEmail().toLowerCase(), paidSignUp.getSignUp().getName());
                     dao.setStripeCusId(accountId, customer.getId());
                     // Set the default payment method on the customer
                     PaymentMethod paymentMethod = stripeService.setPaymentMethod(customer, paidSignUp.getPaymentMethodDetails().getId());
@@ -123,13 +123,13 @@ public class AuthResource {
     @Path("/sign-up")
     public Response signUp(SignUp signUp) {
         Response response;
-        Optional<Account> oAccount = dao.findAccountByEmail(signUp.getEmail());
+        Optional<Account> oAccount = dao.findAccountByEmail(signUp.getEmail().toLowerCase());
         if (oAccount.isPresent()) {
             response = Response.status(Response.Status.CONFLICT).build();
         } else {
             Instant now = Instant.now();
             String passwordDigest = argon2.hash(2, 65536, 1, signUp.getPassword().toCharArray());
-            long accountId = dao.insertAccount(signUp.getEmail(), signUp.getName(), signUp.getLanguageId(), passwordDigest, Math.toIntExact(now.getEpochSecond()), 0);
+            long accountId = dao.insertAccount(signUp.getEmail().toLowerCase(), signUp.getName(), signUp.getLanguageId(), passwordDigest, Math.toIntExact(now.getEpochSecond()), 0);
             String token = createToken(accountId);
             if (token != null) {
                 AccountToken accountToken = new AccountToken(accountId, token);
@@ -154,9 +154,9 @@ public class AuthResource {
             String credentials = new String(Base64.getDecoder().decode(base64Credentials), StandardCharsets.UTF_8);
             final String[] loginDetails = credentials.split(":", 2);
             final char[] password = loginDetails[1].toCharArray();
-            Optional<Account> oAccount = dao.findAccountByEmail(loginDetails[0]);
+            Optional<Account> oAccount = dao.findAccountByEmail(loginDetails[0].toLowerCase());
             if (oAccount.isPresent()) {
-                if (oAccount.get().getEmail().equalsIgnoreCase(loginDetails[0]) && argon2.verify(oAccount.get().getPasswordDigest(), password)) {
+                if (argon2.verify(oAccount.get().getPasswordDigest(), password)) {
                     String token = createToken(oAccount.get().getAccountId());
                     if (token != null) {
                         AccountToken accountToken = new AccountToken(oAccount.get().getAccountId(), token);
@@ -174,7 +174,7 @@ public class AuthResource {
     @Path("/password-resets")
     public Response createPasswordReset(Account account) {
         Response response = Response.status(Response.Status.CREATED).build();
-        Optional<Account> oAccount = dao.findAccountByEmail(account.getEmail());
+        Optional<Account> oAccount = dao.findAccountByEmail(account.getEmail().toLowerCase());
         if (oAccount.isPresent()) {
             try {
                 String passwordResetDigest = Utils.createDigest();

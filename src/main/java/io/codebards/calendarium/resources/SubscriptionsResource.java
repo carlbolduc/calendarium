@@ -68,7 +68,7 @@ public class SubscriptionsResource {
     public Response createStripeCustomer(@Auth Account auth) {
         Response response;
         try {
-            Customer customer = stripeService.createCustomer(auth.getEmail(), auth.getName());
+            Customer customer = stripeService.createCustomer(auth.getEmail().toLowerCase(), auth.getName());
             dao.setStripeCusId(auth.getAccountId(), customer.getId());
             // Customer successfully created, client should fetch the account again to obtain the stripe customer id
             response = Response.ok().build();
