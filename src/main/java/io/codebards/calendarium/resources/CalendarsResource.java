@@ -44,24 +44,7 @@ public class CalendarsResource {
         Response response = Response.status(Response.Status.NOT_FOUND).build();
         Optional<Calendar> oCalendar = dao.findCalendarByLink(auth.getAccountId(), link, Math.toIntExact(Instant.now().getEpochSecond()));
         if (oCalendar.isPresent()) {
-            if (oCalendar.get().getPublicCalendar()) {
-                response = Response.ok(oCalendar.get()).build();
-            } else {
-                // Only owner and users with an active access can lookup this calendar
-                List<CalendarAccess> calendarAccesses = dao.findCalendarAccesses(auth.getAccountId());
-                Calendar calendar = oCalendar.get();
-                Optional<CalendarAccess> oCalendarAccess = calendarAccesses
-                    .stream()
-                    .filter(ca -> ca.getCalendarId() == calendar.getCalendarId())
-                    .findAny();
-                if (
-                    oCalendarAccess.isPresent() &&
-                    (oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.OWNER.getStatus()) ||
-                     oCalendarAccess.get().getStatus().equals(CalendarAccessStatus.ACTIVE.getStatus()))
-                ) {
-                    response = Response.ok(oCalendar.get()).build();
-                }
-            }
+            response = Response.ok(oCalendar.get()).build();
         } else {
             // User might not have access and calendar may be public
             oCalendar = dao.findPublicCalendarByLink(link, Math.toIntExact(Instant.now().getEpochSecond()));

@@ -214,29 +214,29 @@ public interface Dao {
     Optional<Calendar> findCalendar(@Bind("calendarId") long calendarId);
 
     @SqlQuery("""
-            SELECT c.calendar_id,
-                   c.enable_en,
-                   c.enable_fr,
-                   c.name_en,
-                   c.name_fr,
-                   c.description_en,
-                   c.description_fr,
-                   c.link_en,
-                   c.link_fr,
-                   c.start_week_on,
-                   c.primary_color,
-                   c.secondary_color,
-                   c.embed_calendar,
-                   c.public_calendar,
-                   c.event_approval_required,
-                   c.show_event_author,
-                   ca.status AS access
-            FROM calendar c
-                     INNER JOIN calendar_access ca on c.calendar_id = ca.calendar_id
-                     INNER JOIN subscription s on ca.account_id = s.account_id
-            WHERE ca.account_id = :accountId
-              AND (c.link_en = :link OR c.link_fr = :link)
-              AND s.end_at > :now""")
+        SELECT c.calendar_id,
+               c.enable_en,
+               c.enable_fr,
+               c.name_en,
+               c.name_fr,
+               c.description_en,
+               c.description_fr,
+               c.link_en,
+               c.link_fr,
+               c.start_week_on,
+               c.primary_color,
+               c.secondary_color,
+               c.embed_calendar,
+               c.public_calendar,
+               c.event_approval_required,
+               c.show_event_author,
+               account_ca.status AS access
+        FROM calendar c
+                 INNER JOIN calendar_access account_ca ON c.calendar_id = account_ca.calendar_id AND account_ca.account_id = :accountId AND account_ca.status IN ('owner', 'active')
+                 INNER JOIN calendar_access owner_ca ON c.calendar_id = owner_ca.calendar_id AND owner_ca.status = 'owner'
+                 INNER JOIN subscription s ON owner_ca.account_id = s.account_id
+        WHERE (c.link_en = :link OR c.link_fr = :link)
+          AND s.end_at > :now""")
     @RegisterBeanMapper(Calendar.class)
     Optional<Calendar> findCalendarByLink(@Bind("accountId") long accountId, @Bind("link") String link, @Bind("now") int now);
 
