@@ -2,10 +2,18 @@
 // $body-bg: #000;
 // $body-color: #111;
 
-@import "../../node_modules/bootstrap/scss/bootstrap";
+@import '../../node_modules/bootstrap/scss/bootstrap';
+
+@font-face {
+  font-family: 'mulish';
+  src: url('../../public/fonts/Mulish-VariableFont_wght.ttf') format('truetype');
+  font-weight: 125 950;
+  font-stretch: 75% 125%;
+  font-style: oblique 0deg 12deg;
+}
 
 body {
-  font-family: objektiv-mk2, sans-serif;
+  font-family: mulish, sans-serif;
 }
 
 .table > :not(:first-child) {
@@ -29,7 +37,9 @@ h1 {
 }
 
 // Use bold for headers
-h1, h2, h5 {
+h1,
+h2,
+h5 {
   font-weight: 700;
 }
 
@@ -75,7 +85,7 @@ a {
 
 // Set the width of Powered by Stripe image in subscribe form
 #powered-by-stripe {
-  width:8rem;
+  width: 8rem;
 }
 
 // Use this class to render line breaks from text values entered in a textarea
@@ -104,8 +114,8 @@ a {
   min-height: 400px;
   overflow-x: hidden;
   overflow-y: auto;
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 #scrollable-events-list::-webkit-scrollbar {
